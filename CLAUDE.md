@@ -91,12 +91,13 @@ coverage_detective/   package
   config.py           paths (data/raw, data/processed, data/samples), .env loading, H3_RES=7
   data/               processed-data helpers (grid.py: H3 cells + population), Zetaris client
   sources/            external sources (Ookla, OpenCelliD, DEM, Ofcom, geocode, weather, floods)
-  api/                FastAPI evidence API
+  api/                FastAPI: app.py = data explorer API (+ evidence API later)
 scripts/download/     fetch raw data into data/raw/<source>/ (skip files that exist)
 scripts/process/      build data/processed/*.parquet from raw data
 scripts/zetaris/      register processed files as Zetaris sources
 tests/                pytest
-web/                  frontend (later)
+web/                  data explorer (index.html, app.js, style.css; MapLibre 5.24 + deck.gl 9.4 + h3-js 4.5, no build)
+run.py                start the explorer on :8000 (checks Zetaris)
 data/raw/             raw inputs and downloads (gitignored)
 data/processed/       built Parquet files (gitignored)
 data/samples/         small cached API responses for SAMPLE_MODE (committed)
@@ -143,6 +144,8 @@ scripts/zetaris/compose.sh up -d driver           # Zetaris with our data mount
 .venv/bin/python scripts/zetaris/register_sources.py
 .venv/bin/python scripts/check_data.py             # checks through Zetaris
 .venv/bin/python scripts/refresh.py --check-only    # which stored sources are due a refresh
+.venv/bin/python scripts/process/build_web_layers.py # map layers for the explorer
+.venv/bin/python run.py                            # data explorer on http://localhost:8000
 .venv/bin/python -m pytest -q
 ```
 
@@ -164,6 +167,7 @@ G power cuts (if time) · H visitor load (if time) · final check_data.py.
 - E. Ofcom regional: done (CD_OFCOM_AREA per cell = constituency figures; CD_OFCOM_NATIONS per
   operator). Columns g4_geo_out_0..4 etc. = % with coverage from exactly N operators.
 - Freshness: data/manifest.json (written by every build), scripts/refresh.py, evidence_meta().
+- Data explorer: run.py + web/; /api/cell/{id} is one Zetaris query. Rebuild layers after data changes.
 
 - Earlier: grid (`cells_r7`) and Ookla (2026Q3 + 3 previous quarters) built; Ofcom API stub.
 - Order agreed 25 Oct: B → E → D → C → F → final check; G/H only if time.

@@ -68,6 +68,32 @@ Each dataset is its own Zetaris source (Lightning database), e.g. `CD_CELLS.cell
 
 Every script can be re-run safely; pass `--force` to rebuild an existing output.
 
+## Data explorer
+
+A map of every layer, for looking at the data before the agents exist.
+
+```bash
+.venv/bin/python scripts/process/build_web_layers.py   # precompute map layers -> data/web/layers/
+scripts/zetaris/compose.sh up -d                        # Zetaris with our data mount (cell details use it)
+.venv/bin/python run.py                                 # http://localhost:8000
+```
+
+- Hexagons (H3 r7) coloured by the chosen layer: download speed (< 2, 2–5, 5–10, > 10
+  Mbps), tests, speed trend, population, nearest mast site, operators within 5 km,
+  operator data status, Ofcom land with no / one 4G operator. Cells with fewer than 10
+  tests are faded (weak evidence); grey means no data.
+- Approximate mast sites appear from zoom 10 (coloured by source), Ookla tiles from zoom 12.
+- Click a cell: its details come from **one cross-source Zetaris query** (cells, Ookla and
+  history, neighbours, masts, Ofcom area), shown under "Zetaris query used", with data dates.
+- Search a postcode or place (postcodes.io). Works on phones (the panel slides up).
+
+API: `GET /api/layers`, `/api/layer/{name}`, `/api/masts?bbox=`, `/api/tiles?bbox=`,
+`/api/cell/{cell_id}`, `/api/geocode?q=`, `/health` (OpenAPI docs at `/docs`).
+Screenshots: `pip install playwright`, then `python scripts/screenshots.py` (pass
+`--chrome <path>` to use an installed Chromium) → `docs/screenshots/`.
+
+![UK download speeds](docs/screenshots/uk_speed.png)
+
 ## Data freshness
 
 Two kinds of data:

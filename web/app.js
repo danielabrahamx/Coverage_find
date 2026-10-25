@@ -1,0 +1,371 @@
+/* Coverage Detective data explorer: MapLibre basemap + deck.gl H3 hexagons. */
+"use strict";
+
+const BASEMAP = "https://tiles.openfreemap.org/styles/positron";
+const UK_VIEW = { center: [-3.2, 54.6], zoom: 4.9 };
+const MAST_MIN_ZOOM = 10;
+const TILE_MIN_ZOOM = 12;
+const NO_DATA = [168, 174, 184, 70];
+const SOURCE_COLORS = { opencellid: "#1D4ED8", osm: "#C2410C", both: "#0F766E" };
+const SPEED = { breaks: [2, 5, 10], colors: ["#C2410C", "#F59E0B", "#93C5FD", "#2563EB"] };
+const COMPASS = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
+
+const state = {
+  layers: [],          // layer metadata from /api/layers
+  layer: null,         // selected layer metadata
+  values: new Map(),   // cell_id -> [value, weak]
+  grid: [],            // every cell id (from the population layer)
+  masts: [],
+  tiles: [],
+  selected: null,
+};
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const fmt = (v, d = 1) => (v === null || v === undefined || Number.isNaN(v) ? "–" : Number(v).toLocaleString("en-GB", { maximumFractionDigits: d, minimumFractionDigits: 0 }));
+
+function hexToRgb(hex, alpha = 255) {
+  const n = parseInt(hex.slice(1), 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255, alpha];
+}
+
+function colorFor(scale, value) {
+  if (scale.type === "categories") {
+    const i = scale.values.indexOf(value);
+    return i < 0 ? null : scale.colors[i];
+  }
+  let i = 0;
+  while (i < scale.breaks.length && value >= scale.breaks[i]) i++;
+  return scale.colors[i];
+}
+
+async function getJSON(url) {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`${r.status} ${(await r.text()).slice(0, 200)}`);
+  return r.json();
+}
+
+/* ---------- map ---------- */
+
+const map = new maplibregl.Map({ container: "map", style: BASEMAP, ...UK_VIEW, attributionControl: { compact: true } });
+map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
+const overlay = new deck.MapboxOverlay({ interleaved: false, layers: [], getCursor: ({ isHovering }) => (isHovering ? "pointer" : "grab") });
+map.addControl(overlay);
+map.getCanvas().setAttribute("aria-label", "Map of UK mobile coverage cells");
+
+function hexLayer() {
+  const scale = state.layer?.scale;
+  const fill = (id) => {
+    const entry = state.values.get(id);
+    if (!entry || !scale) return NO_DATA;
+    const c = colorFor(scale, entry[0]);
+    if (!c) return NO_DATA;
+    return hexToRgb(c, entry[1] ? 80 : 205);
+  };
+  return new deck.H3HexagonLayer({
+    id: "cells",
+    data: state.grid,
+    getHexagon: (d) => d,
+    getFillColor: fill,
+    stroked: false,
+    extruded: false,
+    filled: true,
+    pickable: true,
+    coverage: 0.94,
+    updateTriggers: { getFillColor: [state.layer?.name, state.values.size] },
+  });
+}
+
+function selectedLayer() {
+  // Outline drawn as a polygon: H3HexagonLayer does not reliably stroke at this resolution.
+  const ring = state.selected ? h3.cellToBoundary(state.selected, true) : null;
+  return new deck.PolygonLayer({
+    id: "selected",
+    data: ring ? [ring] : [],
+    getPolygon: (d) => d,
+    filled: true,
+    getFillColor: [21, 25, 31, 18],
+    stroked: true,
+    getLineColor: [21, 25, 31, 255],
+    lineWidthUnits: "pixels",
+    getLineWidth: 3,
+  });
+}
+
+function tileLayer() {
+  return new deck.PolygonLayer({
+    id: "tiles",
+    data: map.getZoom() >= TILE_MIN_ZOOM ? state.tiles : [],
+    getPolygon: (t) => [[t.min_lon, t.min_lat], [t.max_lon, t.min_lat], [t.max_lon, t.max_lat], [t.min_lon, t.max_lat]],
+    getFillColor: (t) => hexToRgb(colorFor({ type: "bins", ...SPEED }, t.download_mbps), t.tests < 10 ? 110 : 230),
+    getLineColor: [255, 255, 255, 200],
+    lineWidthUnits: "pixels",
+    getLineWidth: 1,
+    pickable: true,
+  });
+}
+
+function mastLayer() {
+  return new deck.ScatterplotLayer({
+    id: "masts",
+    data: map.getZoom() >= MAST_MIN_ZOOM ? state.masts : [],
+    getPosition: (m) => [m.lon, m.lat],
+    getFillColor: (m) => hexToRgb(SOURCE_COLORS[m.sources] || "#5B6472"),
+    getLineColor: [255, 255, 255, 255],
+    stroked: true,
+    lineWidthUnits: "pixels",
+    getLineWidth: 1.5,
+    radiusUnits: "pixels",
+    getRadius: 5,
+    pickable: true,
+  });
+}
+
+function render() {
+  overlay.setProps({
+    layers: [hexLayer(), tileLayer(), selectedLayer(), mastLayer()],
+    onClick: onMapClick,
+    onHover: onHover,
+  });
+  const z = map.getZoom();
+  $("zoom-hint").textContent =
+    z < MAST_MIN_ZOOM ? `Zoom in to see approximate mast sites (zoom ${MAST_MIN_ZOOM}+)` :
+    z < TILE_MIN_ZOOM ? `Zoom in further for Ookla speed tiles (zoom ${TILE_MIN_ZOOM}+)` :
+    `Showing Ookla tiles (${state.tilesQuarter || "latest quarter"}) and mast sites`;
+}
+
+/* ---------- layers ---------- */
+
+async function loadLayer(name) {
+  state.layer = state.layers.find((l) => l.name === name);
+  const rows = await getJSON(`/api/layer/${name}`);
+  state.values = new Map(rows.map((r) => [r[0], [r[1], r[2] === 1]]));
+  renderLegend();
+  render();
+}
+
+function renderLegend() {
+  const l = state.layer;
+  const s = l.scale;
+  const items = s.colors.map((c, i) => `<li><span class="swatch" style="background:${c}"></span>${esc(s.labels[i])}</li>`).join("");
+  const weakNote = ["download_mbps", "trend_pct"].includes(l.name) ? `<p class="note">Faded cells: weak evidence (fewer than 10 tests).</p>` : "";
+  $("legend").innerHTML = `
+    <h2>${esc(l.title)}</h2>
+    <p class="units">${esc(l.units || "")}${l.data_period ? ` · ${esc(l.data_period)}` : ""}</p>
+    <ul>${items}<li><span class="swatch" style="background:rgba(168,174,184,0.35)"></span>No data</li></ul>
+    ${weakNote}
+    <ul class="masts">
+      <li><span class="dot" style="background:${SOURCE_COLORS.opencellid}"></span>Mast site · OpenCelliD</li>
+      <li><span class="dot" style="background:${SOURCE_COLORS.osm}"></span>Mast site · OpenStreetMap</li>
+      <li><span class="dot" style="background:${SOURCE_COLORS.both}"></span>Mast site · both</li>
+    </ul>`;
+}
+
+function renderDataDates() {
+  const by = Object.fromEntries(state.layers.map((l) => [l.name, l]));
+  const parts = [];
+  if (by.download_mbps) parts.push(`Speeds ${by.download_mbps.data_period}`);
+  if (by.nearest_mast_km) parts.push(`Masts ${by.nearest_mast_km.as_of}`);
+  if (by.ofcom_geo_4g_none_pct) parts.push(`Ofcom ${by.ofcom_geo_4g_none_pct.data_period.slice(0, 7)}`);
+  $("data-dates").textContent = parts.join(" · ");
+}
+
+/* ---------- masts and tiles for the visible area ---------- */
+
+let viewTimer = null;
+function onViewChange() {
+  clearTimeout(viewTimer);
+  viewTimer = setTimeout(async () => {
+    const z = map.getZoom();
+    const b = map.getBounds();
+    const bbox = [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()].map((v) => v.toFixed(4)).join(",");
+    try {
+      if (z >= MAST_MIN_ZOOM) state.masts = (await getJSON(`/api/masts?bbox=${bbox}`)).sites;
+      if (z >= TILE_MIN_ZOOM) {
+        const t = await getJSON(`/api/tiles?bbox=${bbox}`);
+        state.tiles = t.tiles;
+        state.tilesQuarter = t.quarter;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    render();
+  }, 250);
+  render();
+}
+
+/* ---------- hover and click ---------- */
+
+function onHover(info) {
+  const tip = $("tooltip");
+  if (!info.object) { tip.hidden = true; return; }
+  let html = "";
+  if (info.layer.id === "cells") {
+    const entry = state.values.get(info.object);
+    const v = entry ? entry[0] : null;
+    html = `<strong>${esc(state.layer.title)}:</strong> ${v === null ? "no data" : esc(typeof v === "number" ? fmt(v, 2) : v)} ${v === null ? "" : esc(state.layer.units || "")}` +
+      (entry && entry[1] ? `<br><span>weak evidence</span>` : "");
+  } else if (info.layer.id === "masts") {
+    const m = info.object;
+    html = `<strong>Approximate mast site</strong><br>Source: ${esc(m.sources)}<br>Operators: ${esc(m.operators || "unknown")}` +
+      (m.radio_types ? `<br>Radio: ${esc(m.radio_types)}` : "") + (m.osm_operator ? `<br>OSM operator tag: ${esc(m.osm_operator)}` : "");
+  } else if (info.layer.id === "tiles") {
+    const t = info.object;
+    html = `<strong>Ookla tile</strong> (~600 m)<br>${fmt(t.download_mbps, 1)} Mbps down · ${fmt(t.upload_mbps, 1)} up<br>${t.tests} tests · ${t.devices} devices`;
+  }
+  tip.innerHTML = html;
+  tip.style.left = `${info.x}px`;
+  tip.style.top = `${info.y}px`;
+  tip.hidden = !html;
+}
+
+function onMapClick(info) {
+  if (!info.coordinate) return;
+  const [lon, lat] = info.coordinate;
+  selectCell(h3.latLngToCell(lat, lon, 7));
+}
+
+/* ---------- side panel ---------- */
+
+function compass(deg) {
+  return COMPASS[Math.round(deg / 22.5) % 16];
+}
+
+function statusSentence(c) {
+  const n = c.masts_within_5km, u = c.masts_unknown_operator_within_5km;
+  switch (c.operator_data_status) {
+    case "complete": return `Operators are known for all ${n} nearby approximate mast sites.`;
+    case "partial": return `Operators could not be identified for ${u} of ${n} nearby sites, so more operators may be present than listed.`;
+    case "unknown": return `Operators could not be identified for any of the ${n} nearby sites (mapped in OpenStreetMap without an operator).`;
+    case "no_sites_found": return "No approximate mast sites found within 5 km. This is weak evidence: OpenCelliD's free data is incomplete.";
+    default: return "";
+  }
+}
+
+function sparkline(history) {
+  if (!history?.length) return "";
+  const max = Math.max(...history.map((h) => h.download_mbps), 1);
+  return `<div class="spark" aria-label="Download speed by quarter">${history.map((h) =>
+    `<div class="bar" title="${esc(h.quarter)}: ${fmt(h.download_mbps, 1)} Mbps, ${h.tests} tests">
+       <span>${fmt(h.download_mbps, 0)}</span>
+       <div class="fill ${h.tests < 10 ? "weak-bar" : ""}" style="height:${Math.max(3, (h.download_mbps / max) * 36)}px"></div>
+       <span>${esc(h.quarter.replace("20", "'"))}</span></div>`).join("")}</div>`;
+}
+
+function panelHTML(res) {
+  const c = res.cell;
+  const ops = ["EE", "O2", "Three", "Vodafone"];
+  const near = (c.operators_within_5km || "").split(",").filter(Boolean);
+  const speed = c.tests
+    ? `<div class="big">${fmt(c.download_mbps, 1)}<small>Mbps down</small></div>
+       <dl class="kv"><dt>Upload</dt><dd>${fmt(c.upload_mbps, 1)} Mbps</dd><dt>Latency</dt><dd>${fmt(c.latency_ms, 0)} ms</dd>
+       <dt>Tests · devices</dt><dd>${c.tests} · ${c.devices}</dd><dt>Quarter</dt><dd>${esc(c.quarter)}</dd></dl>`
+    : `<p class="muted">No Ookla tests in this cell in the latest quarter.</p>`;
+  const weak = c.tests && c.tests < 10 ? `<p class="weak">Weak evidence: only ${c.tests} test${c.tests === 1 ? "" : "s"} in this cell.</p>` : "";
+  const nb = c.neighbour_tests
+    ? `<p class="status">Neighbouring cells (${c.neighbour_cells_with_data} of 6 with data): <strong>${fmt(c.neighbour_download_mbps, 1)} Mbps</strong> from ${c.neighbour_tests} tests${c.neighbour_tests < 10 ? " (weak)" : ""}.</p>`
+    : `<p class="status muted">No tests in the neighbouring cells either.</p>`;
+  const trend = c.quarters_with_data >= 2
+    ? `<p class="status">${c.download_change_pct >= 0 ? "Up" : "Down"} <strong>${fmt(Math.abs(c.download_change_pct), 0)}%</strong> from ${fmt(c.download_mbps_oldest, 1)} Mbps over ${c.quarters_with_data} quarters.</p>`
+    : `<p class="status muted">Not enough quarters for a trend.</p>`;
+  const mast = c.nearest_mast_km !== null && c.nearest_mast_km !== undefined
+    ? `<dl class="kv"><dt>Nearest site</dt><dd>${fmt(c.nearest_mast_km, 2)} km ${compass(c.nearest_mast_bearing_deg)} (${fmt(c.nearest_mast_bearing_deg, 0)}°)</dd>
+       <dt>Operators there</dt><dd>${esc(c.nearest_mast_operators || "unknown")}</dd><dt>Source</dt><dd>${esc(c.nearest_mast_sources)}</dd></dl>`
+    : "";
+  const ofcom = c.pcon_name
+    ? `<p class="status">In <strong>${esc(c.pcon_name)}</strong>, ${fmt(c.g4_geo_out_0, 1)}% of land has no outdoor 4G from any operator and ${fmt(c.g4_geo_out_1, 1)}% from only one.</p>
+       <dl class="kv"><dt>Premises with no indoor 4G</dt><dd>${fmt(c.g4_prem_in_0, 1)}%</dd><dt>A/B roads with no in-car 4G</dt><dd>${fmt(c.g4_abrd_in_0, 1)}%</dd>
+       <dt>Premises with 5G outdoors</dt><dd>${fmt(c.g5hc_prem_out_at_least_one, 1)}%</dd><dt>${esc(c.laua_name)} (land, no 4G)</dt><dd>${fmt(c.laua_g4_geo_out_0, 1)}%</dd></dl>
+       <p class="footnote">Ofcom Connected Nations (${esc(c.ofcom_data_date)}): predicted coverage for the whole area, not this exact location.</p>`
+    : "";
+  const dates = Object.entries(res.data_dates).map(([t, m]) => `<dt class="mono">${esc(t)}</dt><dd>${esc(m.data_period)}</dd>`).join("");
+  return `
+    <h2>${esc(c.place || c.laua_name || "Selected cell")}</h2>
+    <p class="sub">${esc(c.nation)} · ${esc(c.pcon_name || "")} · <span class="mono">${esc(c.cell_id)}</span></p>
+    <dl class="kv"><dt>People in this cell</dt><dd>${fmt(c.population, 0)}</dd></dl>
+    <section><h3>Measured speed</h3>${speed}${weak}${nb}</section>
+    <section><h3>Trend</h3>${trend}${sparkline(c.history)}</section>
+    <section><h3>Nearest mast site</h3>${mast}</section>
+    <section><h3>Operators within 5 km</h3>
+      <div class="chips">${ops.map((o) => `<span class="chip ${near.includes(o) ? "" : "off"}">${o}</span>`).join("")}</div>
+      <p class="status">${c.masts_within_5km} approximate mast sites (${c.masts_known_operator_within_5km} with a known operator).</p>
+      <p class="status">${esc(statusSentence(c))}</p></section>
+    <section><h3>Ofcom: the wider area</h3>${ofcom}</section>
+    <section><h3>Data dates</h3><dl class="kv">${dates}</dl></section>
+    <details><summary>Zetaris query used (${res.zetaris.duration_ms} ms)</summary><pre class="sql">${esc(res.zetaris.sql)}</pre></details>
+    <button class="diagnose" disabled>Diagnose this area</button>
+    <p class="diagnose-note">Agents coming next</p>`;
+}
+
+async function selectCell(cellId) {
+  state.selected = cellId;
+  render();
+  const panel = $("panel");
+  panel.hidden = false;
+  $("panel-body").innerHTML = `<p class="loading">Querying Zetaris…</p>`;
+  try {
+    const res = await getJSON(`/api/cell/${cellId}`);
+    if (state.selected === cellId) $("panel-body").innerHTML = panelHTML(res);
+  } catch (e) {
+    $("panel-body").innerHTML = `<p class="error">Could not load this cell: ${esc(e.message)}</p>`;
+  }
+}
+
+$("panel-close").addEventListener("click", () => {
+  $("panel").hidden = true;
+  state.selected = null;
+  render();
+});
+
+/* ---------- search ---------- */
+
+$("search").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const q = $("search-input").value.trim();
+  const list = $("search-results");
+  if (q.length < 2) return;
+  list.hidden = false;
+  list.innerHTML = `<li class="empty">Searching…</li>`;
+  try {
+    const { results } = await getJSON(`/api/geocode?q=${encodeURIComponent(q)}`);
+    if (!results.length) { list.innerHTML = `<li class="empty">No match. Try a postcode.</li>`; return; }
+    list.innerHTML = results.map((r, i) => `<li tabindex="0" data-i="${i}">${esc(r.label)}${r.approximate ? " (approximate match)" : ""}<div class="detail">${esc(r.detail || "")}</div></li>`).join("");
+    list.querySelectorAll("li[data-i]").forEach((li) => {
+      const go = () => { const r = results[+li.dataset.i]; list.hidden = true; flyTo(r); };
+      li.addEventListener("click", go);
+      li.addEventListener("keydown", (e) => { if (e.key === "Enter") go(); });
+    });
+    if (results.length === 1) { list.hidden = true; flyTo(results[0]); }
+  } catch (e) {
+    list.innerHTML = `<li class="empty">Search failed: ${esc(e.message)}</li>`;
+  }
+});
+document.addEventListener("click", (e) => { if (!$("search").contains(e.target)) $("search-results").hidden = true; });
+
+function flyTo(r) {
+  map.flyTo({ center: [r.lon, r.lat], zoom: 11.5, speed: 1.6 });
+  selectCell(r.cell_id);
+}
+
+/* ---------- start ---------- */
+
+async function start() {
+  state.layers = await getJSON("/api/layers");
+  const select = $("layer-select");
+  select.innerHTML = state.layers.map((l) => `<option value="${l.name}">${esc(l.title)}</option>`).join("");
+  select.addEventListener("change", () => loadLayer(select.value));
+  renderDataDates();
+  state.grid = (await getJSON("/api/layer/population")).map((r) => r[0]);
+  const params = new URLSearchParams(location.search);
+  const first = params.get("layer") || "download_mbps";
+  select.value = first;
+  await loadLayer(first);
+  map.on("moveend", onViewChange);
+  if (params.get("lat") && params.get("lon")) {
+    map.jumpTo({ center: [+params.get("lon"), +params.get("lat")], zoom: +(params.get("zoom") || 11) });
+  }
+  if (params.get("cell")) selectCell(params.get("cell"));
+  onViewChange();
+}
+
+map.on("load", () => start().catch((e) => { $("legend").innerHTML = `<p class="error">Could not start: ${esc(e.message)}</p>`; }));
