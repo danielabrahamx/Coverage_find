@@ -1,0 +1,33 @@
+{
+ "url": "https://api.postcodes.io/places?q=Rhayader&limit=6",
+ "fetched_at": "2026-10-25T20:36:50+00:00",
+ "http_status": 200,
+ "body": {
+  "status": 200,
+  "result": [
+   {
+    "code": "osgb4000000074567881",
+    "name_1": "Rhayader",
+    "name_1_lang": "eng",
+    "name_2": "Rhaeadr Gwy",
+    "name_2_lang": "cym",
+    "local_type": "Town",
+    "outcode": "LD6",
+    "county_unitary": "Powys - Powys",
+    "county_unitary_type": "UnitaryAuthority",
+    "district_borough": null,
+    "district_borough_type": null,
+    "region": "Wales",
+    "country": "Wales",
+    "longitude": -3.51041060279903,
+    "latitude": 52.30044248097088,
+    "eastings": 297102,
+    "northings": 267999,
+    "min_eastings": 296689,
+    "min_northings": 267557,
+    "max_eastings": 297866,
+    "max_northings": 268858
+   }
+  ]
+ }
+}

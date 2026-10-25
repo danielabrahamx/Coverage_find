@@ -1,6 +1,6 @@
 """Ookla open data: mobile performance tiles aggregated onto the H3 grid.
 
-Tiles are zoom-16 web-mercator quadkeys (~600 m at UK latitudes). Each tile's centroid
+Tiles are zoom-16 web-mercator quadkeys (about 350-400 m at UK latitudes). Each tile's centroid
 is mapped to an H3 r7 cell; per-cell figures are test-weighted means.
 """
 

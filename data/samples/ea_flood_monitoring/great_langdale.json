@@ -1,0 +1,240 @@
+{
+ "url": "https://environment.data.gov.uk/flood-monitoring/id/floods?lat=54.445&long=-3.105&dist=10",
+ "fetched_at": "2026-10-25T20:36:52+00:00",
+ "http_status": 200,
+ "body": {
+  "@context": "http://environment.data.gov.uk/flood-monitoring/meta/context.jsonld",
+  "meta": {
+   "publisher": "Environment Agency",
+   "licence": "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+   "documentation": "http://environment.data.gov.uk/flood-monitoring/doc/reference",
+   "version": "0.9",
+   "comment": "Status: Beta service",
+   "hasFormat": [
+    "http://environment.data.gov.uk/flood-monitoring/id/floods.csv?lat=54.445&long=-3.105&dist=10",
+    "http://environment.data.gov.uk/flood-monitoring/id/floods.rdf?lat=54.445&long=-3.105&dist=10",
+    "http://environment.data.gov.uk/flood-monitoring/id/floods.ttl?lat=54.445&long=-3.105&dist=10",
+    "http://environment.data.gov.uk/flood-monitoring/id/floods.html?lat=54.445&long=-3.105&dist=10"
+   ]
+  },
+  "items": [
+   {
+    "@id": "http://environment.data.gov.uk/flood-monitoring/id/floods/011WAFDW",
+    "description": "Upper River Derwent, Stonethwaite Beck and Derwent Water",
+    "eaAreaName": "Cumbria and Lancashire",
+    "eaRegionName": "No longer used",
+    "floodArea": {
+     "@id": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/011WAFDW",
+     "county": "Cumberland",
+     "envelope": {
+      "lowerCorner": {
+       "lx": 323336,
+       "ly": 508926
+      },
+      "upperCorner": {
+       "ux": 327902,
+       "uy": 523581
+      }
+     },
+     "notation": "011WAFDW",
+     "polygon": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/011WAFDW/polygon",
+     "riverOrSea": "Derwent, Stonethwaite Beck"
+    },
+    "floodAreaID": "011WAFDW",
+    "isTidal": false,
+    "message": "Showery rain and strong winds will continue throughout the day, with river and lake levels remaining high.\n\nLocations most affected will be low lying land and roads near the Upper Derwent from Seathwaite to Derwent Water.\n\nWe continue to closely monitor the situation .\n\nTake care and avoid walking, cycling or driving through flood water.\n\nThis message will be updated by 9:00AM on Monday 26 October or as the situation changes.\n",
+    "severity": "Flood alert",
+    "severityLevel": 3,
+    "timeMessageChanged": "2026-10-25T10:36:00",
+    "timeRaised": "2026-10-25T10:36:00",
+    "timeSeverityChanged": "2026-10-24T12:00:00"
+   },
+   {
+    "@id": "http://environment.data.gov.uk/flood-monitoring/id/floods/011WAFDU",
+    "description": "Rivers Duddon, Crake and Mill Beck",
+    "eaAreaName": "Cumbria and Lancashire",
+    "eaRegionName": "No longer used",
+    "floodArea": {
+     "@id": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/011WAFDU",
+     "county": "Cumberland, Westmorland and Furness",
+     "envelope": {
+      "lowerCorner": {
+       "lx": 312147,
+       "ly": 467327
+      },
+      "upperCorner": {
+       "ux": 332145,
+       "uy": 502175
+      }
+     },
+     "notation": "011WAFDU",
+     "polygon": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/011WAFDU/polygon",
+     "riverOrSea": "River Duddon, River Crake, Mill Beck"
+    },
+    "floodAreaID": "011WAFDU",
+    "isTidal": false,
+    "message": "There is no longer a threat of flooding, though standing water and debris may still remain.\nFurther rainfall is forecast but no further flooding is expected.  \nWe will continue to monitor the situation and will issue further alerts or warnings if necessary.  \nContinue to take care on waterside roads and footpaths and don't put yourself in unnecessary danger.  \n",
+    "severity": "Warning no longer in force",
+    "severityLevel": 4,
+    "timeMessageChanged": "2026-10-25T10:34:00",
+    "timeRaised": "2026-10-25T10:34:48",
+    "timeSeverityChanged": "2026-10-25T10:34:00"
+   },
+   {
+    "@id": "http://environment.data.gov.uk/flood-monitoring/id/floods/011WAFBR",
+    "description": "Rivers Brathay, Rothay and Winster",
+    "eaAreaName": "Cumbria and Lancashire",
+    "eaRegionName": "No longer used",
+    "floodArea": {
+     "@id": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/011WAFBR",
+     "county": "Westmorland and Furness",
+     "envelope": {
+      "lowerCorner": {
+       "lx": 326229,
+       "ly": 475894
+      },
+      "upperCorner": {
+       "ux": 342893,
+       "uy": 510711
+      }
+     },
+     "notation": "011WAFBR",
+     "polygon": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/011WAFBR/polygon",
+     "riverOrSea": "River Brathay, River Rothay, River Winster"
+    },
+    "floodAreaID": "011WAFBR",
+    "isTidal": false,
+    "message": "The heavy rain and strong winds from Storm Boelo continue to impact the area with showery rain and strong wind keeping river levels high with the potential for some flooding of low lying land.\n\nWe continue to closely monitor the situation .\n\nTake care and avoid walking, cycling or driving through flood water.\n\nThis message will be updated by 9:00AM on Monday 26 October or as the situation changes.\n",
+    "severity": "Flood alert",
+    "severityLevel": 3,
+    "timeMessageChanged": "2026-10-25T10:34:00",
+    "timeRaised": "2026-10-25T10:34:18",
+    "timeSeverityChanged": "2026-10-24T16:57:00"
+   },
+   {
+    "@id": "http://environment.data.gov.uk/flood-monitoring/id/floods/011WAFLO",
+    "description": "Rivers Lowther and Eamont",
+    "eaAreaName": "Cumbria and Lancashire",
+    "eaRegionName": "No longer used",
+    "floodArea": {
+     "@id": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/011WAFLO",
+     "county": "Westmorland and Furness",
+     "envelope": {
+      "lowerCorner": {
+       "lx": 335580,
+       "ly": 509485
+      },
+      "upperCorner": {
+       "ux": 358167,
+       "uy": 531461
+      }
+     },
+     "notation": "011WAFLO",
+     "polygon": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/011WAFLO/polygon",
+     "riverOrSea": "River Lowther, River Eamont"
+    },
+    "floodAreaID": "011WAFLO",
+    "isTidal": false,
+    "message": "There is no longer a threat of flooding, though standing water and debris may still remain.\nFurther rainfall is forecast but no further flooding is expected.  \nWe will continue to monitor the situation and will issue further alerts or warnings if necessary.  \nContinue to take care on waterside roads and footpaths and don't put yourself in unnecessary danger.  \n",
+    "severity": "Warning no longer in force",
+    "severityLevel": 4,
+    "timeMessageChanged": "2026-10-25T10:36:00",
+    "timeRaised": "2026-10-25T10:36:18",
+    "timeSeverityChanged": "2026-10-25T10:36:00"
+   },
+   {
+    "@id": "http://environment.data.gov.uk/flood-monitoring/id/floods/011WAFED",
+    "description": "Rivers Ehen, Calder, Irt and Esk",
+    "eaAreaName": "Cumbria and Lancashire",
+    "eaRegionName": "No longer used",
+    "floodArea": {
+     "@id": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/011WAFED",
+     "county": "Cumberland",
+     "envelope": {
+      "lowerCorner": {
+       "lx": 295885,
+       "ly": 485004
+      },
+      "upperCorner": {
+       "ux": 323813,
+       "uy": 527254
+      }
+     },
+     "notation": "011WAFED",
+     "polygon": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/011WAFED/polygon",
+     "riverOrSea": "River Ehen, Rive Calder, River Irt, River Esk"
+    },
+    "floodAreaID": "011WAFED",
+    "isTidal": false,
+    "message": "There is no longer a threat of flooding, though standing water and debris may still remain.\nFurther rainfall is forecast but no further flooding is expected.  \nWe will continue to monitor the situation and will issue further alerts or warnings if necessary.  \nContinue to take care on waterside roads and footpaths and don't put yourself in unnecessary danger.  \n",
+    "severity": "Warning no longer in force",
+    "severityLevel": 4,
+    "timeMessageChanged": "2026-10-25T10:34:00",
+    "timeRaised": "2026-10-25T10:34:53",
+    "timeSeverityChanged": "2026-10-25T10:34:00"
+   },
+   {
+    "@id": "http://environment.data.gov.uk/flood-monitoring/id/floods/011WAFCD",
+    "description": "Rivers Cocker, Marron and Derwent",
+    "eaAreaName": "Cumbria and Lancashire",
+    "eaRegionName": "No longer used",
+    "floodArea": {
+     "@id": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/011WAFCD",
+     "county": "Cumberland",
+     "envelope": {
+      "lowerCorner": {
+       "lx": 299752,
+       "ly": 513889
+      },
+      "upperCorner": {
+       "ux": 321412,
+       "uy": 535666
+      }
+     },
+     "notation": "011WAFCD",
+     "polygon": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/011WAFCD/polygon",
+     "riverOrSea": "River Cocker, River Marron, River Derwent"
+    },
+    "floodAreaID": "011WAFCD",
+    "isTidal": false,
+    "message": "There is no longer a threat of flooding, though standing water and debris may still remain.\nFurther rainfall is forecast but no further flooding is expected.  \nWe will continue to monitor the situation and will issue further alerts or warnings if necessary.  \nContinue to take care on waterside roads and footpaths and don't put yourself in unnecessary danger.  \n",
+    "severity": "Warning no longer in force",
+    "severityLevel": 4,
+    "timeMessageChanged": "2026-10-25T10:35:00",
+    "timeRaised": "2026-10-25T10:35:40",
+    "timeSeverityChanged": "2026-10-25T10:35:00"
+   },
+   {
+    "@id": "http://environment.data.gov.uk/flood-monitoring/id/floods/011WAFGB",
+    "description": "Rivers Greta, St Johns Beck and Bassenthwaite Lake",
+    "eaAreaName": "Cumbria and Lancashire",
+    "eaRegionName": "No longer used",
+    "floodArea": {
+     "@id": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/011WAFGB",
+     "county": "Cumberland, Westmorland and Furness",
+     "envelope": {
+      "lowerCorner": {
+       "lx": 317469,
+       "ly": 511262
+      },
+      "upperCorner": {
+       "ux": 339014,
+       "uy": 533152
+      }
+     },
+     "notation": "011WAFGB",
+     "polygon": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/011WAFGB/polygon",
+     "riverOrSea": "River Greta, St Johns Beck, Glendermackin"
+    },
+    "floodAreaID": "011WAFGB",
+    "isTidal": false,
+    "message": "There is no longer a threat of flooding, though standing water and debris may still remain.\nFurther rainfall is forecast but no further flooding is expected.  \nWe will continue to monitor the situation and will issue further alerts or warnings if necessary.  \nStay away from floodwater - it contains hidden dangers such as open manhole covers, sewage and chemicals.  \n",
+    "severity": "Warning no longer in force",
+    "severityLevel": 4,
+    "timeMessageChanged": "2026-10-25T10:36:00",
+    "timeRaised": "2026-10-25T10:36:25",
+    "timeSeverityChanged": "2026-10-25T10:36:00"
+   }
+  ]
+ }
+}

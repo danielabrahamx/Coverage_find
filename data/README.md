@@ -39,6 +39,7 @@ one table) by `scripts/zetaris/register_sources.py`, read from the read-only mou
 | `CD_WTR_POINTS` | `wtr_points` | `wtr_points.parquet` | 13,122 |
 | `CD_OFCOM_AREA` | `ofcom_area_r7` | `ofcom_area_r7.parquet` | 56,592 |
 | `CD_OFCOM_NATIONS` | `ofcom_nations` | `ofcom_nations.parquet` | 1,035 |
+| `CD_LIVE_EA_FLOODS` | `floods`, `flood_areas` | REST (live EA API, see below) | 136 / 4,208 on 25 Oct 2026 |
 
 ## ONS Countries boundaries
 
@@ -71,7 +72,7 @@ by Ookla of Speedtest Intelligence® data for [quarter]. Provided by Ookla and a
 [date]. Ookla trademarks used under license and reprinted with permission."
 Non-commercial use only.
 
-Each tile is a zoom-16 web-mercator quadkey (~600 m) with average download/upload (kbps),
+Each tile is a zoom-16 web-mercator quadkey (about 350–400 m across in the UK) with average download/upload (kbps),
 average latency, number of tests and unique devices for the quarter. There is **no
 time-of-day or weekday breakdown**, so congestion can only be inferred indirectly.
 
@@ -305,3 +306,89 @@ Systems" and "Three Horseshoes Inn" must not count):
 
 People with an operator confirmed by the register within 5 km: EE 51.3 m, Three 51.3 m
 (both via MBNL), Vodafone 44.0 m, O2 43.1 m.
+
+## Live sources (phase D)
+
+Fetched when a question is asked, not stored. Clients in `coverage_detective/sources/`
+(`live.py` does the fetching: 5 s timeout, one retry after 0.5 s, disk cache in
+`data/cache/live/`). Every result carries `source`, `url`, `fetched_at`, `status`
+(`live` / `cached` / `sample` / `not_covered` / `unavailable`), `data_period` and `as_of`.
+Samples for the three sample places (real responses, 25 Oct 2026, 47 KB in all) are in
+`data/samples/<source>/`, saved by `scripts/download/live_samples.py`; SAMPLE_MODE and the
+tests use them. A storm (Bolelo) was passing at the time, so the samples hold active
+warnings, which makes them useful test cases.
+
+### postcodes.io
+
+- URL: https://api.postcodes.io (`/postcodes/{pc}`, `/places?q=`, `/postcodes?lat=&lon=`).
+  No key. Cache 30 days. Sample files: `postcodes_io/lookup_*.json`, `reverse_*.json`.
+- Licence: postcodes.io is MIT-licensed software over open data: ONS Postcode Directory and
+  OS Open Names (OGL v3; contains OS data © Crown copyright and database right; Royal Mail
+  data © Royal Mail copyright and database right; National Statistics data © Crown copyright).
+- Processing: a full UK postcode → postcodes endpoint (404 = not found, answered cleanly);
+  anything else → places (OS Open Names), retrying with the longest word when nothing
+  matches (results flagged `approximate`; "Great Langdale" is not in the list). Reverse:
+  nearest postcode within 2 km, else postcodes.io's wide search (20 km). Each result gets
+  its H3 r7 `cell_id`.
+
+### Open-Meteo forecast
+
+- URL: https://api.open-meteo.com/v1/forecast with `current` and `hourly` = precipitation,
+  rain, snowfall, wind_speed_10m, wind_gusts_10m, weather_code; `forecast_hours=24`.
+  No key. Cache 30 min.
+- Licence: free for non-commercial use; data CC BY 4.0, attribution "Weather data by
+  Open-Meteo.com" (shown in the explorer footer). UK forecasts blend national models
+  including the Met Office UKV.
+- Processing: `current` precipitation covers the last 15 minutes and is scaled to mm/h; the
+  worst values in the next 24 hours are taken from the hourly forecast. Severity over now
+  and the next 24 h:
+
+  | Severity | Any of |
+  |---|---|
+  | severe | gusts ≥ 70 km/h, precipitation ≥ 8 mm/h, snowfall ≥ 1 cm/h, thunderstorm (WMO code 95–99) |
+  | moderate | gusts ≥ 50 km/h, precipitation ≥ 2 mm/h, any snowfall |
+  | none | otherwise |
+
+  Only `severe` can support the `weather` cause.
+- Zetaris: not registered. A Zetaris REST table can take per-query parameters
+  (`${lat}` in the endpoint, filled by the hint `/*+ apiParam('lat', '54.4') */`), but
+  creating the table calls the endpoint as written to infer its schema, and Open-Meteo's
+  firewall rejects a literal `${` with HTTP 403 (so does the EA gateway). A fixed-location
+  table would be no use for arbitrary points, so weather stays Python-only.
+
+### Met Office severe weather warnings
+
+- URL: https://www.metoffice.gov.uk/public/data/PWSCache/WarningsRSS/Region/{code} (public
+  RSS, not DataHub; no key). Cache 15 min.
+- Licence: © Crown copyright, Met Office; public sector information licensed under the
+  Open Government Licence v3.
+- Processing: the point's region comes from postcodes.io: the English region (`London` and
+  `South East` → `se`), the nation for Wales (`wl`) and Northern Ireland (`ni`), and the
+  council area for Scotland (`os`, `he`, `gr`, `st`, `ta`, `dg`; the full mapping is in
+  `met_office_warnings.py`). From each item: level and types from the title ("Amber warning
+  of rain, wind affecting …"), the listed local authorities and the validity ("valid from
+  2000 Sat 24 Oct to 2100 Sun 25 Oct", UK local time → UTC). Expired warnings are dropped;
+  `in_force` marks started ones. `district_listed` is true when the point's district,
+  county or police-force area (which keeps the old county name, e.g. Cumbria) is in the
+  list; a regional warning may not cover the point.
+
+### Environment Agency flood monitoring
+
+- URL: https://environment.data.gov.uk/flood-monitoring/id/floods?lat=&long=&dist=10.
+  No key. Cache 15 min. England only.
+- Licence: Open Government Licence v3; "This uses Environment Agency flood and river level
+  data from the real-time data API (Beta)".
+- Processing: keeps severity levels 1 (severe flood warning), 2 (flood warning) and 3
+  (flood alert); level 4 (no longer in force) is dropped. Outside England the answer is
+  `not_covered` with the message "not covered (England only for now)", never an empty
+  list. SEPA, Natural Resources Wales and DfI Rivers are not wired in yet.
+- Zetaris: registered as the live REST source `CD_LIVE_EA_FLOODS` (`register_ea_floods`),
+  with tables `floods` (`/id/floods`: every alert and warning in England now) and
+  `flood_areas` (`/id/floodAreas?_limit=10000`: each area's centre). Every query calls the
+  EA API; `flood_warnings.zetaris_sql()` explodes both, joins on the area id and keeps
+  areas whose centre is within 10 km (about 0.7 s). EA's own `dist` filter measures to
+  the area polygon, which the REST tables do not have, so the centre-based query misses
+  long river and coast areas (Great Langdale, 25 Oct 2026: the API found 2 alerts whose
+  centres are 11 and 13 km away; Zetaris found 0). So for a point the explorer and
+  `/api/live` use the API by default; the Zetaris path (`flood_via=zetaris`) suits
+  England-wide or regional queries, e.g. joining warnings in force to cells.

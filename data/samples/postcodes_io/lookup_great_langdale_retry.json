@@ -1,0 +1,56 @@
+{
+ "url": "https://api.postcodes.io/places?q=Langdale&limit=6",
+ "fetched_at": "2026-10-25T20:36:50+00:00",
+ "http_status": 200,
+ "body": {
+  "status": 200,
+  "result": [
+   {
+    "code": "osgb4000000074580250",
+    "name_1": "Little Langdale",
+    "name_1_lang": null,
+    "name_2": null,
+    "name_2_lang": null,
+    "local_type": "Village",
+    "outcode": "LA22",
+    "county_unitary": "Westmorland and Furness",
+    "county_unitary_type": "UnitaryAuthority",
+    "district_borough": null,
+    "district_borough_type": null,
+    "region": "North West",
+    "country": "England",
+    "longitude": -3.056068782612806,
+    "latitude": 54.42125964397825,
+    "eastings": 331573,
+    "northings": 503383,
+    "min_eastings": 331266,
+    "min_northings": 502940,
+    "max_eastings": 332341,
+    "max_northings": 503548
+   },
+   {
+    "code": "osgb4000000074556374",
+    "name_1": "Langdale End",
+    "name_1_lang": null,
+    "name_2": null,
+    "name_2_lang": null,
+    "local_type": "Other Settlement",
+    "outcode": "YO13",
+    "county_unitary": "North Yorkshire",
+    "county_unitary_type": "UnitaryAuthority",
+    "district_borough": null,
+    "district_borough_type": null,
+    "region": "Yorkshire and the Humber",
+    "country": "England",
+    "longitude": -0.5634152129156156,
+    "latitude": 54.30994986371055,
+    "eastings": 493564,
+    "northings": 491435,
+    "min_eastings": 493168,
+    "min_northings": 491090,
+    "max_eastings": 494110,
+    "max_northings": 491739
+   }
+  ]
+ }
+}

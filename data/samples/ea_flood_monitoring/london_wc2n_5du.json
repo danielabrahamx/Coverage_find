@@ -1,0 +1,116 @@
+{
+ "url": "https://environment.data.gov.uk/flood-monitoring/id/floods?lat=51.5072&long=-0.1283&dist=10",
+ "fetched_at": "2026-10-25T20:36:52+00:00",
+ "http_status": 200,
+ "body": {
+  "@context": "http://environment.data.gov.uk/flood-monitoring/meta/context.jsonld",
+  "meta": {
+   "publisher": "Environment Agency",
+   "licence": "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+   "documentation": "http://environment.data.gov.uk/flood-monitoring/doc/reference",
+   "version": "0.9",
+   "comment": "Status: Beta service",
+   "hasFormat": [
+    "http://environment.data.gov.uk/flood-monitoring/id/floods.csv?lat=51.5072&long=-0.1283&dist=10",
+    "http://environment.data.gov.uk/flood-monitoring/id/floods.rdf?lat=51.5072&long=-0.1283&dist=10",
+    "http://environment.data.gov.uk/flood-monitoring/id/floods.ttl?lat=51.5072&long=-0.1283&dist=10",
+    "http://environment.data.gov.uk/flood-monitoring/id/floods.html?lat=51.5072&long=-0.1283&dist=10"
+   ]
+  },
+  "items": [
+   {
+    "@id": "http://environment.data.gov.uk/flood-monitoring/id/floods/063WAT23West",
+    "description": "Tidal Thames riverside from Putney Bridge to Teddington Weir",
+    "eaAreaName": "Kent, South London and East Sussex",
+    "eaRegionName": "No longer used",
+    "floodArea": {
+     "@id": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/063WAT23West",
+     "county": "Greater London, Hammersmith and Fulham, Hounslow, Richmond upon Thames, Wandsworth",
+     "envelope": {
+      "lowerCorner": {
+       "lx": 515955,
+       "ly": 171213
+      },
+      "upperCorner": {
+       "ux": 524308.675621891,
+       "uy": 178353.125870647
+      }
+     },
+     "notation": "063WAT23West",
+     "polygon": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/063WAT23West/polygon",
+     "riverOrSea": "River Thames"
+    },
+    "floodAreaID": "063WAT23West",
+    "isTidal": true,
+    "message": "High tides overnight may lead to flooding. \nFlooding is possible from 11:30 PM to 3:30 AM on 26/10/2026. \nThe forecast high tide at Richmond is 4.75 mAOD at 1:30 AM on 26/10/2026.\n\nWe believe there is a possibility of flooding for Putney Embankment (SW15), Chiswick Mall and Strand on the Green (W4), Thames Bank at Mortlake (SW14), Ranelagh Drive (TW1), Friars Lane and Water Lane (TW9), Riverside and The Embankment at Twickenham, and the Towpath below Teddington Lock. Flooding of properties is not expected.\n\nAstronomical tide levels are rising. The river flow at Teddington Weir is 20 cubic metres per second and is steady. We anticipate the flows to remain steady over the next few days. \nWe are closely monitoring the situation . \nTake care and avoid walking, cycling or driving through flood water.   \nThis message will be updated by 10:00AM on Monday 26 October or as the situation changes.\n\n",
+    "severity": "Flood alert",
+    "severityLevel": 3,
+    "timeMessageChanged": "2026-10-25T17:41:00",
+    "timeRaised": "2026-10-25T17:41:11",
+    "timeSeverityChanged": "2026-10-25T17:41:00"
+   },
+   {
+    "@id": "http://environment.data.gov.uk/flood-monitoring/id/floods/063WAT23Central",
+    "description": "Tidal Thames riverside from the Thames Barrier to Putney Bridge",
+    "eaAreaName": "Kent, South London and East Sussex",
+    "eaRegionName": "No longer used",
+    "floodArea": {
+     "@id": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/063WAT23Central",
+     "county": "City of London, Greater London, Greenwich, Hammersmith and Fulham, Kensington and Chelsea, Lambeth, Lewisham, Newham, Southwark, Tower Hamlets, Wandsworth, Westminster",
+     "envelope": {
+      "lowerCorner": {
+       "lx": 524137.784079602,
+       "ly": 175234.549253731
+      },
+      "upperCorner": {
+       "ux": 541553.778606965,
+       "uy": 183477.478109453
+      }
+     },
+     "notation": "063WAT23Central",
+     "polygon": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/063WAT23Central/polygon",
+     "riverOrSea": "River Thames"
+    },
+    "floodAreaID": "063WAT23Central",
+    "isTidal": true,
+    "message": "High tides overnight may lead to flooding. \nFlooding is possible from 10:45 PM to 2:45 AM on 26/10/2026. \nThe forecast high tide at London Bridge is 4.50 mAOD at 00:45 AM on 26/10/2026.\n\nWe believe there is a possibility of flooding for Custom House (EC3R), Narrow Street (E14), Mayflower and Angel pubs (SE16), Royal Naval College riverfront, the Almshouse Slipway at Crane Street (SE10), Bankside by the Tate Modern (SE1), and Three Mill Island (E3). Flooding of properties is not expected.\n\nAstronomical tide levels are rising. The river flow at Teddington Weir is 20 cubic metres per second and is steady. We anticipate the flows to remain steady for the next few days. \nWe are closely monitoring the situation . \nTake care and avoid walking, cycling or driving through flood water.   \nThis message will be updated by 10:00AM on Monday 26 October or as the situation changes.\n\n",
+    "severity": "Flood alert",
+    "severityLevel": 3,
+    "timeMessageChanged": "2026-10-25T17:43:00",
+    "timeRaised": "2026-10-25T17:43:41",
+    "timeSeverityChanged": "2026-10-25T17:43:00"
+   },
+   {
+    "@id": "http://environment.data.gov.uk/flood-monitoring/id/floods/062WAF38BrentBks",
+    "description": "Silk Stream and the Deans, Edgware, Dollis, Mutton, Wembley and Wealdstone Brooks",
+    "eaAreaName": "Hertfordshire and North London",
+    "eaRegionName": "No longer used",
+    "floodArea": {
+     "@id": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/062WAF38BrentBks",
+     "county": "Barnet, Brent, Greater London, Harrow",
+     "envelope": {
+      "lowerCorner": {
+       "lx": 515334,
+       "ly": 184179
+      },
+      "upperCorner": {
+       "ux": 526969,
+       "uy": 195286
+      }
+     },
+     "notation": "062WAF38BrentBks",
+     "polygon": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/062WAF38BrentBks/polygon",
+     "riverOrSea": "Silk Stream;\r\nDollis Brook;\r\nDeans Brook;\r\nEdgware Brook;\r\nMutton Brook;\r\nWealdstone Brook;\r\nWembley Brook"
+    },
+    "floodAreaID": "062WAF38BrentBks",
+    "isTidal": false,
+    "message": "There is no longer a threat of flooding, though standing water and debris may still remain.\nWeather conditions are expected to improve. Further light rainfall is expected on Monday 26 October but no flooding is expected.\nWe will continue to monitor the situation and will issue further alerts or warnings if necessary.  \nContinue to take care on waterside roads and footpaths and don't put yourself in unnecessary danger.  \n",
+    "severity": "Warning no longer in force",
+    "severityLevel": 4,
+    "timeMessageChanged": "2026-10-25T08:53:00",
+    "timeRaised": "2026-10-25T08:53:42",
+    "timeSeverityChanged": "2026-10-25T08:53:00"
+   }
+  ]
+ }
+}

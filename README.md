@@ -63,7 +63,10 @@ Each dataset is its own Zetaris source (Lightning database), e.g. `CD_CELLS.cell
 | Ofcom Wireless Telegraphy Register | Operators' licensed microwave links: operators *confirmed* at sites, antenna heights | file | Ofcom copyright, free re-use | downloaded 25 Oct 2026 |
 | Ofcom Connected Nations | Predicted coverage by number of operators, per constituency / local authority; per operator by nation | file | OGL | July 2025 |
 | ONS constituencies, local authorities | Which area a cell is in | file | OGL v3.0 | July 2024; Dec 2024 |
-| postcodes.io, Open-Meteo, Met Office warnings, EA floods | Place lookup, weather, warnings, floods | REST, live (phase D) | see data/README.md | at question time |
+| postcodes.io | Postcode / place → location, district, region; nearest postcode to a point | REST, live (Python client) | OGL v3 data (ONS, OS, Royal Mail) | at question time |
+| Open-Meteo forecast | Weather now and next 24 h (rain, snow, wind, gusts) → severity | REST, live (Python client) | CC BY 4.0, non-commercial, attribution | at question time |
+| Met Office severe weather warnings (RSS) | Yellow / amber / red warnings for the point's region | RSS, live (Python client) | Crown copyright, OGL v3 | at question time |
+| Environment Agency flood monitoring | Flood alerts / warnings within 10 km (England only) | REST, live: Python client + Zetaris REST source `CD_LIVE_EA_FLOODS` | OGL v3 | at question time |
 
 Details, processing steps and exact licences: `data/README.md`.
 
@@ -102,10 +105,17 @@ scripts/zetaris/compose.sh up -d                        # Zetaris with our data 
 - Approximate mast sites appear from zoom 10 (coloured by source), Ookla tiles from zoom 12.
 - Click a cell: its details come from **one cross-source Zetaris query** (cells, Ookla and
   history, neighbours, masts, Ofcom area), shown under "Zetaris query used", with data dates.
+- "Right now" in the cell panel: live weather (with severity), Met Office warnings for the
+  region and EA flood warnings within 10 km ("not covered" outside England), each with its
+  source, status (live / cached / sample) and time. If everything is calm it says so.
 - Search a postcode or place (postcodes.io). Works on phones (the panel slides up).
 
 API: `GET /api/layers`, `/api/layer/{name}`, `/api/masts?bbox=`, `/api/tiles?bbox=`,
-`/api/cell/{cell_id}`, `/api/geocode?q=`, `/health` (OpenAPI docs at `/docs`).
+`/api/cell/{cell_id}`, `/api/geocode?q=`, `/api/geocode/reverse?lat=&lon=`,
+`/api/live?lat=&lon=` (add `&flood_via=zetaris` for the Zetaris path), `/health`
+(OpenAPI docs at `/docs`).
+
+![Right now panel, Great Langdale](docs/screenshots/great_langdale_right_now.png)
 Screenshots: `pip install playwright`, then `python scripts/screenshots.py` (pass
 `--chrome <path>` to use an installed Chromium) → `docs/screenshots/`.
 
@@ -117,7 +127,12 @@ Two kinds of data:
 
 - **Live, fetched when a question is asked:** postcode lookup (postcodes.io), weather
   (Open-Meteo), Met Office weather warnings and Environment Agency flood warnings. Their
-  evidence is stamped with the fetch time.
+  evidence is stamped with the fetch time. Clients (`coverage_detective/sources/`) use a
+  5 s timeout, one retry and a disk cache (`data/cache/live/`, gitignored; postcodes 30
+  days, weather 30 min, warnings and floods 15 min). If a call fails they use the cached
+  copy, else a saved sample (`data/samples/`), and say which. `SAMPLE_MODE=true` answers
+  from the samples only (offline, reproducible); refresh them with
+  `python scripts/download/live_samples.py`. Check: `python scripts/check_live.py`.
 - **Stored, refreshed periodically** and queried through Zetaris:
 
   | Source | Refreshed | How |

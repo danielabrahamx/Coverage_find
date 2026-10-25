@@ -10,6 +10,8 @@ Routes:
   GET /api/tiles?bbox=         Ookla tiles (latest quarter) in a small bbox
   GET /api/cell/{cell_id}      everything about one cell, via one Zetaris query
   GET /api/geocode?q=          postcode or place name (postcodes.io)
+  GET /api/geocode/reverse     nearest postcode to ?lat=&lon=
+  GET /api/live?lat=&lon=      live context: weather, Met Office warnings, EA flood warnings
   /                            the web app (web/)
 """
 
@@ -18,10 +20,10 @@ from __future__ import annotations
 import json
 import math
 import re
+from concurrent.futures import ThreadPoolExecutor
 from functools import lru_cache
 
 import h3
-import httpx
 import pandas as pd
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import FileResponse
@@ -30,13 +32,13 @@ from fastapi.staticfiles import StaticFiles
 from coverage_detective.config import H3_RES, PROCESSED, ROOT
 from coverage_detective.data import manifest
 from coverage_detective.data.zetaris import QUERY_LOG, ZetarisError, query
+from coverage_detective.sources import flood_warnings, geocode as geocoder, live as live_sources
+from coverage_detective.sources import met_office_warnings, weather
 
 LAYERS_DIR = ROOT / "data" / "web" / "layers"
 WEB_DIR = ROOT / "web"
-POSTCODES_IO = "https://api.postcodes.io"
 MAX_MASTS = 5000
 MAX_TILE_BBOX_DEG2 = 0.6  # tiles only when zoomed in
-POSTCODE_RE = re.compile(r"^[A-Za-z]{1,2}\d[A-Za-z\d]?\s*\d[A-Za-z]{2}$")
 
 app = FastAPI(title="Coverage Detective data explorer")
 
@@ -193,22 +195,6 @@ WHERE c.cell_id = '{cell_id}'"""
     return sql, tables
 
 
-def _place_name(lat: float, lon: float) -> str | None:
-    """Nearest postcode's parish / ward and district, best effort."""
-    try:
-        r = httpx.get(f"{POSTCODES_IO}/postcodes", params={"lat": lat, "lon": lon, "radius": 2000, "limit": 1}, timeout=4)
-        result = (r.json().get("result") or [None])[0]
-    except (httpx.HTTPError, ValueError):
-        return None
-    if not result:
-        return None
-    local = result.get("parish") or result.get("admin_ward")
-    if local and "unparished" in local.lower():
-        local = result.get("admin_ward")
-    parts = [p for p in (local, result.get("admin_district")) if p]
-    return ", ".join(dict.fromkeys(parts)) or None
-
-
 @app.get("/api/cell/{cell_id}")
 def cell(cell_id: str) -> dict:
     if not h3.is_valid_cell(cell_id) or h3.get_resolution(cell_id) != H3_RES:
@@ -223,7 +209,7 @@ def cell(cell_id: str) -> dict:
     data = rows[0]
     history = json.loads(data.pop("history_json") or "[]")
     data["history"] = sorted(history, key=lambda h: h["quarter"])
-    data["place"] = _place_name(data["lat"], data["lon"])
+    data["place"] = geocoder.place_name(geocoder.reverse(data["lat"], data["lon"]).data["nearest"])
     data["neighbours"] = sorted(h3.grid_ring(cell_id, 1))
     log = QUERY_LOG[-1]
     data_dates = {}
@@ -236,33 +222,47 @@ def cell(cell_id: str) -> dict:
             "data_dates": data_dates}
 
 
-def _places(q: str) -> list[dict]:
-    r = httpx.get(f"{POSTCODES_IO}/places", params={"q": q, "limit": 6}, timeout=5)
-    return [{"label": p["name_1"], "detail": p.get("county_unitary") or p.get("region"),
-             "lat": p["latitude"], "lon": p["longitude"]} for p in (r.json().get("result") or [])]
-
-
 @app.get("/api/geocode")
 def geocode(q: str = Query(..., min_length=2)) -> dict:
-    q = q.strip()
-    try:
-        if POSTCODE_RE.match(q):
-            r = httpx.get(f"{POSTCODES_IO}/postcodes/{q.replace(' ', '')}", timeout=5)
-            res = r.json().get("result")
-            results = [{"label": res["postcode"], "detail": res.get("admin_district"),
-                        "lat": res["latitude"], "lon": res["longitude"]}] if res else []
-        else:
-            results = _places(q)
-            words = [w for w in re.split(r"\s+", q) if len(w) > 3]
-            if not results and len(words) > 1:
-                # postcodes.io's place list misses some names (e.g. "Great Langdale"); retry
-                # with the most distinctive word and mark the matches as approximate.
-                results = [{**p, "approximate": True} for p in _places(max(words, key=len))]
-    except (httpx.HTTPError, ValueError, KeyError) as e:
-        raise HTTPException(502, f"postcodes.io lookup failed: {e}") from e
-    for item in results:
-        item["cell_id"] = h3.latlng_to_cell(item["lat"], item["lon"], H3_RES)
-    return {"query": q, "results": results}
+    res = geocoder.lookup(q)
+    if res.status == "unavailable":
+        raise HTTPException(502, f"postcodes.io lookup failed: {res.error}")
+    return {**res.data, "source": res.to_dict()}
+
+
+@app.get("/api/geocode/reverse")
+def geocode_reverse(lat: float = Query(..., ge=-90, le=90), lon: float = Query(..., ge=-180, le=180)) -> dict:
+    res = geocoder.reverse(lat, lon)
+    if res.status == "unavailable":
+        raise HTTPException(502, f"postcodes.io lookup failed: {res.error}")
+    return {**res.data, "place": geocoder.place_name(res.data["nearest"]), "source": res.to_dict()}
+
+
+def live_context(lat: float, lon: float, flood_via: str = "api") -> dict:
+    """Weather, Met Office warnings and EA flood warnings for a point, fetched in parallel."""
+    place_res = geocoder.reverse(lat, lon)
+    place = place_res.data.get("nearest")
+    with ThreadPoolExecutor(max_workers=3) as pool:
+        w = pool.submit(weather.forecast, lat, lon)
+        m = pool.submit(met_office_warnings.for_place, place, lat, lon)
+        f = pool.submit(flood_warnings.near, lat, lon, place and place.get("country"), flood_via)
+        w, m, f = w.result(), m.result(), f.result()
+    calm = (w.data.get("severity") == "none" and m.data.get("count") == 0 and f.data.get("count") in (0, None)
+            and "unavailable" not in (w.status, m.status, f.status))
+    return {
+        "lat": lat, "lon": lon, "cell_id": h3.latlng_to_cell(lat, lon, H3_RES),
+        "place": {"name": geocoder.place_name(place), "postcode": place and place.get("postcode"),
+                  "distance_m": place_res.data.get("distance_m"), "country": place and place.get("country"),
+                  "source": place_res.to_dict()},
+        "weather": w.to_dict(), "met_office_warnings": m.to_dict(), "flood_warnings": f.to_dict(),
+        "all_calm": calm, "sample_mode": live_sources.sample_mode(), "fetched_at": live_sources.now_iso(),
+    }
+
+
+@app.get("/api/live")
+def live(lat: float = Query(..., ge=49, le=61.5), lon: float = Query(..., ge=-9, le=2.5),
+         flood_via: str = Query("api", pattern="^(api|zetaris)$")) -> dict:
+    return live_context(lat, lon, flood_via)
 
 
 if WEB_DIR.exists():

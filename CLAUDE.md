@@ -97,7 +97,8 @@ Limitations (state them in outputs):
 coverage_detective/   package
   config.py           paths (data/raw, data/processed, data/samples), .env loading, H3_RES=7
   data/               processed-data helpers (grid.py: H3 cells + population), Zetaris client
-  sources/            external sources (Ookla, OpenCelliD, DEM, Ofcom, geocode, weather, floods)
+  sources/            external sources (Ookla, OpenCelliD, Ofcom, WTR; live: geocode, weather,
+                      met_office_warnings, flood_warnings via live.py)
   api/                FastAPI: app.py = data explorer API (+ evidence API later)
 scripts/download/     fetch raw data into data/raw/<source>/ (skip files that exist)
 scripts/process/      build data/processed/*.parquet from raw data
@@ -129,6 +130,12 @@ data/reference/       small reference tables (committed), e.g. mcc_mnc_uk.csv
   `scripts/zetaris/register_sources.py` (one function per source; drop + recreate).
   No `IF EXISTS`; descriptions allow only letters, digits, spaces and `_ . - ,`;
   `SHOW DATABASES` is disabled (use `SHOW TABLES IN <db>`).
+- REST sources: `CREATE LIGHTNING REST TABLE t FROM DB REQUEST(endpoint "...", method "GET",
+  http_encoding "URLENCODED", response_type "JSON", insecure_ssl "false") HEADER() BODY()`; each
+  query calls the endpoint and the JSON becomes one row (explode arrays in SQL). `${name}` in
+  the endpoint is filled per query by `/*+ apiParam('name', 'value') */`, but CREATE calls the
+  endpoint literally to infer the schema, and Open-Meteo / EA gateways 403 a literal `${`. So
+  only unparameterised feeds work: `CD_LIVE_EA_FLOODS` (floods + flood_areas).
 - After a Docker upgrade, containers on the old network could not reach each other; the
   fix was `sudo aa-remove-unknown`, then `docker compose down` (no `-v`) and `up -d`.
 
@@ -153,6 +160,8 @@ scripts/zetaris/compose.sh up -d driver           # Zetaris with our data mount
 .venv/bin/python scripts/zetaris/register_sources.py
 .venv/bin/python scripts/check_data.py             # checks through Zetaris
 .venv/bin/python scripts/refresh.py --check-only    # which stored sources are due a refresh
+.venv/bin/python scripts/download/live_samples.py   # Phase D: save live responses for the sample places
+.venv/bin/python scripts/check_live.py              # /api/live for the sample places, live then SAMPLE_MODE
 .venv/bin/python scripts/process/build_web_layers.py # map layers for the explorer
 .venv/bin/python run.py                            # data explorer on http://localhost:8000
 .venv/bin/python -m pytest -q
@@ -179,6 +188,12 @@ G power cuts (if time) · H visitor load (if time) · final check_data.py.
   operator). Columns g4_geo_out_0..4 etc. = % with coverage from exactly N operators.
 - Freshness: data/manifest.json (written by every build), scripts/refresh.py, evidence_meta().
 - Data explorer: run.py + web/; /api/cell/{id} is one Zetaris query. Rebuild layers after data changes.
+- D. Live sources: done. sources/live.py (5 s timeout, one retry, disk cache data/cache/live/,
+  fallback cached → sample) + geocode.py (postcodes.io), weather.py (Open-Meteo; severity
+  none/moderate/severe, only severe supports the `weather` cause), met_office_warnings.py
+  (public RSS by region), flood_warnings.py (EA; "not_covered" outside England, never an
+  empty list). /api/live, /api/geocode, /api/geocode/reverse; explorer "Right now" section.
+  Samples: data/samples/ (scripts/download/live_samples.py); check: scripts/check_live.py.
 
 - Earlier: grid (`cells_r7`) and Ookla (2026Q3 + 3 previous quarters) built; Ofcom API stub.
 - Order agreed 25 Oct: B → E → D → C → F → final check; G/H only if time.

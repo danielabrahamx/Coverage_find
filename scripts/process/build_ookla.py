@@ -7,7 +7,7 @@ Writes to data/processed/:
   ookla_mobile_r7.parquet          latest quarter per cell, tests/devices per 1,000 people,
                                    and the trend over all downloaded quarters
   ookla_mobile_history_r7.parquet  one row per (cell, quarter)
-  ookla_mobile_tiles.parquet       UK tiles (~600 m) for every quarter, with their r7 cell
+  ookla_mobile_tiles.parquet       UK tiles (~350-400 m) for every quarter, with their r7 cell
   ookla_meta.json                  quarters used
 """
 

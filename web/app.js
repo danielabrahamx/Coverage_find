@@ -221,7 +221,7 @@ function onHover(info) {
       (m.radio_types ? `<br>Radio: ${esc(m.radio_types)}` : "") + (m.osm_operator ? `<br>OSM operator tag: ${esc(m.osm_operator)}` : "");
   } else if (info.layer.id === "tiles") {
     const t = info.object;
-    html = `<strong>Ookla tile</strong> (~600 m)<br>${fmt(t.download_mbps, 1)} Mbps down · ${fmt(t.upload_mbps, 1)} up<br>${t.tests} tests · ${t.devices} devices`;
+    html = `<strong>Ookla tile</strong> (~350–400 m)<br>${fmt(t.download_mbps, 1)} Mbps down · ${fmt(t.upload_mbps, 1)} up<br>${t.tests} tests · ${t.devices} devices`;
   }
   tip.innerHTML = html;
   tip.style.left = `${info.x}px`;
@@ -302,6 +302,7 @@ function panelHTML(res) {
     <h2>${esc(c.place || c.laua_name || "Selected cell")}</h2>
     <p class="sub">${esc(c.nation)} · ${esc(c.pcon_name || "")} · <span class="mono">${esc(c.cell_id)}</span></p>
     <dl class="kv"><dt>People in this cell</dt><dd>${fmt(c.population, 0)}</dd></dl>
+    <section id="right-now"><h3>Right now</h3><p class="loading small">Checking live sources…</p></section>
     <section><h3>Measured speed</h3>${speed}${weak}${nb}</section>
     <section><h3>Trend</h3>${trend}${sparkline(c.history)}</section>
     <section><h3>Nearest mast site</h3>${mast}</section>
@@ -320,6 +321,72 @@ function panelHTML(res) {
     <p class="diagnose-note">Agents coming next</p>`;
 }
 
+/* ---------- "Right now": live weather, Met Office warnings, EA flood warnings ---------- */
+
+const LIVE_SOURCE_NAMES = {
+  open_meteo: "Open-Meteo", met_office_warnings: "Met Office", ea_flood_monitoring: "Environment Agency",
+};
+
+function timeLabel(iso) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  return Number.isNaN(+d) ? iso : d.toLocaleString("en-GB", { weekday: "short", hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" });
+}
+
+function sourceLine(s) {
+  const how = { live: "live", cached: "cached copy (live call failed)", sample: "saved sample (offline mode)",
+    not_covered: "not covered", unavailable: "unavailable" }[s.status] || s.status;
+  const when = s.fetched_at ? ` · ${timeLabel(s.fetched_at)}` : "";
+  return `<p class="footnote">${esc(LIVE_SOURCE_NAMES[s.source] || s.source)} · ${esc(how)}${when}</p>`;
+}
+
+function rightNowHTML(L) {
+  const w = L.weather, m = L.met_office_warnings, f = L.flood_warnings;
+  const parts = [];
+  if (L.all_calm) parts.push(`<p class="calm">All calm: no severe weather expected in the next 24 h, no Met Office warnings and no flood warnings nearby.</p>`);
+
+  if (w.status === "unavailable") parts.push(`<p class="muted">Weather unavailable.</p>`);
+  else {
+    const d = w.data, n = d.now, x = d.next_24h;
+    parts.push(`<div class="live-row"><span class="sev sev-${esc(d.severity)}">${esc(d.severity === "none" ? "calm" : d.severity)}</span>
+      <strong>Weather:</strong> ${esc(n.weather)}, wind ${fmt(n.wind_kmh, 0)} km/h, gusts ${fmt(n.gust_kmh, 0)} km/h, rain ${fmt(n.precipitation_mm_h, 1)} mm/h</div>
+      <p class="status">Next 24 h: gusts up to <strong>${fmt(x.max_gust_kmh, 0)} km/h</strong> (${esc(timeLabel(x.max_gust_at))}),
+      rain up to <strong>${fmt(x.max_precipitation_mm_h, 1)} mm/h</strong>, ${fmt(x.total_precipitation_mm, 1)} mm in total${x.thunderstorm_expected ? ", thunderstorms possible" : ""}.</p>
+      ${d.reasons.length ? `<p class="footnote">${esc(d.severity)}: ${esc(d.reasons.join("; "))}</p>` : ""}${sourceLine(w)}`);
+  }
+
+  if (m.status === "unavailable") parts.push(`<p class="muted">Met Office warnings unavailable: ${esc(m.error || "")}</p>${sourceLine(m)}`);
+  else {
+    const ws = m.data.warnings || [];
+    parts.push(`<div class="live-row"><strong>Met Office warnings</strong> (${esc(m.data.region)}): ${ws.length ? "" : "none in force"}</div>
+      ${ws.map((x) => `<p class="warning warn-${esc(x.level)}"><strong>${esc(x.level[0].toUpperCase() + x.level.slice(1))} · ${esc(x.types.join(", "))}</strong>
+        ${x.in_force ? "in force" : "from " + esc(timeLabel(x.valid_from))} until ${esc(timeLabel(x.valid_to))}
+        <span class="footnote">${x.district_listed ? "Covers this district." : "Elsewhere in the region: " + esc(x.areas.slice(0, 4).join(", ")) + (x.areas.length > 4 ? "…" : "")}</span></p>`).join("")}
+      ${sourceLine(m)}`);
+  }
+
+  if (f.status === "not_covered") parts.push(`<div class="live-row"><strong>Flood warnings:</strong> ${esc(f.data.message)}</div>`);
+  else if (f.status === "unavailable") parts.push(`<p class="muted">Flood warnings unavailable.</p>${sourceLine(f)}`);
+  else {
+    const fs = f.data.warnings || [];
+    parts.push(`<div class="live-row"><strong>Flood warnings</strong> within ${f.data.radius_km} km: ${fs.length ? "" : "none"}</div>
+      ${fs.map((x) => `<p class="warning flood-${x.severity_level}"><strong>${esc(x.severity)}</strong> · ${esc(x.area)}
+        <span class="footnote">Raised ${esc(timeLabel(x.time_raised))}</span></p>`).join("")}${sourceLine(f)}`);
+  }
+  return `<h3>Right now</h3>${parts.join("")}`;
+}
+
+async function loadRightNow(cellId) {
+  const [lat, lon] = h3.cellToLatLng(cellId);
+  const box = () => (state.selected === cellId ? $("right-now") : null);
+  try {
+    const L = await getJSON(`/api/live?lat=${lat.toFixed(5)}&lon=${lon.toFixed(5)}`);
+    if (box()) box().innerHTML = rightNowHTML(L);
+  } catch (e) {
+    if (box()) box().innerHTML = `<h3>Right now</h3><p class="error">Live sources failed: ${esc(e.message)}</p>`;
+  }
+}
+
 async function selectCell(cellId) {
   state.selected = cellId;
   render();
@@ -328,7 +395,7 @@ async function selectCell(cellId) {
   $("panel-body").innerHTML = `<p class="loading">Querying Zetaris…</p>`;
   try {
     const res = await getJSON(`/api/cell/${cellId}`);
-    if (state.selected === cellId) $("panel-body").innerHTML = panelHTML(res);
+    if (state.selected === cellId) { $("panel-body").innerHTML = panelHTML(res); loadRightNow(cellId); }
   } catch (e) {
     $("panel-body").innerHTML = `<p class="error">Could not load this cell: ${esc(e.message)}</p>`;
   }
@@ -352,7 +419,7 @@ $("search").addEventListener("submit", async (ev) => {
   try {
     const { results } = await getJSON(`/api/geocode?q=${encodeURIComponent(q)}`);
     if (!results.length) { list.innerHTML = `<li class="empty">No match. Try a postcode.</li>`; return; }
-    list.innerHTML = results.map((r, i) => `<li tabindex="0" data-i="${i}">${esc(r.label)}${r.approximate ? " (approximate match)" : ""}<div class="detail">${esc(r.detail || "")}</div></li>`).join("");
+    list.innerHTML = results.map((r, i) => `<li tabindex="0" data-i="${i}">${esc(r.label)}${r.approximate ? " (approximate match)" : ""}<div class="detail">${esc([r.postcode ? r.admin_district : r.local_type, r.postcode ? r.country : r.admin_district].filter(Boolean).join(" · "))}</div></li>`).join("");
     list.querySelectorAll("li[data-i]").forEach((li) => {
       const go = () => { const r = results[+li.dataset.i]; list.hidden = true; flyTo(r); };
       li.addEventListener("click", go);
