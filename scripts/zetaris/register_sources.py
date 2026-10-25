@@ -92,6 +92,23 @@ def register_masts_cells() -> None:
     )
 
 
+def register_ofcom_area() -> None:
+    _register(
+        "CD_OFCOM_AREA", "ofcom_area_r7", "ofcom_area_r7.parquet",
+        "Per H3 r7 cell: Westminster constituency and local authority, and the constituency's predicted "
+        "4G and 5G coverage by number of operators. Ofcom Connected Nations, July 2025, Open Government Licence. "
+        "Area-level context, not coverage at the exact location.",
+    )
+
+
+def register_ofcom_nations() -> None:
+    _register(
+        "CD_OFCOM_NATIONS", "ofcom_nations", "ofcom_nations.parquet",
+        "Predicted 4G and 5G coverage per operator, by UK nation and urban or rural. "
+        "Ofcom Connected Nations, July 2025, Open Government Licence.",
+    )
+
+
 SOURCES = {
     "cells": register_cells,
     "ookla_mobile": register_ookla_mobile,
@@ -99,6 +116,8 @@ SOURCES = {
     "ookla_mobile_tiles": register_ookla_mobile_tiles,
     "masts_sites": register_masts_sites,
     "masts_cells": register_masts_cells,
+    "ofcom_area": register_ofcom_area,
+    "ofcom_nations": register_ofcom_nations,
 }
 
 

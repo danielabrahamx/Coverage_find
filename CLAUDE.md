@@ -56,7 +56,9 @@ evidence than "no masts found".
 Ofcom: the postcode-level API is not available to us (`sources/ofcom_api.py` is a stub that
 returns None; None means "no Ofcom data", not "no coverage"). Ofcom Connected Nations area
 data (July 2025, constituency / local authority; phase E) is regional context only, never
-coverage at the exact location. The Advisor's resident
+coverage at the exact location. Wording: "In <area>, X% of land has no outdoor 4G from any
+operator and Y% from only one (Ofcom Connected Nations, July 2025)" (X = g4_geo_out_0,
+Y = g4_geo_out_1). The Advisor's resident
 actions must include "Check your address on Ofcom's mobile coverage checker"
 (https://www.ofcom.org.uk/mobile-coverage-checker).
 
@@ -129,6 +131,8 @@ cp .env.example .env                      # then fill in
 .venv/bin/python scripts/download/osm.py           # Geofabrik GB + Ireland (~2.6 GB)
 .venv/bin/python scripts/process/build_masts.py    # -> masts_sites.parquet, masts_r7.parquet
 .venv/bin/python scripts/download/dem.py           # Copernicus GLO-30 tiles (~1.4 GB), for phase C
+.venv/bin/python scripts/download/ons_boundaries.py # constituencies 2024 + local authorities Dec 2024
+.venv/bin/python scripts/process/build_ofcom.py    # -> ofcom_area_r7.parquet, ofcom_nations.parquet
 scripts/zetaris/compose.sh up -d driver           # Zetaris with our data mount
 .venv/bin/python scripts/zetaris/register_sources.py
 .venv/bin/python scripts/check_data.py             # checks through Zetaris
@@ -150,6 +154,8 @@ G power cuts (if time) · H visitor load (if time) · final check_data.py.
 - B. Masts: done (OpenCelliD + OSM merged; CD_MASTS_SITES, CD_MASTS). OpenCelliD's free file
   is incomplete in places (e.g. none within 5 km of Rhayader), so treat "no masts" as weak.
   DEM for phase C already downloaded (data/raw/dem/, Copernicus GLO-30, 93 tiles).
+- E. Ofcom regional: done (CD_OFCOM_AREA per cell = constituency figures; CD_OFCOM_NATIONS per
+  operator). Columns g4_geo_out_0..4 etc. = % with coverage from exactly N operators.
 
 - Earlier: grid (`cells_r7`) and Ookla (2026Q3 + 3 previous quarters) built; Ofcom API stub.
 - Order agreed 25 Oct: B → E → D → C → F → final check; G/H only if time.

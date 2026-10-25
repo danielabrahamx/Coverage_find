@@ -62,6 +62,8 @@ Each dataset is its own Zetaris source (Lightning database), e.g. `CD_CELLS.cell
 .venv/bin/python scripts/download/osm.py           # OpenStreetMap GB + Ireland extracts (~2.6 GB)
 .venv/bin/python scripts/process/build_masts.py   # mast sites + nearest mast / operators per cell
 .venv/bin/python scripts/download/dem.py           # Copernicus DEM GLO-30 tiles (~1.4 GB)
+.venv/bin/python scripts/download/ons_boundaries.py # ONS constituency + local authority boundaries
+.venv/bin/python scripts/process/build_ofcom.py    # Ofcom July 2025 area coverage per cell (zip in data/raw/ofcom/)
 ```
 
 Every script can be re-run safely; pass `--force` to rebuild an existing output.

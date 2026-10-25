@@ -76,9 +76,30 @@ def check_phase_b() -> None:
                        "distinct_operators_within_5km", "operators_within_5km", "operator_data_status"]))
 
 
+def check_phase_e() -> None:
+    print("\nPhase E: Ofcom area coverage for the sample locations (CD_OFCOM_AREA, via Zetaris)")
+    ids = {h3.latlng_to_cell(lat, lon, H3_RES): name for name, lat, lon in SAMPLE_LOCATIONS}
+    in_list = ", ".join(f"'{c}'" for c in ids)
+    rows = query(f"""
+        SELECT cell_id, pcon_name, laua_name, g4_geo_out_0, g4_geo_out_1, g4_prem_in_0,
+               g4_abrd_in_0, g5hc_prem_out_at_least_one, data_date
+        FROM CD_OFCOM_AREA.ofcom_area_r7 WHERE cell_id IN ({in_list})""")
+    for r in rows:
+        r["place"] = ids[r["cell_id"]]
+    print(table(rows, ["place", "pcon_name", "laua_name", "g4_geo_out_0", "g4_geo_out_1", "g4_prem_in_0",
+                       "g4_abrd_in_0", "g5hc_prem_out_at_least_one", "data_date"]))
+    rows = query("""
+        SELECT location, operator, coverage_pct FROM CD_OFCOM_NATIONS.ofcom_nations
+        WHERE technology = '4G' AND coverage_type = 'Geographic' AND rurality = 'Rural'
+          AND operator IN ('EE', 'O2', 'Three', 'Vodafone') AND location <> 'UK'""")
+    print("4G geographic coverage, rural, by operator (%):")
+    print(pd.DataFrame(rows).pivot(index="location", columns="operator", values="coverage_pct").to_string())
+
+
 def main() -> None:
     check_phase_a()
     check_phase_b()
+    check_phase_e()
 
 
 if __name__ == "__main__":

@@ -10,6 +10,9 @@ Raw files live in `data/raw/` and built files in `data/processed/`; both are git
 | Ookla open data, mobile | 2025Q4–2026Q3 (latest: 2026Q3) | CC BY-NC-SA 4.0 | `raw/ookla/<quarter>_mobile_tiles_uk.parquet` | `ookla_mobile_r7.parquet`, `ookla_mobile_history_r7.parquet`, `ookla_mobile_tiles.parquet` |
 | OpenCelliD cell towers | downloaded 25 Oct 2026 (cells updated Apr 2025 – Oct 2026) | CC BY-SA 4.0 | `raw/opencellid/234.csv.gz` | `masts_sites.parquet`, `masts_r7.parquet` |
 | OpenStreetMap (Geofabrik extracts) | downloaded 25 Oct 2026 | ODbL 1.0 | `raw/osm/great-britain-latest.osm.pbf`, `ireland-and-northern-ireland-latest.osm.pbf` | `osm_masts.parquet`, `masts_sites.parquet`, `masts_r7.parquet` |
+| Ofcom Connected Nations 2025, mobile coverage | reference date 1 July 2025 (release `202507_mobile_coverage_r01`) | Open Government Licence | `raw/ofcom/202507_mobile_coverage_r01.zip` | `ofcom_area_r7.parquet`, `ofcom_nations.parquet` |
+| ONS Westminster Parliamentary Constituencies | July 2024, UK BGC | Open Government Licence v3.0 | `raw/boundary/pcon_2024.geojson` | `ofcom_area_r7.parquet` |
+| ONS Local Authority Districts | December 2024, UK BGC | Open Government Licence v3.0 | `raw/boundary/lad_2024.geojson` | `ofcom_area_r7.parquet` |
 | UK network codes (Wikipedia) | revision 1378731553, 5 Oct 2026 | CC BY-SA 4.0 | — | `reference/mcc_mnc_uk.csv` (committed) |
 
 ## Zetaris sources
@@ -26,6 +29,8 @@ one table) by `scripts/zetaris/register_sources.py`, read from the read-only mou
 | `CD_OOKLA_MOBILE_TILES` | `ookla_mobile_tiles` | `ookla_mobile_tiles.parquet` | 420,260 |
 | `CD_MASTS_SITES` | `masts_sites` | `masts_sites.parquet` | 88,931 |
 | `CD_MASTS` | `masts_r7` | `masts_r7.parquet` | 56,592 |
+| `CD_OFCOM_AREA` | `ofcom_area_r7` | `ofcom_area_r7.parquet` | 56,592 |
+| `CD_OFCOM_NATIONS` | `ofcom_nations` | `ofcom_nations.parquet` | 1,035 |
 
 ## ONS Countries boundaries
 
@@ -169,3 +174,51 @@ Brand is empty), e.g. `EE`, `O2 (UK)`, `Vodafone UK`, `3`. Networks have merged 
 years: EE absorbed T-Mobile and Orange (codes 30–34 are all EE), and Vodafone UK and Three
 UK merged as VodafoneThree in 2025 but keep separate codes (15 and 20). So one current
 company can appear under several labels, and labels are not current company names.
+
+## Ofcom Connected Nations 2025: mobile coverage
+
+Ofcom, *Connected Nations 2025* data downloads, mobile coverage, release
+`202507_mobile_coverage_r01` (reference date **1 July 2025**). Provided by Ofcom "on an
+open basis via the Open Government Licence"
+([OGL v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/));
+attribute as "Source: Ofcom, Connected Nations 2025". Definitions are from Ofcom's
+[About this data: mobile coverage (2025)](https://www.ofcom.org.uk/siteassets/resources/documents/research-and-data/multi-sector/infrastructure-research/connected-nations-2025/about-this-data---mobile-coverage.pdf?v=407846)
+(copy in `raw/ofcom/about-this-data-mobile-coverage-2025.pdf`).
+
+This is **predicted** coverage from the four operators' signal-strength models (4G:
+RSRP −105 dBm outdoor, −95 dBm indoor and in-car; 5G high confidence: SS-RSRP −110 dBm
+outdoor), summarised per area. It is never coverage at an exact location.
+
+Files in the zip: `_laua_` (361 local and unitary authorities), `_pcon_` (650 Westminster
+constituencies), `_devcon_` (devolved constituencies), `_4G5G_` (combined 4G+5G at −105/−95
+dBm, "at least one" / "all"), `_UK_and_nations_` (per operator: EE, O2, Three, Vodafone,
+plus All / At least one / None, by nation and Urban / Rural / Total).
+
+**Columns** `[Service]_[Coverage type]_[N]`: the percentage of premises (`prem_out`,
+`prem_in`), land as 100 m pixels (`geo_out`), or road pixels (`abrd_in` A and B roads,
+`mway_in` motorways, in-car) with coverage for that service from **exactly N** operators,
+N = 0–4 (0–3 for 2G). Confirmed: each group of five sums to 100 (99.99–100.01). A blank
+value is 0 when the rest of its group has values; a group that is entirely blank means
+not applicable (e.g. no motorways in the area) and stays null.
+
+**Processing** (`scripts/process/build_ofcom.py`, `coverage_detective/sources/ofcom.py`):
+1. Boundaries (`scripts/download/ons_boundaries.py`, ONS Open Geography Portal, BGC =
+   generalised, clipped to the coastline): Westminster Parliamentary Constituencies July
+   2024, and Local Authority Districts December 2024 (May 2025 is published only as map
+   tiles; there were no boundary changes between them). Codes checked against the Ofcom
+   release: all 650 constituency and all 361 local authority codes match exactly.
+2. Each cell centre is placed in its constituency and local authority (point in polygon in
+   British National Grid); 3,421 coastal cells whose centre is offshore take the nearest area.
+3. `ofcom_area_r7.parquet`, per cell: laua_code / laua_name, pcon_code / pcon_name,
+   ofcom_area_level (`pcon`: every cell has constituency data, so the local-authority
+   fallback is not needed), the constituency's pcon_prem_count / pcon_pixel_count and, for
+   the families 4G premises outdoor / indoor, 4G geographic, 4G A/B roads, 4G motorways,
+   5G high-confidence premises and geographic: `g4_prem_out_0..4`, `g4_prem_in_0..4`,
+   `g4_geo_out_0..4`, `g4_abrd_in_0..4`, `g4_mway_in_0..4`, `g5hc_prem_out_0..4`,
+   `g5hc_geo_out_0..4`, each with `_at_least_one` (= 100 − `_0`); plus the local
+   authority's `laua_g4_geo_out_0` / `_1`; data_date `2025-07`.
+4. `ofcom_nations.parquet`: the `_UK_and_nations_` file with tidy column names (location,
+   technology, coverage_type, rurality, operator, coverage_pct, coverage_volume, date).
+
+**Evidence wording**: "In <area>, X% of land has no outdoor 4G from any operator and Y% from
+only one (Ofcom Connected Nations, July 2025)", with X = `g4_geo_out_0`, Y = `g4_geo_out_1`.
