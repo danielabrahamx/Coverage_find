@@ -36,9 +36,9 @@ breakdown, so congestion can only be inferred): speeds are low although coverage
 nearby masts look adequate. Evidence: speeds declining over the last 3–4 quarters, high
 tests/devices per head (e.g. visitor areas), masts nearby with no terrain block.
 
-**single_operator** comes from OpenCelliD (not Ofcom): word findings as "only N operators
-have masts within 5 km", never "only N operators cover this area", and lower confidence
-when masts_within_5km is small.
+**single_operator** comes from the mast sites (OpenCelliD / OSM / Ofcom register), not Ofcom
+coverage: word findings as "only N operators have approximate mast sites within 5 km", never
+"only N operators cover this area", and lower confidence when few sites are found.
 
 Evidence strength: OpenCelliD is crowd-sourced and incomplete, so "masts found" is stronger
 evidence than "no masts found".
@@ -96,23 +96,38 @@ Limitations (state them in outputs):
 ## Layout
 
 ```
-coverage_detective/   package
-  config.py           paths (data/raw, data/processed, data/samples), .env loading, H3_RES=7
-  data/               processed-data helpers (grid.py: H3 cells + population), Zetaris client
-  sources/            external sources (Ookla, OpenCelliD, Ofcom, WTR; live: geocode, weather,
-                      met_office_warnings, flood_warnings via live.py)
-  api/                FastAPI: app.py = data explorer API + POST /api/evidence
-  evidence.py         evidence bundle for a point (Zetaris queries, line of sight, live sources)
-scripts/download/     fetch raw data into data/raw/<source>/ (skip files that exist)
-scripts/process/      build data/processed/*.parquet from raw data
-scripts/zetaris/      register processed files as Zetaris sources
-tests/                pytest
-web/                  data explorer (index.html, app.js, style.css; MapLibre 5.24 + deck.gl 9.4 + h3-js 4.5, no build)
-run.py                start the explorer on :8000 (checks Zetaris)
-data/raw/             raw inputs and downloads (gitignored)
-data/processed/       built Parquet files (gitignored)
-data/samples/         small cached API responses for SAMPLE_MODE (committed)
-data/reference/       small reference tables (committed), e.g. mcc_mnc_uk.csv
+coverage_detective/     package
+  config.py             paths, .env loading, H3_RES=7, UK_BBOX, SAMPLE_LOCATIONS, sample_mode()
+  evidence.py           evidence bundle for a point (Zetaris queries, line of sight, live sources)
+  data/
+    grid.py             H3 r7 cells over the UK + WorldPop population
+    masts.py            merge OpenCelliD / OSM / Ofcom register sites; per-cell mast stats
+    terrain.py          Copernicus DEM reader + line_of_sight()
+    queries.py          cell_sql(): the cross-source cell query (explorer + evidence)
+    manifest.py         data/manifest.json: data periods, refresh cadence, evidence_meta()
+    zetaris.py          Zetaris client (query / execute, token refresh, query log)
+  sources/
+    ookla.py, opencellid.py, osm_masts.py, ofcom.py, ofcom_wtr.py     stored sources
+    live.py             shared live fetching (timeout, retry, cache, sample fallback)
+    geocode.py, weather.py, met_office_warnings.py, flood_warnings.py live sources
+    ofcom_api.py        stub (Ofcom postcode API not available; returns None)
+  api/app.py            FastAPI: explorer API + /api/live + /api/los + POST /api/evidence
+scripts/download/       fetch raw data into data/raw/<source>/ (skip files that exist)
+scripts/process/        build data/processed/*.parquet (+ build_web_layers.py for the map)
+scripts/zetaris/        compose.sh (data mount), register_sources.py (one function per source)
+scripts/check_*.py      check_data (A, B, E), check_live (D), check_terrain (C), check_evidence
+scripts/refresh.py      refresh stored sources on their cadence
+scripts/screenshots.py  Playwright screenshots -> docs/screenshots/
+tests/                  pytest (55 tests; offline: samples, mocked Zetaris / DEM)
+web/                    data explorer (MapLibre 5.24 + deck.gl 9.4 + h3-js 4.5, no build step)
+run.py                  start the explorer on :8000 (checks Zetaris)
+data/raw/               raw inputs and downloads (gitignored)
+data/processed/         built Parquet files (gitignored)
+data/web/, data/cache/  generated map layers, live-call cache (gitignored)
+data/samples/           live responses + evidence bundles for the sample places (committed)
+data/reference/         small reference tables (committed): mcc_mnc_uk.csv,
+                        operator_groups.csv, wtr_operator_licensees.csv
+data/manifest.json      data versions (committed)
 ```
 
 ## Zetaris (how it works here)
@@ -146,75 +161,137 @@ data/reference/       small reference tables (committed), e.g. mcc_mnc_uk.csv
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
-cp .env.example .env                      # then fill in
-.venv/bin/python scripts/process/build_cells.py    # Phase 1 -> data/processed/cells_r7.parquet
-.venv/bin/python scripts/download/ookla.py         # Phase 2: UK extracts of the last 4 quarters
-.venv/bin/python scripts/process/build_ookla.py    # -> ookla_mobile_r7 / _history_r7 / _tiles
-.venv/bin/python scripts/download/mcc_mnc.py       # Phase 3: operator reference (already committed)
-.venv/bin/python scripts/download/opencellid.py    # needs OPENCELLID_TOKEN; skips without it
-.venv/bin/python scripts/download/osm.py           # Geofabrik GB + Ireland (~2.6 GB)
-.venv/bin/python scripts/process/build_masts.py    # -> masts_sites.parquet, masts_r7.parquet
-.venv/bin/python scripts/download/ofcom_wtr.py      # Ofcom Wireless Telegraphy Register (~54 MB)
-.venv/bin/python scripts/process/build_wtr.py       # -> wtr_points.parquet, then rebuilds the mast tables
-.venv/bin/python scripts/download/dem.py           # Copernicus GLO-30 tiles (~1.4 GB), for phase C
-.venv/bin/python scripts/process/build_terrain.py  # -> terrain_r7, los_r7 (~2 min)
-.venv/bin/python scripts/check_terrain.py          # line of sight at the sample places
-.venv/bin/python scripts/check_evidence.py         # evidence bundles for the sample places
-.venv/bin/python scripts/download/ons_boundaries.py # constituencies 2024 + local authorities Dec 2024
-.venv/bin/python scripts/process/build_ofcom.py    # -> ofcom_area_r7.parquet, ofcom_nations.parquet
-scripts/zetaris/compose.sh up -d driver           # Zetaris with our data mount
-.venv/bin/python scripts/zetaris/register_sources.py
-.venv/bin/python scripts/check_data.py             # checks through Zetaris
-.venv/bin/python scripts/refresh.py --check-only    # which stored sources are due a refresh
-.venv/bin/python scripts/download/live_samples.py   # Phase D: save live responses for the sample places
-.venv/bin/python scripts/check_live.py              # /api/live for the sample places, live then SAMPLE_MODE
-.venv/bin/python scripts/process/build_web_layers.py # map layers for the explorer
-.venv/bin/python run.py                            # data explorer on http://localhost:8000
+cp .env.example .env                                  # then fill in (never print or commit it)
+scripts/zetaris/compose.sh up -d driver               # Zetaris with our read-only data mount
+
+# Stored data (build order)
+.venv/bin/python scripts/process/build_cells.py       # cells_r7 (needs the two hand-placed inputs below)
+.venv/bin/python scripts/download/ookla.py            # UK extracts of the last 4 quarters (range reads)
+.venv/bin/python scripts/process/build_ookla.py       # ookla_mobile_r7 / _history_r7 / _tiles
+.venv/bin/python scripts/download/mcc_mnc.py          # operator reference (already committed)
+.venv/bin/python scripts/download/opencellid.py       # needs OPENCELLID_TOKEN
+.venv/bin/python scripts/download/osm.py              # Geofabrik GB + Ireland (~2.6 GB)
+.venv/bin/python scripts/process/build_masts.py       # masts_sites, masts_r7
+.venv/bin/python scripts/download/ofcom_wtr.py        # Ofcom Wireless Telegraphy Register (~54 MB)
+.venv/bin/python scripts/process/build_wtr.py         # wtr_points, then rebuilds the mast tables
+.venv/bin/python scripts/download/ons_boundaries.py   # constituencies 2024 + local authorities Dec 2024
+.venv/bin/python scripts/process/build_ofcom.py       # ofcom_area_r7, ofcom_nations (zip in data/raw/ofcom/)
+.venv/bin/python scripts/download/dem.py              # Copernicus GLO-30 tiles (~1.4 GB)
+.venv/bin/python scripts/process/build_terrain.py     # terrain_r7, los_r7 (~2 min; --los = los only)
+.venv/bin/python scripts/zetaris/register_sources.py  # all CD_* sources (or name some)
+.venv/bin/python scripts/download/live_samples.py     # refresh the live samples in data/samples/
+
+# Checks
+.venv/bin/python scripts/check_data.py                # A, B, E through Zetaris
+.venv/bin/python scripts/check_live.py                # /api/live live, then SAMPLE_MODE
+.venv/bin/python scripts/check_terrain.py             # line of sight at 4 places
+.venv/bin/python scripts/check_evidence.py            # evidence bundles for the sample places
+.venv/bin/python scripts/refresh.py --check-only      # which stored sources are due
 .venv/bin/python -m pytest -q
+
+# Explorer
+.venv/bin/python scripts/process/build_web_layers.py  # after any data change
+.venv/bin/python run.py                               # http://localhost:8000
+.venv/bin/python scripts/screenshots.py --chrome ~/.cache/ms-playwright/chromium-1223/chrome-linux64/chrome
 ```
 
 Inputs placed by hand: `data/raw/boundary/uk_countries.geojson` (ONS countries, all four
 nations) and `data/raw/population/population.tif` (WorldPop UK).
 
-## Status
+## Status (25 Oct 2026, evening)
 
-Built in phases; after each: run checks, commit, stop for review. Current plan (25 Oct):
-A Zetaris foundation · B masts (OpenCelliD + OSM) · C terrain + line of sight ·
-D live sources (postcodes.io, Open-Meteo, Met Office warnings, EA floods) ·
-E Ofcom regional (file in data/raw/ofcom/) · F rural-urban + deprivation ·
-G power cuts (dropped 25 Oct: future work) · H visitor load (if time) · final check_data.py.
+Built in phases; after each: run checks, commit, push, stop for review. Order agreed:
+A → B → E → freshness → explorer → WTR → D → C → evidence API → F → final check_data.py;
+G (power cuts) dropped as future work; H (visitor load) only if time. Then the agents.
 
-- A. Zetaris foundation: done (client, mount, CD_CELLS + 3 Ookla sources, join check)
-- B. Masts: done (OpenCelliD + OSM + Ofcom WTR merged; CD_MASTS_SITES, CD_MASTS, CD_WTR_POINTS).
-  WTR = operators' licensed microwave links: confirmed operators + antenna heights (use these
-  heights in phase C line of sight; default 25 m otherwise). OpenCelliD's free file
-  is incomplete in places (e.g. none within 5 km of Rhayader), so treat "no masts" as weak.
-  DEM for phase C already downloaded (data/raw/dem/, Copernicus GLO-30, 93 tiles).
-- E. Ofcom regional: done (CD_OFCOM_AREA per cell = constituency figures; CD_OFCOM_NATIONS per
-  operator). Columns g4_geo_out_0..4 etc. = % with coverage from exactly N operators.
-- Freshness: data/manifest.json (written by every build), scripts/refresh.py, evidence_meta().
-- Data explorer: run.py + web/; /api/cell/{id} is one Zetaris query. Rebuild layers after data changes.
-- C. Terrain: done. data/terrain.py (DEM reader, line_of_sight with k=4/3 curvature, 30 m
-  samples, antenna height from Ofcom register else 25 m); CD_TERRAIN.terrain_r7 (elevation per
-  cell), CD_LOS.los_r7 (cell centre -> nearest site, map only; los_class clear / marginal < 10 m
-  / blocked). /api/los + map line and profile. Check: scripts/check_terrain.py.
-  Wording: "blocked" = likely weaker signal, never "no signal"; say when the antenna height
-  is assumed; GLO-30 is a surface model (trees, buildings), so treat "marginal" as weak.
-- Evidence API: done. POST /api/evidence {query} or {lat, lon} -> coverage_detective/evidence.py:
-  Q1 cell_sql (data/queries.py, shared with the explorer), Q2 sites within 10 km of the exact
-  point, Q3 UK context (cached); line of sight per operator; live sources. Items: id, source,
-  data_period, as_of, query_or_url, cell_ids, finding, value, sample_size, strength, bears_on.
-  Check: scripts/check_evidence.py (saves data/samples/evidence/*.json). Tests mock Zetaris + DEM.
-- D. Live sources: done. sources/live.py (5 s timeout, one retry, disk cache data/cache/live/,
-  fallback cached → sample) + geocode.py (postcodes.io), weather.py (Open-Meteo; severity
-  none/moderate/severe, only severe supports the `weather` cause), met_office_warnings.py
-  (public RSS by region), flood_warnings.py (EA; "not_covered" outside England, never an
-  empty list). /api/live, /api/geocode, /api/geocode/reverse; explorer "Right now" section.
-  Samples: data/samples/ (scripts/download/live_samples.py); check: scripts/check_live.py.
+### Done (commit)
 
-- Earlier: grid (`cells_r7`) and Ookla (2026Q3 + 3 previous quarters) built; Ofcom API stub.
-- Order agreed 25 Oct: B → E → D → C → evidence API → F → final check; G dropped, H only if time.
-- Next: F (deprivation), final check_data.py, then the agents.
+- **A. Zetaris foundation** (`d4f80c9`): client, data mount, `CD_CELLS` (56,592 r7 cells,
+  67.41 m people) and three Ookla sources. Ookla open data, 2026Q3 + 3 previous quarters,
+  read by HTTP range requests of the UK row groups: 23,412 cells with tests, 87,725
+  cell-quarters, 420,260 tiles (zoom 16, ~350–400 m). Test-weighted averages; sample sizes
+  always carried.
+- **B. Masts** (`f6f3889`, `c29b4a2`): OpenCelliD cells clustered at 150 m (MVNO / GSM-R /
+  TETRA excluded) + OSM communication masts (two-pass pyosmium), merged within 200 m.
+  Per-cell stats in `masts_r7`, operator_data_status and the wording rules above.
+- **E. Ofcom regional** (`6afb9c6`): Connected Nations July 2025, constituency per cell
+  (`CD_OFCOM_AREA`, with the local authority figures) and per operator by nation
+  (`CD_OFCOM_NATIONS`). Blanks = 0 unless the whole group is blank.
+- **Freshness** (`d07f9c1`): manifest, `refresh.py` (Ookla quarterly, OpenCelliD weekly,
+  OSM and WTR monthly, Ofcom new release, cells / DEM manual), evidence_meta().
+- **Data explorer** (`cc0cf3d`, `1095848`, `dfd8cb8`): FastAPI + MapLibre/deck.gl; 12
+  layers, mast sites from zoom 10, Ookla tiles from zoom 12, cell panel from one Zetaris
+  query, search, phone layout. UK map limits were tried and removed at the user's request
+  (they broke scrolling). The Zetaris client signs in again before its 15-minute token expires.
+- **Ofcom Wireless Telegraphy Register** (`ae28592`): base stations are NOT in it; it holds
+  the operators' licensed microwave links. Licensees matched by exact legal name
+  (Telefonica → O2, Vodafone, MBNL → EE + Three; BT and Arqiva not mapped). 13,122 points,
+  8,504 sites (3,797 matched existing sites, 4,707 new) → 93,638 sites. Populated cells with
+  sites but no known operator fell from 20.9% to 3.9%. Antenna heights for line of sight.
+- **D. Live sources** (`5261816`): `sources/live.py` (5 s timeout, one retry, disk cache
+  `data/cache/live/`, fallback cached → sample, status live / cached / sample / not_covered
+  / unavailable) + geocode (postcodes.io, 30 days), weather (Open-Meteo, 30 min; severity
+  none / moderate / severe: gusts ≥ 70 km/h, rain ≥ 8 mm/h, snow ≥ 1 cm/h or thunder =
+  severe; only severe supports the `weather` cause), Met Office warnings (public RSS by
+  region, 15 min; `district_listed`), EA floods (England only, 15 min; "not covered" outside
+  England, never an empty list). `/api/live`, `/api/geocode`, `/api/geocode/reverse`;
+  explorer "Right now" section; attribution footer. Zetaris REST: `CD_LIVE_EA_FLOODS` works
+  (centre-based, so the point answer uses EA's polygon-aware API); Open-Meteo cannot be
+  registered (see Zetaris notes).
+- **C. Terrain** (`c3caa01`): `data/terrain.py` (bilinear DEM, ≤ 4 tiles in memory,
+  `line_of_sight()` with 30 m samples, k = 4/3 curvature, antenna height from the register
+  else 25 m). `CD_TERRAIN.terrain_r7` (elevation per cell from 343 r10 samples) and
+  `CD_LOS.los_r7` (cell centre → nearest site, map only; clear 29,555 / marginal < 10 m
+  10,153 / blocked 15,869 populated cells; register height for 40%). `/api/los`; map line +
+  elevation profile. Great Langdale: blocked by 288 m, 2.25 km towards the site.
+  Mast refreshes rebuild `los_r7`.
+- **Evidence API** (`d9cbd90`): `POST /api/evidence` {query} or {lat, lon} →
+  `evidence.py`: Q1 `cell_sql`, Q2 sites within 10 km of the exact point, Q3 UK context
+  (cached), all logged in the bundle; line of sight to the nearest site of each operator
+  within 10 km (+ nearest of any operator); live items. Items: id, source, data_period,
+  as_of, query_or_url, cell_ids, finding, value, sample_size, strength (strong / moderate /
+  weak), bears_on. Bundles for the sample places saved in `data/samples/evidence/`.
+
+### Zetaris sources
+
+`CD_CELLS`, `CD_OOKLA_MOBILE`, `CD_OOKLA_MOBILE_HISTORY`, `CD_OOKLA_MOBILE_TILES`,
+`CD_MASTS_SITES`, `CD_MASTS`, `CD_WTR_POINTS`, `CD_OFCOM_AREA`, `CD_OFCOM_NATIONS`,
+`CD_TERRAIN`, `CD_LOS` (Parquet) and `CD_LIVE_EA_FLOODS` (live REST). Row counts are in
+data/README.md.
+
+### Sample places (what the data says, 25 Oct)
+
+- Great Langdale (54.445, -3.105): no Ookla tests in its cell; nearest site 3.8 km SE; EE,
+  Three, Vodafone inferred, none confirmed; every operator's nearest site blocked by
+  terrain (129–288 m). Storm Bolelo: severe gusts, flood alerts nearby.
+- Central London (WC2N 5DU): 133.6 Mbps from 1,425 tests; all four operators confirmed;
+  devices per head far above the UK median (visitors).
+- Near Rhayader (52.30, -3.51): 14.4 Mbps from 25 tests, down 35% over 4 quarters; only
+  Vodafone within 5 km (confirmed), 2 sites with unknown operators; EE / Three site 6.5 km,
+  blocked by 137 m; no O2 site within 10 km (weak); floods not covered (Wales).
+- Flat check village: Sutton St Edmund (Lincolnshire Fens), line of sight clear.
+
+### Known limits and open questions
+
+- OpenCelliD's free file is incomplete; postcodes.io's place list lacks "Great Langdale"
+  (by name it resolves approximately to Little Langdale: use coordinates).
+- Our data is far coarser than Ofcom's own checker (address level); suggested retrying for
+  an Ofcom API key.
+- Met Office warnings cover whole regions: should "elsewhere in the region" warnings count
+  as weaker evidence for `weather`? (asked the user, no answer yet)
+- 47% of populated cells look blocked from their centre; many margins are small (surface
+  model), hence the marginal class.
+
+### Next
+
+1. F. Rural–urban classification + deprivation (deciles within each nation) →
+   `deprivation_r7`, `CD_DEPRIVATION` (`queries.py` already joins it when the manifest has
+   "deprivation"; layer `deprivation_decile` ready in build_web_layers).
+2. Final `scripts/check_data.py`: every Zetaris source with row counts and freshness, a
+   cross-source row per sample place, live results.
+3. H. Visitor load, if time.
+4. The agents (Coordinator, Investigator on `POST /api/evidence`, Diagnostician, Critic,
+   Advisor, Gap analyst) with Meterless memory.
 
 ## Rules
 
