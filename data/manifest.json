@@ -1,0 +1,112 @@
+{
+  "sources": {
+    "cells": {
+      "title": "H3 r7 grid with WorldPop population and nation",
+      "data_period": "WorldPop 2020 (1 km, UN-adjusted); ONS countries December 2023",
+      "downloaded": {
+        "uk_countries.geojson": "2026-10-23",
+        "population.tif": "2026-10-23"
+      },
+      "built_at": "2026-10-25T19:31:47+00:00",
+      "refresh": "manual (WorldPop, ONS boundaries)",
+      "licence": "WorldPop CC BY 4.0; ONS boundaries OGL v3.0",
+      "outputs": {
+        "cells_r7.parquet": {
+          "sha256": "9d80a483793cb1b6e009bf8aab1cf4d2f8760cbf3cd25ec37f44689e559458dd",
+          "bytes": 2002094,
+          "rows": 56592
+        }
+      }
+    },
+    "masts": {
+      "title": "Approximate mast sites: OpenCelliD + OpenStreetMap",
+      "data_period": "OpenCelliD downloaded 2026-10-25; OpenStreetMap extract downloaded 2026-10-25",
+      "downloaded": {
+        "234.csv.gz": "2026-10-25",
+        "great-britain-latest.osm.pbf": "2026-10-25",
+        "ireland-and-northern-ireland-latest.osm.pbf": "2026-10-25"
+      },
+      "built_at": "2026-10-25T19:32:08+00:00",
+      "refresh": "OpenCelliD weekly; OpenStreetMap monthly",
+      "licence": "OpenCelliD CC BY-SA 4.0; OpenStreetMap ODbL 1.0",
+      "outputs": {
+        "masts_sites.parquet": {
+          "sha256": "ccf6a47220b8fc4b2d8c7bbb73216c5ad425fa82f89e7e79b7daffade73484ed",
+          "bytes": 2391247,
+          "rows": 88931
+        },
+        "masts_r7.parquet": {
+          "sha256": "91a65fd1c6b273519b7ea8eb61dd56b732fd0c8860ed2645376a587c3895b4f6",
+          "bytes": 2468409,
+          "rows": 56592
+        },
+        "osm_masts.parquet": {
+          "sha256": "9cf8bc71748199e385cdbf95c1da53f09aee0818ad6d197af4f51feec0a0e356",
+          "bytes": 429250,
+          "rows": 13644
+        }
+      }
+    },
+    "ofcom": {
+      "title": "Ofcom Connected Nations mobile coverage (area level)",
+      "data_period": "2025-07 (release 202507_mobile_coverage_r01)",
+      "downloaded": {
+        "202507_mobile_coverage_r01.zip": "2026-10-25",
+        "pcon_2024.geojson": "2026-10-25",
+        "lad_2024.geojson": "2026-10-25"
+      },
+      "built_at": "2026-10-25T19:32:29+00:00",
+      "refresh": "per Ofcom release (download the new zip by hand)",
+      "licence": "Ofcom data OGL v3.0; ONS boundaries OGL v3.0",
+      "outputs": {
+        "ofcom_area_r7.parquet": {
+          "sha256": "4629a9444513f606b988881a4eb3013b5d7304e24f1c31246f13ed3f20df869e",
+          "bytes": 1590319,
+          "rows": 56592
+        },
+        "ofcom_nations.parquet": {
+          "sha256": "e437b5c3a21b6cdf315dcc3d3333842a7b14082e456c11a63a0798773de976d8",
+          "bytes": 18554,
+          "rows": 1035
+        }
+      }
+    },
+    "ookla": {
+      "title": "Ookla open data, mobile performance tiles",
+      "data_period": "2026Q3",
+      "downloaded": {
+        "2025Q4_mobile_tiles_uk.parquet": "2026-10-23",
+        "2026Q1_mobile_tiles_uk.parquet": "2026-10-23",
+        "2026Q2_mobile_tiles_uk.parquet": "2026-10-23",
+        "2026Q3_mobile_tiles_uk.parquet": "2026-10-23"
+      },
+      "built_at": "2026-10-25T19:31:56+00:00",
+      "refresh": "quarterly (new quarter in ookla-open-data)",
+      "licence": "CC BY-NC-SA 4.0",
+      "outputs": {
+        "ookla_mobile_r7.parquet": {
+          "sha256": "93f756fede2475eda0e6a05b677ff64b80ac5366429a9d4f1520265b513a6827",
+          "bytes": 1715937,
+          "rows": 23412
+        },
+        "ookla_mobile_history_r7.parquet": {
+          "sha256": "b0b25a2361b6e24cde8eb6bcc7627a2e716ed5c25ad203cd4f0b89a997396051",
+          "bytes": 2155082,
+          "rows": 87725
+        },
+        "ookla_mobile_tiles.parquet": {
+          "sha256": "01dfcbfb8d8b5f735ec95fe7c2a2ef4009850c36b51ca13bdd772a87bb9e72d1",
+          "bytes": 8541513,
+          "rows": 420260
+        }
+      },
+      "quarters": [
+        "2025Q4",
+        "2026Q1",
+        "2026Q2",
+        "2026Q3"
+      ]
+    }
+  },
+  "updated_at": "2026-10-25T19:32:29+00:00"
+}

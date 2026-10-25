@@ -62,6 +62,12 @@ Y = g4_geo_out_1). The Advisor's resident
 actions must include "Check your address on Ofcom's mobile coverage checker"
 (https://www.ofcom.org.uk/mobile-coverage-checker).
 
+**Freshness**: every evidence item carries `data_period` and `as_of`. Stored tables: from
+`data/manifest.json` via `manifest.evidence_meta(<zetaris table>)`; live sources: the fetch
+time (`manifest.live_meta()`). Every build script must call `manifest.record(...)`.
+`scripts/refresh.py` refreshes stored sources on their cadence (Ookla new quarter,
+OpenCelliD weekly, OSM monthly, Ofcom new release; WorldPop/ONS/DEM manual).
+
 Principles: code and SQL compute every number, the LLM only interprets; every claim links
 to an evidence item; causes are "likely" with confidence; sample/offline mode for
 reproducible runs.
@@ -136,6 +142,7 @@ cp .env.example .env                      # then fill in
 scripts/zetaris/compose.sh up -d driver           # Zetaris with our data mount
 .venv/bin/python scripts/zetaris/register_sources.py
 .venv/bin/python scripts/check_data.py             # checks through Zetaris
+.venv/bin/python scripts/refresh.py --check-only    # which stored sources are due a refresh
 .venv/bin/python -m pytest -q
 ```
 
@@ -156,6 +163,7 @@ G power cuts (if time) · H visitor load (if time) · final check_data.py.
   DEM for phase C already downloaded (data/raw/dem/, Copernicus GLO-30, 93 tiles).
 - E. Ofcom regional: done (CD_OFCOM_AREA per cell = constituency figures; CD_OFCOM_NATIONS per
   operator). Columns g4_geo_out_0..4 etc. = % with coverage from exactly N operators.
+- Freshness: data/manifest.json (written by every build), scripts/refresh.py, evidence_meta().
 
 - Earlier: grid (`cells_r7`) and Ookla (2026Q3 + 3 previous quarters) built; Ofcom API stub.
 - Order agreed 25 Oct: B → E → D → C → F → final check; G/H only if time.

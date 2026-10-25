@@ -22,7 +22,6 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from datetime import date
 from pathlib import Path
 
 import h3
@@ -31,6 +30,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from coverage_detective.config import H3_RES, PROCESSED, RAW, ROOT, SAMPLE_LOCATIONS  # noqa: E402
+from coverage_detective.data import manifest  # noqa: E402
 from coverage_detective.data.grid import load_cells  # noqa: E402
 from coverage_detective.data.masts import masts_per_cell, merge_sites  # noqa: E402
 from coverage_detective.sources import osm_masts  # noqa: E402
@@ -50,7 +50,8 @@ def osm_sites(force: bool) -> pd.DataFrame:
     pbfs = sorted(OSM_DIR.glob("*.osm.pbf"))
     if not pbfs:
         sys.exit(f"No OSM extracts in {OSM_DIR}; run scripts/download/osm.py")
-    if OSM_OUT.exists() and not force:
+    # Reuse the cached extraction unless forced or an extract is newer than the cache.
+    if OSM_OUT.exists() and not force and all(p.stat().st_mtime <= OSM_OUT.stat().st_mtime for p in pbfs):
         return pd.read_parquet(OSM_OUT)
     parts = []
     for pbf in pbfs:
@@ -86,9 +87,18 @@ def build(force: bool) -> None:
     PROCESSED.mkdir(parents=True, exist_ok=True)
     sites.to_parquet(SITES_OUT, index=False)
     per_cell.to_parquet(CELLS_OUT, index=False)
-    inputs = {f.name: date.fromtimestamp(f.stat().st_mtime).isoformat() for f in files + sorted(OSM_DIR.glob("*.osm.pbf"))}
+    inputs = {f.name: manifest.file_date(f) for f in files + sorted(OSM_DIR.glob("*.osm.pbf"))}
     META_OUT.write_text(json.dumps({"inputs_downloaded": inputs, "opencellid": counts,
                                     "opencellid_sites": len(ocid), "osm_masts": len(osm)}, indent=2))
+    ocid_date = max(v for k, v in inputs.items() if k.endswith(".csv.gz"))
+    osm_date = max(v for k, v in inputs.items() if k.endswith(".osm.pbf"))
+    manifest.record(
+        "masts", title="Approximate mast sites: OpenCelliD + OpenStreetMap",
+        data_period=f"OpenCelliD downloaded {ocid_date}; OpenStreetMap extract downloaded {osm_date}",
+        downloaded=inputs, outputs=[SITES_OUT, CELLS_OUT, OSM_OUT],
+        refresh="OpenCelliD weekly; OpenStreetMap monthly",
+        licence="OpenCelliD CC BY-SA 4.0; OpenStreetMap ODbL 1.0",
+    )
     print(f"wrote {SITES_OUT.name}, {CELLS_OUT.name}, {META_OUT.name}")
 
 
@@ -140,10 +150,11 @@ def check() -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--force", action="store_true", help="rebuild, including the OSM extraction")
+    parser.add_argument("--force", action="store_true", help="rebuild (OSM is re-extracted only if its extract changed)")
+    parser.add_argument("--force-osm", action="store_true", help="also re-extract masts from the OSM files")
     args = parser.parse_args()
-    if args.force or not (SITES_OUT.exists() and CELLS_OUT.exists()):
-        build(args.force)
+    if args.force or args.force_osm or not (SITES_OUT.exists() and CELLS_OUT.exists()):
+        build(args.force_osm)
     check()
 
 

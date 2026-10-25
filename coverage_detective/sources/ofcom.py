@@ -17,8 +17,6 @@ from pathlib import Path
 
 import pandas as pd
 
-DATA_DATE = "2025-07"
-RELEASE = "202507_mobile_coverage_r01"
 
 # Ofcom column family -> our column prefix (SQL-friendly: no leading digit).
 FAMILIES = {
@@ -32,9 +30,18 @@ FAMILIES = {
 }
 
 
+def release(zip_path: Path) -> tuple[str, str]:
+    """('202507_mobile_coverage_r01', '2025-07') from a release zip's name."""
+    stem = zip_path.stem
+    return stem, f"{stem[:4]}-{stem[4:6]}"
+
+
 def read_csv(zip_path: Path, part: str) -> pd.DataFrame:
+    """One CSV of a release, e.g. part="pcon" -> <stem>/<YYYYMM>_mobile_coverage_pcon_rNN.csv."""
+    stem, _ = release(zip_path)
+    base, rev = stem.rsplit("_", 1)
     with zipfile.ZipFile(zip_path) as z:
-        raw = z.read(f"{RELEASE}/{RELEASE.replace('_r01', '')}_{part}_r01.csv")
+        raw = z.read(f"{stem}/{base}_{part}_{rev}.csv")
     return pd.read_csv(io.BytesIO(raw), encoding="latin-1")
 
 

@@ -68,6 +68,38 @@ Each dataset is its own Zetaris source (Lightning database), e.g. `CD_CELLS.cell
 
 Every script can be re-run safely; pass `--force` to rebuild an existing output.
 
+## Data freshness
+
+Two kinds of data:
+
+- **Live, fetched when a question is asked:** postcode lookup (postcodes.io), weather
+  (Open-Meteo), Met Office weather warnings and Environment Agency flood warnings. Their
+  evidence is stamped with the fetch time.
+- **Stored, refreshed periodically** and queried through Zetaris:
+
+  | Source | Refreshed | How |
+  |---|---|---|
+  | Ookla mobile speeds | quarterly | when a newer quarter appears in the public bucket |
+  | OpenCelliD radio cells | weekly | re-download |
+  | OpenStreetMap masts | monthly | re-download the Geofabrik extracts |
+  | Ofcom Connected Nations | each release (about twice a year) | download the new zip by hand into `data/raw/ofcom/` (no API) |
+  | WorldPop population, ONS boundaries, Copernicus DEM | manual | rarely change |
+
+`data/manifest.json` (committed) records for every stored source its data period (e.g.
+Ookla `2026Q3`), download dates, build time, refresh cadence and each output's row count
+and SHA-256; every build script updates it. Evidence items carry `data_period` and
+`as_of` from the manifest (`coverage_detective.data.manifest.evidence_meta`), or the fetch
+time for live sources.
+
+```bash
+.venv/bin/python scripts/refresh.py --check-only          # what is due
+.venv/bin/python scripts/refresh.py                       # refresh what is due
+.venv/bin/python scripts/refresh.py --source ookla --force
+```
+
+A refresh downloads the new data (keeping the old file until the new one is in), rebuilds
+the affected tables, re-registers them in Zetaris and updates the manifest.
+
 ## Tests
 
 ```bash

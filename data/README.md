@@ -15,6 +15,12 @@ Raw files live in `data/raw/` and built files in `data/processed/`; both are git
 | ONS Local Authority Districts | December 2024, UK BGC | Open Government Licence v3.0 | `raw/boundary/lad_2024.geojson` | `ofcom_area_r7.parquet` |
 | UK network codes (Wikipedia) | revision 1378731553, 5 Oct 2026 | CC BY-SA 4.0 | — | `reference/mcc_mnc_uk.csv` (committed) |
 
+## Manifest
+
+`data/manifest.json` is updated by every build script: per source, its data period, the
+download date of each raw input, build time, refresh cadence, licence, and for each output
+file its row count, size and SHA-256. `scripts/refresh.py` uses it to decide what is due.
+
 ## Zetaris sources
 
 Each processed file is registered in Zetaris as its own source (a Lightning database with

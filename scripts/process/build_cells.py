@@ -15,6 +15,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from coverage_detective.config import BOUNDARY_PATH, CELLS_PATH, H3_RES, POPULATION_PATH  # noqa: E402
+from coverage_detective.data import manifest  # noqa: E402
 from coverage_detective.data.grid import build_cells  # noqa: E402
 
 
@@ -48,6 +49,13 @@ def main() -> None:
     print(f"dropped {len(dropped)} island(s) under 500 people, {sum(d['population'] for d in dropped):,.0f} people in total")
     CELLS_PATH.parent.mkdir(parents=True, exist_ok=True)
     cells.to_parquet(CELLS_PATH, index=False)
+    manifest.record(
+        "cells", title="H3 r7 grid with WorldPop population and nation",
+        data_period="WorldPop 2020 (1 km, UN-adjusted); ONS countries December 2023",
+        downloaded={p.name: manifest.file_date(p) for p in (BOUNDARY_PATH, POPULATION_PATH)},
+        outputs=[CELLS_PATH], refresh="manual (WorldPop, ONS boundaries)",
+        licence="WorldPop CC BY 4.0; ONS boundaries OGL v3.0",
+    )
     print(f"wrote {CELLS_PATH}")
     check(cells)
 

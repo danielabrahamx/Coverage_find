@@ -23,6 +23,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from coverage_detective.config import H3_RES, PROCESSED, RAW  # noqa: E402
+from coverage_detective.data import manifest  # noqa: E402
 from coverage_detective.data.grid import load_cells  # noqa: E402
 from coverage_detective.sources.ookla import aggregate_cells, read_uk_tiles, trend  # noqa: E402
 
@@ -31,10 +32,11 @@ CELLS_OUT = PROCESSED / "ookla_mobile_r7.parquet"
 HISTORY_OUT = PROCESSED / "ookla_mobile_history_r7.parquet"
 TILES_OUT = PROCESSED / "ookla_mobile_tiles.parquet"
 META_OUT = PROCESSED / "ookla_meta.json"
+QUARTERS = 4  # latest quarter plus the previous three, for trends
 
 
 def build() -> None:
-    files = sorted(RAW_DIR.glob("*_mobile_tiles_uk.parquet"))
+    files = sorted(RAW_DIR.glob("*_mobile_tiles_uk.parquet"))[-QUARTERS:]
     if not files:
         sys.exit(f"No Ookla files in {RAW_DIR}; run scripts/download/ookla.py")
     cells = load_cells()
@@ -65,6 +67,12 @@ def build() -> None:
     history.to_parquet(HISTORY_OUT, index=False)
     tiles.to_parquet(TILES_OUT, index=False)
     META_OUT.write_text(json.dumps({"latest_quarter": latest_q, "quarters": quarters}, indent=2))
+    manifest.record(
+        "ookla", title="Ookla open data, mobile performance tiles", data_period=latest_q,
+        downloaded={f.name: manifest.file_date(f) for f in files},
+        outputs=[CELLS_OUT, HISTORY_OUT, TILES_OUT], refresh="quarterly (new quarter in ookla-open-data)",
+        licence="CC BY-NC-SA 4.0", extra={"quarters": quarters},
+    )
     print(f"wrote {CELLS_OUT.name}, {HISTORY_OUT.name}, {TILES_OUT.name}, {META_OUT.name}")
 
 
