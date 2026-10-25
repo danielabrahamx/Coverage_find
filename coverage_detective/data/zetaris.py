@@ -18,6 +18,7 @@ QUERY_LOG.
 
 from __future__ import annotations
 
+import base64
 import json
 import re
 import time
@@ -42,10 +43,23 @@ class ZetarisError(RuntimeError):
     """A Zetaris call failed; the message says where and why."""
 
 
+def _token_expiry(token: str) -> float:
+    """Expiry time (epoch seconds) from a JWT's payload; 0 if it cannot be read."""
+    try:
+        payload = token.split(".")[1]
+        return float(json.loads(base64.urlsafe_b64decode(payload + "=" * (-len(payload) % 4)))["exp"])
+    except (IndexError, KeyError, ValueError):
+        return 0.0
+
+
 class _Session:
+    """Signed-in session. Zetaris tokens last 15 minutes, so a long-running process (the
+    web server) signs in again a minute before expiry, and once more if a call is refused."""
+
     def __init__(self) -> None:
         self.base = (env("ZETARIS_URL") or "").rstrip("/")
         self.headers: dict[str, str] | None = None
+        self.expires_at = 0.0
 
     def login(self, timeout: float) -> None:
         user, password = env("ZETARIS_USER"), env("ZETARIS_PASSWORD")
@@ -59,11 +73,12 @@ class _Session:
             raise ZetarisError(f"Zetaris login failed (HTTP {r.status_code}): {r.text[:200]}")
         body = r.json()
         self.headers = {"Authorization": f"Bearer {body['idToken']}", "X-Org-ID": str(body["orgId"])}
+        self.expires_at = _token_expiry(body["idToken"])
 
     def call(self, method: str, path: str, timeout: float, **kwargs) -> httpx.Response:
         """One API call, signing in first and once more if the token has expired."""
         for attempt in (1, 2):
-            if self.headers is None:
+            if self.headers is None or time.time() > self.expires_at - 60:
                 self.login(timeout)
             headers = {**self.headers, "X-Request-ID": str(uuid.uuid4())}
             try:
@@ -72,7 +87,9 @@ class _Session:
                 raise ZetarisError(f"Zetaris timed out after {timeout:.0f} s on {path}") from e
             except httpx.HTTPError as e:
                 raise ZetarisError(f"Cannot reach Zetaris at {self.base}: {e!r}") from e
-            if r.status_code in (401, 403) and attempt == 1:
+            # An expired token is refused as 401/403, or as a bare "400 Bad Request".
+            expired = r.status_code in (401, 403) or (r.status_code == 400 and _error_text(r) == "Bad Request")
+            if expired and attempt == 1:
                 self.headers = None
                 continue
             if r.status_code != 200:
