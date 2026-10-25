@@ -129,6 +129,40 @@ Screenshots: `pip install playwright`, then `python scripts/screenshots.py` (pas
 
 ![UK download speeds](docs/screenshots/uk_speed.png)
 
+## Evidence API
+
+`POST /api/evidence` with `{"query": "WC2N 5DU"}` (postcode or place) or `{"lat": 54.445,
+"lon": -3.105}` returns the evidence bundle the agents will work from
+(`coverage_detective/evidence.py`):
+
+- the point, its H3 r7 cell and the six neighbours;
+- three Zetaris queries, each logged in the bundle (`zetaris_queries`: SQL, time, rows):
+  Q1 the cross-source cell query (cells, Ookla with history and neighbours, masts, Ofcom
+  area, terrain, line of sight), Q2 approximate mast sites within 10 km of the exact point,
+  Q3 UK context (median devices per head and speed; cached per process);
+- line of sight from the exact point to the nearest site of each operator within 10 km,
+  and to the nearest site of any operator;
+- live weather, Met Office warnings and EA flood warnings.
+
+Each item has `id`, `source`, `data_period`, `as_of`, `query_or_url`, `cell_ids`,
+`finding` (one plain-English sentence built in code, following the wording rules in
+CLAUDE.md), `value`, `sample_size`, `strength` (strong / moderate / weak) and `bears_on`
+(the causes it is relevant to). The bundle also carries `errors`, `limitations` and the
+Ofcom coverage checker link for residents.
+
+Strength, in short: Ookla speed is strong from 50 tests, weak under 10; line of sight is
+strong when blocked by 30 m or more, weak when the margin is under 10 m (trees or buildings
+in the surface model) or under 1 m of clearance; "no sites found" and operator gaps are weak
+(crowd-sourced data is incomplete); unknown-operator sites weaken the operator item unless
+all four operators are present; live items are weak when served from a sample.
+
+```bash
+.venv/bin/python scripts/check_evidence.py     # readable bundles for the 3 sample places
+curl -s -X POST localhost:8000/api/evidence -H 'content-type: application/json' -d '{"query": "LD6 5AD"}'
+```
+
+Saved bundles for the sample places are in `data/samples/evidence/` (for agent tests).
+
 ## Data freshness
 
 Two kinds of data:

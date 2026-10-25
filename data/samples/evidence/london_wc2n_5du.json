@@ -1,0 +1,537 @@
+{
+ "query": "WC2N 5DU",
+ "point": {
+  "kind": "postcode",
+  "label": "WC2N 5DU",
+  "postcode": "WC2N 5DU",
+  "lat": 51.507211,
+  "lon": -0.128269,
+  "admin_district": "Westminster",
+  "admin_county": null,
+  "admin_ward": "St James's",
+  "parish": "Westminster, unparished area",
+  "pfa": "Metropolitan Police",
+  "region": "London",
+  "country": "England",
+  "cell_id": "87195da49ffffff"
+ },
+ "cell_id": "87195da49ffffff",
+ "neighbour_cell_ids": [
+  "87194ad14ffffff",
+  "87194ad16ffffff",
+  "87194ad32ffffff",
+  "87195da48ffffff",
+  "87195da4bffffff",
+  "87195da4dffffff"
+ ],
+ "generated_at": "2026-10-25T21:06:03+00:00",
+ "sample_mode": false,
+ "items": [
+  {
+   "id": "location",
+   "source": "postcodes.io",
+   "data_period": "live",
+   "as_of": "2026-10-25T20:36:50+00:00",
+   "query_or_url": "https://api.postcodes.io/postcodes/WC2N5DU",
+   "cell_ids": [
+    "87195da49ffffff"
+   ],
+   "finding": "WC2N 5DU (Westminster, London, England) is at 51.50721, -0.12827, in H3 cell 87195da49ffffff.",
+   "value": {
+    "kind": "postcode",
+    "label": "WC2N 5DU",
+    "postcode": "WC2N 5DU",
+    "nearest_postcode": null,
+    "admin_district": "Westminster",
+    "region": "London",
+    "country": "England",
+    "lat": 51.507211,
+    "lon": -0.128269
+   },
+   "sample_size": null,
+   "strength": "strong",
+   "bears_on": []
+  },
+  {
+   "id": "speed_cell",
+   "source": "Ookla open data (Zetaris CD_OOKLA_MOBILE)",
+   "data_period": "2026Q3",
+   "as_of": "2026-10-23",
+   "query_or_url": "zetaris:Q1",
+   "cell_ids": [
+    "87195da49ffffff"
+   ],
+   "finding": "Mobile download speed in this cell averaged 133.6 Mbps in 2026Q3 (1425 tests from 881 devices; upload 19.7 Mbps, latency 42 ms). The UK median across cells with 10+ tests is 103 Mbps.",
+   "value": {
+    "download_mbps": 133.55254666666667,
+    "upload_mbps": 19.734814736842107,
+    "latency_ms": 41.75859649122807,
+    "quarter": "2026Q3",
+    "uk_median_download_mbps": 102.62342222222222
+   },
+   "sample_size": {
+    "tests": 1425,
+    "devices": 881
+   },
+   "strength": "strong",
+   "bears_on": [
+    "distance_to_mast",
+    "terrain_blocking",
+    "capacity_strain",
+    "insufficient_data"
+   ]
+  },
+  {
+   "id": "speed_neighbours",
+   "source": "Ookla open data (Zetaris CD_OOKLA_MOBILE)",
+   "data_period": "2026Q3",
+   "as_of": "2026-10-23",
+   "query_or_url": "zetaris:Q1",
+   "cell_ids": [
+    "87194ad14ffffff",
+    "87194ad16ffffff",
+    "87194ad32ffffff",
+    "87195da48ffffff",
+    "87195da4bffffff",
+    "87195da4dffffff"
+   ],
+   "finding": "The 6 neighbouring cells (6 with data) averaged 148.8 Mbps from 5033 tests in 2026Q3.",
+   "value": {
+    "download_mbps": 148.84013451221935,
+    "cells_with_data": 6
+   },
+   "sample_size": {
+    "tests": 5033
+   },
+   "strength": "moderate",
+   "bears_on": [
+    "insufficient_data",
+    "distance_to_mast"
+   ]
+  },
+  {
+   "id": "speed_trend",
+   "source": "Ookla open data (Zetaris CD_OOKLA_MOBILE_HISTORY)",
+   "data_period": "2026Q3",
+   "as_of": "2026-10-23",
+   "query_or_url": "zetaris:Q1",
+   "cell_ids": [
+    "87195da49ffffff"
+   ],
+   "finding": "Download speed here fell 2% over 4 quarters, from 136.5 to 133.6 Mbps.",
+   "value": {
+    "change_pct": -2.1797861144466917,
+    "from_mbps": 136.52857764441111,
+    "to_mbps": 133.55254666666667,
+    "history": [
+     {
+      "quarter": "2025Q4",
+      "download_mbps": 136.52857764441111,
+      "tests": 1333
+     },
+     {
+      "quarter": "2026Q1",
+      "download_mbps": 140.16423966244727,
+      "tests": 1185
+     },
+     {
+      "quarter": "2026Q2",
+      "download_mbps": 137.7567186495177,
+      "tests": 1244
+     },
+     {
+      "quarter": "2026Q3",
+      "download_mbps": 133.55254666666667,
+      "tests": 1425
+     }
+    ]
+   },
+   "sample_size": {
+    "quarters": 4,
+    "tests_latest": 1425
+   },
+   "strength": "moderate",
+   "bears_on": [
+    "capacity_strain"
+   ]
+  },
+  {
+   "id": "usage_per_head",
+   "source": "Ookla open data (Zetaris CD_OOKLA_MOBILE)",
+   "data_period": "2026Q3",
+   "as_of": "2026-10-23",
+   "query_or_url": "zetaris:Q1, zetaris:Q3",
+   "cell_ids": [
+    "87195da49ffffff"
+   ],
+   "finding": "38.6 devices per 1,000 residents ran speed tests here in 2026Q3, against a UK median of 3.6 (90th percentile 27.3): unusually high, which can point to visitors or heavy use.",
+   "value": {
+    "devices_per_1k_pop": 38.63836525178143,
+    "uk_p50": 3.608388131765607,
+    "uk_p90": 27.26642192494959,
+    "above_uk_p90": true
+   },
+   "sample_size": {
+    "devices": 881,
+    "population": 22801.17169189453
+   },
+   "strength": "moderate",
+   "bears_on": [
+    "capacity_strain"
+   ]
+  },
+  {
+   "id": "nearest_site",
+   "source": "Approximate mast sites (Zetaris CD_MASTS_SITES)",
+   "data_period": "OpenCelliD downloaded 2026-10-25; OpenStreetMap extract downloaded 2026-10-25; Ofcom WTR downloaded 2026-10-25",
+   "as_of": "2026-10-25",
+   "query_or_url": "zetaris:Q2",
+   "cell_ids": [
+    "87195da49ffffff"
+   ],
+   "finding": "The nearest approximate mast site is 0.1 km east (Ofcom licence register + OpenCelliD; operators EE, O2 and Vodafone, confirmed by Ofcom's licence register).",
+   "value": {
+    "site_id": "S031161",
+    "distance_km": 0.11,
+    "bearing_deg": 99.0,
+    "operators": [
+     "EE",
+     "O2",
+     "Vodafone"
+    ],
+    "operators_confirmed": [
+     "Vodafone"
+    ],
+    "sources": "ofcom_wtr,opencellid"
+   },
+   "sample_size": {
+    "sites_within_10km": 3009
+   },
+   "strength": "moderate",
+   "bears_on": [
+    "distance_to_mast"
+   ]
+  },
+  {
+   "id": "operators_5km",
+   "source": "Approximate mast sites (Zetaris CD_MASTS_SITES)",
+   "data_period": "OpenCelliD downloaded 2026-10-25; OpenStreetMap extract downloaded 2026-10-25; Ofcom WTR downloaded 2026-10-25",
+   "as_of": "2026-10-25",
+   "query_or_url": "zetaris:Q2",
+   "cell_ids": [
+    "87195da49ffffff"
+   ],
+   "finding": "All four operators have approximate mast sites within 5 km. EE, O2, Three and Vodafone confirmed by Ofcom's licence register. Operators could not be identified for 6 nearby sites.",
+   "value": {
+    "operators": [
+     "EE",
+     "O2",
+     "Three",
+     "Vodafone"
+    ],
+    "operators_confirmed": [
+     "EE",
+     "O2",
+     "Three",
+     "Vodafone"
+    ],
+    "operator_data_status": "confirmed"
+   },
+   "sample_size": {
+    "sites_within_5km": 1128,
+    "sites_unknown_operator": 6
+   },
+   "strength": "strong",
+   "bears_on": [
+    "single_operator",
+    "distance_to_mast"
+   ]
+  },
+  {
+   "id": "los_ee_o2_vodafone",
+   "source": "Line of sight over Copernicus DEM GLO-30 (computed)",
+   "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
+   "as_of": "2026-10-25",
+   "query_or_url": "terrain.line_of_sight from (51.50721, -0.12827) to site S031161 (zetaris:Q2)",
+   "cell_ids": [
+    "87195da49ffffff"
+   ],
+   "finding": "EE, O2 and Vodafone's nearest approximate site is 112 m east (Vodafone confirmed by Ofcom's licence register). The direct line clears the ground by at least 8 m (antenna height from Ofcom's licence register).",
+   "value": {
+    "site_id": "S031161",
+    "operators_at_site": [
+     "EE",
+     "O2",
+     "Vodafone"
+    ],
+    "operators_confirmed": [
+     "Vodafone"
+    ],
+    "for_operators": [
+     "EE",
+     "O2",
+     "Vodafone"
+    ],
+    "blocked": false,
+    "max_obstruction_m": -8.3,
+    "obstruction_distance_m": 28.0,
+    "obstruction_lat": 51.507171,
+    "obstruction_lon": -0.127868,
+    "obstruction_ground_m": 17.1,
+    "path_length_m": 112.0,
+    "rx_ground_m": 16.8,
+    "site_ground_m": 16.5,
+    "rx_height_m": 1.5,
+    "mast_height_m": 30.0,
+    "mast_height_source": "ofcom_register",
+    "samples": 5
+   },
+   "sample_size": {
+    "dem_samples": 5
+   },
+   "strength": "moderate",
+   "bears_on": [
+    "terrain_blocking",
+    "distance_to_mast"
+   ]
+  },
+  {
+   "id": "los_three",
+   "source": "Line of sight over Copernicus DEM GLO-30 (computed)",
+   "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
+   "as_of": "2026-10-25",
+   "query_or_url": "terrain.line_of_sight from (51.50721, -0.12827) to site S006617 (zetaris:Q2)",
+   "cell_ids": [
+    "87195da49ffffff"
+   ],
+   "finding": "Three's nearest approximate site is 190 m south (operator inferred from crowd-sourced data). The direct line only just clears the ground (by less than 1 m, antenna height assumed 25 m), so trees or buildings could still be in the way.",
+   "value": {
+    "site_id": "S006617",
+    "operators_at_site": [
+     "EE",
+     "O2",
+     "Three",
+     "Vodafone"
+    ],
+    "operators_confirmed": [],
+    "for_operators": [
+     "Three"
+    ],
+    "blocked": false,
+    "max_obstruction_m": -0.4,
+    "obstruction_distance_m": 27.0,
+    "obstruction_lat": 51.506985,
+    "obstruction_lon": -0.128417,
+    "obstruction_ground_m": 21.4,
+    "path_length_m": 190.0,
+    "rx_ground_m": 16.8,
+    "site_ground_m": 17.3,
+    "rx_height_m": 1.5,
+    "mast_height_m": 25.0,
+    "mast_height_source": "assumed_default",
+    "samples": 8
+   },
+   "sample_size": {
+    "dem_samples": 8
+   },
+   "strength": "weak",
+   "bears_on": [
+    "terrain_blocking",
+    "distance_to_mast"
+   ]
+  },
+  {
+   "id": "terrain_cell",
+   "source": "Copernicus DEM GLO-30 (Zetaris CD_TERRAIN)",
+   "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
+   "as_of": "2026-10-25",
+   "query_or_url": "zetaris:Q1",
+   "cell_ids": [
+    "87195da49ffffff"
+   ],
+   "finding": "Ground in this cell ranges over 56 m (mean elevation 28 m): rolling ground.",
+   "value": {
+    "elevation_range_m": 56.3,
+    "elevation_mean_m": 28.0
+   },
+   "sample_size": {
+    "dem_samples": 343
+   },
+   "strength": "moderate",
+   "bears_on": [
+    "terrain_blocking"
+   ]
+  },
+  {
+   "id": "ofcom_area",
+   "source": "Ofcom Connected Nations (Zetaris CD_OFCOM_AREA)",
+   "data_period": "2025-07 (release 202507_mobile_coverage_r01)",
+   "as_of": "2026-10-25",
+   "query_or_url": "zetaris:Q1",
+   "cell_ids": [
+    "87195da49ffffff"
+   ],
+   "finding": "In Cities of London and Westminster, 0.0% of land has no outdoor 4G from any operator and 0.0% from only one (Ofcom Connected Nations, July 2025). This is a predicted figure for the whole constituency, not this exact location.",
+   "value": {
+    "area": "Cities of London and Westminster",
+    "g4_geo_out_0": 0.0,
+    "g4_geo_out_1": 0.0,
+    "g4_prem_in_0": 0.0,
+    "local_authority": "Westminster",
+    "laua_g4_geo_out_0": 0.0
+   },
+   "sample_size": null,
+   "strength": "moderate",
+   "bears_on": [
+    "distance_to_mast",
+    "single_operator"
+   ]
+  },
+  {
+   "id": "weather",
+   "source": "Open-Meteo forecast",
+   "data_period": "live",
+   "as_of": "2026-10-25T20:36:52+00:00",
+   "query_or_url": "https://api.open-meteo.com/v1/forecast?latitude=51.5072&longitude=-0.1283&current=precipitation%2Crain%2Csnowfall%2Cwind_speed_10m%2Cwind_gusts_10m%2Cweather_code&hourly=precipitation%2Crain%2Csnowfall%2Cwind_speed_10m%2Cwind_gusts_10m%2Cweather_code&forecast_hours=24&timezone=Europe%2FLondon",
+   "cell_ids": [
+    "87195da49ffffff"
+   ],
+   "finding": "Weather now: mainly clear, wind 14 km/h gusting 31 km/h, rain 0.0 mm/h. Next 24 h: gusts up to 42.8 km/h, rain up to 2.0 mm/h: moderate (rain up to 2.0 mm/h).",
+   "value": {
+    "severity": "moderate",
+    "now": {
+     "time": "2026-10-25T20:30",
+     "precipitation_mm_h": 0.0,
+     "rain_mm_h": 0.0,
+     "snowfall_cm_h": 0.0,
+     "wind_kmh": 14.0,
+     "gust_kmh": 31.0,
+     "weather_code": 1,
+     "weather": "mainly clear"
+    },
+    "next_24h": {
+     "hours": 24,
+     "max_precipitation_mm_h": 2.0,
+     "max_precipitation_at": "2026-10-26T12:00",
+     "max_gust_kmh": 42.8,
+     "max_gust_at": "2026-10-26T14:00",
+     "max_snowfall_cm_h": 0.0,
+     "total_precipitation_mm": 7.3,
+     "thunderstorm_expected": false
+    }
+   },
+   "sample_size": {
+    "forecast_hours": 24
+   },
+   "strength": "moderate",
+   "bears_on": [
+    "weather"
+   ]
+  },
+  {
+   "id": "met_office_warnings",
+   "source": "Met Office severe weather warnings (RSS)",
+   "data_period": "live",
+   "as_of": "2026-10-25T21:00:13+00:00",
+   "query_or_url": "https://www.metoffice.gov.uk/public/data/PWSCache/WarningsRSS/Region/se",
+   "cell_ids": [
+    "87195da49ffffff"
+   ],
+   "finding": "No Met Office weather warnings are in force or due for London & South East England.",
+   "value": {
+    "region": "London & South East England",
+    "warnings": []
+   },
+   "sample_size": {
+    "warnings": 0
+   },
+   "strength": "moderate",
+   "bears_on": [
+    "weather"
+   ]
+  },
+  {
+   "id": "flood_warnings",
+   "source": "Environment Agency flood monitoring",
+   "data_period": "live",
+   "as_of": "2026-10-25T21:04:59+00:00",
+   "query_or_url": "https://environment.data.gov.uk/flood-monitoring/id/floods?lat=51.5072&long=-0.1283&dist=10",
+   "cell_ids": [
+    "87195da49ffffff"
+   ],
+   "finding": "2 flood alerts or warnings within 10 km: flood alert for Tidal Thames riverside from Putney Bridge to Teddington Weir (raised Sun 25 Oct 17:41); flood alert for Tidal Thames riverside from the Thames Barrier to Putney Bridge (raised Sun 25 Oct 17:43).",
+   "value": {
+    "warnings": [
+     {
+      "severity_level": 3,
+      "severity": "flood alert",
+      "area": "Tidal Thames riverside from Putney Bridge to Teddington Weir",
+      "ea_area": "Kent, South London and East Sussex",
+      "river_or_sea": "River Thames",
+      "time_raised": "2026-10-25T17:41:11",
+      "time_severity_changed": "2026-10-25T17:41:00",
+      "flood_area_id": "063WAT23West",
+      "distance_km": null
+     },
+     {
+      "severity_level": 3,
+      "severity": "flood alert",
+      "area": "Tidal Thames riverside from the Thames Barrier to Putney Bridge",
+      "ea_area": "Kent, South London and East Sussex",
+      "river_or_sea": "River Thames",
+      "time_raised": "2026-10-25T17:43:41",
+      "time_severity_changed": "2026-10-25T17:43:00",
+      "flood_area_id": "063WAT23Central",
+      "distance_km": null
+     }
+    ],
+    "via": "api"
+   },
+   "sample_size": {
+    "warnings": 2
+   },
+   "strength": "moderate",
+   "bears_on": [
+    "active_incident"
+   ]
+  }
+ ],
+ "zetaris_queries": [
+  {
+   "id": "Q1",
+   "at": "2026-10-25T21:06:02+00:00",
+   "sql": "SELECT c.cell_id, c.lat, c.lon, c.population, c.nation, o.quarter, o.download_mbps, o.upload_mbps, o.latency_ms, o.tests, o.devices, o.tests_per_1k_pop, o.devices_per_1k_pop, o.quarters_with_data, o.download_mbps_oldest, o.download_change_pct, o.download_trend_mbps_per_quarter, hst.history_json, nb.neighbour_download_mbps, nb.neighbour_tests, nb.neighbour_cells_with_data, m.nearest_mast_km, m.nearest_mast_bearing_deg, m.nearest_mast_id, m.nearest_mast_lat, m.nearest_mast_lon, m.nearest_mast_sources, m.nearest_mast_operators, m.nearest_mast_operators_confirmed, m.nearest_mast_antenna_height_m, m.masts_within_5km, m.masts_known_operator_within_5km, m.masts_unknown_operator_within_5km, m.masts_osm_only_within_5km, m.distinct_operators_within_5km, m.operators_within_5km, m.operators_confirmed_within_5km, m.wtr_sites_within_5km, m.microwave_backhaul_sites_within_5km, m.operator_data_status, a.pcon_code, a.pcon_name, a.laua_code, a.laua_name, a.g4_geo_out_0, a.g4_geo_out_1, a.g4_prem_out_0, a.g4_prem_in_0, a.g4_abrd_in_0, a.g5hc_prem_out_at_least_one, a.laua_g4_geo_out_0, a.laua_g4_geo_out_1, a.data_date AS ofcom_data_date, t.elevation_mean_m, t.elevation_range_m, l.blocked AS los_blocked, l.obstruction_m AS los_obstruction_m, l.los_class FROM CD_CELLS.cells_r7 c LEFT JOIN CD_OOKLA_MOBILE.ookla_mobile_r7 o ON o.cell_id = c.cell_id LEFT JOIN ( SELECT cell_id, to_json(collect_list(named_struct('quarter', quarter, 'download_mbps', download_mbps, 'tests', tests))) AS history_json FROM CD_OOKLA_MOBILE_HISTORY.ookla_mobile_history_r7 WHERE cell_id = '87195da49ffffff' GROUP BY cell_id ) hst ON hst.cell_id = c.cell_id CROSS JOIN ( SELECT sum(download_mbps * tests) / sum(tests) AS neighbour_download_mbps, sum(tests) AS neighbour_tests, count(*) AS neighbour_cells_with_data FROM CD_OOKLA_MOBILE.ookla_mobile_r7 WHERE cell_id IN ('87194ad14ffffff', '87194ad16ffffff', '87194ad32ffffff', '87195da48ffffff', '87195da4bffffff', '87195da4dffffff') ) nb LEFT JOIN CD_MASTS.masts_r7 m ON m.cell_id = c.cell_id LEFT JOIN CD_OFCOM_AREA.ofcom_area_r7 a ON a.cell_id = c.cell_id LEFT JOIN CD_TERRAIN.terrain_r7 t ON t.cell_id = c.cell_id LEFT JOIN CD_LOS.los_r7 l ON l.cell_id = c.cell_id WHERE c.cell_id = '87195da49ffffff'",
+   "duration_ms": 415,
+   "rows": 1,
+   "error": null,
+   "cached": false
+  },
+  {
+   "id": "Q2",
+   "at": "2026-10-25T21:06:03+00:00",
+   "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 51.507211) / 2), 2) + cos(radians(51.507211)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (-0.128269)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 51.41712 AND 51.59730 AND s.lon BETWEEN -0.27260 AND 0.01606 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
+   "duration_ms": 302,
+   "rows": 3009,
+   "error": null,
+   "cached": false
+  },
+  {
+   "id": "Q3",
+   "at": "2026-10-25T21:06:02+00:00",
+   "sql": "SELECT percentile_approx(devices_per_1k_pop, 0.5) AS devices_per_1k_p50, percentile_approx(devices_per_1k_pop, 0.9) AS devices_per_1k_p90, percentile_approx(download_mbps, 0.5) AS download_mbps_p50, count(*) AS cells FROM CD_OOKLA_MOBILE.ookla_mobile_r7 WHERE tests >= 10",
+   "duration_ms": 115,
+   "rows": 1,
+   "error": null,
+   "cached": true
+  }
+ ],
+ "errors": [],
+ "limitations": [
+  "Causes are inferred from public data, not confirmed: operators' network data is not public.",
+  "Ookla speeds are quarterly aggregates with no time-of-day detail; congestion can only be inferred.",
+  "No address-level Ofcom coverage; Ofcom figures are for the whole constituency and are predictions.",
+  "Mast sites are approximate (crowd-sourced OpenCelliD, OpenStreetMap, Ofcom's licence register) and incomplete, so 'no sites found' is weak evidence.",
+  "Line of sight uses a surface model (trees and buildings included) and mostly assumed antenna heights; blocked means a weaker signal, not no signal."
+ ],
+ "resident_check": "Check your address on Ofcom's mobile coverage checker: https://www.ofcom.org.uk/mobile-coverage-checker"
+}

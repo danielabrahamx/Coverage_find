@@ -101,7 +101,8 @@ coverage_detective/   package
   data/               processed-data helpers (grid.py: H3 cells + population), Zetaris client
   sources/            external sources (Ookla, OpenCelliD, Ofcom, WTR; live: geocode, weather,
                       met_office_warnings, flood_warnings via live.py)
-  api/                FastAPI: app.py = data explorer API (+ evidence API later)
+  api/                FastAPI: app.py = data explorer API + POST /api/evidence
+  evidence.py         evidence bundle for a point (Zetaris queries, line of sight, live sources)
 scripts/download/     fetch raw data into data/raw/<source>/ (skip files that exist)
 scripts/process/      build data/processed/*.parquet from raw data
 scripts/zetaris/      register processed files as Zetaris sources
@@ -158,6 +159,7 @@ cp .env.example .env                      # then fill in
 .venv/bin/python scripts/download/dem.py           # Copernicus GLO-30 tiles (~1.4 GB), for phase C
 .venv/bin/python scripts/process/build_terrain.py  # -> terrain_r7, los_r7 (~2 min)
 .venv/bin/python scripts/check_terrain.py          # line of sight at the sample places
+.venv/bin/python scripts/check_evidence.py         # evidence bundles for the sample places
 .venv/bin/python scripts/download/ons_boundaries.py # constituencies 2024 + local authorities Dec 2024
 .venv/bin/python scripts/process/build_ofcom.py    # -> ofcom_area_r7.parquet, ofcom_nations.parquet
 scripts/zetaris/compose.sh up -d driver           # Zetaris with our data mount
@@ -198,6 +200,11 @@ G power cuts (dropped 25 Oct: future work) · H visitor load (if time) · final 
   / blocked). /api/los + map line and profile. Check: scripts/check_terrain.py.
   Wording: "blocked" = likely weaker signal, never "no signal"; say when the antenna height
   is assumed; GLO-30 is a surface model (trees, buildings), so treat "marginal" as weak.
+- Evidence API: done. POST /api/evidence {query} or {lat, lon} -> coverage_detective/evidence.py:
+  Q1 cell_sql (data/queries.py, shared with the explorer), Q2 sites within 10 km of the exact
+  point, Q3 UK context (cached); line of sight per operator; live sources. Items: id, source,
+  data_period, as_of, query_or_url, cell_ids, finding, value, sample_size, strength, bears_on.
+  Check: scripts/check_evidence.py (saves data/samples/evidence/*.json). Tests mock Zetaris + DEM.
 - D. Live sources: done. sources/live.py (5 s timeout, one retry, disk cache data/cache/live/,
   fallback cached → sample) + geocode.py (postcodes.io), weather.py (Open-Meteo; severity
   none/moderate/severe, only severe supports the `weather` cause), met_office_warnings.py
@@ -207,7 +214,7 @@ G power cuts (dropped 25 Oct: future work) · H visitor load (if time) · final 
 
 - Earlier: grid (`cells_r7`) and Ookla (2026Q3 + 3 previous quarters) built; Ofcom API stub.
 - Order agreed 25 Oct: B → E → D → C → evidence API → F → final check; G dropped, H only if time.
-- After the data session: evidence API (neighbour aggregation, weak-evidence flags), agents.
+- Next: F (deprivation), final check_data.py, then the agents.
 
 ## Rules
 

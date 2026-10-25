@@ -38,7 +38,7 @@ def severity(gust_kmh: float, precip_mm_h: float, snow_cm_h: float, codes: list[
     """('none'|'moderate'|'severe', reasons)."""
     reasons = []
     if gust_kmh >= SEVERE["gust_kmh"]:
-        reasons.append(f"gusts up to {gust_kmh:.0f} km/h")
+        reasons.append(f"gusts up to {gust_kmh:.1f} km/h")
     if precip_mm_h >= SEVERE["precip_mm_h"]:
         reasons.append(f"heavy rain up to {precip_mm_h:.1f} mm/h")
     if snow_cm_h >= SEVERE["snow_cm_h"]:
@@ -48,7 +48,7 @@ def severity(gust_kmh: float, precip_mm_h: float, snow_cm_h: float, codes: list[
     if reasons:
         return "severe", reasons
     if gust_kmh >= MODERATE["gust_kmh"]:
-        reasons.append(f"gusts up to {gust_kmh:.0f} km/h")
+        reasons.append(f"gusts up to {gust_kmh:.1f} km/h")
     if precip_mm_h >= MODERATE["precip_mm_h"]:
         reasons.append(f"rain up to {precip_mm_h:.1f} mm/h")
     if snow_cm_h > MODERATE["snow_cm_h"]:
