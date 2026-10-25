@@ -12,7 +12,7 @@ Routes:
   GET /api/geocode?q=          postcode or place name (postcodes.io)
   GET /api/geocode/reverse     nearest postcode to ?lat=&lon=
   GET /api/live?lat=&lon=      live context: weather, Met Office warnings, EA flood warnings
-  GET /api/los?lat=&lon=&site_id=   line of sight from a point to a mast site, with profile
+  GET /api/los?lat=&lon=(&site_id=)  line of sight from the exact point to a site (default nearest)
   POST /api/evidence           evidence bundle for {"query": postcode or place} or {"lat", "lon"}
   /                            the web app (web/)
 """
@@ -187,12 +187,17 @@ def geocode_reverse(lat: float = Query(..., ge=-90, le=90), lon: float = Query(.
 
 @app.get("/api/los")
 def los(lat: float = Query(..., ge=49, le=61.5), lon: float = Query(..., ge=-9, le=2.5),
-        site_id: str = Query(..., max_length=40)) -> dict:
+        site_id: str | None = Query(None, max_length=40, description="default: the nearest site to the point")) -> dict:
+    """Line of sight from the exact point to a site (by default the nearest approximate site)."""
     sites = mast_sites()
-    hit = sites[sites.site_id == site_id]
-    if hit.empty:
-        raise HTTPException(404, f"No site {site_id!r}")
-    s = hit.iloc[0]
+    if site_id is None:
+        s = sites.iloc[int(terrain.distance_m(lat, lon, sites.lat.to_numpy(), sites.lon.to_numpy()).argmin())]
+        site_id = s.site_id
+    else:
+        hit = sites[sites.site_id == site_id]
+        if hit.empty:
+            raise HTTPException(404, f"No site {site_id!r}")
+        s = hit.iloc[0]
     height = s.antenna_height_m if pd.notna(s.antenna_height_m) else None
     result = terrain.line_of_sight(lat, lon, float(s.lat), float(s.lon), mast_height=height)
     site = {"site_id": site_id, "lat": float(s.lat), "lon": float(s.lon), "sources": s.sources,

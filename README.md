@@ -107,9 +107,10 @@ scripts/zetaris/compose.sh up -d                        # Zetaris with our data 
 - Approximate mast sites appear from zoom 10 (coloured by source), Ookla tiles from zoom 12.
 - Click a cell: its details come from **one cross-source Zetaris query** (cells, Ookla and
   history, neighbours, masts, Ofcom area), shown under "Zetaris query used", with data dates.
-- Line of sight in the cell panel: the line from the cell centre to its nearest site is
-  drawn on the map (red if blocked, with the highest obstruction marked) above an elevation
-  profile of the path.
+- Line of sight in the cell panel is computed from the **exact point** you clicked or
+  searched (not the cell centre) to the nearest approximate site: the line is drawn on the
+  map (red if blocked, with the highest obstruction marked) above an elevation profile of
+  the path. The "Line of sight" map layer is a per-cell summary from each cell's centre.
 - "Right now" in the cell panel: live weather (with severity), Met Office warnings for the
   region and EA flood warnings within 10 km ("not covered" outside England), each with its
   source, status (live / cached / sample) and time. If everything is calm it says so.
@@ -118,7 +119,8 @@ scripts/zetaris/compose.sh up -d                        # Zetaris with our data 
 API: `GET /api/layers`, `/api/layer/{name}`, `/api/masts?bbox=`, `/api/tiles?bbox=`,
 `/api/cell/{cell_id}`, `/api/geocode?q=`, `/api/geocode/reverse?lat=&lon=`,
 `/api/live?lat=&lon=` (add `&flood_via=zetaris` for the Zetaris path),
-`/api/los?lat=&lon=&site_id=` (line of sight with profile), `/health`
+`/api/los?lat=&lon=` (line of sight from the exact point to the nearest site, or
+`&site_id=`), `/health`
 (OpenAPI docs at `/docs`).
 
 ![Line of sight, Great Langdale](docs/screenshots/great_langdale_line_of_sight.png)

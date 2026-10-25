@@ -241,9 +241,12 @@ G (power cuts) dropped as future work; H (visitor load) only if time. Then the a
 - **C. Terrain** (`c3caa01`): `data/terrain.py` (bilinear DEM, ≤ 4 tiles in memory,
   `line_of_sight()` with 30 m samples, k = 4/3 curvature, antenna height from the register
   else 25 m). `CD_TERRAIN.terrain_r7` (elevation per cell from 343 r10 samples) and
-  `CD_LOS.los_r7` (cell centre → nearest site, map only; clear 29,555 / marginal < 10 m
-  10,153 / blocked 15,869 populated cells; register height for 40%). `/api/los`; map line +
-  elevation profile. Great Langdale: blocked by 288 m, 2.25 km towards the site.
+  `CD_LOS.los_r7` (cell centre → nearest site, map layer only; clear 29,555 / marginal < 10 m
+  10,153 / blocked 15,869 populated cells; register height for 40%). Everything a user or
+  agent sees for a location uses the EXACT point, never the cell centre: the evidence API
+  (to each operator's nearest site) and the explorer panel (`/api/los?lat=&lon=`, nearest
+  site to the clicked / searched point; map line + elevation profile). Great Langdale:
+  blocked by 288 m, 2.25 km towards the site.
   Mast refreshes rebuild `los_r7`.
 - **Evidence API** (`d9cbd90`): `POST /api/evidence` {query} or {lat, lon} →
   `evidence.py`: Q1 `cell_sql`, Q2 sites within 10 km of the exact point, Q3 UK context

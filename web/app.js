@@ -23,6 +23,7 @@ const state = {
   masts: [],
   tiles: [],
   selected: null,
+  point: null,         // the exact point clicked or searched (or the cell centre)
   los: null,           // line of sight for the selected cell (from /api/los)
 };
 
@@ -255,7 +256,7 @@ function onMapClick(info) {
   if (!info.coordinate) return;
   const [lon, lat] = info.coordinate;
   const cell = h3.latLngToCell(lat, lon, 7);
-  if (state.inGrid.has(cell)) selectCell(cell);  // ignore clicks on the sea or abroad
+  if (state.inGrid.has(cell)) selectCell(cell, { lat, lon });  // ignore clicks on the sea or abroad
 }
 
 /* ---------- side panel ---------- */
@@ -377,16 +378,17 @@ function losHTML(L) {
        ${km(L.obstruction_distance_m)} along the ${km(L.path_length_m)} path (ground there ${fmt(L.obstruction_ground_m, 0)} m).</p>`
     : `<p class="status"><strong class="good">Clear</strong>: the line passes at least ${fmt(-L.max_obstruction_m, 0)} m above the ground over ${km(L.path_length_m)}.</p>`;
   return `<h3>Line of sight to the nearest site</h3>${verdict}${profileSVG(L)}
-    <p class="footnote">From the cell centre at 1.5 m to the site, ${height}; earth curvature included.
+    <p class="footnote">From ${state.point?.exact ? (state.point.label ? esc(state.point.label) : "the point you clicked") : "the cell centre"} at 1.5 m
+    to the nearest approximate site (${esc(L.site.operators || "operator unknown")}), ${height}; earth curvature included.
     Blocked means a weaker signal, not none. Copernicus GLO-30 surface model.</p>`;
 }
 
-async function loadLos(cellId, c) {
+async function loadLos(cellId) {
   state.los = null;
-  if (!c.nearest_mast_id) { $("los").innerHTML = `<h3>Line of sight to the nearest site</h3><p class="muted">No site found.</p>`; return; }
-  const [lat, lon] = h3.cellToLatLng(cellId);
+  // From the exact point clicked or searched; the cell centre only when opened by cell id.
+  const { lat, lon } = state.point;
   try {
-    const L = await getJSON(`/api/los?lat=${lat.toFixed(5)}&lon=${lon.toFixed(5)}&site_id=${encodeURIComponent(c.nearest_mast_id)}`);
+    const L = await getJSON(`/api/los?lat=${lat.toFixed(5)}&lon=${lon.toFixed(5)}`);
     if (state.selected !== cellId) return;
     state.los = L;
     render();
@@ -452,7 +454,7 @@ function rightNowHTML(L) {
 }
 
 async function loadRightNow(cellId) {
-  const [lat, lon] = h3.cellToLatLng(cellId);
+  const { lat, lon } = state.point;
   const box = () => (state.selected === cellId ? $("right-now") : null);
   try {
     const L = await getJSON(`/api/live?lat=${lat.toFixed(5)}&lon=${lon.toFixed(5)}`);
@@ -462,16 +464,18 @@ async function loadRightNow(cellId) {
   }
 }
 
-async function selectCell(cellId) {
+async function selectCell(cellId, point = null) {
   state.selected = cellId;
   state.los = null;
+  const [clat, clon] = h3.cellToLatLng(cellId);
+  state.point = point ? { ...point, exact: true } : { lat: clat, lon: clon, exact: false };
   render();
   const panel = $("panel");
   panel.hidden = false;
   $("panel-body").innerHTML = `<p class="loading">Querying Zetaris…</p>`;
   try {
     const res = await getJSON(`/api/cell/${cellId}`);
-    if (state.selected === cellId) { $("panel-body").innerHTML = panelHTML(res); loadRightNow(cellId); loadLos(cellId, res.cell); }
+    if (state.selected === cellId) { $("panel-body").innerHTML = panelHTML(res); loadRightNow(cellId); loadLos(cellId); }
   } catch (e) {
     $("panel-body").innerHTML = `<p class="error">Could not load this cell: ${esc(e.message)}</p>`;
   }
@@ -511,7 +515,7 @@ document.addEventListener("click", (e) => { if (!$("search").contains(e.target))
 
 function flyTo(r) {
   map.flyTo({ center: [r.lon, r.lat], zoom: 11.5, speed: 1.6 });
-  selectCell(r.cell_id);
+  selectCell(r.cell_id, { lat: r.lat, lon: r.lon, label: r.label });
 }
 
 /* ---------- start ---------- */
