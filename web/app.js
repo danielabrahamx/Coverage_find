@@ -2,7 +2,12 @@
 "use strict";
 
 const BASEMAP = "https://tiles.openfreemap.org/styles/positron";
-const UK_VIEW = { center: [-3.2, 54.6], zoom: 4.9 };
+const UK_VIEW = { bounds: [[-8.7, 49.85], [1.9, 60.9]], fitBoundsOptions: { padding: 16 } };
+// The view is kept on the UK: zoom-out stops where the whole UK just fits the screen, and
+// panning stops when the UK's edge reaches the screen's edge (when the whole UK fits in a
+// direction, it stays centred). maxBounds is not used: it stops wide screens zooming out
+// far enough to see all of the UK.
+const UK_FIT = [[-8.7, 49.85], [1.9, 60.9]];
 const MAST_MIN_ZOOM = 10;
 const TILE_MIN_ZOOM = 12;
 const NO_DATA = [168, 174, 184, 70];
@@ -15,6 +20,7 @@ const state = {
   layer: null,         // selected layer metadata
   values: new Map(),   // cell_id -> [value, weak]
   grid: [],            // every cell id (from the population layer)
+  inGrid: new Set(),
   masts: [],
   tiles: [],
   selected: null,
@@ -47,7 +53,28 @@ async function getJSON(url) {
 
 /* ---------- map ---------- */
 
-const map = new maplibregl.Map({ container: "map", style: BASEMAP, ...UK_VIEW, attributionControl: { compact: true } });
+const map = new maplibregl.Map({
+  container: "map", style: BASEMAP, ...UK_VIEW, attributionControl: { compact: true },
+});
+function fitMinZoom() {
+  const camera = map.cameraForBounds(UK_FIT, { padding: 16 });
+  if (camera) map.setMinZoom(Math.max(3, camera.zoom));
+}
+fitMinZoom();
+map.on("resize", fitMinZoom);
+function keepUkInView() {
+  const { clientWidth: w, clientHeight: h } = map.getContainer();
+  const nw = map.project([UK_FIT[0][0], UK_FIT[1][1]]);
+  const se = map.project([UK_FIT[1][0], UK_FIT[0][1]]);
+  const shift = (lo, hi, size) =>
+    hi - lo <= size ? (lo + hi) / 2 - size / 2   // fits: centre it
+    : lo > 0 ? lo                                 // gap before the UK: move back
+    : hi < size ? hi - size                       // gap after the UK: move back
+    : 0;
+  const dx = shift(nw.x, se.x, w), dy = shift(nw.y, se.y, h);
+  if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5) map.panBy([dx, dy], { animate: false });
+}
+map.on("move", keepUkInView);
 map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
 const overlay = new deck.MapboxOverlay({ interleaved: false, layers: [], getCursor: ({ isHovering }) => (isHovering ? "pointer" : "grab") });
 map.addControl(overlay);
@@ -222,7 +249,8 @@ function onHover(info) {
 function onMapClick(info) {
   if (!info.coordinate) return;
   const [lon, lat] = info.coordinate;
-  selectCell(h3.latLngToCell(lat, lon, 7));
+  const cell = h3.latLngToCell(lat, lon, 7);
+  if (state.inGrid.has(cell)) selectCell(cell);  // ignore clicks on the sea or abroad
 }
 
 /* ---------- side panel ---------- */
@@ -356,6 +384,7 @@ async function start() {
   select.addEventListener("change", () => loadLayer(select.value));
   renderDataDates();
   state.grid = (await getJSON("/api/layer/population")).map((r) => r[0]);
+  state.inGrid = new Set(state.grid);
   const params = new URLSearchParams(location.search);
   const first = params.get("layer") || "download_mbps";
   select.value = first;
