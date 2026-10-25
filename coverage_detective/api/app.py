@@ -12,6 +12,7 @@ Routes:
   GET /api/geocode?q=          postcode or place name (postcodes.io)
   GET /api/geocode/reverse     nearest postcode to ?lat=&lon=
   GET /api/live?lat=&lon=      live context: weather, Met Office warnings, EA flood warnings
+  GET /api/los?lat=&lon=&site_id=   line of sight from a point to a mast site, with profile
   /                            the web app (web/)
 """
 
@@ -30,7 +31,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from coverage_detective.config import H3_RES, PROCESSED, ROOT
-from coverage_detective.data import manifest
+from coverage_detective.data import manifest, terrain
 from coverage_detective.data.zetaris import QUERY_LOG, ZetarisError, query
 from coverage_detective.sources import flood_warnings, geocode as geocoder, live as live_sources
 from coverage_detective.sources import met_office_warnings, weather
@@ -145,7 +146,7 @@ def _optional_joins() -> tuple[list[str], list[str], list[str]]:
         joins.append("LEFT JOIN CD_TERRAIN.terrain_r7 t ON t.cell_id = c.cell_id")
         tables.append("terrain_r7")
     if "terrain" in sources and (PROCESSED / "los_r7.parquet").exists():
-        cols += ["l.blocked AS los_blocked", "l.obstruction_m AS los_obstruction_m"]
+        cols += ["l.blocked AS los_blocked", "l.obstruction_m AS los_obstruction_m", "l.los_class"]
         joins.append("LEFT JOIN CD_LOS.los_r7 l ON l.cell_id = c.cell_id")
         tables.append("los_r7")
     if "deprivation" in sources:
@@ -236,6 +237,21 @@ def geocode_reverse(lat: float = Query(..., ge=-90, le=90), lon: float = Query(.
     if res.status == "unavailable":
         raise HTTPException(502, f"postcodes.io lookup failed: {res.error}")
     return {**res.data, "place": geocoder.place_name(res.data["nearest"]), "source": res.to_dict()}
+
+
+@app.get("/api/los")
+def los(lat: float = Query(..., ge=49, le=61.5), lon: float = Query(..., ge=-9, le=2.5),
+        site_id: str = Query(..., max_length=40)) -> dict:
+    sites = mast_sites()
+    hit = sites[sites.site_id == site_id]
+    if hit.empty:
+        raise HTTPException(404, f"No site {site_id!r}")
+    s = hit.iloc[0]
+    height = s.antenna_height_m if pd.notna(s.antenna_height_m) else None
+    result = terrain.line_of_sight(lat, lon, float(s.lat), float(s.lon), mast_height=height)
+    site = {"site_id": site_id, "lat": float(s.lat), "lon": float(s.lon), "sources": s.sources,
+            "operators": s.operators or None}
+    return {"lat": lat, "lon": lon, "site": site, **result}
 
 
 def live_context(lat: float, lon: float, flood_via: str = "api") -> dict:

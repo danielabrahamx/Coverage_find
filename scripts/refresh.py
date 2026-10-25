@@ -29,7 +29,7 @@ from typing import Callable
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from coverage_detective.config import RAW  # noqa: E402
+from coverage_detective.config import PROCESSED, RAW  # noqa: E402
 from coverage_detective.data import manifest  # noqa: E402
 
 PY = sys.executable
@@ -111,6 +111,14 @@ def refresh_masts(files: list[Path], download_script: str) -> None:
     swap_and_download(files, download_script)
     run("scripts/process/build_masts.py", "--force")  # merges the register too, if built
     run("scripts/zetaris/register_sources.py", "masts_sites", "masts_cells")
+    rebuild_los()
+
+
+def rebuild_los() -> None:
+    """Line of sight runs to each cell's nearest site, so it follows the mast tables."""
+    if (PROCESSED / "los_r7.parquet").exists():
+        run("scripts/process/build_terrain.py", "--los")
+        run("scripts/zetaris/register_sources.py", "los")
 
 
 # --- Ofcom Wireless Telegraphy Register (monthly) -------------------------------------------
@@ -134,6 +142,7 @@ def refresh_wtr() -> None:
         f.with_name(f.name + ".prev").unlink(missing_ok=True)
     run("scripts/process/build_wtr.py")  # also rebuilds the mast tables
     run("scripts/zetaris/register_sources.py", "wtr_points", "masts_sites", "masts_cells")
+    rebuild_los()
 
 
 # --- ofcom --------------------------------------------------------------------------------
@@ -179,7 +188,7 @@ SOURCES: dict[str, tuple[str, Callable[[], Status], Callable[[], None]]] = {
     "ofcom": ("new release", check_ofcom, refresh_ofcom),
     "cells": ("manual", manual("cells", "WorldPop / ONS boundaries: replace files in data/raw/, run build_cells.py --force"),
               not_automatic),
-    "dem": ("manual", manual("dem", "Copernicus GLO-30 is static; re-run scripts/download/dem.py only if tiles change"),
+    "dem": ("manual", manual("terrain", "Copernicus GLO-30 is static; los_r7 is rebuilt after mast refreshes"),
             not_automatic),
 }
 

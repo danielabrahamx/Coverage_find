@@ -90,6 +90,8 @@ Limitations (state them in outputs):
   have merged (EE = T-Mobile + Orange; Vodafone UK + Three UK = VodafoneThree, 2025), so
   labels follow the reference table, not current company names.
 - Mobile networks only; home broadband is out of scope.
+- Terrain: blocked means weaker, not no signal; antenna heights mostly assumed (25 m); GLO-30 is
+  a surface model (includes some trees and buildings), most reliable for hills and valleys.
 
 ## Layout
 
@@ -154,6 +156,8 @@ cp .env.example .env                      # then fill in
 .venv/bin/python scripts/download/ofcom_wtr.py      # Ofcom Wireless Telegraphy Register (~54 MB)
 .venv/bin/python scripts/process/build_wtr.py       # -> wtr_points.parquet, then rebuilds the mast tables
 .venv/bin/python scripts/download/dem.py           # Copernicus GLO-30 tiles (~1.4 GB), for phase C
+.venv/bin/python scripts/process/build_terrain.py  # -> terrain_r7, los_r7 (~2 min)
+.venv/bin/python scripts/check_terrain.py          # line of sight at the sample places
 .venv/bin/python scripts/download/ons_boundaries.py # constituencies 2024 + local authorities Dec 2024
 .venv/bin/python scripts/process/build_ofcom.py    # -> ofcom_area_r7.parquet, ofcom_nations.parquet
 scripts/zetaris/compose.sh up -d driver           # Zetaris with our data mount
@@ -176,7 +180,7 @@ Built in phases; after each: run checks, commit, stop for review. Current plan (
 A Zetaris foundation · B masts (OpenCelliD + OSM) · C terrain + line of sight ·
 D live sources (postcodes.io, Open-Meteo, Met Office warnings, EA floods) ·
 E Ofcom regional (file in data/raw/ofcom/) · F rural-urban + deprivation ·
-G power cuts (if time) · H visitor load (if time) · final check_data.py.
+G power cuts (dropped 25 Oct: future work) · H visitor load (if time) · final check_data.py.
 
 - A. Zetaris foundation: done (client, mount, CD_CELLS + 3 Ookla sources, join check)
 - B. Masts: done (OpenCelliD + OSM + Ofcom WTR merged; CD_MASTS_SITES, CD_MASTS, CD_WTR_POINTS).
@@ -188,6 +192,12 @@ G power cuts (if time) · H visitor load (if time) · final check_data.py.
   operator). Columns g4_geo_out_0..4 etc. = % with coverage from exactly N operators.
 - Freshness: data/manifest.json (written by every build), scripts/refresh.py, evidence_meta().
 - Data explorer: run.py + web/; /api/cell/{id} is one Zetaris query. Rebuild layers after data changes.
+- C. Terrain: done. data/terrain.py (DEM reader, line_of_sight with k=4/3 curvature, 30 m
+  samples, antenna height from Ofcom register else 25 m); CD_TERRAIN.terrain_r7 (elevation per
+  cell), CD_LOS.los_r7 (cell centre -> nearest site, map only; los_class clear / marginal < 10 m
+  / blocked). /api/los + map line and profile. Check: scripts/check_terrain.py.
+  Wording: "blocked" = likely weaker signal, never "no signal"; say when the antenna height
+  is assumed; GLO-30 is a surface model (trees, buildings), so treat "marginal" as weak.
 - D. Live sources: done. sources/live.py (5 s timeout, one retry, disk cache data/cache/live/,
   fallback cached → sample) + geocode.py (postcodes.io), weather.py (Open-Meteo; severity
   none/moderate/severe, only severe supports the `weather` cause), met_office_warnings.py
@@ -196,7 +206,7 @@ G power cuts (if time) · H visitor load (if time) · final check_data.py.
   Samples: data/samples/ (scripts/download/live_samples.py); check: scripts/check_live.py.
 
 - Earlier: grid (`cells_r7`) and Ookla (2026Q3 + 3 previous quarters) built; Ofcom API stub.
-- Order agreed 25 Oct: B → E → D → C → F → final check; G/H only if time.
+- Order agreed 25 Oct: B → E → D → C → evidence API → F → final check; G dropped, H only if time.
 - After the data session: evidence API (neighbour aggregation, weak-evidence flags), agents.
 
 ## Rules

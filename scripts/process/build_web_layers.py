@@ -58,7 +58,8 @@ def layer_defs() -> list[dict]:
     masts = _read("masts_r7.parquet", ["cell_id", "nearest_mast_km", "distinct_operators_within_5km", "operator_data_status",
                                        "microwave_backhaul_sites_within_5km"])
     ofcom = _read("ofcom_area_r7.parquet", ["cell_id", "g4_geo_out_0", "g4_geo_out_1"])
-    los = _read("los_r7.parquet", ["cell_id", "blocked"])
+    los = _read("los_r7.parquet", ["cell_id", "los_class"])
+    terr = _read("terrain_r7.parquet", ["cell_id", "elevation_range_m"])
     dep = _read("deprivation_r7.parquet", ["cell_id", "deprivation_decile_within_nation"])
 
     defs = []
@@ -117,11 +118,17 @@ def layer_defs() -> list[dict]:
         "outdoor 4G from only one operator (Ofcom Connected Nations). Area figure.", "%",
         {"type": "bins", "breaks": [1, 5, 10, 25], "colors": ["#EFF6FF", "#FDE68A", "#F59E0B", "#EA580C", "#9A3412"],
          "labels": ["< 1%", "1 – 5%", "5 – 10%", "10 – 25%", "> 25%"]}, "ofcom_area_r7", ofcom, "g4_geo_out_1", decimals=1)
-    if los is not None:
-        los = los.assign(blocked=los.blocked.astype(int))
-    add("los_blocked", "Line of sight blocked", "Terrain blocks the line from the cell centre to its nearest "
-        "mast site.", "", {"type": "categories", "values": [0, 1], "colors": ["#1D4ED8", "#C2410C"],
-                           "labels": ["Clear", "Blocked"]}, "los_r7", los, "blocked", decimals=0)
+    add("elevation_range", "Elevation range", "Highest minus lowest ground in the cell (Copernicus GLO-30, "
+        "a surface model).", "m",
+        {"type": "bins", "breaks": [25, 75, 150, 300], "colors": ["#F5F5F4", "#D6D3D1", "#A8A29E", "#78716C", "#44403C"],
+         "labels": ["< 25", "25 – 74", "75 – 149", "150 – 299", "300 +"]}, "terrain_r7", terr, "elevation_range_m",
+        decimals=0)
+    add("los_blocked", "Line of sight to nearest site", "Does terrain rise above the line from the cell centre "
+        "(1.5 m) to its nearest approximate mast site? Antenna height from Ofcom's register, else assumed 25 m. "
+        "Marginal = blocked by under 10 m, which may be trees or buildings in the surface model. Blocked means "
+        "weaker signal, not none.", "",
+        {"type": "categories", "values": ["clear", "marginal", "blocked"], "colors": ["#1D4ED8", "#FDBA74", "#C2410C"],
+         "labels": ["Clear", "Marginal (< 10 m)", "Blocked (10 m +)"]}, "los_r7", los, "los_class")
     add("deprivation_decile", "Deprivation decile", "Deprivation decile within the cell's nation "
         "(1 = most deprived). Not comparable across nations.", "decile",
         {"type": "bins", "breaks": [3, 5, 7, 9], "colors": ["#9A3412", "#F59E0B", "#E5E7EB", "#93C5FD", "#1D4ED8"],

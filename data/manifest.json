@@ -108,6 +108,34 @@
         "2026Q3"
       ]
     },
+    "terrain": {
+      "title": "Copernicus DEM GLO-30: terrain per cell and line of sight to the nearest site",
+      "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
+      "downloaded": {
+        "dem_tiles": "2026-10-25"
+      },
+      "built_at": "2026-10-25T20:55:31+00:00",
+      "refresh": "manual (static); los_r7 after mast tables change",
+      "licence": "Copernicus DEM licence: free, attribution required. (c) DLR e.V. 2010-2014 and (c) Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+      "outputs": {
+        "terrain_r7.parquet": {
+          "sha256": "2274011a68e294dd0ed7feed0789c55e40b2bc1fa7778c4e9bb05c10fbe14bbe",
+          "bytes": 959174,
+          "rows": 56592
+        },
+        "los_r7.parquet": {
+          "sha256": "f13f6443ad17efb2dd3427e965cd8b3bde681adc391a37f043a0d608743b7639",
+          "bytes": 2316223,
+          "rows": 55577
+        }
+      },
+      "tiles": 93,
+      "default_mast_height_m": 25.0,
+      "rx_height_m": 1.5,
+      "marginal_below_m": 10.0,
+      "k_factor": "4/3",
+      "sample_spacing_m": 30.0
+    },
     "wtr": {
       "title": "Ofcom Wireless Telegraphy Register: mobile operators' licensed fixed links",
       "data_period": "register downloaded 2026-10-25",
@@ -142,5 +170,5 @@
       }
     }
   },
-  "updated_at": "2026-10-25T20:19:01+00:00"
+  "updated_at": "2026-10-25T20:55:31+00:00"
 }

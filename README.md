@@ -63,6 +63,7 @@ Each dataset is its own Zetaris source (Lightning database), e.g. `CD_CELLS.cell
 | Ofcom Wireless Telegraphy Register | Operators' licensed microwave links: operators *confirmed* at sites, antenna heights | file | Ofcom copyright, free re-use | downloaded 25 Oct 2026 |
 | Ofcom Connected Nations | Predicted coverage by number of operators, per constituency / local authority; per operator by nation | file | OGL | July 2025 |
 | ONS constituencies, local authorities | Which area a cell is in | file | OGL v3.0 | July 2024; Dec 2024 |
+| Copernicus DEM GLO-30 | Elevation per cell; line of sight to mast sites | file (93 tiles) | Copernicus DEM licence (free, attribution) | 2021 release (data 2011–2015) |
 | postcodes.io | Postcode / place → location, district, region; nearest postcode to a point | REST, live (Python client) | OGL v3 data (ONS, OS, Royal Mail) | at question time |
 | Open-Meteo forecast | Weather now and next 24 h (rain, snow, wind, gusts) → severity | REST, live (Python client) | CC BY 4.0, non-commercial, attribution | at question time |
 | Met Office severe weather warnings (RSS) | Yellow / amber / red warnings for the point's region | RSS, live (Python client) | Crown copyright, OGL v3 | at question time |
@@ -100,11 +101,15 @@ scripts/zetaris/compose.sh up -d                        # Zetaris with our data 
 
 - Hexagons (H3 r7) coloured by the chosen layer: download speed (< 2, 2–5, 5–10, > 10
   Mbps), tests, speed trend, population, nearest mast site, operators within 5 km,
-  operator data status, Ofcom land with no / one 4G operator. Cells with fewer than 10
+  operator data status, Ofcom land with no / one 4G operator, elevation range, line of
+  sight to the nearest site (clear / marginal / blocked). Cells with fewer than 10
   tests are faded (weak evidence); grey means no data.
 - Approximate mast sites appear from zoom 10 (coloured by source), Ookla tiles from zoom 12.
 - Click a cell: its details come from **one cross-source Zetaris query** (cells, Ookla and
   history, neighbours, masts, Ofcom area), shown under "Zetaris query used", with data dates.
+- Line of sight in the cell panel: the line from the cell centre to its nearest site is
+  drawn on the map (red if blocked, with the highest obstruction marked) above an elevation
+  profile of the path.
 - "Right now" in the cell panel: live weather (with severity), Met Office warnings for the
   region and EA flood warnings within 10 km ("not covered" outside England), each with its
   source, status (live / cached / sample) and time. If everything is calm it says so.
@@ -112,8 +117,11 @@ scripts/zetaris/compose.sh up -d                        # Zetaris with our data 
 
 API: `GET /api/layers`, `/api/layer/{name}`, `/api/masts?bbox=`, `/api/tiles?bbox=`,
 `/api/cell/{cell_id}`, `/api/geocode?q=`, `/api/geocode/reverse?lat=&lon=`,
-`/api/live?lat=&lon=` (add `&flood_via=zetaris` for the Zetaris path), `/health`
+`/api/live?lat=&lon=` (add `&flood_via=zetaris` for the Zetaris path),
+`/api/los?lat=&lon=&site_id=` (line of sight with profile), `/health`
 (OpenAPI docs at `/docs`).
+
+![Line of sight, Great Langdale](docs/screenshots/great_langdale_line_of_sight.png)
 
 ![Right now panel, Great Langdale](docs/screenshots/great_langdale_right_now.png)
 Screenshots: `pip install playwright`, then `python scripts/screenshots.py` (pass
@@ -177,4 +185,17 @@ Data sources and licences: see `data/README.md`.
 - OpenCelliD mast data is crowd-sourced and incomplete, with approximate positions, so
   "no masts found" is weak evidence. Operator labels come from network codes and follow
   the reference table; networks have merged in recent years.
+- Line of sight (terrain): "blocked" means the ground rises above the straight line to the
+  site, so the signal is likely weaker (it bends over the ridge), not absent. Most antenna
+  heights are assumed (25 m): Ofcom's register gives heights only for sites with licensed
+  microwave links (40% of cells' nearest sites). Copernicus GLO-30 is a surface model: it
+  includes some trees and buildings, so it is most reliable for hills and valleys; small
+  obstructions (< 10 m, "marginal") may be woodland or buildings. Fresnel-zone clearance
+  and indoor loss are not modelled.
 - Mobile networks only; home broadband is out of scope.
+
+## Future work
+
+- Power cuts as a cause (`active_incident`): the distribution network operators publish
+  outages in different formats; dropped for the hackathon.
+- Flood warnings for Scotland (SEPA), Wales (NRW) and Northern Ireland (DfI Rivers).

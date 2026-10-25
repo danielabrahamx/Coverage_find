@@ -23,6 +23,7 @@ const state = {
   masts: [],
   tiles: [],
   selected: null,
+  los: null,           // line of sight for the selected cell (from /api/los)
 };
 
 const $ = (id) => document.getElementById(id);
@@ -97,6 +98,27 @@ function selectedLayer() {
   });
 }
 
+function losLayers() {
+  const L = state.los;
+  if (!L) return [];
+  const color = L.blocked ? [194, 65, 12, 255] : [29, 78, 216, 255];
+  const ends = [{ p: [L.lon, L.lat], kind: "point" }, { p: [L.site.lon, L.site.lat], kind: "site" }];
+  return [
+    new deck.LineLayer({
+      id: "los-line", data: [L], getSourcePosition: (d) => [d.lon, d.lat], getTargetPosition: (d) => [d.site.lon, d.site.lat],
+      getColor: color, getWidth: 3, widthUnits: "pixels",
+    }),
+    new deck.ScatterplotLayer({
+      id: "los-points",
+      data: L.blocked ? [...ends, { p: [L.obstruction_lon, L.obstruction_lat], kind: "obstruction" }] : ends,
+      getPosition: (d) => d.p,
+      getFillColor: (d) => (d.kind === "obstruction" ? [255, 255, 255, 255] : color),
+      getLineColor: color, stroked: true, lineWidthUnits: "pixels", getLineWidth: (d) => (d.kind === "obstruction" ? 3 : 1),
+      radiusUnits: "pixels", getRadius: (d) => (d.kind === "obstruction" ? 7 : 5),
+    }),
+  ];
+}
+
 function tileLayer() {
   return new deck.PolygonLayer({
     id: "tiles",
@@ -128,7 +150,7 @@ function mastLayer() {
 
 function render() {
   overlay.setProps({
-    layers: [hexLayer(), tileLayer(), selectedLayer(), mastLayer()],
+    layers: [hexLayer(), tileLayer(), selectedLayer(), mastLayer(), ...losLayers()],
     onClick: onMapClick,
     onHover: onHover,
   });
@@ -156,7 +178,7 @@ function renderLegend() {
   const weakNote = ["download_mbps", "trend_pct"].includes(l.name) ? `<p class="note">Faded cells: weak evidence (fewer than 10 tests).</p>` : "";
   $("legend").innerHTML = `
     <h2>${esc(l.title)}</h2>
-    <p class="units">${esc(l.units || "")}${l.data_period ? ` · ${esc(l.data_period)}` : ""}</p>
+    <p class="units">${esc([l.units, l.data_period].filter(Boolean).join(" · "))}</p>
     <ul>${items}<li><span class="swatch" style="background:rgba(168,174,184,0.35)"></span>No data</li></ul>
     ${weakNote}
     <ul class="masts">
@@ -306,6 +328,10 @@ function panelHTML(res) {
     <section><h3>Measured speed</h3>${speed}${weak}${nb}</section>
     <section><h3>Trend</h3>${trend}${sparkline(c.history)}</section>
     <section><h3>Nearest mast site</h3>${mast}</section>
+    <section id="los"><h3>Line of sight to the nearest site</h3><p class="loading small">Checking terrain…</p></section>
+    ${c.elevation_mean_m !== undefined && c.elevation_mean_m !== null ? `<section><h3>Terrain in this cell</h3>
+      <dl class="kv"><dt>Mean elevation</dt><dd>${fmt(c.elevation_mean_m, 0)} m</dd><dt>Elevation range</dt><dd>${fmt(c.elevation_range_m, 0)} m</dd></dl>
+      <p class="footnote">Copernicus DEM GLO-30, a surface model (includes some trees and buildings).</p></section>` : ""}
     <section><h3>Operators within 5 km</h3>
       <div class="chips">${ops.map(chip).join("")}</div>
       ${confirmed.length ? `<p class="footnote">✓ Confirmed by Ofcom's licence register (licensed microwave links); others inferred from crowd-sourced data.</p>` : ""}
@@ -319,6 +345,55 @@ function panelHTML(res) {
     <details><summary>Zetaris query used (${res.zetaris.duration_ms} ms)</summary><pre class="sql">${esc(res.zetaris.sql)}</pre></details>
     <button class="diagnose" disabled>Diagnose this area</button>
     <p class="diagnose-note">Agents coming next</p>`;
+}
+
+/* ---------- line of sight to the nearest site ---------- */
+
+function profileSVG(L) {
+  const P = L.profile, W = 340, H = 120, pad = { l: 34, r: 6, t: 8, b: 20 };
+  const xs = P.distance_m, all = [...P.ground_m, ...P.line_m];
+  const lo = Math.min(...all), hi = Math.max(...all), span = Math.max(hi - lo, 10);
+  const x = (d) => pad.l + (d / xs[xs.length - 1]) * (W - pad.l - pad.r);
+  const y = (e) => pad.t + (1 - (e - lo) / span) * (H - pad.t - pad.b);
+  const ground = `M${x(0)},${H - pad.b} ` + xs.map((d, i) => `L${x(d).toFixed(1)},${y(P.ground_m[i]).toFixed(1)}`).join(" ") + ` L${x(xs[xs.length - 1])},${H - pad.b} Z`;
+  const line = xs.map((d, i) => `${i ? "L" : "M"}${x(d).toFixed(1)},${y(P.line_m[i]).toFixed(1)}`).join(" ");
+  const cls = L.blocked ? "blocked" : "clear";
+  const i = xs.findIndex((d) => d >= L.obstruction_distance_m);
+  const mark = L.blocked && i >= 0 ? `<circle cx="${x(xs[i])}" cy="${y(P.ground_m[i])}" r="4" class="obs"/>` : "";
+  return `<svg class="profile" viewBox="0 0 ${W} ${H}" role="img" aria-label="Elevation profile from this point to the site">
+    <path d="${ground}" class="ground"/><path d="${line}" class="ray ${cls}"/>${mark}
+    <text x="${pad.l - 4}" y="${y(hi) + 4}" text-anchor="end">${fmt(hi, 0)} m</text>
+    <text x="${pad.l - 4}" y="${y(lo)}" text-anchor="end">${fmt(lo, 0)} m</text>
+    <text x="${pad.l}" y="${H - 5}">here</text>
+    <text x="${W - pad.r}" y="${H - 5}" text-anchor="end">site · ${fmt(xs[xs.length - 1] / 1000, 1)} km</text></svg>`;
+}
+
+function losHTML(L) {
+  const km = (m) => `${fmt(m / 1000, 1)} km`;
+  const height = L.mast_height_source === "ofcom_register"
+    ? `antenna ${fmt(L.mast_height_m, 0)} m (Ofcom's licence register)` : `antenna height assumed ${fmt(L.mast_height_m, 0)} m`;
+  const verdict = L.blocked
+    ? `<p class="status"><strong class="bad">Blocked</strong>: the ground rises <strong>${fmt(L.max_obstruction_m, 0)} m</strong> above the direct line,
+       ${km(L.obstruction_distance_m)} along the ${km(L.path_length_m)} path (ground there ${fmt(L.obstruction_ground_m, 0)} m).</p>`
+    : `<p class="status"><strong class="good">Clear</strong>: the line passes at least ${fmt(-L.max_obstruction_m, 0)} m above the ground over ${km(L.path_length_m)}.</p>`;
+  return `<h3>Line of sight to the nearest site</h3>${verdict}${profileSVG(L)}
+    <p class="footnote">From the cell centre at 1.5 m to the site, ${height}; earth curvature included.
+    Blocked means a weaker signal, not none. Copernicus GLO-30 surface model.</p>`;
+}
+
+async function loadLos(cellId, c) {
+  state.los = null;
+  if (!c.nearest_mast_id) { $("los").innerHTML = `<h3>Line of sight to the nearest site</h3><p class="muted">No site found.</p>`; return; }
+  const [lat, lon] = h3.cellToLatLng(cellId);
+  try {
+    const L = await getJSON(`/api/los?lat=${lat.toFixed(5)}&lon=${lon.toFixed(5)}&site_id=${encodeURIComponent(c.nearest_mast_id)}`);
+    if (state.selected !== cellId) return;
+    state.los = L;
+    render();
+    $("los").innerHTML = losHTML(L);
+  } catch (e) {
+    if (state.selected === cellId) $("los").innerHTML = `<h3>Line of sight to the nearest site</h3><p class="error">${esc(e.message)}</p>`;
+  }
 }
 
 /* ---------- "Right now": live weather, Met Office warnings, EA flood warnings ---------- */
@@ -389,13 +464,14 @@ async function loadRightNow(cellId) {
 
 async function selectCell(cellId) {
   state.selected = cellId;
+  state.los = null;
   render();
   const panel = $("panel");
   panel.hidden = false;
   $("panel-body").innerHTML = `<p class="loading">Querying Zetaris…</p>`;
   try {
     const res = await getJSON(`/api/cell/${cellId}`);
-    if (state.selected === cellId) { $("panel-body").innerHTML = panelHTML(res); loadRightNow(cellId); }
+    if (state.selected === cellId) { $("panel-body").innerHTML = panelHTML(res); loadRightNow(cellId); loadLos(cellId, res.cell); }
   } catch (e) {
     $("panel-body").innerHTML = `<p class="error">Could not load this cell: ${esc(e.message)}</p>`;
   }
@@ -404,6 +480,7 @@ async function selectCell(cellId) {
 $("panel-close").addEventListener("click", () => {
   $("panel").hidden = true;
   state.selected = null;
+  state.los = null;
   render();
 });
 

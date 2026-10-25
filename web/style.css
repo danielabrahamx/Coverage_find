@@ -167,6 +167,17 @@ pre.sql {
 .flood-2 { border-left-color: #EA580C; }
 .flood-3 { border-left-color: #F59E0B; }
 
+/* --- line of sight --- */
+.profile { width: 100%; height: auto; margin-top: 8px; }
+.profile .ground { fill: #D6D3D1; stroke: #78716C; stroke-width: 1; }
+.profile .ray { fill: none; stroke-width: 2; }
+.profile .ray.clear { stroke: var(--accent); }
+.profile .ray.blocked { stroke: var(--warn); stroke-dasharray: 5 3; }
+.profile .obs { fill: #fff; stroke: var(--warn); stroke-width: 2.5; }
+.profile text { font: 10px var(--sans); fill: var(--muted); }
+.bad { color: var(--warn); }
+.good { color: var(--accent); }
+
 /* --- attribution footer --- */
 .credits {
   padding: 4px 16px; font-size: 10.5px; line-height: 1.4; color: var(--muted);

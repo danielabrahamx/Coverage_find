@@ -22,6 +22,7 @@ SHOTS = [
     ("great_langdale_panel", f"?layer=download_mbps&lat=54.445&lon=-3.105&zoom=11.2&cell={LANGDALE_CELL}", (1440, 900), ".diagnose"),
     ("rhayader_panel", "?layer=microwave_backhaul_sites_within_5km&lat=52.30&lon=-3.51&zoom=11&cell=87195e3aeffffff", (1440, 900), ".diagnose"),
     ("great_langdale_right_now", f"?layer=download_mbps&lat=54.445&lon=-3.105&zoom=11.2&cell={LANGDALE_CELL}", (1440, 900), "#right-now .live-row"),
+    ("great_langdale_line_of_sight", f"?layer=los_blocked&lat=54.435&lon=-3.085&zoom=12&cell={LANGDALE_CELL}", (1440, 900), "#los .profile"),
     ("phone_panel", f"?layer=download_mbps&lat=54.445&lon=-3.105&zoom=10&cell={LANGDALE_CELL}", (390, 844), ".diagnose"),
 ]
 
@@ -44,9 +45,9 @@ def main() -> None:
             page.wait_for_selector("#legend h2", timeout=60_000)
             if wait_for:
                 page.wait_for_selector(wait_for, timeout=60_000)
-            if wait_for and "#right-now" in wait_for:
+            if wait_for and wait_for.startswith("#"):  # scroll the panel to that section
                 page.wait_for_selector(".diagnose", timeout=60_000)
-                page.eval_on_selector("#right-now", "el => el.scrollIntoView({block: 'start'})")
+                page.eval_on_selector(wait_for.split()[0], "el => el.scrollIntoView({block: 'start'})")
             page.wait_for_timeout(4000)  # basemap tiles, masts and hexagons settle
             path = OUT / f"{name}.png"
             page.screenshot(path=str(path))

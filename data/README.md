@@ -39,6 +39,8 @@ one table) by `scripts/zetaris/register_sources.py`, read from the read-only mou
 | `CD_WTR_POINTS` | `wtr_points` | `wtr_points.parquet` | 13,122 |
 | `CD_OFCOM_AREA` | `ofcom_area_r7` | `ofcom_area_r7.parquet` | 56,592 |
 | `CD_OFCOM_NATIONS` | `ofcom_nations` | `ofcom_nations.parquet` | 1,035 |
+| `CD_TERRAIN` | `terrain_r7` | `terrain_r7.parquet` | 56,592 |
+| `CD_LOS` | `los_r7` | `los_r7.parquet` | 55,577 |
 | `CD_LIVE_EA_FLOODS` | `floods`, `flood_areas` | REST (live EA API, see below) | 136 / 4,208 on 25 Oct 2026 |
 
 ## ONS Countries boundaries
@@ -306,6 +308,34 @@ Systems" and "Three Horseshoes Inn" must not count):
 
 People with an operator confirmed by the register within 5 km: EE 51.3 m, Three 51.3 m
 (both via MBNL), Vodafone 44.0 m, O2 43.1 m.
+
+## Copernicus DEM GLO-30 (terrain and line of sight)
+
+- Source: Copernicus DEM GLO-30, public AWS bucket `copernicus-dem-30m`
+  (https://copernicus-dem-30m.s3.amazonaws.com), one 1°×1° Cloud-Optimised GeoTIFF per tile,
+  1 arc-second (~30 m; above 50°N the longitude spacing is 1.5 arc-seconds). 93 tiles,
+  1.4 GB, in `data/raw/dem/` (`scripts/download/dem.py`; all-sea tiles do not exist and read
+  as 0 m). Version: 2021 release, from TanDEM-X data acquired 2011–2015. Downloaded 25 Oct 2026.
+- Licence: Copernicus DEM licence, free of charge worldwide with attribution: "© DLR e.V.
+  2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the
+  European Union and ESA; all rights reserved".
+- It is a **surface** model (DSM): it includes some trees and buildings. Spot checks:
+  Scafell Pike 973 m (true 978 m), Ben Nevis 1,342 m (1,345 m).
+- Processing (`scripts/process/build_terrain.py`, `coverage_detective/data/terrain.py`):
+  - `terrain_r7`: per r7 cell, elevations sampled (bilinear) at the centres of its 343 H3 r10
+    children (~120 m apart): mean, min, max, range (max − min), std.
+  - `line_of_sight()`: the path from the receiver (1.5 m above ground) to the antenna
+    (antenna height from Ofcom's register when the site has one, else 25 m) is sampled every
+    ~30 m. Earth curvature: the ground is raised by d1·d2 / (2kR), k = 4/3, R = 6,371 km.
+    Obstruction = ground + bulge − line height; the largest is reported with its distance
+    from the receiver and position (negative = clearance). blocked = obstruction > 0.
+  - `los_r7`: every populated cell centre to its nearest approximate site (`masts_r7`),
+    with `los_class` = clear / marginal (blocked by < 10 m, which may be trees or buildings
+    in the surface model) / blocked (≥ 10 m). 25 Oct 2026: clear 29,555, marginal 10,153,
+    blocked 15,869 cells; antenna height from the register for 40.2%. For the map only: the
+    evidence API computes from the exact point.
+- Limits: blocked means weaker signal (diffraction), not none; most antenna heights are
+  assumed; no Fresnel zone, clutter or indoor loss; sites are approximate positions.
 
 ## Live sources (phase D)
 

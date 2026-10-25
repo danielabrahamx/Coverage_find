@@ -122,6 +122,23 @@ def register_ofcom_nations() -> None:
     )
 
 
+def register_terrain() -> None:
+    _register(
+        "CD_TERRAIN", "terrain_r7", "terrain_r7.parquet",
+        "Per H3 r7 cell: elevation mean, min, max, range and std in metres, sampled at H3 r10 centres. "
+        "Copernicus DEM GLO-30, a surface model including some trees and buildings. DLR, Airbus, Copernicus EU and ESA.",
+    )
+
+
+def register_los() -> None:
+    _register(
+        "CD_LOS", "los_r7", "los_r7.parquet",
+        "Per populated H3 r7 cell: line of sight from the cell centre at 1.5 m to the nearest approximate mast site, "
+        "antenna height from Ofcom register or assumed 25 m, earth curvature with k four thirds. blocked, obstruction_m and where. "
+        "Map context only, blocked means weaker signal, not none. Copernicus DEM GLO-30.",
+    )
+
+
 def _rest_table(database: str, table: str, endpoint: str) -> None:
     """A Lightning REST table: each query calls the endpoint live (Zetaris infers the JSON schema
     from one call at creation). Endpoints must work as written: a ${param} placeholder for the
@@ -159,6 +176,8 @@ SOURCES = {
     "wtr_points": register_wtr_points,
     "ofcom_area": register_ofcom_area,
     "ofcom_nations": register_ofcom_nations,
+    "terrain": register_terrain,
+    "los": register_los,
     "ea_floods": register_ea_floods,
 }
 
