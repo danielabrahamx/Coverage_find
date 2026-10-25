@@ -44,7 +44,7 @@ def check_phase_a() -> None:
 
 
 def check_phase_b() -> None:
-    print("\nPhase B: mast sites by source and operator (CD_MASTS_SITES, via Zetaris)")
+    print("\nPhase B: approximate mast sites by source and operator (CD_MASTS_SITES, via Zetaris)")
     rows = query("SELECT sources, count(*) AS sites FROM CD_MASTS_SITES.masts_sites GROUP BY sources ORDER BY sites DESC")
     print(table(rows, ["sources", "sites"]))
     rows = query("""
@@ -61,8 +61,9 @@ def check_phase_b() -> None:
                round(o.download_mbps, 1) AS download_mbps, o.tests,
                round(m.nearest_mast_km, 2) AS nearest_mast_km,
                round(m.nearest_mast_bearing_deg) AS bearing_deg, m.nearest_mast_sources,
-               m.masts_within_5km, m.masts_osm_only_within_5km,
-               m.distinct_operators_within_5km, m.operators_within_5km
+               m.masts_within_5km, m.masts_known_operator_within_5km,
+               m.masts_unknown_operator_within_5km, m.masts_osm_only_within_5km,
+               m.distinct_operators_within_5km, m.operators_within_5km, m.operator_data_status
         FROM CD_CELLS.cells_r7 c
         JOIN CD_MASTS.masts_r7 m ON m.cell_id = c.cell_id
         LEFT JOIN CD_OOKLA_MOBILE.ookla_mobile_r7 o ON o.cell_id = c.cell_id
@@ -70,8 +71,9 @@ def check_phase_b() -> None:
     for r in rows:
         r["place"] = ids[r["cell_id"]]
     print(table(rows, ["place", "population", "download_mbps", "tests", "nearest_mast_km", "bearing_deg",
-                       "nearest_mast_sources", "masts_within_5km", "masts_osm_only_within_5km",
-                       "distinct_operators_within_5km", "operators_within_5km"]))
+                       "nearest_mast_sources", "masts_within_5km", "masts_known_operator_within_5km",
+                       "masts_unknown_operator_within_5km", "masts_osm_only_within_5km",
+                       "distinct_operators_within_5km", "operators_within_5km", "operator_data_status"]))
 
 
 def main() -> None:

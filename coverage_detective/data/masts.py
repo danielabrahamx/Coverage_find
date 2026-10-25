@@ -88,7 +88,18 @@ def masts_per_cell(cells: pd.DataFrame, sites: pd.DataFrame, radius_km: float = 
     within = tree.query_ball_point(pts, _km_to_chord(radius_km))
     ops = [s.split(",") if s else [] for s in sites.operators.fillna("")]
     osm_only = (sites.sources == "osm").to_numpy()
+    # Unknown operator: no operator group and no OpenCelliD label (OSM-only sites without a
+    # recognisable operator tag). Sites of "other" networks still count as known.
+    labels = sites.operator_labels if "operator_labels" in sites else pd.Series("", index=sites.index)
+    unknown = ((sites.operators.fillna("") == "") & (labels.fillna("") == "")).to_numpy()
     ops_within = [sorted({o for j in js for o in ops[j]}) for js in within]
+    n_unknown = np.array([int(unknown[js].sum()) if js else 0 for js in within])
+    n_known = np.array([len(js) for js in within]) - n_unknown
+    status = np.select(
+        [n_known + n_unknown == 0, n_unknown == 0, n_known == 0],
+        ["no_sites_found", "complete", "unknown"],
+        default="partial",
+    )
     return pd.DataFrame(
         {
             "cell_id": cells.cell_id.to_numpy(),
@@ -105,5 +116,8 @@ def masts_per_cell(cells: pd.DataFrame, sites: pd.DataFrame, radius_km: float = 
             "distinct_operators_within_5km": [len(o) for o in ops_within],
             "operators_within_5km": [",".join(o) for o in ops_within],
             "masts_osm_only_within_5km": [int(osm_only[js].sum()) if js else 0 for js in within],
+            "masts_known_operator_within_5km": n_known,
+            "masts_unknown_operator_within_5km": n_unknown,
+            "operator_data_status": status,
         }
     )

@@ -73,6 +73,25 @@ def test_masts_per_cell_distance_bearing_operators():
     assert row.nearest_mast_bearing_deg == pytest.approx(180.0, abs=0.5)
     assert row.masts_within_5km == 2 and row.masts_osm_only_within_5km == 1
     assert row.distinct_operators_within_5km == 2 and row.operators_within_5km == "EE,Vodafone"
+    assert row.masts_known_operator_within_5km == 1 and row.masts_unknown_operator_within_5km == 1
+    assert row.operator_data_status == "partial"
+
+
+def test_operator_data_status():
+    sites = pd.DataFrame(
+        {
+            "site_id": ["K", "U", "O"],
+            "lat": [54.0, 55.0, 56.0], "lon": [-3.0, -3.0, -3.0],
+            "operators": ["EE", "", ""],
+            "operator_labels": ["EE", "", "Pronto GSM"],  # O: a known, non-main network
+            "sources": ["opencellid", "osm", "opencellid"],
+        }
+    )
+    cells = pd.DataFrame(
+        {"cell_id": ["k", "u", "o", "far"], "lat": [54.0, 55.0, 56.0, 58.0], "lon": [-3.0, -3.0, -3.0, -3.0]}
+    )
+    status = dict(zip(cells.cell_id, masts_per_cell(cells, sites).operator_data_status))
+    assert status == {"k": "complete", "u": "unknown", "o": "complete", "far": "no_sites_found"}
 
 
 def test_bearing_east():

@@ -116,8 +116,12 @@ def check() -> None:
     for km in (2, 5, 10):
         far = pop.nearest_mast_km > km
         print(f"  > {km:>2} km: {far.sum():,} cells, {pop.population[far].sum():,.0f} people")
-    print("  people by distinct operators with masts within 5 km: " + ", ".join(
+    print("  people by distinct operators with approximate mast sites within 5 km: " + ", ".join(
         f"{k}: {v / 1e6:.2f} m" for k, v in pop.groupby("distinct_operators_within_5km").population.sum().items()))
+    by_status = pop.groupby("operator_data_status").agg(cells=("cell_id", "size"), people=("population", "sum"))
+    by_status["people_m"] = (by_status.pop("people") / 1e6).round(2)
+    print("\noperator_data_status for populated cells:")
+    print(by_status.to_string())
 
     print("\nsample locations:")
     for name, lat, lon in SAMPLE_LOCATIONS:
@@ -127,10 +131,11 @@ def check() -> None:
             print(f"  {name}: cell {cid} not in the grid")
             continue
         r = r.iloc[0]
-        print(f"  {name} ({cid}): nearest mast {r.nearest_mast_id} ({r.nearest_mast_sources}) "
+        print(f"  {name} ({cid}): nearest approximate mast site {r.nearest_mast_id} ({r.nearest_mast_sources}) "
               f"{r.nearest_mast_km:.2f} km at {r.nearest_mast_bearing_deg:.0f}°, operators '{r.nearest_mast_operators}'; "
-              f"within 5 km: {r.masts_within_5km} masts ({r.masts_osm_only_within_5km} OSM-only), "
-              f"{r.distinct_operators_within_5km} operators '{r.operators_within_5km}'")
+              f"within 5 km: {r.masts_within_5km} sites ({r.masts_known_operator_within_5km} with known operator, "
+              f"{r.masts_unknown_operator_within_5km} unknown, {r.masts_osm_only_within_5km} OSM-only), "
+              f"{r.distinct_operators_within_5km} operators '{r.operators_within_5km}', status {r.operator_data_status}")
 
 
 def main() -> None:

@@ -43,6 +43,16 @@ when masts_within_5km is small.
 Evidence strength: OpenCelliD is crowd-sourced and incomplete, so "masts found" is stronger
 evidence than "no masts found".
 
+**Mast wording rules** (evidence findings and agent output):
+- Say "approximate mast sites", never a count of "masts": sites are clusters of
+  crowd-sourced radio cells and mapped towers, and one real mast can appear as several.
+- Use `operator_data_status` (per cell, `CD_MASTS.masts_r7`): `complete` (every nearby site
+  has a known operator), `partial` (some unknown), `unknown` (sites found, no operators
+  known), `no_sites_found`. When `partial` or `unknown`, say "operators could not be
+  identified for N nearby sites" (N = `masts_unknown_operator_within_5km`); never imply
+  fewer operators are present.
+- `no_sites_found` is weak evidence: OpenCelliD's free data is incomplete.
+
 Ofcom: the postcode-level API is not available to us (`sources/ofcom_api.py` is a stub that
 returns None; None means "no Ofcom data", not "no coverage"). Ofcom Connected Nations area
 data (July 2025, constituency / local authority; phase E) is regional context only, never

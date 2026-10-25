@@ -111,7 +111,14 @@ uneven and incomplete, so the absence of masts is weaker evidence than their pre
 5. Per grid cell centre (`masts_r7.parquet`): masts_within_5km, nearest_mast_km,
    nearest_mast_bearing_deg (from the cell towards the mast), nearest_mast_id / lat / lon /
    sources / operators, distinct_operators_within_5km, operators_within_5km,
-   masts_osm_only_within_5km.
+   masts_osm_only_within_5km, masts_known_operator_within_5km,
+   masts_unknown_operator_within_5km (no operator from either source: OSM-only sites with
+   no recognisable operator tag), and operator_data_status: `complete` (all sites within
+   5 km have a known operator), `partial` (some unknown), `unknown` (sites but no known
+   operator) or `no_sites_found`. Populated cells, 25 Oct 2026: complete 7,473 cells
+   (2.98 m people), partial 25,865 (60.39 m), unknown 11,591 (3.13 m), no_sites_found
+   10,648 (0.92 m). `partial` is common in towns, where a few unknown sites sit among many
+   known ones, so use the counts, not just the status.
 
 ## OpenStreetMap masts
 
