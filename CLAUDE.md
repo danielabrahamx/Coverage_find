@@ -84,6 +84,27 @@ data/samples/         small cached API responses for SAMPLE_MODE (committed)
 data/reference/       small reference tables (committed), e.g. mcc_mnc_uk.csv
 ```
 
+## Zetaris (how it works here)
+
+- Stack: `~/zetaris-platform` (Docker). Health: its `./verify.sh`. Run compose through
+  `scripts/zetaris/compose.sh` (adds our read-only data mount; a plain `docker compose up`
+  there drops it).
+- Local files are readable only under `/home/zetaris/customer-data/shared/`
+  (`zetaris_local_file_sytem_root_path`); data/processed is mounted there as
+  `coverage_detective/`. Other paths: "Invalid file path to access".
+- Client: `coverage_detective/data/zetaris.py`. `query(sql)` = SELECT only
+  (`/query/sql/start` + `/query/sql/page`); `execute(sql)` = DDL such as
+  `CREATE LIGHTNING ...` (`/sql-editor/sqls/run`). Sign-in at `ZETARIS_URL`
+  (`http://localhost:3000`) `/api/auth/login` → `idToken` + `orgId`. All values come back
+  as strings (the client converts numbers) and rows do not keep SELECT column order.
+  Every query is logged to `logs/zetaris_queries.jsonl`.
+- One Lightning database per dataset (`CD_*`), registered by
+  `scripts/zetaris/register_sources.py` (one function per source; drop + recreate).
+  No `IF EXISTS`; descriptions allow only letters, digits, spaces and `_ . - ,`;
+  `SHOW DATABASES` is disabled (use `SHOW TABLES IN <db>`).
+- After a Docker upgrade, containers on the old network could not reach each other; the
+  fix was `sudo aa-remove-unknown`, then `docker compose down` (no `-v`) and `up -d`.
+
 ## Running
 
 ```bash
@@ -95,6 +116,9 @@ cp .env.example .env                      # then fill in
 .venv/bin/python scripts/download/mcc_mnc.py       # Phase 3: operator reference (already committed)
 .venv/bin/python scripts/download/opencellid.py    # needs OPENCELLID_TOKEN; skips without it
 .venv/bin/python scripts/process/build_masts.py    # -> masts.parquet, masts_r7.parquet
+scripts/zetaris/compose.sh up -d driver           # Zetaris with our data mount
+.venv/bin/python scripts/zetaris/register_sources.py
+.venv/bin/python scripts/check_data.py             # checks through Zetaris
 .venv/bin/python -m pytest -q
 ```
 
@@ -103,7 +127,14 @@ nations) and `data/raw/population/population.tif` (WorldPop UK).
 
 ## Status
 
-Built in phases; stop after each for review.
+Built in phases; after each: run checks, commit, stop for review. Current plan (25 Oct):
+A Zetaris foundation · B masts (OpenCelliD + OSM) · C terrain + line of sight ·
+D live sources (postcodes.io, Open-Meteo, Met Office warnings, EA floods) ·
+E Ofcom regional (file in data/raw/ofcom/) · F rural-urban + deprivation ·
+G power cuts (if time) · H visitor load (if time) · final check_data.py.
+
+- A. Zetaris foundation: done (client, mount, CD_CELLS + 3 Ookla sources, join check)
+
 1. Grid, H3 r7: done (`cells_r7.parquet`: cell_id, lat, lon, population, nation)
 2. Ookla mobile speeds: done (latest 2026Q3 + 3 previous quarters; per-cell, history and tile tables)
 3. OpenCelliD masts: code done and tested; waiting for OPENCELLID_TOKEN to build real data

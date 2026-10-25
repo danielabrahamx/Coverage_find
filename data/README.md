@@ -11,6 +11,19 @@ Raw files live in `data/raw/` and built files in `data/processed/`; both are git
 | OpenCelliD cell towers | download date in `masts_meta.json` | CC BY-SA 4.0 | `raw/opencellid/234.csv.gz`, `235.csv.gz` | `masts.parquet`, `masts_r7.parquet` |
 | UK network codes (Wikipedia) | revision 1378731553, 5 Oct 2026 | CC BY-SA 4.0 | — | `reference/mcc_mnc_uk.csv` (committed) |
 
+## Zetaris sources
+
+Each processed file is registered in Zetaris as its own source (a Lightning database with
+one table) by `scripts/zetaris/register_sources.py`, read from the read-only mount
+`/home/zetaris/customer-data/shared/coverage_detective/` (see the README).
+
+| Zetaris source | Table | File | Rows |
+|---|---|---|---|
+| `CD_CELLS` | `cells_r7` | `cells_r7.parquet` | 56,592 |
+| `CD_OOKLA_MOBILE` | `ookla_mobile_r7` | `ookla_mobile_r7.parquet` | 23,412 |
+| `CD_OOKLA_MOBILE_HISTORY` | `ookla_mobile_history_r7` | `ookla_mobile_history_r7.parquet` | 87,725 |
+| `CD_OOKLA_MOBILE_TILES` | `ookla_mobile_tiles` | `ookla_mobile_tiles.parquet` | 420,260 |
+
 ## ONS Countries boundaries
 
 *Countries (December 2023) Boundaries UK BUC*, Office for National Statistics.
