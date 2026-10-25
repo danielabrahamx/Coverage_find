@@ -79,16 +79,25 @@ def register_ookla_mobile_tiles() -> None:
 def register_masts_sites() -> None:
     _register(
         "CD_MASTS_SITES", "masts_sites", "masts_sites.parquet",
-        "Approximate mobile mast sites: OpenCelliD radio cells clustered within 150 m (CC BY-SA 4.0) "
-        "merged with OpenStreetMap communication masts (ODbL), operators grouped as EE, O2, Vodafone, Three.",
+        "Approximate mobile mast sites: OpenCelliD radio cells clustered within 150 m (CC BY-SA 4.0), "
+        "OpenStreetMap communication masts (ODbL) and Ofcom licence register fixed-link sites, merged within "
+        "200 m. operators_inferred from OpenCelliD and OSM, operators_confirmed from the Ofcom register.",
     )
 
 
 def register_masts_cells() -> None:
     _register(
         "CD_MASTS", "masts_r7", "masts_r7.parquet",
-        "Per H3 r7 cell: nearest mast distance and bearing, masts and operators within 5 km, "
-        "OSM-only masts within 5 km. From OpenCelliD (CC BY-SA 4.0) and OpenStreetMap (ODbL).",
+        "Per H3 r7 cell: nearest approximate mast site, sites and operators within 5 km (confirmed by "
+        "Ofcom licence register or inferred), register and microwave backhaul sites within 5 km, operator data status.",
+    )
+
+
+def register_wtr_points() -> None:
+    _register(
+        "CD_WTR_POINTS", "wtr_points", "wtr_points.parquet",
+        "Ofcom Wireless Telegraphy Register: mobile operators' licensed fixed links, one row per licence and "
+        "location, with licensee, operators, frequency band and antenna height. Ofcom copyright, free re-use.",
     )
 
 
@@ -116,6 +125,7 @@ SOURCES = {
     "ookla_mobile_tiles": register_ookla_mobile_tiles,
     "masts_sites": register_masts_sites,
     "masts_cells": register_masts_cells,
+    "wtr_points": register_wtr_points,
     "ofcom_area": register_ofcom_area,
     "ofcom_nations": register_ofcom_nations,
 }

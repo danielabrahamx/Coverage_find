@@ -5,7 +5,8 @@
     python scripts/refresh.py --source ookla          # only this source (repeatable)
     python scripts/refresh.py --source osm --force    # refresh even if not due
 
-Cadence: ookla when a newer quarter is published; opencellid weekly; osm monthly; ofcom
+Cadence: ookla when a newer quarter is published; opencellid weekly; osm and wtr (Ofcom's
+Wireless Telegraphy Register) monthly; ofcom
 when a newer release zip is in data/raw/ofcom/ (Ofcom has no API: download it by hand
 from the Connected Nations pages); cells (WorldPop, ONS) and dem are manual.
 
@@ -108,8 +109,31 @@ def check_age(files: list[Path], max_days: int) -> Status:
 
 def refresh_masts(files: list[Path], download_script: str) -> None:
     swap_and_download(files, download_script)
-    run("scripts/process/build_masts.py", "--force")
+    run("scripts/process/build_masts.py", "--force")  # merges the register too, if built
     run("scripts/zetaris/register_sources.py", "masts_sites", "masts_cells")
+
+
+# --- Ofcom Wireless Telegraphy Register (monthly) -------------------------------------------
+
+WTR_FILES = [RAW / "ofcom_wtr" / "WTR.csv"]
+
+
+def refresh_wtr() -> None:
+    for f in WTR_FILES:  # keep the old file until the new one is in
+        if f.exists():
+            f.rename(f.with_name(f.name + ".prev"))
+    try:
+        run("scripts/download/ofcom_wtr.py")
+    except Exception:
+        for f in WTR_FILES:
+            prev = f.with_name(f.name + ".prev")
+            if prev.exists() and not f.exists():
+                prev.rename(f)
+        raise
+    for f in WTR_FILES:
+        f.with_name(f.name + ".prev").unlink(missing_ok=True)
+    run("scripts/process/build_wtr.py")  # also rebuilds the mast tables
+    run("scripts/zetaris/register_sources.py", "wtr_points", "masts_sites", "masts_cells")
 
 
 # --- ofcom --------------------------------------------------------------------------------
@@ -151,6 +175,7 @@ SOURCES: dict[str, tuple[str, Callable[[], Status], Callable[[], None]]] = {
                    lambda: refresh_masts(OCID_FILES, "scripts/download/opencellid.py")),
     "osm": ("monthly", lambda: check_age(OSM_FILES, 30),
             lambda: refresh_masts(OSM_FILES, "scripts/download/osm.py")),
+    "wtr": ("monthly", lambda: check_age(WTR_FILES, 30), refresh_wtr),
     "ofcom": ("new release", check_ofcom, refresh_ofcom),
     "cells": ("manual", manual("cells", "WorldPop / ONS boundaries: replace files in data/raw/, run build_cells.py --force"),
               not_automatic),

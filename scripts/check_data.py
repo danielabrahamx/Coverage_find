@@ -48,10 +48,20 @@ def check_phase_b() -> None:
     rows = query("SELECT sources, count(*) AS sites FROM CD_MASTS_SITES.masts_sites GROUP BY sources ORDER BY sites DESC")
     print(table(rows, ["sources", "sites"]))
     rows = query("""
-        SELECT operator, count(*) AS sites
-        FROM (SELECT explode(split(operators, ',')) AS operator FROM CD_MASTS_SITES.masts_sites)
-        WHERE operator <> '' GROUP BY operator ORDER BY sites DESC""")
-    print(table(rows, ["operator", "sites"]))
+        SELECT a.operator, a.sites, coalesce(c.sites, 0) AS confirmed_by_register
+        FROM (SELECT operator, count(*) AS sites
+              FROM (SELECT explode(split(operators, ',')) AS operator FROM CD_MASTS_SITES.masts_sites)
+              WHERE operator <> '' GROUP BY operator) a
+        LEFT JOIN (SELECT operator, count(*) AS sites
+                   FROM (SELECT explode(split(operators_confirmed, ',')) AS operator FROM CD_MASTS_SITES.masts_sites)
+                   WHERE operator <> '' GROUP BY operator) c ON c.operator = a.operator
+        ORDER BY a.sites DESC""")
+    print(table(rows, ["operator", "sites", "confirmed_by_register"]))
+    rows = query("""SELECT licensee, operators, count(*) AS points, count(DISTINCT link_id) AS links,
+                           round(percentile_approx(antenna_height_m, 0.5)) AS median_antenna_height_m
+                    FROM CD_WTR_POINTS.wtr_points GROUP BY licensee, operators ORDER BY points DESC""")
+    print("Ofcom licence register points (CD_WTR_POINTS):")
+    print(table(rows, ["licensee", "operators", "points", "links", "median_antenna_height_m"]))
 
     print("\nPhase B: sample locations (CD_CELLS x CD_OOKLA_MOBILE x CD_MASTS, via Zetaris)")
     ids = {h3.latlng_to_cell(lat, lon, H3_RES): name for name, lat, lon in SAMPLE_LOCATIONS}
@@ -63,7 +73,9 @@ def check_phase_b() -> None:
                round(m.nearest_mast_bearing_deg) AS bearing_deg, m.nearest_mast_sources,
                m.masts_within_5km, m.masts_known_operator_within_5km,
                m.masts_unknown_operator_within_5km, m.masts_osm_only_within_5km,
-               m.distinct_operators_within_5km, m.operators_within_5km, m.operator_data_status
+               m.distinct_operators_within_5km, m.operators_within_5km,
+               m.operators_confirmed_within_5km, m.wtr_sites_within_5km,
+               m.microwave_backhaul_sites_within_5km, m.operator_data_status
         FROM CD_CELLS.cells_r7 c
         JOIN CD_MASTS.masts_r7 m ON m.cell_id = c.cell_id
         LEFT JOIN CD_OOKLA_MOBILE.ookla_mobile_r7 o ON o.cell_id = c.cell_id
@@ -73,7 +85,8 @@ def check_phase_b() -> None:
     print(table(rows, ["place", "population", "download_mbps", "tests", "nearest_mast_km", "bearing_deg",
                        "nearest_mast_sources", "masts_within_5km", "masts_known_operator_within_5km",
                        "masts_unknown_operator_within_5km", "masts_osm_only_within_5km",
-                       "distinct_operators_within_5km", "operators_within_5km", "operator_data_status"]))
+                       "distinct_operators_within_5km", "operators_within_5km", "operators_confirmed_within_5km",
+                       "wtr_sites_within_5km", "microwave_backhaul_sites_within_5km", "operator_data_status"]))
 
 
 def check_phase_e() -> None:

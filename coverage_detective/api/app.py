@@ -46,8 +46,9 @@ app = FastAPI(title="Coverage Detective data explorer")
 
 @lru_cache(maxsize=1)
 def mast_sites() -> pd.DataFrame:
-    cols = ["site_id", "lat", "lon", "sources", "operators", "operator_labels", "radio_types",
-            "cell_count", "osm_operator", "mobile_tagged"]
+    cols = ["site_id", "lat", "lon", "sources", "operators", "operators_inferred", "operators_confirmed",
+            "operator_labels", "radio_types", "cell_count", "osm_operator", "mobile_tagged",
+            "has_microwave_backhaul", "antenna_height_m", "wtr_links"]
     return pd.read_parquet(PROCESSED / "masts_sites.parquet", columns=cols)
 
 
@@ -164,9 +165,11 @@ def cell_sql(cell_id: str) -> tuple[str, list[str]]:
   hst.history_json,
   nb.neighbour_download_mbps, nb.neighbour_tests, nb.neighbour_cells_with_data,
   m.nearest_mast_km, m.nearest_mast_bearing_deg, m.nearest_mast_id, m.nearest_mast_lat,
-  m.nearest_mast_lon, m.nearest_mast_sources, m.nearest_mast_operators, m.masts_within_5km,
+  m.nearest_mast_lon, m.nearest_mast_sources, m.nearest_mast_operators,
+  m.nearest_mast_operators_confirmed, m.nearest_mast_antenna_height_m, m.masts_within_5km,
   m.masts_known_operator_within_5km, m.masts_unknown_operator_within_5km,
   m.masts_osm_only_within_5km, m.distinct_operators_within_5km, m.operators_within_5km,
+  m.operators_confirmed_within_5km, m.wtr_sites_within_5km, m.microwave_backhaul_sites_within_5km,
   m.operator_data_status,
   a.pcon_code, a.pcon_name, a.laua_code, a.laua_name, a.g4_geo_out_0, a.g4_geo_out_1,
   a.g4_prem_out_0, a.g4_prem_in_0, a.g4_abrd_in_0, a.g5hc_prem_out_at_least_one,

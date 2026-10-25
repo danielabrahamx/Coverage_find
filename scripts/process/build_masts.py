@@ -32,7 +32,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from coverage_detective.config import H3_RES, PROCESSED, RAW, ROOT, SAMPLE_LOCATIONS  # noqa: E402
 from coverage_detective.data import manifest  # noqa: E402
 from coverage_detective.data.grid import load_cells  # noqa: E402
-from coverage_detective.data.masts import masts_per_cell, merge_sites  # noqa: E402
+from coverage_detective.data.masts import finalise_sites, masts_per_cell, merge_sites, merge_wtr  # noqa: E402
+from coverage_detective.sources.ofcom_wtr import group_sites  # noqa: E402
 from coverage_detective.sources import osm_masts  # noqa: E402
 from coverage_detective.sources.opencellid import MAIN_OPERATORS, cluster_sites, read_cells  # noqa: E402
 
@@ -44,6 +45,7 @@ OSM_OUT = PROCESSED / "osm_masts.parquet"
 SITES_OUT = PROCESSED / "masts_sites.parquet"
 CELLS_OUT = PROCESSED / "masts_r7.parquet"
 META_OUT = PROCESSED / "masts_meta.json"
+WTR_POINTS = PROCESSED / "wtr_points.parquet"
 
 
 def osm_sites(force: bool) -> pd.DataFrame:
@@ -81,6 +83,15 @@ def build(force: bool) -> None:
     print(f"  OSM: {len(osm):,} communication masts/towers ({int(osm.mobile_tagged.sum()):,} tagged mobile)")
 
     sites = merge_sites(ocid, osm)
+    wtr_stats = {}
+    if WTR_POINTS.exists():
+        wtr = group_sites(pd.read_parquet(WTR_POINTS))
+        sites, wtr_stats = merge_wtr(sites, wtr)
+        print(f"  Ofcom register: {wtr_stats['wtr_sites']:,} sites ({len(pd.read_parquet(WTR_POINTS)):,} link ends grouped within 50 m): "
+              f"{wtr_stats['matched_existing']:,} matched existing sites within 200 m, {wtr_stats['new_sites']:,} new sites")
+    else:
+        print(f"  Ofcom register: {WTR_POINTS.name} not built; skipped (scripts/process/build_wtr.py)")
+    sites = finalise_sites(sites)
     sites["cell_id"] = [h3.latlng_to_cell(la, lo, H3_RES) for la, lo in zip(sites.lat, sites.lon)]
     per_cell = masts_per_cell(load_cells(), sites)
 
@@ -88,16 +99,20 @@ def build(force: bool) -> None:
     sites.to_parquet(SITES_OUT, index=False)
     per_cell.to_parquet(CELLS_OUT, index=False)
     inputs = {f.name: manifest.file_date(f) for f in files + sorted(OSM_DIR.glob("*.osm.pbf"))}
+    wtr_csv = RAW / "ofcom_wtr" / "WTR.csv"
+    if wtr_stats and wtr_csv.exists():
+        inputs[wtr_csv.name] = manifest.file_date(wtr_csv)
     META_OUT.write_text(json.dumps({"inputs_downloaded": inputs, "opencellid": counts,
-                                    "opencellid_sites": len(ocid), "osm_masts": len(osm)}, indent=2))
+                                    "opencellid_sites": len(ocid), "osm_masts": len(osm), "ofcom_wtr": wtr_stats}, indent=2))
     ocid_date = max(v for k, v in inputs.items() if k.endswith(".csv.gz"))
     osm_date = max(v for k, v in inputs.items() if k.endswith(".osm.pbf"))
     manifest.record(
-        "masts", title="Approximate mast sites: OpenCelliD + OpenStreetMap",
-        data_period=f"OpenCelliD downloaded {ocid_date}; OpenStreetMap extract downloaded {osm_date}",
+        "masts", title="Approximate mast sites: OpenCelliD + OpenStreetMap + Ofcom licence register",
+        data_period=f"OpenCelliD downloaded {ocid_date}; OpenStreetMap extract downloaded {osm_date}"
+                    + (f"; Ofcom WTR downloaded {inputs['WTR.csv']}" if "WTR.csv" in inputs else ""),
         downloaded=inputs, outputs=[SITES_OUT, CELLS_OUT, OSM_OUT],
-        refresh="OpenCelliD weekly; OpenStreetMap monthly",
-        licence="OpenCelliD CC BY-SA 4.0; OpenStreetMap ODbL 1.0",
+        refresh="OpenCelliD weekly; OpenStreetMap monthly; Ofcom WTR monthly",
+        licence="OpenCelliD CC BY-SA 4.0; OpenStreetMap ODbL 1.0; Ofcom WTR: Ofcom copyright, free re-use",
     )
     print(f"wrote {SITES_OUT.name}, {CELLS_OUT.name}, {META_OUT.name}")
 
@@ -109,8 +124,13 @@ def check() -> None:
     print(sites.sources.value_counts().rename_axis("sources").to_frame("sites").to_string())
 
     print("\nsites per operator (a site can carry several operators):")
-    ops = sites.operators.fillna("").str.split(",").explode()
-    print(ops[ops.isin(MAIN_OPERATORS)].value_counts().rename_axis("operator").to_frame("sites").to_string())
+    table = {}
+    for col in ("operators", "operators_inferred", "operators_confirmed"):
+        ops = sites[col].fillna("").str.split(",").explode()
+        table[col] = ops[ops.isin(MAIN_OPERATORS)].value_counts()
+    print(pd.DataFrame(table).fillna(0).astype(int).rename_axis("operator").to_string())
+    print(f"  sites with microwave backhaul (register): {int(sites.has_microwave_backhaul.sum()):,}; "
+          f"with register antenna height: {int(sites.antenna_height_m.notna().sum()):,}")
     print(f"  sites with no main operator identified: {(sites.operators.fillna('') == '').sum():,} "
           f"(mostly OSM masts without operator tags)")
 
@@ -145,7 +165,10 @@ def check() -> None:
               f"{r.nearest_mast_km:.2f} km at {r.nearest_mast_bearing_deg:.0f}°, operators '{r.nearest_mast_operators}'; "
               f"within 5 km: {r.masts_within_5km} sites ({r.masts_known_operator_within_5km} with known operator, "
               f"{r.masts_unknown_operator_within_5km} unknown, {r.masts_osm_only_within_5km} OSM-only), "
-              f"{r.distinct_operators_within_5km} operators '{r.operators_within_5km}', status {r.operator_data_status}")
+              f"{r.distinct_operators_within_5km} operators '{r.operators_within_5km}' "
+              f"(confirmed by register: '{r.operators_confirmed_within_5km}'), "
+              f"{r.wtr_sites_within_5km} register sites, {r.microwave_backhaul_sites_within_5km} with microwave backhaul, "
+              f"status {r.operator_data_status}")
 
 
 def main() -> None:

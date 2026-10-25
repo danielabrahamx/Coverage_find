@@ -52,6 +52,21 @@ Each dataset is its own Zetaris source (Lightning database), e.g. `CD_CELLS.cell
 `coverage_detective.data.zetaris.query(sql)`; every query is logged to
 `logs/zetaris_queries.jsonl` (time, SQL, duration, rows, error) for the evidence trail.
 
+## Data sources
+
+| Source | What it tells us | Type | Licence | Date / version |
+|---|---|---|---|---|
+| WorldPop + ONS boundaries | People per cell; nation | file | CC BY 4.0; OGL v3.0 | 2020; ONS Dec 2023 |
+| Ookla open data (mobile) | Measured mobile download/upload/latency, tests, devices, trend | file | CC BY-NC-SA 4.0 | 2026Q3 + 3 previous quarters |
+| OpenCelliD | Crowd-sourced radio cells → approximate mast sites, operators *inferred* from network codes | file | CC BY-SA 4.0 | downloaded 25 Oct 2026 |
+| OpenStreetMap (Geofabrik) | Mapped communication masts and towers | file | ODbL 1.0 | downloaded 25 Oct 2026 |
+| Ofcom Wireless Telegraphy Register | Operators' licensed microwave links: operators *confirmed* at sites, antenna heights | file | Ofcom copyright, free re-use | downloaded 25 Oct 2026 |
+| Ofcom Connected Nations | Predicted coverage by number of operators, per constituency / local authority; per operator by nation | file | OGL | July 2025 |
+| ONS constituencies, local authorities | Which area a cell is in | file | OGL v3.0 | July 2024; Dec 2024 |
+| postcodes.io, Open-Meteo, Met Office warnings, EA floods | Place lookup, weather, warnings, floods | REST, live (phase D) | see data/README.md | at question time |
+
+Details, processing steps and exact licences: `data/README.md`.
+
 ## Build the data
 
 ```bash
@@ -61,6 +76,8 @@ Each dataset is its own Zetaris source (Lightning database), e.g. `CD_CELLS.cell
 .venv/bin/python scripts/download/opencellid.py   # OpenCelliD UK cells (needs OPENCELLID_TOKEN)
 .venv/bin/python scripts/download/osm.py           # OpenStreetMap GB + Ireland extracts (~2.6 GB)
 .venv/bin/python scripts/process/build_masts.py   # mast sites + nearest mast / operators per cell
+.venv/bin/python scripts/download/ofcom_wtr.py     # Ofcom Wireless Telegraphy Register (~54 MB)
+.venv/bin/python scripts/process/build_wtr.py      # register points, merged into the mast sites
 .venv/bin/python scripts/download/dem.py           # Copernicus DEM GLO-30 tiles (~1.4 GB)
 .venv/bin/python scripts/download/ons_boundaries.py # ONS constituency + local authority boundaries
 .venv/bin/python scripts/process/build_ofcom.py    # Ofcom July 2025 area coverage per cell (zip in data/raw/ofcom/)
@@ -108,6 +125,7 @@ Two kinds of data:
   | Ookla mobile speeds | quarterly | when a newer quarter appears in the public bucket |
   | OpenCelliD radio cells | weekly | re-download |
   | OpenStreetMap masts | monthly | re-download the Geofabrik extracts |
+  | Ofcom Wireless Telegraphy Register | monthly | re-download the CSV |
   | Ofcom Connected Nations | each release (about twice a year) | download the new zip by hand into `data/raw/ofcom/` (no API) |
   | WorldPop population, ONS boundaries, Copernicus DEM | manual | rarely change |
 

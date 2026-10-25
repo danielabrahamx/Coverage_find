@@ -6,7 +6,11 @@ const UK_VIEW = { center: [-3.2, 54.6], zoom: 4.9 };
 const MAST_MIN_ZOOM = 10;
 const TILE_MIN_ZOOM = 12;
 const NO_DATA = [168, 174, 184, 70];
-const SOURCE_COLORS = { opencellid: "#1D4ED8", osm: "#C2410C", both: "#0F766E" };
+const SOURCE_COLORS = { opencellid: "#1D4ED8", osm: "#C2410C", both: "#0F766E", wtr: "#7C3AED" };
+const sourceColor = (sources) =>
+  sources.includes("ofcom_wtr") ? SOURCE_COLORS.wtr
+  : sources === "opencellid,osm" ? SOURCE_COLORS.both
+  : SOURCE_COLORS[sources] || "#5B6472";
 const SPEED = { breaks: [2, 5, 10], colors: ["#C2410C", "#F59E0B", "#93C5FD", "#2563EB"] };
 const COMPASS = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
 
@@ -111,7 +115,7 @@ function mastLayer() {
     id: "masts",
     data: map.getZoom() >= MAST_MIN_ZOOM ? state.masts : [],
     getPosition: (m) => [m.lon, m.lat],
-    getFillColor: (m) => hexToRgb(SOURCE_COLORS[m.sources] || "#5B6472"),
+    getFillColor: (m) => hexToRgb(sourceColor(m.sources)),
     getLineColor: [255, 255, 255, 255],
     stroked: true,
     lineWidthUnits: "pixels",
@@ -158,7 +162,8 @@ function renderLegend() {
     <ul class="masts">
       <li><span class="dot" style="background:${SOURCE_COLORS.opencellid}"></span>Mast site · OpenCelliD</li>
       <li><span class="dot" style="background:${SOURCE_COLORS.osm}"></span>Mast site · OpenStreetMap</li>
-      <li><span class="dot" style="background:${SOURCE_COLORS.both}"></span>Mast site · both</li>
+      <li><span class="dot" style="background:${SOURCE_COLORS.both}"></span>Mast site · OpenCelliD + OSM</li>
+      <li><span class="dot" style="background:${SOURCE_COLORS.wtr}"></span>Mast site · Ofcom licence register</li>
     </ul>`;
 }
 
@@ -208,7 +213,11 @@ function onHover(info) {
       (entry && entry[1] ? `<br><span>weak evidence</span>` : "");
   } else if (info.layer.id === "masts") {
     const m = info.object;
-    html = `<strong>Approximate mast site</strong><br>Source: ${esc(m.sources)}<br>Operators: ${esc(m.operators || "unknown")}` +
+    html = `<strong>Approximate mast site</strong><br>Sources: ${esc(m.sources)}` +
+      (m.operators_confirmed ? `<br>Confirmed (Ofcom register): ${esc(m.operators_confirmed)}` : "") +
+      (m.operators_inferred ? `<br>Inferred: ${esc(m.operators_inferred)}` : "") +
+      (!m.operators ? "<br>Operators: unknown" : "") +
+      (m.has_microwave_backhaul ? `<br>Microwave backhaul · antenna ${fmt(m.antenna_height_m, 0)} m` : "") +
       (m.radio_types ? `<br>Radio: ${esc(m.radio_types)}` : "") + (m.osm_operator ? `<br>OSM operator tag: ${esc(m.osm_operator)}` : "");
   } else if (info.layer.id === "tiles") {
     const t = info.object;
@@ -235,10 +244,11 @@ function compass(deg) {
 
 function statusSentence(c) {
   const n = c.masts_within_5km, u = c.masts_unknown_operator_within_5km;
+  const unknownNote = u ? ` Operators could not be identified for ${u} nearby site${u === 1 ? "" : "s"}, so more may be present.` : "";
   switch (c.operator_data_status) {
-    case "complete": return `Operators are known for all ${n} nearby approximate mast sites.`;
-    case "partial": return `Operators could not be identified for ${u} of ${n} nearby sites, so more operators may be present than listed.`;
-    case "unknown": return `Operators could not be identified for any of the ${n} nearby sites (mapped in OpenStreetMap without an operator).`;
+    case "confirmed": return `At least one operator nearby is confirmed by Ofcom's licence register; the others are inferred from crowd-sourced data.${unknownNote}`;
+    case "inferred": return `Operators are inferred from crowd-sourced data (OpenCelliD, OpenStreetMap); none confirmed by Ofcom's licence register.${unknownNote}`;
+    case "unknown": return `Operators could not be identified for any of the ${n} nearby sites.`;
     case "no_sites_found": return "No approximate mast sites found within 5 km. This is weak evidence: OpenCelliD's free data is incomplete.";
     default: return "";
   }
@@ -258,6 +268,10 @@ function panelHTML(res) {
   const c = res.cell;
   const ops = ["EE", "O2", "Three", "Vodafone"];
   const near = (c.operators_within_5km || "").split(",").filter(Boolean);
+  const confirmed = (c.operators_confirmed_within_5km || "").split(",").filter(Boolean);
+  const chip = (o) => !near.includes(o) ? `<span class="chip off">${o}</span>`
+    : confirmed.includes(o) ? `<span class="chip confirmed" title="Confirmed by Ofcom's licence register">✓ ${o}</span>`
+    : `<span class="chip" title="Inferred from OpenCelliD / OpenStreetMap">${o}</span>`;
   const speed = c.tests
     ? `<div class="big">${fmt(c.download_mbps, 1)}<small>Mbps down</small></div>
        <dl class="kv"><dt>Upload</dt><dd>${fmt(c.upload_mbps, 1)} Mbps</dd><dt>Latency</dt><dd>${fmt(c.latency_ms, 0)} ms</dd>
@@ -272,7 +286,10 @@ function panelHTML(res) {
     : `<p class="status muted">Not enough quarters for a trend.</p>`;
   const mast = c.nearest_mast_km !== null && c.nearest_mast_km !== undefined
     ? `<dl class="kv"><dt>Nearest site</dt><dd>${fmt(c.nearest_mast_km, 2)} km ${compass(c.nearest_mast_bearing_deg)} (${fmt(c.nearest_mast_bearing_deg, 0)}°)</dd>
-       <dt>Operators there</dt><dd>${esc(c.nearest_mast_operators || "unknown")}</dd><dt>Source</dt><dd>${esc(c.nearest_mast_sources)}</dd></dl>`
+       <dt>Operators there</dt><dd>${esc(c.nearest_mast_operators || "unknown")}</dd>
+       ${c.nearest_mast_operators_confirmed ? `<dt>Confirmed by Ofcom's licence register</dt><dd>${esc(c.nearest_mast_operators_confirmed)}</dd>` : ""}
+       ${c.nearest_mast_antenna_height_m ? `<dt>Antenna height (register)</dt><dd>${fmt(c.nearest_mast_antenna_height_m, 0)} m</dd>` : ""}
+       <dt>Sources</dt><dd>${esc(c.nearest_mast_sources)}</dd></dl>`
     : "";
   const ofcom = c.pcon_name
     ? `<p class="status">In <strong>${esc(c.pcon_name)}</strong>, ${fmt(c.g4_geo_out_0, 1)}% of land has no outdoor 4G from any operator and ${fmt(c.g4_geo_out_1, 1)}% from only one.</p>
@@ -289,8 +306,12 @@ function panelHTML(res) {
     <section><h3>Trend</h3>${trend}${sparkline(c.history)}</section>
     <section><h3>Nearest mast site</h3>${mast}</section>
     <section><h3>Operators within 5 km</h3>
-      <div class="chips">${ops.map((o) => `<span class="chip ${near.includes(o) ? "" : "off"}">${o}</span>`).join("")}</div>
+      <div class="chips">${ops.map(chip).join("")}</div>
+      ${confirmed.length ? `<p class="footnote">✓ Confirmed by Ofcom's licence register (licensed microwave links); others inferred from crowd-sourced data.</p>` : ""}
       <p class="status">${c.masts_within_5km} approximate mast sites (${c.masts_known_operator_within_5km} with a known operator).</p>
+      <p class="status">${c.microwave_backhaul_sites_within_5km
+        ? `${c.microwave_backhaul_sites_within_5km} of them have licensed microwave backhaul (${c.wtr_sites_within_5km} in Ofcom's register).`
+        : "None of them appear in Ofcom's licence register."}</p>
       <p class="status">${esc(statusSentence(c))}</p></section>
     <section><h3>Ofcom: the wider area</h3>${ofcom}</section>
     <section><h3>Data dates</h3><dl class="kv">${dates}</dl></section>

@@ -68,6 +68,7 @@ def record(
             entry["rows"] = pq.ParquetFile(path).metadata.num_rows
         tables[path.name] = entry
     manifest = load()
+    raw = manifest["sources"].get(source, {}).get("raw")  # kept from record_raw()
     manifest["sources"][source] = {
         "title": title,
         "data_period": data_period,
@@ -77,11 +78,24 @@ def record(
         "licence": licence,
         "outputs": tables,
         **(extra or {}),
+        **({"raw": raw} if raw else {}),
     }
     manifest["updated_at"] = _now()
     manifest["sources"] = dict(sorted(manifest["sources"].items()))
     MANIFEST_PATH.write_text(json.dumps(manifest, indent=2) + "\n")
     return manifest["sources"][source]
+
+
+def record_raw(source: str, path: Path, url: str, **info) -> None:
+    """Note a downloaded raw file (date, SHA-256, URL) under the source, before any build."""
+    manifest = load()
+    entry = manifest["sources"].setdefault(source, {})
+    entry.setdefault("raw", {})[path.name] = {
+        "downloaded": file_date(path), "sha256": sha256(path), "bytes": path.stat().st_size, "url": url, **info,
+    }
+    manifest["updated_at"] = _now()
+    manifest["sources"] = dict(sorted(manifest["sources"].items()))
+    MANIFEST_PATH.write_text(json.dumps(manifest, indent=2) + "\n")
 
 
 def source_for(table: str) -> tuple[str, dict]:

@@ -55,7 +55,8 @@ def layer_defs() -> list[dict]:
     """Every layer: metadata plus a function producing its rows (None if inputs are missing)."""
     cells = _read("cells_r7.parquet", ["cell_id", "population"])
     ookla = _read("ookla_mobile_r7.parquet", ["cell_id", "download_mbps", "tests", "download_change_pct", "quarters_with_data"])
-    masts = _read("masts_r7.parquet", ["cell_id", "nearest_mast_km", "distinct_operators_within_5km", "operator_data_status"])
+    masts = _read("masts_r7.parquet", ["cell_id", "nearest_mast_km", "distinct_operators_within_5km", "operator_data_status",
+                                       "microwave_backhaul_sites_within_5km"])
     ofcom = _read("ofcom_area_r7.parquet", ["cell_id", "g4_geo_out_0", "g4_geo_out_1"])
     los = _read("los_r7.parquet", ["cell_id", "blocked"])
     dep = _read("deprivation_r7.parquet", ["cell_id", "deprivation_decile_within_nation"])
@@ -97,12 +98,17 @@ def layer_defs() -> list[dict]:
         {"type": "categories", "values": [0, 1, 2, 3, 4],
          "colors": ["#C2410C", "#F59E0B", "#FDE68A", "#93C5FD", "#1D4ED8"],
          "labels": ["0", "1", "2", "3", "4"]}, "masts_r7", masts, "distinct_operators_within_5km", decimals=0)
-    add("operator_data_status", "Operator data", "Whether the operators of nearby approximate mast sites are "
-        "known (OpenCelliD is crowd-sourced and incomplete).", "",
-        {"type": "categories", "values": ["complete", "partial", "unknown", "no_sites_found"],
+    add("operator_data_status", "Operator data", "How the operators of approximate mast sites within 5 km are "
+        "known: confirmed by Ofcom's licence register, inferred from OpenCelliD / OpenStreetMap, or unknown.", "",
+        {"type": "categories", "values": ["confirmed", "inferred", "unknown", "no_sites_found"],
          "colors": ["#1D4ED8", "#93C5FD", "#F59E0B", "#C2410C"],
-         "labels": ["All known", "Some unknown", "None known", "No sites found"]}, "masts_r7", masts,
-        "operator_data_status")
+         "labels": ["Confirmed (Ofcom register)", "Inferred only", "Operators unknown", "No sites found"]},
+        "masts_r7", masts, "operator_data_status")
+    add("microwave_backhaul_sites_within_5km", "Microwave backhaul sites", "Approximate mast sites within 5 km "
+        "with licensed microwave links of a mobile operator (Ofcom Wireless Telegraphy Register).", "sites",
+        {"type": "bins", "breaks": [1, 3, 10, 30], "colors": ["#F3F4F6", "#DDD6FE", "#A78BFA", "#7C3AED", "#4C1D95"],
+         "labels": ["0", "1 – 2", "3 – 9", "10 – 29", "30 +"]}, "masts_r7", masts,
+        "microwave_backhaul_sites_within_5km", decimals=0)
     add("ofcom_geo_4g_none_pct", "Ofcom: land with no 4G", "% of the constituency's land with no outdoor 4G "
         "from any operator (Ofcom Connected Nations). Area figure, not this exact cell.", "%",
         {"type": "bins", "breaks": [1, 5, 10, 25], "colors": ["#EFF6FF", "#FDE68A", "#F59E0B", "#EA580C", "#9A3412"],

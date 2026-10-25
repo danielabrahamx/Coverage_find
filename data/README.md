@@ -13,6 +13,7 @@ Raw files live in `data/raw/` and built files in `data/processed/`; both are git
 | Ofcom Connected Nations 2025, mobile coverage | reference date 1 July 2025 (release `202507_mobile_coverage_r01`) | Open Government Licence | `raw/ofcom/202507_mobile_coverage_r01.zip` | `ofcom_area_r7.parquet`, `ofcom_nations.parquet` |
 | ONS Westminster Parliamentary Constituencies | July 2024, UK BGC | Open Government Licence v3.0 | `raw/boundary/pcon_2024.geojson` | `ofcom_area_r7.parquet` |
 | ONS Local Authority Districts | December 2024, UK BGC | Open Government Licence v3.0 | `raw/boundary/lad_2024.geojson` | `ofcom_area_r7.parquet` |
+| Ofcom Wireless Telegraphy Register (WTR) | downloaded 25 Oct 2026 (Last-Modified 25 Oct 2026 08:45 GMT) | Ofcom copyright; free re-use (see below) | `raw/ofcom_wtr/WTR.csv` | `wtr_points.parquet`, `masts_sites.parquet`, `masts_r7.parquet` |
 | UK network codes (Wikipedia) | revision 1378731553, 5 Oct 2026 | CC BY-SA 4.0 | — | `reference/mcc_mnc_uk.csv` (committed) |
 
 ## Manifest
@@ -33,8 +34,9 @@ one table) by `scripts/zetaris/register_sources.py`, read from the read-only mou
 | `CD_OOKLA_MOBILE` | `ookla_mobile_r7` | `ookla_mobile_r7.parquet` | 23,412 |
 | `CD_OOKLA_MOBILE_HISTORY` | `ookla_mobile_history_r7` | `ookla_mobile_history_r7.parquet` | 87,725 |
 | `CD_OOKLA_MOBILE_TILES` | `ookla_mobile_tiles` | `ookla_mobile_tiles.parquet` | 420,260 |
-| `CD_MASTS_SITES` | `masts_sites` | `masts_sites.parquet` | 88,931 |
+| `CD_MASTS_SITES` | `masts_sites` | `masts_sites.parquet` | 93,638 |
 | `CD_MASTS` | `masts_r7` | `masts_r7.parquet` | 56,592 |
+| `CD_WTR_POINTS` | `wtr_points` | `wtr_points.parquet` | 13,122 |
 | `CD_OFCOM_AREA` | `ofcom_area_r7` | `ofcom_area_r7.parquet` | 56,592 |
 | `CD_OFCOM_NATIONS` | `ofcom_nations` | `ofcom_nations.parquet` | 1,035 |
 
@@ -118,18 +120,23 @@ uneven and incomplete, so the absence of masts is weaker evidence than their pre
 3. Cluster rows into approximate mast sites: rows are taken in order of most samples first,
    and each joins the nearest site leader within 150 m or starts a new site. This is leader
    clustering, which avoids chaining a dense city into one giant site.
-4. Merge with the OpenStreetMap masts (below) into `masts_sites.parquet`.
+4. Merge with the OpenStreetMap masts and the Ofcom licence register (below) into
+   `masts_sites.parquet`.
 5. Per grid cell centre (`masts_r7.parquet`): masts_within_5km, nearest_mast_km,
    nearest_mast_bearing_deg (from the cell towards the mast), nearest_mast_id / lat / lon /
-   sources / operators, distinct_operators_within_5km, operators_within_5km,
+   sources / operators / operators_confirmed / antenna_height_m,
+   distinct_operators_within_5km, operators_within_5km, operators_confirmed_within_5km,
    masts_osm_only_within_5km, masts_known_operator_within_5km,
-   masts_unknown_operator_within_5km (no operator from either source: OSM-only sites with
-   no recognisable operator tag), and operator_data_status: `complete` (all sites within
-   5 km have a known operator), `partial` (some unknown), `unknown` (sites but no known
-   operator) or `no_sites_found`. Populated cells, 25 Oct 2026: complete 7,473 cells
-   (2.98 m people), partial 25,865 (60.39 m), unknown 11,591 (3.13 m), no_sites_found
-   10,648 (0.92 m). `partial` is common in towns, where a few unknown sites sit among many
-   known ones, so use the counts, not just the status.
+   masts_unknown_operator_within_5km (no operator from any source: OSM-only sites with no
+   recognisable operator tag), wtr_sites_within_5km, microwave_backhaul_sites_within_5km,
+   and operator_data_status:
+   - `confirmed`: at least one operator within 5 km is confirmed by Ofcom's licence register;
+   - `inferred`: operators known only from OpenCelliD / OSM;
+   - `unknown`: sites found but no operator known;
+   - `no_sites_found`.
+   Populated cells, 25 Oct 2026: confirmed 44,009 cells (65.83 m people), inferred 3,895
+   (1.18 m), unknown 2,143 (0.23 m), no_sites_found 5,530 (0.18 m). Use
+   masts_unknown_operator_within_5km for "operators could not be identified for N sites".
 
 ## OpenStreetMap masts
 
@@ -148,18 +155,27 @@ operator. `mobile_tagged` marks masts with `communication:mobile_phone=yes` or a
 mobile operator; other OSM communication masts may carry only broadcast or private radio.
 Objects in both extracts (Northern Ireland) are kept once. Cached in `osm_masts.parquet`.
 
-**Merge** (`coverage_detective/data/masts.py`, `masts_sites.parquet`): each OpenCelliD site
-joins its nearest OSM mast within 200 m. An OSM mast with matches becomes one site with
-`sources = both` at the OSM position (mapped, so usually more accurate than OpenCelliD's
-estimate), with operators from both. Unmatched sites keep `opencellid` or `osm`.
-Columns: site_id, lat, lon, sources, operators, operator_labels, radio_types, cell_count,
-osm_id, osm_operator, mobile_tagged, cell_id.
+**Merge** (`coverage_detective/data/masts.py`, `masts_sites.parquet`):
+1. Each OpenCelliD site joins its nearest OSM mast within 200 m. An OSM mast with matches
+   becomes one site with `sources = opencellid,osm` at the OSM position (mapped, so usually
+   more accurate than OpenCelliD's estimate). Unmatched sites keep `opencellid` or `osm`.
+2. Ofcom register sites (below) join the nearest site within 200 m: it gains `ofcom_wtr` in
+   `sources`, the register's operators in `operators_confirmed`, `has_microwave_backhaul`,
+   `antenna_height_m`, and moves to the register's surveyed position if it had only
+   OpenCelliD's estimate. Unmatched register sites become new sites (`sources = ofcom_wtr`).
+Columns: site_id, lat, lon, sources (comma list), operators (= inferred + confirmed),
+operators_inferred (OpenCelliD network codes, OSM operator tags), operators_confirmed (Ofcom
+register), operator_labels, radio_types, cell_count, osm_id, osm_operator, mobile_tagged,
+wtr_licensees, wtr_links, has_microwave_backhaul, antenna_height_m, cell_id.
 
 Result (25 Oct 2026): 77,913 OpenCelliD sites from 144,681 radio cells; 13,644 OSM masts
-(6,208 tagged mobile); merged 88,931 sites (75,287 opencellid, 11,718 osm, 1,926 both).
-Sites per operator: Vodafone 33,225, EE 26,900, O2 26,238, Three 17,678. These are site
-*clusters*, more than the real number of masts: OpenCelliD estimates each operator's
-cells at slightly different positions, so one shared mast often appears as several sites.
+(6,208 tagged mobile); 8,504 register sites (3,797 matched an existing site, 4,707 new);
+93,638 sites in total (opencellid 74,352, osm 9,272, ofcom_wtr 4,707, ofcom_wtr+osm 2,446,
+opencellid+osm 1,620, ofcom_wtr+opencellid 935, all three 306).
+Sites per operator (confirmed by the register): Vodafone 35,815 (2,878), EE 29,649 (3,005),
+O2 29,498 (3,594), Three 20,525 (3,005). These are site *clusters*, more than the real
+number of masts: OpenCelliD estimates each operator's cells at slightly different
+positions, so one shared mast often appears as several sites.
 
 Caveat: OSM-only sites include broadcast-only towers, so `masts_osm_only_within_5km` is
 reported separately and evidence should say which source a mast comes from.
@@ -228,3 +244,64 @@ not applicable (e.g. no motorways in the area) and stays null.
 
 **Evidence wording**: "In <area>, X% of land has no outdoor 4G from any operator and Y% from
 only one (Ofcom Connected Nations, July 2025)", with X = `g4_geo_out_0`, Y = `g4_geo_out_1`.
+
+## Ofcom Wireless Telegraphy Register (WTR)
+
+Ofcom, *Wireless Telegraphy Act Register*, https://www.ofcom.org.uk/spectrum/frequencies/wtr,
+CSV https://static.ofcom.org.uk/static/radiolicensing/html/register/WTR.csv (205,372 rows,
+downloaded 25 Oct 2026; Last-Modified 25 Oct 2026 08:45 GMT; SHA-256 in `data/manifest.json`).
+Downloaded by `scripts/download/ofcom_wtr.py`.
+
+**Re-use terms** (Ofcom, [Copyright and information re-use](https://www.ofcom.org.uk/about-ofcom/our-website/copyright)):
+material "may be reproduced free of charge in any format or medium, provided that it is
+reproduced accurately and not used in a misleading context. The material must be
+acknowledged as Ofcom copyright and the title of the document/publication specified."
+Attribute as "Contains data from Ofcom's Wireless Telegraphy Act Register, © Ofcom".
+Ofcom notes it "cannot guarantee that the information will always be accurate or up-to-date",
+and may withhold some licences for public-safety or national-security reasons.
+
+**What it does and does not contain.** Mobile base stations are **not** in the register:
+"Mobile network operators (MNOs) manage their own planning within blocks of assigned
+spectrum" (Ofcom). For the mobile operators the register holds their **licensed fixed
+links**: point-to-point microwave backhaul (6.5–83 GHz), each end with an exact location
+(10-figure grid reference) and antenna height. Link ends are almost always at mast or hub
+sites, so they *confirm* that an operator uses a site, but only sites with licensed
+microwave backhaul (fibre-fed and self-licensed sites are missing).
+
+**Operators** (`data/reference/wtr_operator_licensees.csv`, exact case-insensitive match on
+the legal name, never loose words: "East Anglia Three Limited", "Cornerstone Security
+Systems" and "Three Horseshoes Inn" must not count):
+- Telefonica UK Limited → O2 (2,573 licences)
+- Vodafone Limited → Vodafone (2,016)
+- Mobile Broadband Network Limited (MBNL, the EE–Three network joint venture) → EE + Three (1,974)
+- EE Limited, Hutchison 3G UK Limited, Cornerstone Telecommunications Infrastructure
+  Limited (→ O2 + Vodafone) are listed but had no entries on 25 Oct 2026.
+- Not mapped: British Telecommunications Limited (6,272 rows; BT owns EE, but these are
+  mostly BT's fixed network) and Arqiva (broadcast and neutral host).
+
+**Processing** (`scripts/process/build_wtr.py`, `coverage_detective/sources/ofcom_wtr.py`):
+1. Keep live rows of the licensees above; drop satellite earth stations.
+2. Location from the grid reference with pyproj: two letters = British National Grid
+   (EPSG:27700), one letter = Irish Grid (EPSG:29903); 6-, 8- and 10-figure references,
+   taken at the centre of the square they name. If a reference cannot be read, the
+   register's own WGS84 lat/lon is used. Checked: the conversion agrees with the register's
+   lat/lon to 0.1 m median (0.3 m p95) over 26,254 rows.
+3. One point per (licence, location), i.e. each end of a link separately:
+   `wtr_points.parquet` = point_id, link_id (licence number), lat, lon, location_from, ngr,
+   licensee, operators, product, frequency_ghz, frequency_band, antenna_height_m,
+   height_asl_m, station_types, register_rows, is_link_endpoint. 13,122 points; antenna
+   heights median 20 m (15–26 m inter-quartile, max 203 m).
+4. Points within 50 m are grouped into one register site (several links on one mast), then
+   merged into the mast sites as above.
+
+**Effect on populated cells** (55,577 cells, 25 Oct 2026):
+
+| | Before the register | After |
+|---|---|---|
+| Sites found, but no operator identified for any | 11,591 cells (20.9%), 3.13 m people | 2,143 (3.9%), 0.23 m |
+| Operators unidentified for at least one nearby site | 37,456 (67.4%), 63.52 m | 31,780 (57.2%), 61.47 m |
+| No sites within 5 km | 10,648 (19.2%), 0.92 m | 5,530 (10.0%), 0.18 m |
+| No named operator within 5 km | 22,245 (40.0%), 4.05 m | 7,677 (13.8%), 0.41 m |
+
+People with an operator confirmed by the register within 5 km: EE 51.3 m, Three 51.3 m
+(both via MBNL), Vodafone 44.0 m, O2 43.1 m.

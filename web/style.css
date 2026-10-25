@@ -124,6 +124,7 @@ body {
 .kv dd { margin: 0; text-align: right; font-weight: 600; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
 .chip { padding: 3px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 700; font-size: 12px; }
+.chip.confirmed { background: var(--accent); color: #fff; }
 .chip.off { background: var(--bg); color: var(--muted); font-weight: 600; text-decoration: line-through; }
 .status { font-size: 13px; margin: 6px 0 0; }
 .weak {

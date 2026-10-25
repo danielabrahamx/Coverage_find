@@ -43,14 +43,21 @@ when masts_within_5km is small.
 Evidence strength: OpenCelliD is crowd-sourced and incomplete, so "masts found" is stronger
 evidence than "no masts found".
 
+**Confirmed vs inferred operators**: `operators_confirmed` come from Ofcom's Wireless
+Telegraphy Register (licensed microwave links at the site): say "confirmed by Ofcom's
+licence register". `operators_inferred` come from OpenCelliD network codes / OSM tags: say
+"inferred from crowd-sourced data". The register lists fixed links, not base stations, so a
+site missing from it is not evidence of anything. operator_data_status per cell:
+confirmed / inferred / unknown / no_sites_found.
+
 **Mast wording rules** (evidence findings and agent output):
 - Say "approximate mast sites", never a count of "masts": sites are clusters of
   crowd-sourced radio cells and mapped towers, and one real mast can appear as several.
-- Use `operator_data_status` (per cell, `CD_MASTS.masts_r7`): `complete` (every nearby site
-  has a known operator), `partial` (some unknown), `unknown` (sites found, no operators
-  known), `no_sites_found`. When `partial` or `unknown`, say "operators could not be
-  identified for N nearby sites" (N = `masts_unknown_operator_within_5km`); never imply
-  fewer operators are present.
+- Use `operator_data_status` (per cell, `CD_MASTS.masts_r7`): `confirmed` (an operator within
+  5 km is confirmed by Ofcom's licence register), `inferred` (operators only from crowd-sourced
+  data), `unknown` (sites found, no operators known), `no_sites_found`. Whenever
+  `masts_unknown_operator_within_5km` > 0, say "operators could not be identified for N nearby
+  sites"; never imply fewer operators are present.
 - `no_sites_found` is weak evidence: OpenCelliD's free data is incomplete.
 
 Ofcom: the postcode-level API is not available to us (`sources/ofcom_api.py` is a stub that
@@ -137,6 +144,8 @@ cp .env.example .env                      # then fill in
 .venv/bin/python scripts/download/opencellid.py    # needs OPENCELLID_TOKEN; skips without it
 .venv/bin/python scripts/download/osm.py           # Geofabrik GB + Ireland (~2.6 GB)
 .venv/bin/python scripts/process/build_masts.py    # -> masts_sites.parquet, masts_r7.parquet
+.venv/bin/python scripts/download/ofcom_wtr.py      # Ofcom Wireless Telegraphy Register (~54 MB)
+.venv/bin/python scripts/process/build_wtr.py       # -> wtr_points.parquet, then rebuilds the mast tables
 .venv/bin/python scripts/download/dem.py           # Copernicus GLO-30 tiles (~1.4 GB), for phase C
 .venv/bin/python scripts/download/ons_boundaries.py # constituencies 2024 + local authorities Dec 2024
 .venv/bin/python scripts/process/build_ofcom.py    # -> ofcom_area_r7.parquet, ofcom_nations.parquet
@@ -161,7 +170,9 @@ E Ofcom regional (file in data/raw/ofcom/) · F rural-urban + deprivation ·
 G power cuts (if time) · H visitor load (if time) · final check_data.py.
 
 - A. Zetaris foundation: done (client, mount, CD_CELLS + 3 Ookla sources, join check)
-- B. Masts: done (OpenCelliD + OSM merged; CD_MASTS_SITES, CD_MASTS). OpenCelliD's free file
+- B. Masts: done (OpenCelliD + OSM + Ofcom WTR merged; CD_MASTS_SITES, CD_MASTS, CD_WTR_POINTS).
+  WTR = operators' licensed microwave links: confirmed operators + antenna heights (use these
+  heights in phase C line of sight; default 25 m otherwise). OpenCelliD's free file
   is incomplete in places (e.g. none within 5 km of Rhayader), so treat "no masts" as weak.
   DEM for phase C already downloaded (data/raw/dem/, Copernicus GLO-30, 93 tiles).
 - E. Ofcom regional: done (CD_OFCOM_AREA per cell = constituency figures; CD_OFCOM_NATIONS per

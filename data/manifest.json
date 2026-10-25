@@ -19,25 +19,26 @@
       }
     },
     "masts": {
-      "title": "Approximate mast sites: OpenCelliD + OpenStreetMap",
-      "data_period": "OpenCelliD downloaded 2026-10-25; OpenStreetMap extract downloaded 2026-10-25",
+      "title": "Approximate mast sites: OpenCelliD + OpenStreetMap + Ofcom licence register",
+      "data_period": "OpenCelliD downloaded 2026-10-25; OpenStreetMap extract downloaded 2026-10-25; Ofcom WTR downloaded 2026-10-25",
       "downloaded": {
         "234.csv.gz": "2026-10-25",
         "great-britain-latest.osm.pbf": "2026-10-25",
-        "ireland-and-northern-ireland-latest.osm.pbf": "2026-10-25"
+        "ireland-and-northern-ireland-latest.osm.pbf": "2026-10-25",
+        "WTR.csv": "2026-10-25"
       },
-      "built_at": "2026-10-25T19:32:08+00:00",
-      "refresh": "OpenCelliD weekly; OpenStreetMap monthly",
-      "licence": "OpenCelliD CC BY-SA 4.0; OpenStreetMap ODbL 1.0",
+      "built_at": "2026-10-25T20:19:01+00:00",
+      "refresh": "OpenCelliD weekly; OpenStreetMap monthly; Ofcom WTR monthly",
+      "licence": "OpenCelliD CC BY-SA 4.0; OpenStreetMap ODbL 1.0; Ofcom WTR: Ofcom copyright, free re-use",
       "outputs": {
         "masts_sites.parquet": {
-          "sha256": "ccf6a47220b8fc4b2d8c7bbb73216c5ad425fa82f89e7e79b7daffade73484ed",
-          "bytes": 2391247,
-          "rows": 88931
+          "sha256": "609e6a668df1702262b76f66044ffc4abe55d54d5201918ca5975cb5e3ffe3b9",
+          "bytes": 2669517,
+          "rows": 93638
         },
         "masts_r7.parquet": {
-          "sha256": "91a65fd1c6b273519b7ea8eb61dd56b732fd0c8860ed2645376a587c3895b4f6",
-          "bytes": 2468409,
+          "sha256": "b843258e0e10d68cda2b0c3c94b2c02116f87a1bf80c0f68c6104fd161c83ccc",
+          "bytes": 2692445,
           "rows": 56592
         },
         "osm_masts.parquet": {
@@ -106,7 +107,40 @@
         "2026Q2",
         "2026Q3"
       ]
+    },
+    "wtr": {
+      "title": "Ofcom Wireless Telegraphy Register: mobile operators' licensed fixed links",
+      "data_period": "register downloaded 2026-10-25",
+      "downloaded": {
+        "WTR.csv": "2026-10-25"
+      },
+      "built_at": "2026-10-25T20:18:45+00:00",
+      "refresh": "monthly (Ofcom updates the register regularly)",
+      "licence": "Ofcom copyright; free re-use if reproduced accurately and not misleadingly, acknowledged as Ofcom copyright",
+      "outputs": {
+        "wtr_points.parquet": {
+          "sha256": "baba66e2e989f08e1bb9e68127006422e11ff130455f128a5f9527db163b54b4",
+          "bytes": 557842,
+          "rows": 13122
+        }
+      },
+      "counts": {
+        "register_rows": 205372,
+        "operator_rows": 26264,
+        "satellite_rows_dropped": 8,
+        "no_location_or_outside_uk": 12,
+        "points": 13122
+      },
+      "raw": {
+        "WTR.csv": {
+          "downloaded": "2026-10-25",
+          "sha256": "523e5ed296e237b3260ae63e79ab36e457757684c061b75f8e5c0112da831d1e",
+          "bytes": 53848743,
+          "url": "https://static.ofcom.org.uk/static/radiolicensing/html/register/WTR.csv",
+          "last_modified": "Sun, 25 Oct 2026 08:45:01 GMT"
+        }
+      }
     }
   },
-  "updated_at": "2026-10-25T19:32:29+00:00"
+  "updated_at": "2026-10-25T20:19:01+00:00"
 }

@@ -20,6 +20,7 @@ SHOTS = [
     ("uk_speed", "?layer=download_mbps", (1440, 900), None),
     ("lake_district_masts", "?layer=download_mbps&lat=54.46&lon=-3.08&zoom=10.6", (1440, 900), None),
     ("great_langdale_panel", f"?layer=download_mbps&lat=54.445&lon=-3.105&zoom=11.2&cell={LANGDALE_CELL}", (1440, 900), ".diagnose"),
+    ("rhayader_panel", "?layer=microwave_backhaul_sites_within_5km&lat=52.30&lon=-3.51&zoom=11&cell=87195e3aeffffff", (1440, 900), ".diagnose"),
     ("phone_panel", f"?layer=download_mbps&lat=54.445&lon=-3.105&zoom=10&cell={LANGDALE_CELL}", (390, 844), ".diagnose"),
 ]
 
