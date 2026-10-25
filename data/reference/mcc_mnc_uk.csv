@@ -1,0 +1,82 @@
+mcc,mnc,label,brand,operator,status,bands,notes
+234,0,BT,BT,BT Group,Operational,GSM 900 / GSM 1800 / UMTS 2100,
+234,1,Vectone Mobile,Vectone Mobile,Mundio Mobile Limited,Operational,MVNO,Previously Mapesbury Communications Ltd.; uses EE network
+234,2,O2 (UK),O2 (UK),Telefónica Europe,Operational,LTE 1800,Used for satellite Direct to Cell on Band 3.
+234,3,Airtel-Vodafone,Airtel-Vodafone,Jersey Airtel Ltd,Operational,GSM 900 / GSM 1800 / UMTS 2100 / LTE 800 / LTE 1800 / LTE 2600,"Guernsey, Jersey"
+234,4,Wave Mobile Ltd,,Wave Mobile Ltd,Unknown,Unknown,Former FMS Solutions
+234,5,Spitfire Network Services Limited,,Spitfire Network Services Limited,Unknown,Unknown,Former COLT Mobile Telecommunications Ltd.
+234,6,Internet Computer Bureau Limited,,Internet Computer Bureau Limited,Not operational,,MNC withdrawn
+234,7,Vodafone UK,Vodafone UK,Vodafone,Not operational,GSM 1800,Former Cable & Wireless Worldwide; MNC withdrawn
+234,8,BT OnePhone,BT OnePhone,BT OnePhone (UK) Ltd,Operational,MVNO,Uses the EE Network
+234,9,Tismi BV,,Tismi BV,Unknown,,
+234,10,O2 (UK),O2 (UK),Telefónica Europe,Operational,GSM 900 / LTE 800 / LTE 900 / LTE 1800 / LTE 2100 / TD-LTE 2300 / 5G 700 / 5G 900 / TD-5G 2600 / 5G 3500,UMTS shut down Feb 2026
+234,11,O2 (UK),O2 (UK),Telefónica Europe,Operational,GSM 900 / LTE 800 / LTE 900 / LTE 1800 / LTE 2100 / TD-LTE 2300 / 5G 700 / 5G 900 / TD-5G 2600 / 5G 3500,
+234,12,Railtrack,Railtrack,Network Rail Infrastructure Ltd,Operational,GSM-R,
+234,13,Railtrack,Railtrack,Network Rail Infrastructure Ltd,Operational,GSM-R,
+234,14,HSL Messaging Limited,,HSL Messaging Limited,Operational,GSM 1800,"Former Hay Systems, Link Mobility"
+234,15,Vodafone UK,Vodafone UK,Vodafone,Operational,GSM 900 / GSM 1800 / LTE 800 / LTE 900 / LTE 1800 / LTE 2100 / LTE 2600 / TD-LTE 2600 / 5G 900 / 5G 2100 / 5G 3500,UMTS shut down Feb 2024
+234,16,Talk Talk,Talk Talk,TalkTalk Communications Limited,Operational,MVNO,Formerly Opal Tel Ltd; uses Vodafone network
+234,17,FleXtel Limited,,FleXtel Limited,Not operational,,MNC withdrawn
+234,18,Cloud9,Cloud9,Wireless Logic Limited,Operational,MVNO,Isle of Man network shut down
+234,19,PMN,PMN,Teleware plc,Operational,GSM 1800,Private GSM; roaming with Vodafone
+234,20,3,3,Three UK,Operational,LTE 800 / LTE 1500 / LTE 1800 / LTE 2100 / 5G 700 / 5G 2100 / 5G 3500,National roaming with Orange (UK)'s 2G network; UMTS shut down Nov 2025
+234,21,LogicStar Ltd,,LogicStar Ltd,Not operational,Unknown,MNC withdrawn
+234,22,Telesign Mobile Limited,,Telesign Mobile Limited,Unknown,Unknown,Former Routo Telecommunications Limited
+234,23,Icron Network Limited,,Icron Network Limited,Unknown,Unknown,
+234,24,Greenfone,Greenfone,Stour Marine Limited,Operational,MVNO,Uses Stour Marine network
+234,25,Truphone,Truphone,Truphone,Operational,MVNO,Uses Vodafone network
+234,26,Lycamobile,Lycamobile,Lycamobile UK Limited,Operational,MVNO,
+234,27,Teleena,Teleena,Tata Communications Move UK Ltd,Operational,MVNO,
+234,28,Marathon Telecom Limited,,Marathon Telecom Limited,Operational,MVNO,Holds unused spectrum in Jersey
+234,29,aql,aql,(aq) Limited,Unknown,Unknown,
+234,30,EE,EE,EE Limited,Operational,GSM 1800 / LTE 800 / LTE 1800 / LTE 2100 / LTE 2600 / 5G 700 / 5G 1800 / 5G 2100 / 5G 2600 / 5G 3500,Previously owned by Deutsche Telekom; used by MVNOs Asda Mobile & Virgin Mobile; UMTS shut down Feb 2024
+234,31,EE,EE,EE Limited,Allocated,GSM 1800 / LTE 800 / LTE 1800 / LTE 2100 / LTE 2600 / 5G 700 / 5G 1800 / 5G 2100 / 5G 2600 / 5G 3500,
+234,32,EE,EE,EE Limited,Allocated,GSM 1800 / LTE 800 / LTE 1800 / LTE 2100 / LTE 2600 / 5G 700 / 5G 1800 / 5G 2100 / 5G 2600 / 5G 3500,
+234,33,EE,EE,EE Limited,Operational,GSM 1800 / LTE 800 / LTE 1800 / LTE 2100 / LTE 2600 / 5G 700 / 5G 1800 / 5G 2100 / 5G 2600 / 5G 3500,Previously owned by Orange S.A.
+234,34,EE,EE,EE Limited,Operational,GSM 1800 / LTE 800 / LTE 1800 / LTE 2100 / LTE 2600 / 5G 700 / 5G 1800 / 5G 2100 / 5G 2600 / 5G 3500,Previously owned by Orange S.A.
+234,35,JSC Ingenium (UK) Limited,,JSC Ingenium (UK) Limited,Not operational,Unknown,MNC withdrawn
+234,36,Sure Mobile,Sure Mobile,Sure Isle of Man Ltd.,Operational,GSM 900 / UMTS 900 / UMTS 2100 / LTE 800 / LTE 1800 / LTE 2100,Isle of Man; former Cable & Wireless
+234,37,Synectiv Ltd,,Synectiv Ltd,Unknown,Unknown,
+234,38,Virgin Mobile,Virgin Mobile,Virgin Media,Unknown,Unknown,
+234,39,Gamma Telecom Holdings Ltd.,,Gamma Telecom Holdings Ltd.,Unknown,Unknown,Former SSE Energy Supply Limited
+234,40,spusu,spusu,MASS Response Service GmbH,Operational,MVNO,
+234,50,JT,JT,JT Group Limited,Operational,GSM 900 / GSM 1800 / UMTS 900 / UMTS 2100 / LTE 800 / LTE 1800 / LTE 2600,"Guernsey, Jersey; former Wave Telecom"
+234,51,Relish,Relish,UK Broadband Limited,Operational,TD-LTE 3500 / TD-LTE 3700,
+234,52,Shyam Telecom UK Ltd,,Shyam Telecom UK Ltd,Unknown,Unknown,
+234,53,Tango Extend,Tango Extend,Tango Networks UK Ltd,Operational,MVNO,Former Limitless Mobile
+234,54,iD Mobile,iD Mobile,The Carphone Warehouse Limited,Operational,MVNO,Uses Three UK
+234,55,Sure Mobile,Sure Mobile,Sure (Guernsey) Limited,Operational,GSM 900 / GSM 1800 / UMTS 900 / UMTS 2100 / LTE 800 / LTE 1800 / LTE 2600,"Guernsey, Jersey; former Cable & Wireless"
+234,56,National Cyber Security Centre,,National Cyber Security Centre,Unknown,Unknown,Former CESG
+234,57,Sky Mobile,Sky Mobile,Sky UK Limited,Operational,MVNO,Uses the O2 UK network
+234,58,Pronto GSM,Pronto GSM,Manx Telecom,Operational,GSM 900 / UMTS 2100 / LTE 800 / LTE 1800,Isle of Man
+234,59,Limitless Mobile Ltd,,Limitless Mobile Ltd,Not operational,MVNO,MNC withdrawn
+234,70,AMSUK Ltd.,,AMSUK Ltd.,Not operational,Unknown,MNC withdrawn
+234,71,Home Office,,Home Office,Unknown,Unknown,
+234,72,Hanhaa Mobile,Hanhaa Mobile,Hanhaa Limited,Operational,MVNO,M2M applications
+234,73,Bluewave Communications Ltd,,Bluewave Communications Ltd,Operational,TD-LTE 3500,Isle of Man
+234,74,Circles MVNE International B.V.,,Circles MVNE International B.V.,Unknown,MVNO,Former Pareteum Europe
+234,75,MASS Response Service GmbH,,MASS Response Service GmbH,Not operational,Unknown,MNC withdrawn
+234,76,BT,BT,BT Group,Operational,GSM 900 / GSM 1800,
+234,77,Vodafone UK,Vodafone UK,Vodafone United Kingdom,Unknown,Unknown,
+234,78,Airwave,Airwave,Airwave Solutions Ltd,Operational,TETRA,
+234,79,UKTL,UKTL,UK Telecoms Lab,Unknown,Unknown,
+234,81,National Grid Telecoms Limited,,National Grid Telecoms Limited,Unknown,Unknown,
+234,82,GeoNetworks,,GeoNetworks,Unknown,5G,Rural networks
+234,83,UKTL,UKTL,UK Telecoms Lab,Unknown,Unknown,
+234,84,National Grid Telecoms Limited,,National Grid Telecoms Limited,Unknown,Unknown,
+234,86,EE Limited,,EE Limited,Unknown,Unknown,
+234,87,Lebara,,Lebara,Operational,MVNO,
+234,88,telet,telet,Telet Research (N.I.) Limited,Operational,GSM 1800/LTE 1800/ LTE 2600/ 5G 2600/ 5G 3800,
+235,1,EE,EE,EE Limited,Unknown,Unknown,
+235,2,EE,EE,EE Limited,Unknown,Unknown,
+235,3,Relish,Relish,UK Broadband Limited,Unknown,Unknown,
+235,4,University of Strathclyde,,University of Strathclyde,Unknown,5G,"for more info, see StrathSDR"
+235,6,University of Strathclyde,,University of Strathclyde,Unknown,5G,"for more info, see StrathSDR"
+235,7,University of Strathclyde,,University of Strathclyde,Unknown,5G,"for more info, see StrathSDR"
+235,8,Spitfire Network Services Limited,,Spitfire Network Services Limited,Not operational,Unknown,MNC withdrawn
+235,77,BT,BT,BT Group,Unknown,,
+235,88,telet,telet,Telet Research (N.I.) Limited,Operational,LTE / 5G,
+235,91,Vodafone UK,Vodafone UK,Vodafone United Kingdom,Unknown,,Spitfire Network Services Limited
+235,92,Vodafone UK,Vodafone UK,Vodafone United Kingdom,Not operational,,Former Cable & Wireless UK; MNC withdrawn
+235,94,Hutchison 3G UK Ltd,,Hutchison 3G UK Ltd,Unknown,,
+235,95,Network Rail Infrastructure Limited,,Network Rail Infrastructure Limited,Test Network,GSM-R,

@@ -1,0 +1,14 @@
+h3>=4,<5
+pandas
+pyarrow
+numpy
+shapely>=2
+geopandas
+rasterio
+httpx
+fastapi
+uvicorn[standard]
+pydantic
+python-dotenv
+pytest
+scipy

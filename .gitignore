@@ -1,0 +1,14 @@
+# Secrets
+.env
+
+# Raw downloads and generated data (samples are committed)
+data/raw/
+data/processed/
+logs/
+
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
