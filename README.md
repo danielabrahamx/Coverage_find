@@ -59,7 +59,9 @@ Each dataset is its own Zetaris source (Lightning database), e.g. `CD_CELLS.cell
 .venv/bin/python scripts/download/ookla.py        # Ookla mobile tiles, UK only, last 4 quarters
 .venv/bin/python scripts/process/build_ookla.py   # Ookla speeds per cell + trend
 .venv/bin/python scripts/download/opencellid.py   # OpenCelliD UK cells (needs OPENCELLID_TOKEN)
+.venv/bin/python scripts/download/osm.py           # OpenStreetMap GB + Ireland extracts (~2.6 GB)
 .venv/bin/python scripts/process/build_masts.py   # mast sites + nearest mast / operators per cell
+.venv/bin/python scripts/download/dem.py           # Copernicus DEM GLO-30 tiles (~1.4 GB)
 ```
 
 Every script can be re-run safely; pass `--force` to rebuild an existing output.

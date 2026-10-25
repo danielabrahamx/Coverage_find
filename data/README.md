@@ -8,7 +8,8 @@ Raw files live in `data/raw/` and built files in `data/processed/`; both are git
 | ONS Countries boundaries | December 2023, UK BUC | Open Government Licence v3.0 | `raw/boundary/uk_countries.geojson` | `cells_r7.parquet` |
 | WorldPop population | 2020, 1 km, UN-adjusted (GBR) | CC BY 4.0 | `raw/population/population.tif` | `cells_r7.parquet` |
 | Ookla open data, mobile | 2025Q4–2026Q3 (latest: 2026Q3) | CC BY-NC-SA 4.0 | `raw/ookla/<quarter>_mobile_tiles_uk.parquet` | `ookla_mobile_r7.parquet`, `ookla_mobile_history_r7.parquet`, `ookla_mobile_tiles.parquet` |
-| OpenCelliD cell towers | download date in `masts_meta.json` | CC BY-SA 4.0 | `raw/opencellid/234.csv.gz`, `235.csv.gz` | `masts.parquet`, `masts_r7.parquet` |
+| OpenCelliD cell towers | downloaded 25 Oct 2026 (cells updated Apr 2025 – Oct 2026) | CC BY-SA 4.0 | `raw/opencellid/234.csv.gz` | `masts_sites.parquet`, `masts_r7.parquet` |
+| OpenStreetMap (Geofabrik extracts) | downloaded 25 Oct 2026 | ODbL 1.0 | `raw/osm/great-britain-latest.osm.pbf`, `ireland-and-northern-ireland-latest.osm.pbf` | `osm_masts.parquet`, `masts_sites.parquet`, `masts_r7.parquet` |
 | UK network codes (Wikipedia) | revision 1378731553, 5 Oct 2026 | CC BY-SA 4.0 | — | `reference/mcc_mnc_uk.csv` (committed) |
 
 ## Zetaris sources
@@ -23,6 +24,8 @@ one table) by `scripts/zetaris/register_sources.py`, read from the read-only mou
 | `CD_OOKLA_MOBILE` | `ookla_mobile_r7` | `ookla_mobile_r7.parquet` | 23,412 |
 | `CD_OOKLA_MOBILE_HISTORY` | `ookla_mobile_history_r7` | `ookla_mobile_history_r7.parquet` | 87,725 |
 | `CD_OOKLA_MOBILE_TILES` | `ookla_mobile_tiles` | `ookla_mobile_tiles.parquet` | 420,260 |
+| `CD_MASTS_SITES` | `masts_sites` | `masts_sites.parquet` | 88,931 |
+| `CD_MASTS` | `masts_r7` | `masts_r7.parquet` | 56,592 |
 
 ## ONS Countries boundaries
 
@@ -80,8 +83,11 @@ Caveat: many cells have only 1–2 tests, so always report `tests` as the sample
 ## OpenCelliD
 
 OpenCelliD (https://opencellid.org), the open database of cell towers by Unwired Labs.
-Licence: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Files for MCC 234
-and 235 (United Kingdom), downloaded with a free account token (`OPENCELLID_TOKEN`).
+Licence: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). File for MCC 234
+(United Kingdom), downloaded with a free account token (`OPENCELLID_TOKEN`) from
+`https://opencellid.org/ocid/downloads?type=mcc&file=234.csv.gz`. OpenCelliD publishes no
+MCC 235 file ("FILE_NOT_FOUND"). The free file holds cells updated in roughly the last 18
+months (145,365 rows on 25 Oct 2026).
 
 Each row is one radio cell (a sector on one technology) with a position **estimated from
 crowd-sourced measurements**, not the surveyed mast position. Coverage of the database is
@@ -89,18 +95,56 @@ uneven and incomplete, so the absence of masts is weaker evidence than their pre
 
 **Processing** (`scripts/process/build_masts.py`):
 1. Keep GSM/UMTS/LTE/NR rows inside the UK bounding box.
-2. Label each row with its operator from the network-code table below (MCC + MNC). Codes
-   the table marks as MVNO, GSM-R (Network Rail) or TETRA (Airwave) are dropped: they
-   are not public mobile networks with their own masts. Codes not in the table are kept as
-   `unknown (234-NN)`.
+2. Label each row with its operator from the network-code table below (MCC + MNC), kept
+   as `operator_labels`. Codes the table marks as MVNO, GSM-R (Network Rail) or TETRA
+   (Airwave) are dropped: they are not public mobile networks with their own masts. Codes
+   not in the table are kept as `unknown (234-NN)`.
+   Then group into the four networks with `data/reference/operator_groups.csv`
+   (`operators`: EE / O2 / Vodafone / Three). Codes outside that table (Channel Islands,
+   Isle of Man, legacy BT, small private networks) are group `other` and do not count as an
+   operator. Vodafone and Three are kept separate although they merged as VodafoneThree in
+   2025, because their networks still broadcast separate codes.
 3. Cluster rows into approximate mast sites: rows are taken in order of most samples first,
    and each joins the nearest site leader within 150 m or starts a new site. This is leader
    clustering, which avoids chaining a dense city into one giant site.
-   `masts.parquet`: site_id, lat, lon (mean of members), radio_types, operators,
-   operator_count, cell_count, samples, cell_id.
-4. Per grid cell centre (`masts_r7.parquet`): masts_within_5km, nearest_mast_km,
+4. Merge with the OpenStreetMap masts (below) into `masts_sites.parquet`.
+5. Per grid cell centre (`masts_r7.parquet`): masts_within_5km, nearest_mast_km,
    nearest_mast_bearing_deg (from the cell towards the mast), nearest_mast_id / lat / lon /
-   operators, distinct_operators_within_5km, operators_within_5km.
+   sources / operators, distinct_operators_within_5km, operators_within_5km,
+   masts_osm_only_within_5km.
+
+## OpenStreetMap masts
+
+Geofabrik extracts `great-britain-latest.osm.pbf` and
+`ireland-and-northern-ireland-latest.osm.pbf` (https://download.geofabrik.de/europe/),
+© OpenStreetMap contributors, [ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/).
+Downloaded by `scripts/download/osm.py`.
+
+**Extraction** (`coverage_detective/sources/osm_masts.py`): nodes and closed ways tagged
+`man_made=mast|tower` with `tower:type=communication`, `man_made=communications_tower`,
+or `communication:mobile_phone=yes`; ways become the mean of their nodes. The `operator`
+tag is kept as `osm_operator` and mapped to operator groups where recognisable: EE, O2,
+Vodafone, Three by name; the shared-infrastructure companies MBNL → EE + Three and
+Cornerstone / CTIL / Beacon → O2 + Vodafone. Neutral hosts (Arqiva, Cellnex, WIG) map to no
+operator. `mobile_tagged` marks masts with `communication:mobile_phone=yes` or a recognised
+mobile operator; other OSM communication masts may carry only broadcast or private radio.
+Objects in both extracts (Northern Ireland) are kept once. Cached in `osm_masts.parquet`.
+
+**Merge** (`coverage_detective/data/masts.py`, `masts_sites.parquet`): each OpenCelliD site
+joins its nearest OSM mast within 200 m. An OSM mast with matches becomes one site with
+`sources = both` at the OSM position (mapped, so usually more accurate than OpenCelliD's
+estimate), with operators from both. Unmatched sites keep `opencellid` or `osm`.
+Columns: site_id, lat, lon, sources, operators, operator_labels, radio_types, cell_count,
+osm_id, osm_operator, mobile_tagged, cell_id.
+
+Result (25 Oct 2026): 77,913 OpenCelliD sites from 144,681 radio cells; 13,644 OSM masts
+(6,208 tagged mobile); merged 88,931 sites (75,287 opencellid, 11,718 osm, 1,926 both).
+Sites per operator: Vodafone 33,225, EE 26,900, O2 26,238, Three 17,678. These are site
+*clusters*, more than the real number of masts: OpenCelliD estimates each operator's
+cells at slightly different positions, so one shared mast often appears as several sites.
+
+Caveat: OSM-only sites include broadcast-only towers, so `masts_osm_only_within_5km` is
+reported separately and evidence should say which source a mast comes from.
 
 List columns are comma-separated strings so any SQL engine (Zetaris) can read them.
 

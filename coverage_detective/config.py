@@ -32,3 +32,12 @@ def env(name: str, default: str | None = None) -> str | None:
 
 def sample_mode() -> bool:
     return (env("SAMPLE_MODE", "false") or "").lower() in ("1", "true", "yes")
+
+
+# Sample locations used by every check: (name, lat, lon). London is postcode WC2N 5DU
+# (Trafalgar Square), coordinates from postcodes.io.
+SAMPLE_LOCATIONS = [
+    ("Great Langdale, Cumbria", 54.445, -3.105),
+    ("Central London (WC2N 5DU)", 51.507211, -0.128269),
+    ("Near Rhayader, Powys", 52.30, -3.51),
+]

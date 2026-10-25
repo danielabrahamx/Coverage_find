@@ -44,8 +44,9 @@ Evidence strength: OpenCelliD is crowd-sourced and incomplete, so "masts found" 
 evidence than "no masts found".
 
 Ofcom: the postcode-level API is not available to us (`sources/ofcom_api.py` is a stub that
-returns None; None means "no Ofcom data", not "no coverage"). Ofcom local-authority
-downloads are regional context only, deferred to Mon 26 Oct. The Advisor's resident
+returns None; None means "no Ofcom data", not "no coverage"). Ofcom Connected Nations area
+data (July 2025, constituency / local authority; phase E) is regional context only, never
+coverage at the exact location. The Advisor's resident
 actions must include "Check your address on Ofcom's mobile coverage checker"
 (https://www.ofcom.org.uk/mobile-coverage-checker).
 
@@ -115,7 +116,9 @@ cp .env.example .env                      # then fill in
 .venv/bin/python scripts/process/build_ookla.py    # -> ookla_mobile_r7 / _history_r7 / _tiles
 .venv/bin/python scripts/download/mcc_mnc.py       # Phase 3: operator reference (already committed)
 .venv/bin/python scripts/download/opencellid.py    # needs OPENCELLID_TOKEN; skips without it
-.venv/bin/python scripts/process/build_masts.py    # -> masts.parquet, masts_r7.parquet
+.venv/bin/python scripts/download/osm.py           # Geofabrik GB + Ireland (~2.6 GB)
+.venv/bin/python scripts/process/build_masts.py    # -> masts_sites.parquet, masts_r7.parquet
+.venv/bin/python scripts/download/dem.py           # Copernicus GLO-30 tiles (~1.4 GB), for phase C
 scripts/zetaris/compose.sh up -d driver           # Zetaris with our data mount
 .venv/bin/python scripts/zetaris/register_sources.py
 .venv/bin/python scripts/check_data.py             # checks through Zetaris
@@ -134,14 +137,13 @@ E Ofcom regional (file in data/raw/ofcom/) · F rural-urban + deprivation ·
 G power cuts (if time) · H visitor load (if time) · final check_data.py.
 
 - A. Zetaris foundation: done (client, mount, CD_CELLS + 3 Ookla sources, join check)
+- B. Masts: done (OpenCelliD + OSM merged; CD_MASTS_SITES, CD_MASTS). OpenCelliD's free file
+  is incomplete in places (e.g. none within 5 km of Rhayader), so treat "no masts" as weak.
+  DEM for phase C already downloaded (data/raw/dem/, Copernicus GLO-30, 93 tiles).
 
-1. Grid, H3 r7: done (`cells_r7.parquet`: cell_id, lat, lon, population, nation)
-2. Ookla mobile speeds: done (latest 2026Q3 + 3 previous quarters; per-cell, history and tile tables)
-3. OpenCelliD masts: code done and tested; waiting for OPENCELLID_TOKEN to build real data
-4. Terrain/DEM + line of sight: not started
-5. Ofcom LA coverage: deferred to Mon 26 Oct (regional context only); API stub done
-6. Zetaris registration · 7. Live sources · 8. Evidence API (neighbour aggregation,
-   weak-evidence flags) · 9. Docs
+- Earlier: grid (`cells_r7`) and Ookla (2026Q3 + 3 previous quarters) built; Ofcom API stub.
+- Order agreed 25 Oct: B → E → D → C → F → final check; G/H only if time.
+- After the data session: evidence API (neighbour aggregation, weak-evidence flags), agents.
 
 ## Rules
 

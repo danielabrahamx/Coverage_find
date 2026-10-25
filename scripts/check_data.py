@@ -8,10 +8,12 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+import h3
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from coverage_detective.config import H3_RES, SAMPLE_LOCATIONS  # noqa: E402
 from coverage_detective.data.zetaris import QUERY_LOG, query  # noqa: E402
 
 SLOWEST_SQL = """
@@ -41,8 +43,40 @@ def check_phase_a() -> None:
     print(f"  {entry['rows']} rows in {entry['duration_ms']} ms")
 
 
+def check_phase_b() -> None:
+    print("\nPhase B: mast sites by source and operator (CD_MASTS_SITES, via Zetaris)")
+    rows = query("SELECT sources, count(*) AS sites FROM CD_MASTS_SITES.masts_sites GROUP BY sources ORDER BY sites DESC")
+    print(table(rows, ["sources", "sites"]))
+    rows = query("""
+        SELECT operator, count(*) AS sites
+        FROM (SELECT explode(split(operators, ',')) AS operator FROM CD_MASTS_SITES.masts_sites)
+        WHERE operator <> '' GROUP BY operator ORDER BY sites DESC""")
+    print(table(rows, ["operator", "sites"]))
+
+    print("\nPhase B: sample locations (CD_CELLS x CD_OOKLA_MOBILE x CD_MASTS, via Zetaris)")
+    ids = {h3.latlng_to_cell(lat, lon, H3_RES): name for name, lat, lon in SAMPLE_LOCATIONS}
+    in_list = ", ".join(f"'{c}'" for c in ids)
+    rows = query(f"""
+        SELECT c.cell_id, round(c.population) AS population,
+               round(o.download_mbps, 1) AS download_mbps, o.tests,
+               round(m.nearest_mast_km, 2) AS nearest_mast_km,
+               round(m.nearest_mast_bearing_deg) AS bearing_deg, m.nearest_mast_sources,
+               m.masts_within_5km, m.masts_osm_only_within_5km,
+               m.distinct_operators_within_5km, m.operators_within_5km
+        FROM CD_CELLS.cells_r7 c
+        JOIN CD_MASTS.masts_r7 m ON m.cell_id = c.cell_id
+        LEFT JOIN CD_OOKLA_MOBILE.ookla_mobile_r7 o ON o.cell_id = c.cell_id
+        WHERE c.cell_id IN ({in_list})""")
+    for r in rows:
+        r["place"] = ids[r["cell_id"]]
+    print(table(rows, ["place", "population", "download_mbps", "tests", "nearest_mast_km", "bearing_deg",
+                       "nearest_mast_sources", "masts_within_5km", "masts_osm_only_within_5km",
+                       "distinct_operators_within_5km", "operators_within_5km"]))
+
+
 def main() -> None:
     check_phase_a()
+    check_phase_b()
 
 
 if __name__ == "__main__":

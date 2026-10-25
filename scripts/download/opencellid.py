@@ -49,16 +49,17 @@ def main() -> None:
         print(f"downloading MCC {mcc} ...", flush=True)
         params = {"token": token, "type": "mcc", "file": f"{mcc}.csv.gz"}
         with httpx.stream("GET", URL, params=params, timeout=300, follow_redirects=True) as r:
-            first = next(r.iter_bytes(1 << 16), b"")
+            chunks = r.iter_bytes(1 << 20)
+            first = next(chunks, b"")
             # Errors (bad token, daily limit) come back as short text, not gzip.
             if r.status_code != 200 or not first.startswith(b"\x1f\x8b"):
-                body = (first + r.read())[:300].decode("utf-8", "replace").replace(token, "<token>")
+                body = (first + b"".join(chunks))[:300].decode("utf-8", "replace").replace(token, "<token>")
                 print(f"  MCC {mcc}: not downloaded (HTTP {r.status_code}): {body.strip()}")
                 continue
             tmp = dest.with_suffix(".part")
             with tmp.open("wb") as f:
                 f.write(first)
-                for chunk in r.iter_bytes(1 << 20):
+                for chunk in chunks:
                     f.write(chunk)
         tmp.rename(dest)
         print(f"  wrote {dest} ({dest.stat().st_size / 1e6:.1f} MB)")

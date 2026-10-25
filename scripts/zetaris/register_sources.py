@@ -76,11 +76,29 @@ def register_ookla_mobile_tiles() -> None:
     )
 
 
+def register_masts_sites() -> None:
+    _register(
+        "CD_MASTS_SITES", "masts_sites", "masts_sites.parquet",
+        "Approximate mobile mast sites: OpenCelliD radio cells clustered within 150 m (CC BY-SA 4.0) "
+        "merged with OpenStreetMap communication masts (ODbL), operators grouped as EE, O2, Vodafone, Three.",
+    )
+
+
+def register_masts_cells() -> None:
+    _register(
+        "CD_MASTS", "masts_r7", "masts_r7.parquet",
+        "Per H3 r7 cell: nearest mast distance and bearing, masts and operators within 5 km, "
+        "OSM-only masts within 5 km. From OpenCelliD (CC BY-SA 4.0) and OpenStreetMap (ODbL).",
+    )
+
+
 SOURCES = {
     "cells": register_cells,
     "ookla_mobile": register_ookla_mobile,
     "ookla_mobile_history": register_ookla_mobile_history,
     "ookla_mobile_tiles": register_ookla_mobile_tiles,
+    "masts_sites": register_masts_sites,
+    "masts_cells": register_masts_cells,
 }
 
 
