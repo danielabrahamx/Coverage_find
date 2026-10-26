@@ -52,6 +52,39 @@ Each dataset is its own Zetaris source (Lightning database), e.g. `CD_CELLS.cell
 `coverage_detective.data.zetaris.query(sql)`; every query is logged to
 `logs/zetaris_queries.jsonl` (time, SQL, duration, rows, error) for the evidence trail.
 
+## Pre-existing components
+
+Not written for this project, used unchanged:
+
+| Component | From | Licence | Used for |
+|---|---|---|---|
+| Meterless H-MEM reference engine (`vendor/meterless/hmem/`) | [Meterless/Meterless](https://github.com/Meterless/Meterless) `engines/hmem/reference` | Apache 2.0 | agents' shared memory: evidence, beliefs, critiques, trust ledger (audit trail) |
+| Meterless World Model reference engine (`vendor/meterless/world-model/`) | same repo, `engines/world-model/reference` | Apache 2.0 | places, zones, sites, operators, warnings, relationships, events |
+| Zetaris Lightning (local Docker stack) | Zetaris | sponsor licence | federated SQL over every dataset |
+| Map and UI libraries: MapLibre GL, deck.gl, h3-js, OpenFreeMap tiles | npm / CDN | BSD-3 / MIT / Apache 2.0 / ODbL | the web pages |
+
+The vendored engines' own tests: `cd vendor/meterless/hmem && npm install && npm test` (and
+`world-model`). The upstream commit is recorded in `vendor/meterless/README.md`.
+
+## Meterless service (agent memory)
+
+`meterless_service/server.ts` (Node 18+, `cd meterless_service && npm install`) is a small
+HTTP service on port 8100 over the two vendored engines; `python run.py` starts it next to
+the web app and waits for its health check. It persists to `data/meterless/` (gitignored).
+
+- H-MEM: runs, evidence items (stable ids per run, idempotent), beliefs (cause + confidence),
+  belief revisions as trust-ledger updates (who, old → new confidence, reason), critiques,
+  notes (guard interventions, tool calls), the ordered audit trail of a run, and past
+  diagnoses near a point (within ~10 km).
+- World Model: entities (place, zone, site, operator, warning), relationships (scoped by an
+  operator context, e.g. place → nearest_site{EE} → site), events (diagnosis_completed,
+  fix_plan_proposed).
+- Python client: `coverage_detective/memory/meterless.py` (5 s timeout, one retry). If the
+  service is down it logs loudly and uses an in-memory store with the same interface.
+
+Check: `python scripts/check_memory.py`. Tests: `cd meterless_service && npm test`, and
+`tests/test_memory.py` for the fallback.
+
 ## Data sources
 
 | Source | What it tells us | Type | Licence | Date / version |

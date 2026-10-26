@@ -100,6 +100,9 @@ coverage_detective/     package
   config.py             paths, .env loading, H3_RES=7, UK_BBOX, SAMPLE_LOCATIONS, sample_mode()
   evidence.py           evidence bundle for a point (Zetaris queries, line of sight, live sources)
   planning/             zones.py (gap zones), scoring.py (priority score), siting.py (fixes, candidates)
+  memory/meterless.py   Meterless client (H-MEM + World Model over HTTP; in-memory fallback)
+meterless_service/      Node HTTP service on :8100 over vendor/meterless (H-MEM, World Model); data/meterless/
+vendor/meterless/       Meterless reference engines, vendored unchanged (Apache 2.0)
   data/
     grid.py             H3 r7 cells over the UK + WorldPop population
     masts.py            merge OpenCelliD / OSM / Ofcom register sites; per-cell mast stats
@@ -198,7 +201,8 @@ scripts/zetaris/compose.sh up -d driver               # Zetaris with our read-on
 
 # Explorer
 .venv/bin/python scripts/process/build_web_layers.py  # after any data change
-.venv/bin/python run.py                               # http://localhost:8000
+.venv/bin/python run.py                               # http://localhost:8000 (+ Meterless on :8100)
+(cd meterless_service && npm install)                 # once: Node deps for the Meterless service
 .venv/bin/python scripts/screenshots.py --chrome ~/.cache/ms-playwright/chromium-1223/chrome-linux64/chrome
 ```
 
@@ -282,6 +286,14 @@ G (power cuts) dropped as future work; H (visitor load) only if time. Then the a
   existing sites by people gaining a clear line), api/council.py, /council page (scope picker,
   sliders, ranked table, map, zone panel, CSV, agent placeholders). Zones link to Explore
   (?zone= outline) and My signal (centroid). CD_GAP_ZONES, CD_GAP_ZONE_CELLS.
+
+- **Agents, phase 1: Meterless service** (26 Oct): vendored H-MEM + World Model reference engines
+  (their tests pass); meterless_service/server.ts on :8100 (runs, evidence, beliefs with
+  ledger revisions, critiques, notes, audit trail, diagnoses near a point; World Model entities,
+  operator-context relationships, events); Python client with fallback; run.py starts it.
+  Agent plan (user's brief): investigator / diagnostician / critic / advisor / letter writer /
+  fix planner, loop of max 3 rounds via the shared case file in Meterless, code guard, NVIDIA
+  Nemotron via an OpenAI-compatible API (LLM_BASE_URL, LLM_API_KEY, LLM_MODEL). Phases 2-6 next.
 
 ### Zetaris sources
 
