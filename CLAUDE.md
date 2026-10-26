@@ -101,6 +101,7 @@ coverage_detective/     package
   evidence.py           evidence bundle for a point (Zetaris queries, line of sight, live sources)
   planning/             zones.py (gap zones), scoring.py (priority score), siting.py (fixes, candidates)
   memory/meterless.py   Meterless client (H-MEM + World Model over HTTP; in-memory fallback)
+  agents/               llm.py (Nemotron client), schemas.py (pydantic), tools.py (tools -> Meterless)
 meterless_service/      Node HTTP service on :8100 over vendor/meterless (H-MEM, World Model); data/meterless/
 vendor/meterless/       Meterless reference engines, vendored unchanged (Apache 2.0)
   data/
@@ -293,7 +294,18 @@ G (power cuts) dropped as future work; H (visitor load) only if time. Then the a
   operator-context relationships, events); Python client with fallback; run.py starts it.
   Agent plan (user's brief): investigator / diagnostician / critic / advisor / letter writer /
   fix planner, loop of max 3 rounds via the shared case file in Meterless, code guard, NVIDIA
-  Nemotron via an OpenAI-compatible API (LLM_BASE_URL, LLM_API_KEY, LLM_MODEL). Phases 2-6 next.
+  Nemotron via an OpenAI-compatible API (LLM_BASE_URL, LLM_API_KEY, LLM_MODEL).
+- **Agents, phase 2: tools, schemas, Nemotron client** (26 Oct). Models: LLM_MODEL =
+  nemotron-3.5-super-vl (fast: investigator tool calling, advisor / letters / fix planner with
+  strict json_schema, thinking off); LLM_MODEL_REASONING = nemotron-3-ultra (diagnostician,
+  critic: thinking ON, JSON schema in the prompt, validated by pydantic). Probe results: Ultra under
+  strict json_schema degenerates on long prompts; Super with thinking is slow/flaky; guided_json is
+  rejected; nemotron-3-super (non-3.5) is 404 for this account. The endpoint has bursts of HTTP 500:
+  llm.py retries once, then the other model answers (`fallback` on the result). Raw reasoning is
+  never stored. Tools (agents/tools.py): speeds_near, speed_trend, sites_near, line_of_sight(op),
+  terrain, ofcom_area, live_conditions, prior_diagnoses_nearby, zone_summary, candidate_sites
+  (+ network_comparison, code only); each writes items with stable ids to Meterless (with their
+  Zetaris SQL) and logs a tool_call note. Check: scripts/check_agent_tools.py.
 
 ### Zetaris sources
 

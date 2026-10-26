@@ -369,65 +369,70 @@ def los_class(los: dict) -> str:
     return "marginal" if los["max_obstruction_m"] < LOS_MARGINAL_M else "blocked"
 
 
+def no_site_item(b: Bundle, op: str, sites: list[dict], cell_id: str) -> None:
+    b.add(f"no_site_{op.lower()}", "Approximate mast sites (Zetaris CD_MASTS_SITES)", _meta("masts_sites"),
+          "zetaris:Q2", [cell_id],
+          f"No approximate {op} mast site was found within {SITE_RADIUS_KM:.0f} km. This is weak evidence: "
+          "crowd-sourced data is incomplete and many sites have unknown operators.",
+          None, {"sites_within_10km": len(sites)}, "weak", ["distance_to_mast", "single_operator"])
+
+
+def los_item(b: Bundle, s: dict, for_ops: list[str], lat: float, lon: float, cell_id: str,
+             los: dict | None = None, item_id: str | None = None) -> dict:
+    """Line of sight from the point to one site, as an evidence item; returns the computation."""
+    meta = {"data_period": _meta("terrain_r7")["data_period"] or "Copernicus DEM GLO-30",
+            "as_of": _meta("masts_sites")["as_of"]}
+    height = s["antenna_height_m"] if s["antenna_height_m"] is not None else None
+    los = los or terrain.line_of_sight(lat, lon, s["lat"], s["lon"], mast_height=height)
+    ops_here, confirmed = _ops(s["operators"]), _ops(s["operators_confirmed"])
+    label = (f"{_join(for_ops)}'s nearest approximate site" if for_ops
+             else "The nearest approximate site (operator unknown)")
+    conf = [o for o in for_ops if o in confirmed]
+    who = (f" ({_join(conf)} confirmed by Ofcom's licence register)" if conf
+           else " (operator inferred from crowd-sourced data)" if for_ops else "")
+    bearing = _compass(bearing_deg(lat, lon, s["lat"], s["lon"]))
+    height_txt = ("antenna height from Ofcom's licence register" if los["mast_height_source"] == "ofcom_register"
+                  else f"antenna height assumed {los['mast_height_m']:.0f} m")
+    if los["blocked"]:
+        o = los["max_obstruction_m"]
+        sentence = (f"{label} is {_km(los['path_length_m'])} {bearing}{who}. Terrain rises {o:.0f} m above the "
+                    f"direct line {_km(los['obstruction_distance_m'])} from here ({height_txt}), so the signal "
+                    "is likely weakened, not necessarily lost.")
+        if o < LOS_MARGINAL_M:
+            sentence += " The margin is small and may be trees or buildings in the surface model."
+        strength = "strong" if o >= LOS_STRONG_M else "moderate" if o >= LOS_MARGINAL_M else "weak"
+    elif -los["max_obstruction_m"] < 1:
+        sentence = (f"{label} is {_km(los['path_length_m'])} {bearing}{who}. The direct line only just clears "
+                    f"the ground (by less than 1 m, {height_txt}), so trees or buildings could still be in the way.")
+        strength = "weak"
+    else:
+        sentence = (f"{label} is {_km(los['path_length_m'])} {bearing}{who}. The direct line clears the "
+                    f"ground by at least {-los['max_obstruction_m']:.0f} m ({height_txt}).")
+        strength = "moderate"
+    key = item_id or "los_" + ("_".join(o.lower() for o in for_ops) or "nearest")
+    b.add(key, "Line of sight over Copernicus DEM GLO-30 (computed)", meta,
+          f"terrain.line_of_sight from ({lat:.5f}, {lon:.5f}) to site {s['site_id']} (zetaris:Q2)",
+          sorted({cell_id, h3.latlng_to_cell(s["lat"], s["lon"], H3_RES)}), sentence,
+          {"site_id": s["site_id"], "operators_at_site": ops_here, "operators_confirmed": confirmed,
+           "for_operators": for_ops, "los_class": los_class(los), **{k: v for k, v in los.items() if k != "profile"}},
+          {"dem_samples": los["samples"]}, strength, ["terrain_blocking", "distance_to_mast"])
+    return los
+
+
 def los_items(b: Bundle, sites: list[dict], lat: float, lon: float, cell_id: str) -> dict[str, dict]:
     """Line of sight to the nearest site of each operator (and the nearest site overall).
 
     Returns the line-of-sight result per site id (for the operator comparison)."""
-    meta = {"data_period": _meta("terrain_r7")["data_period"] or "Copernicus DEM GLO-30",
-            "as_of": _meta("masts_sites")["as_of"]}
     targets: dict[str, dict] = {}
     for op in OPERATORS:
         hit = next((s for s in sites if op in _ops(s["operators"])), None)
         if hit:
             targets.setdefault(hit["site_id"], {"site": hit, "for": []})["for"].append(op)
         else:
-            b.add(f"no_site_{op.lower()}", "Approximate mast sites (Zetaris CD_MASTS_SITES)", _meta("masts_sites"),
-                  "zetaris:Q2", [cell_id],
-                  f"No approximate {op} mast site was found within {SITE_RADIUS_KM:.0f} km. This is weak evidence: "
-                  "crowd-sourced data is incomplete and many sites have unknown operators.",
-                  None, {"sites_within_10km": len(sites)}, "weak", ["distance_to_mast", "single_operator"])
+            no_site_item(b, op, sites, cell_id)
     if sites and sites[0]["site_id"] not in targets:
         targets[sites[0]["site_id"]] = {"site": sites[0], "for": []}
-
-    results = {}
-    for t in targets.values():
-        s = t["site"]
-        height = s["antenna_height_m"] if s["antenna_height_m"] is not None else None
-        los = terrain.line_of_sight(lat, lon, s["lat"], s["lon"], mast_height=height)
-        results[s["site_id"]] = los
-        ops_here, confirmed = _ops(s["operators"]), _ops(s["operators_confirmed"])
-        label = (f"{_join(t['for'])}'s nearest approximate site" if t["for"]
-                 else "The nearest approximate site (operator unknown)")
-        conf = [o for o in t["for"] if o in confirmed]
-        who = (f" ({_join(conf)} confirmed by Ofcom's licence register)" if conf
-               else " (operator inferred from crowd-sourced data)" if t["for"] else "")
-        bearing = _compass(bearing_deg(lat, lon, s["lat"], s["lon"]))
-        height_txt = ("antenna height from Ofcom's licence register" if los["mast_height_source"] == "ofcom_register"
-                      else f"antenna height assumed {los['mast_height_m']:.0f} m")
-        if los["blocked"]:
-            o = los["max_obstruction_m"]
-            sentence = (f"{label} is {_km(los['path_length_m'])} {bearing}{who}. Terrain rises {o:.0f} m above the "
-                        f"direct line {_km(los['obstruction_distance_m'])} from here ({height_txt}), so the signal "
-                        "is likely weakened, not necessarily lost.")
-            if o < LOS_MARGINAL_M:
-                sentence += " The margin is small and may be trees or buildings in the surface model."
-            strength = "strong" if o >= LOS_STRONG_M else "moderate" if o >= LOS_MARGINAL_M else "weak"
-        elif -los["max_obstruction_m"] < 1:
-            sentence = (f"{label} is {_km(los['path_length_m'])} {bearing}{who}. The direct line only just clears "
-                        f"the ground (by less than 1 m, {height_txt}), so trees or buildings could still be in the way.")
-            strength = "weak"
-        else:
-            sentence = (f"{label} is {_km(los['path_length_m'])} {bearing}{who}. The direct line clears the "
-                        f"ground by at least {-los['max_obstruction_m']:.0f} m ({height_txt}).")
-            strength = "moderate"
-        key = "_".join(o.lower() for o in t["for"]) or "nearest"
-        b.add(f"los_{key}", "Line of sight over Copernicus DEM GLO-30 (computed)", meta,
-              f"terrain.line_of_sight from ({lat:.5f}, {lon:.5f}) to site {s['site_id']} (zetaris:Q2)",
-              sorted({cell_id, h3.latlng_to_cell(s["lat"], s["lon"], H3_RES)}), sentence,
-              {"site_id": s["site_id"], "operators_at_site": ops_here, "operators_confirmed": confirmed,
-               "for_operators": t["for"], **{k: v for k, v in los.items() if k != "profile"}},
-              {"dem_samples": los["samples"]}, strength, ["terrain_blocking", "distance_to_mast"])
-    return results
+    return {t["site"]["site_id"]: los_item(b, t["site"], t["for"], lat, lon, cell_id) for t in targets.values()}
 
 
 # --- operator comparison and the rule-based summary ------------------------------------------
