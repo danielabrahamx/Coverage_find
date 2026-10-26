@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Signal · Coverage Detective</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpolygon points='8,2 24,2 32,16 24,30 8,30 0,16' fill='%231D4ED8'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+<body class="page-signal">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <div>
+        <h1>Coverage Detective</h1>
+        <p class="brand-sub">My signal · why is it bad here?</p>
+      </div>
+    </div>
+    <nav class="nav" aria-label="Pages">
+      <a href="/">Explorer</a>
+      <a href="/signal" aria-current="page">My signal</a>
+      <span class="soon" title="Coming in a later phase">Council view</span>
+    </nav>
+    <form class="search" id="search" autocomplete="off">
+      <input id="search-input" type="search" placeholder="Your postcode or place, e.g. LD6 5AD" aria-label="Search a postcode or place">
+      <button type="submit">Check</button>
+    </form>
+  </header>
+
+  <main class="signal-stage">
+    <div class="signal-map-wrap">
+      <div id="map" class="map"></div>
+      <div class="map-hint card" id="map-hint">Search a postcode, or click the map at the exact spot.</div>
+      <section class="legend card signal-legend" id="op-legend" aria-label="Operator lines" hidden></section>
+    </div>
+    <aside class="signal-panel" id="panel" aria-live="polite">
+      <div class="intro">
+        <h2>Why is my signal bad here?</h2>
+        <p>Enter a postcode or click the map. Coverage Detective gathers evidence for that exact point from public
+          data (through Zetaris) and live sources: measured speeds, the nearest site of each network and whether hills
+          block the line to it, area figures and current conditions.</p>
+        <p class="muted">Everything here is computed from data. Agents will add the explanation later.</p>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="credits">
+    Data: Speedtest by Ookla open data (CC BY-NC-SA 4.0) · OpenCelliD (CC BY-SA 4.0) · © OpenStreetMap contributors (ODbL) ·
+    Ofcom (Connected Nations, Wireless Telegraphy Register) · Copernicus DEM GLO-30 (© DLR, Airbus; Copernicus) · ONS, OS (OGL v3) ·
+    Live: postcodes.io · <a href="https://open-meteo.com/" target="_blank" rel="noopener">Weather data by Open-Meteo.com</a> (CC BY 4.0) ·
+    Met Office warnings (Crown copyright, OGL v3) · Environment Agency flood data (OGL v3)
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/deck.gl@9.4.0/dist.min.js"></script>
+  <script src="signal.js"></script>
+</body>
+</html>

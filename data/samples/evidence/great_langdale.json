@@ -25,7 +25,7 @@
   "871955472ffffff",
   "871955473ffffff"
  ],
- "generated_at": "2026-10-25T21:06:02+00:00",
+ "generated_at": "2026-10-26T18:11:09+00:00",
  "sample_mode": false,
  "items": [
   {
@@ -52,6 +52,29 @@
    "sample_size": null,
    "strength": "strong",
    "bears_on": []
+  },
+  {
+   "id": "speed_1km",
+   "source": "Ookla open data tiles (Zetaris CD_OOKLA_MOBILE_TILES)",
+   "data_period": "2026Q3",
+   "as_of": "2026-10-23",
+   "query_or_url": "zetaris:Q4",
+   "cell_ids": [
+    "871955454ffffff"
+   ],
+   "finding": "No Ookla speed tests were recorded within 1 km of this point in 2026Q3.",
+   "value": {
+    "tiles": [],
+    "quarter": "2026Q3"
+   },
+   "sample_size": {
+    "tests": 0,
+    "tiles": 0
+   },
+   "strength": "weak",
+   "bears_on": [
+    "insufficient_data"
+   ]
   },
   {
    "id": "speed_cell",
@@ -339,32 +362,32 @@
    "id": "weather",
    "source": "Open-Meteo forecast",
    "data_period": "live",
-   "as_of": "2026-10-25T20:36:51+00:00",
+   "as_of": "2026-10-26T17:55:46+00:00",
    "query_or_url": "https://api.open-meteo.com/v1/forecast?latitude=54.445&longitude=-3.105&current=precipitation%2Crain%2Csnowfall%2Cwind_speed_10m%2Cwind_gusts_10m%2Cweather_code&hourly=precipitation%2Crain%2Csnowfall%2Cwind_speed_10m%2Cwind_gusts_10m%2Cweather_code&forecast_hours=24&timezone=Europe%2FLondon",
    "cell_ids": [
     "871955454ffffff"
    ],
-   "finding": "Weather now: overcast, wind 30 km/h gusting 66 km/h, rain 0.0 mm/h. Next 24 h: gusts up to 73.1 km/h, rain up to 3.7 mm/h: severe (gusts up to 73.1 km/h).",
+   "finding": "Weather now: overcast, wind 30 km/h gusting 67 km/h, rain 0.0 mm/h. Next 24 h: gusts up to 74.5 km/h, rain up to 9.8 mm/h: severe (gusts up to 74.5 km/h; heavy rain up to 9.8 mm/h).",
    "value": {
     "severity": "severe",
     "now": {
-     "time": "2026-10-25T20:30",
+     "time": "2026-10-26T17:45",
      "precipitation_mm_h": 0.0,
      "rain_mm_h": 0.0,
      "snowfall_cm_h": 0.0,
-     "wind_kmh": 29.9,
-     "gust_kmh": 66.2,
+     "wind_kmh": 29.5,
+     "gust_kmh": 67.3,
      "weather_code": 3,
      "weather": "overcast"
     },
     "next_24h": {
      "hours": 24,
-     "max_precipitation_mm_h": 3.7,
-     "max_precipitation_at": "2026-10-26T13:00",
-     "max_gust_kmh": 73.1,
-     "max_gust_at": "2026-10-26T19:00",
+     "max_precipitation_mm_h": 9.8,
+     "max_precipitation_at": "2026-10-27T01:00",
+     "max_gust_kmh": 74.5,
+     "max_gust_at": "2026-10-27T02:00",
      "max_snowfall_cm_h": 0.0,
-     "total_precipitation_mm": 8.9,
+     "total_precipitation_mm": 23.8,
      "thunderstorm_expected": false
     }
    },
@@ -380,12 +403,12 @@
    "id": "met_office_warnings",
    "source": "Met Office severe weather warnings (RSS)",
    "data_period": "live",
-   "as_of": "2026-10-25T20:56:15+00:00",
+   "as_of": "2026-10-26T18:10:52+00:00",
    "query_or_url": "https://www.metoffice.gov.uk/public/data/PWSCache/WarningsRSS/Region/nw",
    "cell_ids": [
     "871955454ffffff"
    ],
-   "finding": "Met Office warnings for North West England: yellow wind warning (from Tue 27 Oct 03:00 until Tue 27 Oct 23:59, covering this district).",
+   "finding": "Met Office warnings for North West England: yellow wind warning (in force until Tue 27 Oct 03:00, covering this district).",
    "value": {
     "region": "North West England",
     "warnings": [
@@ -399,10 +422,10 @@
       "areas": [
        "Cumbria"
       ],
-      "valid_from": "2026-10-27T03:00:00+00:00",
-      "valid_to": "2026-10-27T23:59:00+00:00",
-      "link": "https://www.metoffice.gov.uk/weather/warnings-and-advice/uk-warnings#?date=2026-10-27&id=011bc9b4-d86c-431e-87cd-d1becac7eaad&referrer=rss",
-      "in_force": false,
+      "valid_from": "2026-10-26T18:00:00+00:00",
+      "valid_to": "2026-10-27T03:00:00+00:00",
+      "link": "https://www.metoffice.gov.uk/weather/warnings-and-advice/uk-warnings#?date=2026-10-26&id=61bc9a69-3fe9-4807-ab6d-abdc08cf4a2b&referrer=rss",
+      "in_force": true,
       "district_listed": true
      }
     ]
@@ -410,7 +433,7 @@
    "sample_size": {
     "warnings": 1
    },
-   "strength": "moderate",
+   "strength": "strong",
    "bears_on": [
     "weather"
    ]
@@ -419,12 +442,12 @@
    "id": "flood_warnings",
    "source": "Environment Agency flood monitoring",
    "data_period": "live",
-   "as_of": "2026-10-25T21:04:58+00:00",
+   "as_of": "2026-10-26T17:55:46+00:00",
    "query_or_url": "https://environment.data.gov.uk/flood-monitoring/id/floods?lat=54.445&long=-3.105&dist=10",
    "cell_ids": [
     "871955454ffffff"
    ],
-   "finding": "2 flood alerts or warnings within 10 km: flood alert for Upper River Derwent, Stonethwaite Beck and Derwent Water (raised Sun 25 Oct 10:36); flood alert for Rivers Brathay, Rothay and Winster (raised Sun 25 Oct 10:34).",
+   "finding": "2 flood alerts or warnings within 10 km: flood alert for Upper River Derwent, Stonethwaite Beck and Derwent Water (raised Mon 26 Oct 09:21); flood alert for Rivers Brathay, Rothay and Winster (raised Mon 26 Oct 09:21). (cached copy: the live call failed)",
    "value": {
     "warnings": [
      {
@@ -433,7 +456,7 @@
       "area": "Upper River Derwent, Stonethwaite Beck and Derwent Water",
       "ea_area": "Cumbria and Lancashire",
       "river_or_sea": "Derwent, Stonethwaite Beck",
-      "time_raised": "2026-10-25T10:36:00",
+      "time_raised": "2026-10-26T09:21:51",
       "time_severity_changed": "2026-10-24T12:00:00",
       "flood_area_id": "011WAFDW",
       "distance_km": null
@@ -444,7 +467,7 @@
       "area": "Rivers Brathay, Rothay and Winster",
       "ea_area": "Cumbria and Lancashire",
       "river_or_sea": "River Brathay, River Rothay, River Winster",
-      "time_raised": "2026-10-25T10:34:18",
+      "time_raised": "2026-10-26T09:21:27",
       "time_severity_changed": "2026-10-24T16:57:00",
       "flood_area_id": "011WAFBR",
       "distance_km": null
@@ -461,31 +484,156 @@
    ]
   }
  ],
+ "operators": [
+  {
+   "operator": "EE",
+   "site": {
+    "site_id": "S065491",
+    "lat": 54.433949999999996,
+    "lon": -3.0380000000000003,
+    "distance_km": 4.5,
+    "bearing_deg": 106,
+    "direction": "east",
+    "sources": [
+     "crowd-sourced (OpenCelliD)"
+    ]
+   },
+   "status": "inferred",
+   "los": {
+    "class": "blocked",
+    "blocked": true,
+    "obstruction_m": 260.3,
+    "obstruction_distance_m": 1939.0,
+    "obstruction_lat": 54.440243,
+    "obstruction_lon": -3.076159,
+    "path_length_m": 4504.0,
+    "mast_height_m": 25.0,
+    "mast_height": "assumed"
+   }
+  },
+  {
+   "operator": "O2",
+   "site": {
+    "site_id": "S077170",
+    "lat": 54.4018,
+    "lon": -3.0567,
+    "distance_km": 5.73,
+    "bearing_deg": 147,
+    "direction": "south-east",
+    "sources": [
+     "crowd-sourced (OpenCelliD)"
+    ]
+   },
+   "status": "inferred",
+   "los": {
+    "class": "blocked",
+    "blocked": true,
+    "obstruction_m": 128.9,
+    "obstruction_distance_m": 985.0,
+    "obstruction_lat": 54.437575,
+    "obstruction_lon": -3.096698,
+    "path_length_m": 5730.0,
+    "mast_height_m": 25.0,
+    "mast_height": "assumed"
+   }
+  },
+  {
+   "operator": "Three",
+   "site": {
+    "site_id": "S065491",
+    "lat": 54.433949999999996,
+    "lon": -3.0380000000000003,
+    "distance_km": 4.5,
+    "bearing_deg": 106,
+    "direction": "east",
+    "sources": [
+     "crowd-sourced (OpenCelliD)"
+    ]
+   },
+   "status": "inferred",
+   "los": {
+    "class": "blocked",
+    "blocked": true,
+    "obstruction_m": 260.3,
+    "obstruction_distance_m": 1939.0,
+    "obstruction_lat": 54.440243,
+    "obstruction_lon": -3.076159,
+    "path_length_m": 4504.0,
+    "mast_height_m": 25.0,
+    "mast_height": "assumed"
+   }
+  },
+  {
+   "operator": "Vodafone",
+   "site": {
+    "site_id": "S075142",
+    "lat": 54.4221,
+    "lon": -3.0606,
+    "distance_km": 3.84,
+    "bearing_deg": 132,
+    "direction": "south-east",
+    "sources": [
+     "crowd-sourced (OpenCelliD)"
+    ]
+   },
+   "status": "inferred",
+   "los": {
+    "class": "blocked",
+    "blocked": true,
+    "obstruction_m": 288.4,
+    "obstruction_distance_m": 2249.0,
+    "obstruction_lat": 54.431582,
+    "obstruction_lon": -3.078984,
+    "path_length_m": 3838.0,
+    "mast_height_m": 25.0,
+    "mast_height": "assumed"
+   }
+  }
+ ],
+ "likely_best": {
+  "reviewed_by_agents": false,
+  "label": "Based on data, not yet reviewed by agents",
+  "rule": "Operators ranked by line of sight from this point to their nearest identified site (clear, then marginal, then blocked); clear lines by distance, obstructed ones by how far the ground rises above the line.",
+  "operators": [
+   "O2"
+  ],
+  "line_of_sight": "blocked",
+  "text": "No operator has a clear line of sight to an identified site from here. Least obstructed: O2, a site 5.7 km south-east (inferred from crowd-sourced data), with terrain 129 m above the line."
+ },
  "zetaris_queries": [
   {
    "id": "Q1",
-   "at": "2026-10-25T21:06:01+00:00",
+   "at": "2026-10-26T18:10:59+00:00",
    "sql": "SELECT c.cell_id, c.lat, c.lon, c.population, c.nation, o.quarter, o.download_mbps, o.upload_mbps, o.latency_ms, o.tests, o.devices, o.tests_per_1k_pop, o.devices_per_1k_pop, o.quarters_with_data, o.download_mbps_oldest, o.download_change_pct, o.download_trend_mbps_per_quarter, hst.history_json, nb.neighbour_download_mbps, nb.neighbour_tests, nb.neighbour_cells_with_data, m.nearest_mast_km, m.nearest_mast_bearing_deg, m.nearest_mast_id, m.nearest_mast_lat, m.nearest_mast_lon, m.nearest_mast_sources, m.nearest_mast_operators, m.nearest_mast_operators_confirmed, m.nearest_mast_antenna_height_m, m.masts_within_5km, m.masts_known_operator_within_5km, m.masts_unknown_operator_within_5km, m.masts_osm_only_within_5km, m.distinct_operators_within_5km, m.operators_within_5km, m.operators_confirmed_within_5km, m.wtr_sites_within_5km, m.microwave_backhaul_sites_within_5km, m.operator_data_status, a.pcon_code, a.pcon_name, a.laua_code, a.laua_name, a.g4_geo_out_0, a.g4_geo_out_1, a.g4_prem_out_0, a.g4_prem_in_0, a.g4_abrd_in_0, a.g5hc_prem_out_at_least_one, a.laua_g4_geo_out_0, a.laua_g4_geo_out_1, a.data_date AS ofcom_data_date, t.elevation_mean_m, t.elevation_range_m, l.blocked AS los_blocked, l.obstruction_m AS los_obstruction_m, l.los_class FROM CD_CELLS.cells_r7 c LEFT JOIN CD_OOKLA_MOBILE.ookla_mobile_r7 o ON o.cell_id = c.cell_id LEFT JOIN ( SELECT cell_id, to_json(collect_list(named_struct('quarter', quarter, 'download_mbps', download_mbps, 'tests', tests))) AS history_json FROM CD_OOKLA_MOBILE_HISTORY.ookla_mobile_history_r7 WHERE cell_id = '871955454ffffff' GROUP BY cell_id ) hst ON hst.cell_id = c.cell_id CROSS JOIN ( SELECT sum(download_mbps * tests) / sum(tests) AS neighbour_download_mbps, sum(tests) AS neighbour_tests, count(*) AS neighbour_cells_with_data FROM CD_OOKLA_MOBILE.ookla_mobile_r7 WHERE cell_id IN ('871955409ffffff', '871955450ffffff', '871955455ffffff', '871955456ffffff', '871955472ffffff', '871955473ffffff') ) nb LEFT JOIN CD_MASTS.masts_r7 m ON m.cell_id = c.cell_id LEFT JOIN CD_OFCOM_AREA.ofcom_area_r7 a ON a.cell_id = c.cell_id LEFT JOIN CD_TERRAIN.terrain_r7 t ON t.cell_id = c.cell_id LEFT JOIN CD_LOS.los_r7 l ON l.cell_id = c.cell_id WHERE c.cell_id = '871955454ffffff'",
-   "duration_ms": 1047,
+   "duration_ms": 653,
    "rows": 1,
    "error": null,
    "cached": false
   },
   {
    "id": "Q2",
-   "at": "2026-10-25T21:06:02+00:00",
+   "at": "2026-10-26T18:10:59+00:00",
    "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 54.445) / 2), 2) + cos(radians(54.445)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (-3.105)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 54.35491 AND 54.53509 AND s.lon BETWEEN -3.25949 AND -2.95051 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
-   "duration_ms": 319,
+   "duration_ms": 318,
    "rows": 99,
    "error": null,
    "cached": false
   },
   {
    "id": "Q3",
-   "at": "2026-10-25T21:06:02+00:00",
+   "at": "2026-10-26T18:10:59+00:00",
    "sql": "SELECT percentile_approx(devices_per_1k_pop, 0.5) AS devices_per_1k_p50, percentile_approx(devices_per_1k_pop, 0.9) AS devices_per_1k_p90, percentile_approx(download_mbps, 0.5) AS download_mbps_p50, count(*) AS cells FROM CD_OOKLA_MOBILE.ookla_mobile_r7 WHERE tests >= 10",
-   "duration_ms": 115,
+   "duration_ms": 154,
    "rows": 1,
+   "error": null,
+   "cached": false
+  },
+  {
+   "id": "Q4",
+   "at": "2026-10-26T18:11:00+00:00",
+   "sql": "SELECT quadkey, lat, lon, download_mbps, upload_mbps, latency_ms, tests, devices, distance_km FROM ( SELECT t.*, 2 * 6371 * asin(sqrt(pow(sin(radians(t.lat - 54.445) / 2), 2) + cos(radians(54.445)) * cos(radians(t.lat)) * pow(sin(radians(t.lon - (-3.105)) / 2), 2))) AS distance_km FROM CD_OOKLA_MOBILE_TILES.ookla_mobile_tiles t WHERE t.quarter = '2026Q3' AND t.lat BETWEEN 54.43599 AND 54.45401 AND t.lon BETWEEN -3.12045 AND -3.08955 ) x WHERE distance_km <= 1.0 ORDER BY distance_km",
+   "duration_ms": 342,
+   "rows": 0,
    "error": null,
    "cached": false
   }

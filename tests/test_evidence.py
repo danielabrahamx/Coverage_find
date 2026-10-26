@@ -33,10 +33,15 @@ def fake(monkeypatch, tmp_path):
     evidence._CACHE.clear()
     state = {"sites": [site(1, 0.5), site(2, 1.4, "Vodafone", "Vodafone", "ofcom_wtr", 15.0),
                        site(3, 6.5, "EE,Three", "EE,Three", "ofcom_wtr", 20.0)],
-             "cell": dict(CELL)}
+             "cell": dict(CELL),
+             "tiles": [{"quadkey": "q1", "lat": 52.301, "lon": -3.51, "download_mbps": 10.0, "upload_mbps": 2.0,
+                        "latency_ms": 40.0, "tests": 20, "devices": 9, "distance_km": 0.1},
+                       {"quadkey": "q2", "lat": 52.305, "lon": -3.51, "download_mbps": 25.0, "upload_mbps": 5.0,
+                        "latency_ms": 35.0, "tests": 10, "devices": 4, "distance_km": 0.6}]}
 
     def query(sql, timeout=None):
         rows = ([state["cell"]] if "FROM CD_CELLS" in sql else state["sites"] if "CD_MASTS_SITES" in sql
+                else state["tiles"] if "CD_OOKLA_MOBILE_TILES" in sql
                 else [{"devices_per_1k_p50": 3.6, "devices_per_1k_p90": 27.3, "download_mbps_p50": 103.0, "cells": 7640}])
         evidence.QUERY_LOG.append({"at": "t", "sql": sql, "duration_ms": 1, "rows": len(rows), "error": None})
         return [dict(r) for r in rows]
@@ -65,7 +70,7 @@ def test_bundle_shape_and_query_log(fake):
     for i in b["items"]:
         assert set(i) == ITEM_KEYS, i["id"]
         assert i["strength"] in ("strong", "moderate", "weak") and i["finding"].endswith((".", ")"))
-    assert [q["id"] for q in b["zetaris_queries"]] == ["Q1", "Q2", "Q3"]
+    assert [q["id"] for q in b["zetaris_queries"]] == ["Q1", "Q2", "Q3", "Q4"]
     assert all(q["sql"] for q in b["zetaris_queries"])
     assert "ofcom.org.uk/mobile-coverage-checker" in b["resident_check"]
 
@@ -121,3 +126,46 @@ def test_api_validation_and_not_found(fake):
     assert client.post("/api/evidence", json={"query": "ZZ1 1ZZ"}).status_code == 404
     r = client.post("/api/evidence", json={"query": "WC2N 5DU"})
     assert r.status_code == 200 and r.json()["point"]["postcode"] == "WC2N 5DU"
+
+
+def test_speed_within_1km_is_test_weighted(fake):
+    it = items(evidence.build_bundle(lat=52.30, lon=-3.51))["speed_1km"]
+    assert it["value"]["download_mbps"] == 15.0  # (10*20 + 25*10) / 30
+    assert it["sample_size"] == {"tests": 30, "devices": 13, "tiles": 2} and it["strength"] == "moderate"
+    fake["tiles"] = []
+    it = items(evidence.build_bundle(lat=52.30, lon=-3.51))["speed_1km"]
+    assert it["strength"] == "weak" and it["finding"].startswith("No Ookla speed tests")
+
+
+def test_operator_comparison_and_likely_best(fake):
+    b = evidence.build_bundle(lat=52.30, lon=-3.51)
+    ops = {r["operator"]: r for r in b["operators"]}
+    assert list(ops) == ["EE", "O2", "Three", "Vodafone"]
+    assert ops["O2"]["site"] is None and "no coverage" in ops["O2"]["note"].lower()  # "not the same as no coverage"
+    vf = ops["Vodafone"]
+    assert vf["status"] == "confirmed" and vf["los"]["class"] == "clear" and vf["los"]["mast_height"] == "measured"
+    assert vf["site"]["sources"] == ["Ofcom register"]
+    assert ops["EE"]["los"]["class"] == "blocked" and ops["EE"]["los"]["obstruction_m"] == 137.0
+    best = b["likely_best"]
+    assert best["operators"] == ["Vodafone"] and best["reviewed_by_agents"] is False
+    assert best["text"].startswith("Likely best network here: Vodafone") and "No site identified in our data for O2" in best["text"]
+
+
+def _row(op, cls, obstruction, km, status="inferred"):
+    return {"operator": op, "status": status, "site": {"distance_km": km, "direction": "north"},
+            "los": {"class": cls, "obstruction_m": obstruction}}
+
+
+def test_likely_best_rules():
+    # All blocked: least obstruction wins, not the nearest.
+    best = evidence.likely_best([_row("EE", "blocked", 260, 4.5), _row("O2", "blocked", 129, 5.7),
+                                 _row("Vodafone", "blocked", 288, 3.8), {"operator": "Three", "site": None}])
+    assert best["operators"] == ["O2"] and "Least obstructed: O2" in best["text"]
+    # Clear lines tie on distance: the confirmed operator comes first.
+    best = evidence.likely_best([_row("EE", "clear", -8, 0.11), _row("Vodafone", "clear", -8, 0.11, "confirmed")])
+    assert best["operators"][0] == "Vodafone"
+    # Marginal beats blocked.
+    best = evidence.likely_best([_row("EE", "marginal", 4, 2.0), _row("O2", "blocked", 50, 1.0)])
+    assert best["operators"] == ["EE"] and best["line_of_sight"] == "marginal"
+    # No sites at all.
+    assert "No operator site identified" in evidence.likely_best([{"operator": o, "site": None} for o in evidence.OPERATORS])["text"]

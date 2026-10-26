@@ -28,3 +28,8 @@ def test_quadkey_bounds():
 
 def test_bad_bbox():
     assert client.get("/api/masts", params={"bbox": "nope"}).status_code == 400
+
+
+def test_pages_are_served():
+    assert client.get("/signal").status_code == 200 and "signal.js" in client.get("/signal").text
+    assert client.get("/").status_code == 200

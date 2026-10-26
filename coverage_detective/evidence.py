@@ -8,12 +8,15 @@
          terrain, line of sight), the same one the explorer uses;
      Q2  approximate mast sites within 10 km of the exact point (CD_MASTS_SITES);
      Q3  UK context: median and 90th percentile devices per head and download speed
-         (cached for the process, since it only changes when the data is rebuilt).
+         (cached for the process, since it only changes when the data is rebuilt);
+     Q4  Ookla tiles (~350-400 m) within 1 km of the exact point, latest quarter.
 3. Line of sight from the exact point to the nearest site of each operator within 10 km
    (and to the nearest site of any operator), over the Copernicus DEM.
 4. Live: weather, Met Office warnings, EA flood warnings.
 
-Every item: id, source, data_period, as_of, query_or_url, cell_ids, finding (one plain
+The bundle also carries `operators` (per operator: nearest site, confirmed or inferred, line
+of sight from the exact point) and `likely_best` (a rule-based summary, not reviewed by
+agents). Every item: id, source, data_period, as_of, query_or_url, cell_ids, finding (one plain
 sentence computed here, following the CLAUDE.md wording rules), value, sample_size,
 strength (strong / moderate / weak) and bears_on (causes it is relevant to). Numbers come
 from code and SQL; nothing here is written by an LLM.
@@ -42,6 +45,7 @@ OPERATOR_RADIUS_KM = 5.0
 STRONG_TESTS, WEAK_TESTS = 50, 10
 LOS_STRONG_M = 30.0   # blocked by this much: hard to explain away by trees or buildings
 LOS_MARGINAL_M = 10.0
+SPEED_RADIUS_KM = 1.0
 UK_TZ = ZoneInfo("Europe/London")
 COMPASS = ["north", "north-east", "east", "south-east", "south", "south-west", "west", "north-west"]
 
@@ -168,7 +172,45 @@ UK_CONTEXT_SQL = """SELECT percentile_approx(devices_per_1k_pop, 0.5) AS devices
 FROM CD_OOKLA_MOBILE.ookla_mobile_r7 WHERE tests >= 10"""
 
 
+def tiles_sql(lat: float, lon: float, quarter: str, km: float = SPEED_RADIUS_KM) -> str:
+    dlat = km / 111.0
+    dlon = km / (111.32 * math.cos(math.radians(lat)))
+    return f"""SELECT quadkey, lat, lon, download_mbps, upload_mbps, latency_ms, tests, devices, distance_km
+FROM (
+  SELECT t.*, 2 * 6371 * asin(sqrt(pow(sin(radians(t.lat - {lat}) / 2), 2) + cos(radians({lat})) * cos(radians(t.lat))
+         * pow(sin(radians(t.lon - ({lon})) / 2), 2))) AS distance_km
+  FROM CD_OOKLA_MOBILE_TILES.ookla_mobile_tiles t
+  WHERE t.quarter = '{quarter}'
+    AND t.lat BETWEEN {lat - dlat:.5f} AND {lat + dlat:.5f} AND t.lon BETWEEN {lon - dlon:.5f} AND {lon + dlon:.5f}
+) x
+WHERE distance_km <= {km}
+ORDER BY distance_km"""
+
+
 # --- evidence from the stored tables (Zetaris) -----------------------------------------------
+
+def nearby_speed_item(b: Bundle, tiles: list[dict], quarter: str, cell_id: str) -> None:
+    """Test-weighted speed over the Ookla tiles within 1 km of the exact point."""
+    meta = _meta("ookla_mobile_tiles")
+    tests = sum(t["tests"] for t in tiles)
+    if not tests:
+        b.add("speed_1km", "Ookla open data tiles (Zetaris CD_OOKLA_MOBILE_TILES)", meta, "zetaris:Q4", [cell_id],
+              f"No Ookla speed tests were recorded within {SPEED_RADIUS_KM:.0f} km of this point in {quarter}.",
+              {"tiles": [], "quarter": quarter}, {"tests": 0, "tiles": 0}, "weak", ["insufficient_data"])
+        return
+    mbps = sum(t["download_mbps"] * t["tests"] for t in tiles) / tests
+    devices = sum(t["devices"] for t in tiles)
+    strength = "strong" if tests >= STRONG_TESTS else "moderate" if tests >= WEAK_TESTS else "weak"
+    few = " Few tests, so this is weak evidence." if tests < WEAK_TESTS else ""
+    b.add("speed_1km", "Ookla open data tiles (Zetaris CD_OOKLA_MOBILE_TILES)", meta, "zetaris:Q4",
+          sorted({cell_id, *(h3.latlng_to_cell(t["lat"], t["lon"], H3_RES) for t in tiles)}),
+          f"Within {SPEED_RADIUS_KM:.0f} km of this point, mobile download speed averaged {mbps:.1f} Mbps in {quarter} "
+          f"({tests} tests from {devices} devices on {len(tiles)} Ookla tiles of about 350-400 m).{few}",
+          {"download_mbps": round(mbps, 1), "quarter": quarter, "radius_km": SPEED_RADIUS_KM,
+           "tiles": [{k: t[k] for k in ("lat", "lon", "download_mbps", "tests", "distance_km")} for t in tiles]},
+          {"tests": tests, "devices": devices, "tiles": len(tiles)}, strength,
+          ["distance_to_mast", "terrain_blocking", "capacity_strain", "insufficient_data"])
+
 
 def speed_items(b: Bundle, c: dict, cell_id: str, ring: list[str], ctx: dict | None) -> None:
     meta, q = _meta("ookla_mobile_r7"), "zetaris:Q1"
@@ -314,8 +356,17 @@ def site_items(b: Bundle, sites: list[dict], lat: float, lon: float, cell_id: st
           ["single_operator", "distance_to_mast"])
 
 
-def los_items(b: Bundle, sites: list[dict], lat: float, lon: float, cell_id: str) -> None:
-    """Line of sight to the nearest site of each operator (and the nearest site overall)."""
+def los_class(los: dict) -> str:
+    """clear / marginal (blocked by < 10 m: may be trees or buildings) / blocked."""
+    if not los["blocked"]:
+        return "clear"
+    return "marginal" if los["max_obstruction_m"] < LOS_MARGINAL_M else "blocked"
+
+
+def los_items(b: Bundle, sites: list[dict], lat: float, lon: float, cell_id: str) -> dict[str, dict]:
+    """Line of sight to the nearest site of each operator (and the nearest site overall).
+
+    Returns the line-of-sight result per site id (for the operator comparison)."""
     meta = {"data_period": _meta("terrain_r7")["data_period"] or "Copernicus DEM GLO-30",
             "as_of": _meta("masts_sites")["as_of"]}
     targets: dict[str, dict] = {}
@@ -332,10 +383,12 @@ def los_items(b: Bundle, sites: list[dict], lat: float, lon: float, cell_id: str
     if sites and sites[0]["site_id"] not in targets:
         targets[sites[0]["site_id"]] = {"site": sites[0], "for": []}
 
+    results = {}
     for t in targets.values():
         s = t["site"]
         height = s["antenna_height_m"] if s["antenna_height_m"] is not None else None
         los = terrain.line_of_sight(lat, lon, s["lat"], s["lon"], mast_height=height)
+        results[s["site_id"]] = los
         ops_here, confirmed = _ops(s["operators"]), _ops(s["operators_confirmed"])
         label = (f"{_join(t['for'])}'s nearest approximate site" if t["for"]
                  else "The nearest approximate site (operator unknown)")
@@ -368,6 +421,76 @@ def los_items(b: Bundle, sites: list[dict], lat: float, lon: float, cell_id: str
               {"site_id": s["site_id"], "operators_at_site": ops_here, "operators_confirmed": confirmed,
                "for_operators": t["for"], **{k: v for k, v in los.items() if k != "profile"}},
               {"dem_samples": los["samples"]}, strength, ["terrain_blocking", "distance_to_mast"])
+    return results
+
+
+# --- operator comparison and the rule-based summary ------------------------------------------
+
+SOURCE_KIND = {"opencellid": "crowd-sourced (OpenCelliD)", "osm": "OpenStreetMap", "ofcom_wtr": "Ofcom register"}
+
+
+def operator_comparison(sites: list[dict], los_by_site: dict[str, dict], lat: float, lon: float) -> list[dict]:
+    """Per operator: nearest identified site within 10 km, confirmed or inferred, line of sight."""
+    rows = []
+    for op in OPERATORS:
+        s = next((x for x in sites if op in _ops(x["operators"])), None)
+        if s is None:
+            rows.append({"operator": op, "site": None,
+                         "note": f"No {op} site identified in our data within {SITE_RADIUS_KM:.0f} km "
+                                 "(not the same as no coverage)."})
+            continue
+        los = los_by_site[s["site_id"]]
+        bearing = bearing_deg(lat, lon, s["lat"], s["lon"])
+        rows.append({
+            "operator": op,
+            "site": {"site_id": s["site_id"], "lat": s["lat"], "lon": s["lon"], "distance_km": round(s["distance_km"], 2),
+                     "bearing_deg": round(bearing), "direction": _compass(bearing),
+                     "sources": [SOURCE_KIND.get(x, x) for x in str(s["sources"]).split(",")]},
+            "status": "confirmed" if op in _ops(s["operators_confirmed"]) else "inferred",
+            "los": {"class": los_class(los), "blocked": los["blocked"], "obstruction_m": los["max_obstruction_m"],
+                    "obstruction_distance_m": los["obstruction_distance_m"], "obstruction_lat": los["obstruction_lat"],
+                    "obstruction_lon": los["obstruction_lon"], "path_length_m": los["path_length_m"],
+                    "mast_height_m": los["mast_height_m"],
+                    "mast_height": "measured" if los["mast_height_source"] == "ofcom_register" else "assumed"},
+        })
+    return rows
+
+
+def likely_best(rows: list[dict]) -> dict:
+    """Rule-based summary: the operators with the least obstructed line of sight from the point."""
+    rank = {"clear": 0, "marginal": 1, "blocked": 2}
+    # Clear lines: nearest first. Obstructed lines: least obstruction first, then nearest.
+    with_site = sorted((r for r in rows if r["site"]), key=lambda r: (
+        rank[r["los"]["class"]], 0 if r["los"]["class"] == "clear" else r["los"]["obstruction_m"],
+        round(r["site"]["distance_km"], 1), r["status"] != "confirmed"))  # ties: confirmed operators first
+    missing = [r["operator"] for r in rows if not r["site"]]
+    gap = (f" No site identified in our data for {_join(missing)}." if missing else "")
+    base = {"reviewed_by_agents": False, "label": "Based on data, not yet reviewed by agents",
+            "rule": "Operators ranked by line of sight from this point to their nearest identified site "
+                    "(clear, then marginal, then blocked); clear lines by distance, obstructed ones by how "
+                    "far the ground rises above the line."}
+    if not with_site:
+        return {**base, "operators": [], "text": f"No operator site identified within {SITE_RADIUS_KM:.0f} km in our data. "
+                "This is weak evidence: crowd-sourced data is incomplete."}
+    top = with_site[0]
+    best_class = top["los"]["class"]
+    tied = [r for r in with_site if r["los"]["class"] == best_class]
+    s, how = top["site"], "confirmed by Ofcom's licence register" if top["status"] == "confirmed" else "inferred from crowd-sourced data"
+    where = f"a site {s['distance_km']:.1f} km {s['direction']} ({how})"
+    others = [f"{r['operator']} ({r['site']['distance_km']:.1f} km)" for r in tied[1:]]
+    if best_class == "clear":
+        text = f"Likely best network here: {top['operator']}, with a clear line of sight to {where}."
+        if others:
+            text += f" Also a clear line: {_join(others)}."
+    elif best_class == "marginal":
+        text = (f"No operator has a fully clear line. Least obstructed: {top['operator']}, {where}, blocked by only "
+                f"{top['los']['obstruction_m']:.0f} m (possibly trees or buildings).")
+    else:
+        text = (f"No operator has a clear line of sight to an identified site from here. Least obstructed: "
+                f"{top['operator']}, {where}, with terrain {top['los']['obstruction_m']:.0f} m above the line.")
+    # Every operator with a clear line is a good option; otherwise only the least obstructed one.
+    chosen = tied if best_class == "clear" else [top]
+    return {**base, "operators": [r["operator"] for r in chosen], "line_of_sight": best_class, "text": text + gap}
 
 
 # --- live sources ----------------------------------------------------------------------------
@@ -470,7 +593,8 @@ def build_bundle(query_text: str | None = None, lat: float | None = None, lon: f
         fm = pool.submit(met_office_warnings.for_place, point, lat, lon)
         ff = pool.submit(flood_warnings.near, lat, lon, point.get("country"))
 
-        cell, sites, ctx = None, [], None
+        cell, sites, ctx, tiles = None, [], None, None
+        quarter = _meta("ookla_mobile_r7")["data_period"]
         try:
             sql, _ = cell_sql(cell_id)
             rows = b.zetaris("Q1", sql)
@@ -482,15 +606,18 @@ def build_bundle(query_text: str | None = None, lat: float | None = None, lon: f
                 s["has_microwave_backhaul"] = _bool(s["has_microwave_backhaul"])
             ctx_rows = b.zetaris("Q3", UK_CONTEXT_SQL, cached=True)
             ctx = ctx_rows[0] if ctx_rows else None
+            tiles = b.zetaris("Q4", tiles_sql(lat, lon, quarter))
         except ZetarisError as e:
             b.errors.append(f"Zetaris: {e}")
 
+        if tiles is not None:
+            nearby_speed_item(b, tiles, quarter, cell_id)
         if cell:
             cell["history"] = sorted(json.loads(cell.pop("history_json") or "[]"), key=lambda h: h["quarter"])
             speed_items(b, cell, cell_id, ring, ctx)
         site_items(b, sites, lat, lon, cell_id)
-        if sites:
-            los_items(b, sites, lat, lon, cell_id)
+        los_by_site = los_items(b, sites, lat, lon, cell_id) if sites else {}
+        operators = operator_comparison(sites, los_by_site, lat, lon)
         if cell:
             terrain_item(b, cell, cell_id)
             ofcom_item(b, cell, cell_id)
@@ -499,6 +626,7 @@ def build_bundle(query_text: str | None = None, lat: float | None = None, lon: f
     return {
         "query": query_text, "point": point, "cell_id": cell_id, "neighbour_cell_ids": ring,
         "generated_at": live.now_iso(), "sample_mode": sample_mode(),
-        "items": b.items, "zetaris_queries": b.queries, "errors": b.errors, "limitations": LIMITATIONS,
+        "items": b.items, "operators": operators, "likely_best": likely_best(operators),
+        "zetaris_queries": b.queries, "errors": b.errors, "limitations": LIMITATIONS,
         "resident_check": "Check your address on Ofcom's mobile coverage checker: https://www.ofcom.org.uk/mobile-coverage-checker",
     }

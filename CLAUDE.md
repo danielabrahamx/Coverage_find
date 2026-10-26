@@ -111,15 +111,16 @@ coverage_detective/     package
     live.py             shared live fetching (timeout, retry, cache, sample fallback)
     geocode.py, weather.py, met_office_warnings.py, flood_warnings.py live sources
     ofcom_api.py        stub (Ofcom postcode API not available; returns None)
-  api/app.py            FastAPI: explorer API + /api/live + /api/los + POST /api/evidence
+  api/app.py            FastAPI: explorer API + /api/live + /api/los + POST /api/evidence; pages / and /signal
 scripts/download/       fetch raw data into data/raw/<source>/ (skip files that exist)
 scripts/process/        build data/processed/*.parquet (+ build_web_layers.py for the map)
 scripts/zetaris/        compose.sh (data mount), register_sources.py (one function per source)
 scripts/check_*.py      check_data (A, B, E), check_live (D), check_terrain (C), check_evidence
 scripts/refresh.py      refresh stored sources on their cadence
 scripts/screenshots.py  Playwright screenshots -> docs/screenshots/
-tests/                  pytest (55 tests; offline: samples, mocked Zetaris / DEM)
-web/                    data explorer (MapLibre 5.24 + deck.gl 9.4 + h3-js 4.5, no build step)
+tests/                  pytest (59 tests; offline: samples, mocked Zetaris / DEM)
+web/                    pages, no build step (MapLibre 5.24 + deck.gl 9.4 + h3-js 4.5):
+                        index.html + app.js (explorer), signal.html + signal.js (My signal), style.css
 run.py                  start the explorer on :8000 (checks Zetaris)
 data/raw/               raw inputs and downloads (gitignored)
 data/processed/         built Parquet files (gitignored)
@@ -255,6 +256,14 @@ G (power cuts) dropped as future work; H (visitor load) only if time. Then the a
   as_of, query_or_url, cell_ids, finding, value, sample_size, strength (strong / moderate /
   weak), bears_on. Bundles for the sample places saved in `data/samples/evidence/`.
 
+- **Pages, phase 1: My signal** (26 Oct): `/signal`. Evidence bundle gained Q4 (Ookla tiles
+  within 1 km), `operators` (per operator: nearest site, confirmed / inferred, line of sight
+  from the exact point, mast height measured / assumed) and `likely_best` (rule: clear first,
+  nearest, confirmed on ties; else least obstructed; `reviewed_by_agents: false`). Map draws each
+  operator's line (own colour; red dashed when blocked; obstruction marked). Agent placeholders:
+  "Explanation (agents)", disabled "Diagnose with agents" / "Draft evidence letter".
+  Council view is a disabled nav item until phase 4.
+
 ### Zetaris sources
 
 `CD_CELLS`, `CD_OOKLA_MOBILE`, `CD_OOKLA_MOBILE_HISTORY`, `CD_OOKLA_MOBILE_TILES`,
@@ -280,6 +289,9 @@ data/README.md.
   (by name it resolves approximately to Little Langdale: use coordinates).
 - Our data is far coarser than Ofcom's own checker (address level); suggested retrying for
   an Ofcom API key.
+- 26 Oct: the Zetaris stack was found removed (containers gone); restarted with
+  `scripts/zetaris/compose.sh up -d` (volumes kept, sources intact). Earlier the driver was
+  restarted without the mount: always use compose.sh.
 - Met Office warnings cover whole regions: should "elsewhere in the region" warnings count
   as weaker evidence for `weather`? (asked the user, no answer yet)
 - 47% of populated cells look blocked from their centre; many margins are small (surface
@@ -287,6 +299,10 @@ data/README.md.
 
 ### Next
 
+0. Pages (26 Oct brief): phase 2 gap zones + priority score (backend: build_zones.py,
+   CD_GAP_ZONES / CD_GAP_ZONE_CELLS, /api/council/zones, /api/council/scopes), phase 3
+   candidate fixes (planning/siting.py, /api/council/zones/{id}), phase 4 Council view page
+   (/council). Stop after each phase.
 1. F. Rural–urban classification + deprivation (deciles within each nation) →
    `deprivation_r7`, `CD_DEPRIVATION` (`queries.py` already joins it when the manifest has
    "deprivation"; layer `deprivation_decile` ready in build_web_layers).

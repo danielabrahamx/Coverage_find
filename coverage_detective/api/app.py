@@ -14,7 +14,8 @@ Routes:
   GET /api/live?lat=&lon=      live context: weather, Met Office warnings, EA flood warnings
   GET /api/los?lat=&lon=(&site_id=)  line of sight from the exact point to a site (default nearest)
   POST /api/evidence           evidence bundle for {"query": postcode or place} or {"lat", "lon"}
-  /                            the web app (web/)
+  /                            the data explorer (web/index.html)
+  /signal                      My signal: evidence for one exact point (web/signal.html)
 """
 
 from __future__ import annotations
@@ -248,6 +249,11 @@ def live_context(lat: float, lon: float, flood_via: str = "api") -> dict:
 def live(lat: float = Query(..., ge=49, le=61.5), lon: float = Query(..., ge=-9, le=2.5),
          flood_via: str = Query("api", pattern="^(api|zetaris)$")) -> dict:
     return live_context(lat, lon, flood_via)
+
+
+@app.get("/signal", include_in_schema=False)
+def signal_page() -> FileResponse:
+    return FileResponse(WEB_DIR / "signal.html")
 
 
 if WEB_DIR.exists():

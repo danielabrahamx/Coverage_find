@@ -131,6 +131,30 @@ Screenshots: `pip install playwright`, then `python scripts/screenshots.py` (pas
 
 ![UK download speeds](docs/screenshots/uk_speed.png)
 
+## My signal page
+
+`http://localhost:8000/signal` (also `?q=LD6 5AD` or `?lat=52.30&lon=-3.51`): search a
+postcode or place, or click the map at the exact spot. It calls `POST /api/evidence` and
+shows, with no LLM involved:
+
+- **Networks compared**: for EE, O2, Three and Vodafone, the nearest identified site
+  (distance, direction, source: OpenCelliD / OpenStreetMap / Ofcom register), whether the
+  operator is confirmed by Ofcom's licence register or inferred from crowd-sourced data,
+  and the line of sight from the exact point (clear / marginal / blocked, obstruction
+  height, mast height measured or assumed). Each operator's line is drawn on the map in its
+  own colour, red and dashed where blocked, with the highest obstruction marked. "No site
+  identified in our data" is never presented as "no coverage".
+- **Likely best network here**: a rule (clear lines first, nearest first, confirmed
+  operators first on ties; otherwise the least obstructed line), labelled "Based on data,
+  not yet reviewed by agents".
+- Measured speeds within 1 km (Ookla tiles), in the cell and the neighbouring cells, with
+  test counts and strength; the 4-quarter trend; Ofcom area figures (area-level wording);
+  current weather, Met Office warnings and flood warnings.
+- Placeholders for the agents: "Explanation (agents)", "Diagnose with agents" and "Draft
+  evidence letter" (disabled).
+
+![My signal, near Rhayader](docs/screenshots/signal_rhayader.png)
+
 ## Evidence API
 
 `POST /api/evidence` with `{"query": "WC2N 5DU"}` (postcode or place) or `{"lat": 54.445,
@@ -141,12 +165,14 @@ Screenshots: `pip install playwright`, then `python scripts/screenshots.py` (pas
 - three Zetaris queries, each logged in the bundle (`zetaris_queries`: SQL, time, rows):
   Q1 the cross-source cell query (cells, Ookla with history and neighbours, masts, Ofcom
   area, terrain, line of sight), Q2 approximate mast sites within 10 km of the exact point,
-  Q3 UK context (median devices per head and speed; cached per process);
+  Q3 UK context (median devices per head and speed; cached per process), Q4 Ookla tiles
+  within 1 km of the point (latest quarter);
 - line of sight from the exact point to the nearest site of each operator within 10 km,
   and to the nearest site of any operator;
 - live weather, Met Office warnings and EA flood warnings.
 
-Each item has `id`, `source`, `data_period`, `as_of`, `query_or_url`, `cell_ids`,
+The bundle also has `operators` (the per-operator comparison used by the My signal page)
+and `likely_best` (the rule-based summary, `reviewed_by_agents: false`). Each item has `id`, `source`, `data_period`, `as_of`, `query_or_url`, `cell_ids`,
 `finding` (one plain-English sentence built in code, following the wording rules in
 CLAUDE.md), `value`, `sample_size`, `strength` (strong / moderate / weak) and `bears_on`
 (the causes it is relevant to). The bundle also carries `errors`, `limitations` and the

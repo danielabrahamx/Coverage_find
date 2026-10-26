@@ -24,7 +24,7 @@
   "87195da4bffffff",
   "87195da4dffffff"
  ],
- "generated_at": "2026-10-25T21:06:03+00:00",
+ "generated_at": "2026-10-26T18:11:10+00:00",
  "sample_mode": false,
  "items": [
   {
@@ -51,6 +51,185 @@
    "sample_size": null,
    "strength": "strong",
    "bears_on": []
+  },
+  {
+   "id": "speed_1km",
+   "source": "Ookla open data tiles (Zetaris CD_OOKLA_MOBILE_TILES)",
+   "data_period": "2026Q3",
+   "as_of": "2026-10-23",
+   "query_or_url": "zetaris:Q4",
+   "cell_ids": [
+    "87194ad14ffffff",
+    "87194ad32ffffff",
+    "87195da49ffffff"
+   ],
+   "finding": "Within 1 km of this point, mobile download speed averaged 137.1 Mbps in 2026Q3 (1065 tests from 701 devices on 21 Ookla tiles of about 350-400 m).",
+   "value": {
+    "download_mbps": 137.1,
+    "quarter": "2026Q3",
+    "radius_km": 1.0,
+    "tiles": [
+     {
+      "lat": 51.50699999999999,
+      "lon": -0.1291,
+      "download_mbps": 158.814,
+      "tests": 54,
+      "distance_km": 0.062114768486054496
+     },
+     {
+      "lat": 51.50699999999999,
+      "lon": -0.1236,
+      "download_mbps": 159.287,
+      "tests": 58,
+      "distance_km": 0.3239906154635775
+     },
+     {
+      "lat": 51.5105,
+      "lon": -0.1291,
+      "download_mbps": 157.821,
+      "tests": 154,
+      "distance_km": 0.370214424947685
+     },
+     {
+      "lat": 51.50359999999999,
+      "lon": -0.1291,
+      "download_mbps": 219.443,
+      "tests": 16,
+      "distance_km": 0.40562328473369047
+     },
+     {
+      "lat": 51.50699999999999,
+      "lon": -0.1346,
+      "download_mbps": 145.495,
+      "tests": 26,
+      "distance_km": 0.43879416772620444
+     },
+     {
+      "lat": 51.5105,
+      "lon": -0.1236,
+      "download_mbps": 132.295,
+      "tests": 129,
+      "distance_km": 0.48801908548929107
+     },
+     {
+      "lat": 51.50359999999999,
+      "lon": -0.1236,
+      "download_mbps": 110.93,
+      "tests": 15,
+      "distance_km": 0.5154119405747098
+     },
+     {
+      "lat": 51.5105,
+      "lon": -0.1346,
+      "download_mbps": 141.781,
+      "tests": 68,
+      "distance_km": 0.5707243674839779
+     },
+     {
+      "lat": 51.50359999999999,
+      "lon": -0.1346,
+      "download_mbps": 68.528,
+      "tests": 10,
+      "distance_km": 0.5943285334624708
+     },
+     {
+      "lat": 51.50699999999999,
+      "lon": -0.11809999999999998,
+      "download_mbps": 72.597,
+      "tests": 25,
+      "distance_km": 0.7041841693711567
+     },
+     {
+      "lat": 51.5139,
+      "lon": -0.1291,
+      "download_mbps": 94.82,
+      "tests": 108,
+      "distance_km": 0.7460028292661949
+     },
+     {
+      "lat": 51.50019999999999,
+      "lon": -0.1291,
+      "download_mbps": 179.373,
+      "tests": 23,
+      "distance_km": 0.781706556537643
+     },
+     {
+      "lat": 51.5105,
+      "lon": -0.11809999999999998,
+      "download_mbps": 156.771,
+      "tests": 70,
+      "distance_km": 0.7931191746242292
+     },
+     {
+      "lat": 51.50359999999999,
+      "lon": -0.11809999999999998,
+      "download_mbps": 103.145,
+      "tests": 44,
+      "distance_km": 0.810298749365562
+     },
+     {
+      "lat": 51.5139,
+      "lon": -0.1236,
+      "download_mbps": 111.752,
+      "tests": 63,
+      "distance_km": 0.8109356221238911
+     },
+     {
+      "lat": 51.50699999999999,
+      "lon": -0.1401,
+      "download_mbps": 137.709,
+      "tests": 41,
+      "distance_km": 0.8191557540191913
+     },
+     {
+      "lat": 51.50019999999999,
+      "lon": -0.1236,
+      "download_mbps": 126.014,
+      "tests": 19,
+      "distance_km": 0.8439146311030873
+     },
+     {
+      "lat": 51.5139,
+      "lon": -0.1346,
+      "download_mbps": 182.024,
+      "tests": 86,
+      "distance_km": 0.8632344549262644
+     },
+     {
+      "lat": 51.50019999999999,
+      "lon": -0.1346,
+      "download_mbps": 79.235,
+      "tests": 15,
+      "distance_km": 0.8943016135865703
+     },
+     {
+      "lat": 51.5105,
+      "lon": -0.1401,
+      "download_mbps": 104.122,
+      "tests": 30,
+      "distance_km": 0.896752684043194
+     },
+     {
+      "lat": 51.50359999999999,
+      "lon": -0.1401,
+      "download_mbps": 76.865,
+      "tests": 11,
+      "distance_km": 0.9119966760522654
+     }
+    ]
+   },
+   "sample_size": {
+    "tests": 1065,
+    "devices": 701,
+    "tiles": 21
+   },
+   "strength": "strong",
+   "bears_on": [
+    "distance_to_mast",
+    "terrain_blocking",
+    "capacity_strain",
+    "insufficient_data"
+   ]
   },
   {
    "id": "speed_cell",
@@ -391,32 +570,32 @@
    "id": "weather",
    "source": "Open-Meteo forecast",
    "data_period": "live",
-   "as_of": "2026-10-25T20:36:52+00:00",
+   "as_of": "2026-10-26T18:02:33+00:00",
    "query_or_url": "https://api.open-meteo.com/v1/forecast?latitude=51.5072&longitude=-0.1283&current=precipitation%2Crain%2Csnowfall%2Cwind_speed_10m%2Cwind_gusts_10m%2Cweather_code&hourly=precipitation%2Crain%2Csnowfall%2Cwind_speed_10m%2Cwind_gusts_10m%2Cweather_code&forecast_hours=24&timezone=Europe%2FLondon",
    "cell_ids": [
     "87195da49ffffff"
    ],
-   "finding": "Weather now: mainly clear, wind 14 km/h gusting 31 km/h, rain 0.0 mm/h. Next 24 h: gusts up to 42.8 km/h, rain up to 2.0 mm/h: moderate (rain up to 2.0 mm/h).",
+   "finding": "Weather now: partly cloudy, wind 21 km/h gusting 45 km/h, rain 0.0 mm/h. Next 24 h: gusts up to 58.0 km/h, rain up to 1.3 mm/h: moderate (gusts up to 58.0 km/h).",
    "value": {
     "severity": "moderate",
     "now": {
-     "time": "2026-10-25T20:30",
+     "time": "2026-10-26T18:00",
      "precipitation_mm_h": 0.0,
      "rain_mm_h": 0.0,
      "snowfall_cm_h": 0.0,
-     "wind_kmh": 14.0,
-     "gust_kmh": 31.0,
-     "weather_code": 1,
-     "weather": "mainly clear"
+     "wind_kmh": 20.9,
+     "gust_kmh": 44.6,
+     "weather_code": 2,
+     "weather": "partly cloudy"
     },
     "next_24h": {
      "hours": 24,
-     "max_precipitation_mm_h": 2.0,
-     "max_precipitation_at": "2026-10-26T12:00",
-     "max_gust_kmh": 42.8,
-     "max_gust_at": "2026-10-26T14:00",
+     "max_precipitation_mm_h": 1.3,
+     "max_precipitation_at": "2026-10-27T07:00",
+     "max_gust_kmh": 58.0,
+     "max_gust_at": "2026-10-27T03:00",
      "max_snowfall_cm_h": 0.0,
-     "total_precipitation_mm": 7.3,
+     "total_precipitation_mm": 3.0,
      "thunderstorm_expected": false
     }
    },
@@ -432,7 +611,7 @@
    "id": "met_office_warnings",
    "source": "Met Office severe weather warnings (RSS)",
    "data_period": "live",
-   "as_of": "2026-10-25T21:00:13+00:00",
+   "as_of": "2026-10-26T18:02:33+00:00",
    "query_or_url": "https://www.metoffice.gov.uk/public/data/PWSCache/WarningsRSS/Region/se",
    "cell_ids": [
     "87195da49ffffff"
@@ -454,41 +633,18 @@
    "id": "flood_warnings",
    "source": "Environment Agency flood monitoring",
    "data_period": "live",
-   "as_of": "2026-10-25T21:04:59+00:00",
+   "as_of": "2026-10-26T18:02:40+00:00",
    "query_or_url": "https://environment.data.gov.uk/flood-monitoring/id/floods?lat=51.5072&long=-0.1283&dist=10",
    "cell_ids": [
     "87195da49ffffff"
    ],
-   "finding": "2 flood alerts or warnings within 10 km: flood alert for Tidal Thames riverside from Putney Bridge to Teddington Weir (raised Sun 25 Oct 17:41); flood alert for Tidal Thames riverside from the Thames Barrier to Putney Bridge (raised Sun 25 Oct 17:43).",
+   "finding": "No flood alerts or warnings within 10 km.",
    "value": {
-    "warnings": [
-     {
-      "severity_level": 3,
-      "severity": "flood alert",
-      "area": "Tidal Thames riverside from Putney Bridge to Teddington Weir",
-      "ea_area": "Kent, South London and East Sussex",
-      "river_or_sea": "River Thames",
-      "time_raised": "2026-10-25T17:41:11",
-      "time_severity_changed": "2026-10-25T17:41:00",
-      "flood_area_id": "063WAT23West",
-      "distance_km": null
-     },
-     {
-      "severity_level": 3,
-      "severity": "flood alert",
-      "area": "Tidal Thames riverside from the Thames Barrier to Putney Bridge",
-      "ea_area": "Kent, South London and East Sussex",
-      "river_or_sea": "River Thames",
-      "time_raised": "2026-10-25T17:43:41",
-      "time_severity_changed": "2026-10-25T17:43:00",
-      "flood_area_id": "063WAT23Central",
-      "distance_km": null
-     }
-    ],
+    "warnings": [],
     "via": "api"
    },
    "sample_size": {
-    "warnings": 2
+    "warnings": 0
    },
    "strength": "moderate",
    "bears_on": [
@@ -496,33 +652,165 @@
    ]
   }
  ],
+ "operators": [
+  {
+   "operator": "EE",
+   "site": {
+    "site_id": "S031161",
+    "lat": 51.50705279643948,
+    "lon": -0.12666496984342684,
+    "distance_km": 0.11,
+    "bearing_deg": 99,
+    "direction": "east",
+    "sources": [
+     "Ofcom register",
+     "crowd-sourced (OpenCelliD)"
+    ]
+   },
+   "status": "inferred",
+   "los": {
+    "class": "clear",
+    "blocked": false,
+    "obstruction_m": -8.3,
+    "obstruction_distance_m": 28.0,
+    "obstruction_lat": 51.507171,
+    "obstruction_lon": -0.127868,
+    "path_length_m": 112.0,
+    "mast_height_m": 30.0,
+    "mast_height": "measured"
+   }
+  },
+  {
+   "operator": "O2",
+   "site": {
+    "site_id": "S031161",
+    "lat": 51.50705279643948,
+    "lon": -0.12666496984342684,
+    "distance_km": 0.11,
+    "bearing_deg": 99,
+    "direction": "east",
+    "sources": [
+     "Ofcom register",
+     "crowd-sourced (OpenCelliD)"
+    ]
+   },
+   "status": "inferred",
+   "los": {
+    "class": "clear",
+    "blocked": false,
+    "obstruction_m": -8.3,
+    "obstruction_distance_m": 28.0,
+    "obstruction_lat": 51.507171,
+    "obstruction_lon": -0.127868,
+    "path_length_m": 112.0,
+    "mast_height_m": 30.0,
+    "mast_height": "measured"
+   }
+  },
+  {
+   "operator": "Three",
+   "site": {
+    "site_id": "S006617",
+    "lat": 51.5056299,
+    "lon": -0.1293058,
+    "distance_km": 0.19,
+    "bearing_deg": 202,
+    "direction": "south",
+    "sources": [
+     "crowd-sourced (OpenCelliD)",
+     "OpenStreetMap"
+    ]
+   },
+   "status": "inferred",
+   "los": {
+    "class": "clear",
+    "blocked": false,
+    "obstruction_m": -0.4,
+    "obstruction_distance_m": 27.0,
+    "obstruction_lat": 51.506985,
+    "obstruction_lon": -0.128417,
+    "path_length_m": 190.0,
+    "mast_height_m": 25.0,
+    "mast_height": "assumed"
+   }
+  },
+  {
+   "operator": "Vodafone",
+   "site": {
+    "site_id": "S031161",
+    "lat": 51.50705279643948,
+    "lon": -0.12666496984342684,
+    "distance_km": 0.11,
+    "bearing_deg": 99,
+    "direction": "east",
+    "sources": [
+     "Ofcom register",
+     "crowd-sourced (OpenCelliD)"
+    ]
+   },
+   "status": "confirmed",
+   "los": {
+    "class": "clear",
+    "blocked": false,
+    "obstruction_m": -8.3,
+    "obstruction_distance_m": 28.0,
+    "obstruction_lat": 51.507171,
+    "obstruction_lon": -0.127868,
+    "path_length_m": 112.0,
+    "mast_height_m": 30.0,
+    "mast_height": "measured"
+   }
+  }
+ ],
+ "likely_best": {
+  "reviewed_by_agents": false,
+  "label": "Based on data, not yet reviewed by agents",
+  "rule": "Operators ranked by line of sight from this point to their nearest identified site (clear, then marginal, then blocked); clear lines by distance, obstructed ones by how far the ground rises above the line.",
+  "operators": [
+   "Vodafone",
+   "EE",
+   "O2",
+   "Three"
+  ],
+  "line_of_sight": "clear",
+  "text": "Likely best network here: Vodafone, with a clear line of sight to a site 0.1 km east (confirmed by Ofcom's licence register). Also a clear line: EE (0.1 km), O2 (0.1 km) and Three (0.2 km)."
+ },
  "zetaris_queries": [
   {
    "id": "Q1",
-   "at": "2026-10-25T21:06:02+00:00",
+   "at": "2026-10-26T18:11:09+00:00",
    "sql": "SELECT c.cell_id, c.lat, c.lon, c.population, c.nation, o.quarter, o.download_mbps, o.upload_mbps, o.latency_ms, o.tests, o.devices, o.tests_per_1k_pop, o.devices_per_1k_pop, o.quarters_with_data, o.download_mbps_oldest, o.download_change_pct, o.download_trend_mbps_per_quarter, hst.history_json, nb.neighbour_download_mbps, nb.neighbour_tests, nb.neighbour_cells_with_data, m.nearest_mast_km, m.nearest_mast_bearing_deg, m.nearest_mast_id, m.nearest_mast_lat, m.nearest_mast_lon, m.nearest_mast_sources, m.nearest_mast_operators, m.nearest_mast_operators_confirmed, m.nearest_mast_antenna_height_m, m.masts_within_5km, m.masts_known_operator_within_5km, m.masts_unknown_operator_within_5km, m.masts_osm_only_within_5km, m.distinct_operators_within_5km, m.operators_within_5km, m.operators_confirmed_within_5km, m.wtr_sites_within_5km, m.microwave_backhaul_sites_within_5km, m.operator_data_status, a.pcon_code, a.pcon_name, a.laua_code, a.laua_name, a.g4_geo_out_0, a.g4_geo_out_1, a.g4_prem_out_0, a.g4_prem_in_0, a.g4_abrd_in_0, a.g5hc_prem_out_at_least_one, a.laua_g4_geo_out_0, a.laua_g4_geo_out_1, a.data_date AS ofcom_data_date, t.elevation_mean_m, t.elevation_range_m, l.blocked AS los_blocked, l.obstruction_m AS los_obstruction_m, l.los_class FROM CD_CELLS.cells_r7 c LEFT JOIN CD_OOKLA_MOBILE.ookla_mobile_r7 o ON o.cell_id = c.cell_id LEFT JOIN ( SELECT cell_id, to_json(collect_list(named_struct('quarter', quarter, 'download_mbps', download_mbps, 'tests', tests))) AS history_json FROM CD_OOKLA_MOBILE_HISTORY.ookla_mobile_history_r7 WHERE cell_id = '87195da49ffffff' GROUP BY cell_id ) hst ON hst.cell_id = c.cell_id CROSS JOIN ( SELECT sum(download_mbps * tests) / sum(tests) AS neighbour_download_mbps, sum(tests) AS neighbour_tests, count(*) AS neighbour_cells_with_data FROM CD_OOKLA_MOBILE.ookla_mobile_r7 WHERE cell_id IN ('87194ad14ffffff', '87194ad16ffffff', '87194ad32ffffff', '87195da48ffffff', '87195da4bffffff', '87195da4dffffff') ) nb LEFT JOIN CD_MASTS.masts_r7 m ON m.cell_id = c.cell_id LEFT JOIN CD_OFCOM_AREA.ofcom_area_r7 a ON a.cell_id = c.cell_id LEFT JOIN CD_TERRAIN.terrain_r7 t ON t.cell_id = c.cell_id LEFT JOIN CD_LOS.los_r7 l ON l.cell_id = c.cell_id WHERE c.cell_id = '87195da49ffffff'",
-   "duration_ms": 415,
+   "duration_ms": 447,
    "rows": 1,
    "error": null,
    "cached": false
   },
   {
    "id": "Q2",
-   "at": "2026-10-25T21:06:03+00:00",
+   "at": "2026-10-26T18:11:10+00:00",
    "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 51.507211) / 2), 2) + cos(radians(51.507211)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (-0.128269)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 51.41712 AND 51.59730 AND s.lon BETWEEN -0.27260 AND 0.01606 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
-   "duration_ms": 302,
+   "duration_ms": 323,
    "rows": 3009,
    "error": null,
    "cached": false
   },
   {
    "id": "Q3",
-   "at": "2026-10-25T21:06:02+00:00",
+   "at": "2026-10-26T18:10:59+00:00",
    "sql": "SELECT percentile_approx(devices_per_1k_pop, 0.5) AS devices_per_1k_p50, percentile_approx(devices_per_1k_pop, 0.9) AS devices_per_1k_p90, percentile_approx(download_mbps, 0.5) AS download_mbps_p50, count(*) AS cells FROM CD_OOKLA_MOBILE.ookla_mobile_r7 WHERE tests >= 10",
-   "duration_ms": 115,
+   "duration_ms": 154,
    "rows": 1,
    "error": null,
    "cached": true
+  },
+  {
+   "id": "Q4",
+   "at": "2026-10-26T18:11:10+00:00",
+   "sql": "SELECT quadkey, lat, lon, download_mbps, upload_mbps, latency_ms, tests, devices, distance_km FROM ( SELECT t.*, 2 * 6371 * asin(sqrt(pow(sin(radians(t.lat - 51.507211) / 2), 2) + cos(radians(51.507211)) * cos(radians(t.lat)) * pow(sin(radians(t.lon - (-0.128269)) / 2), 2))) AS distance_km FROM CD_OOKLA_MOBILE_TILES.ookla_mobile_tiles t WHERE t.quarter = '2026Q3' AND t.lat BETWEEN 51.49820 AND 51.51622 AND t.lon BETWEEN -0.14270 AND -0.11384 ) x WHERE distance_km <= 1.0 ORDER BY distance_km",
+   "duration_ms": 288,
+   "rows": 21,
+   "error": null,
+   "cached": false
   }
  ],
  "errors": [],

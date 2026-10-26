@@ -23,6 +23,10 @@ SHOTS = [
     ("rhayader_panel", "?layer=microwave_backhaul_sites_within_5km&lat=52.30&lon=-3.51&zoom=11&cell=87195e3aeffffff", (1440, 900), ".diagnose"),
     ("great_langdale_right_now", f"?layer=download_mbps&lat=54.445&lon=-3.105&zoom=11.2&cell={LANGDALE_CELL}", (1440, 900), "#right-now .live-row"),
     ("great_langdale_line_of_sight", f"?layer=los_blocked&lat=54.435&lon=-3.085&zoom=12&cell={LANGDALE_CELL}", (1440, 900), "#los .profile"),
+    # Other pages: the query string starts with the page path.
+    ("signal_great_langdale", "signal?lat=54.445&lon=-3.105", (1440, 900), ".best"),
+    ("signal_rhayader", "signal?lat=52.30&lon=-3.51", (1440, 900), ".best"),
+    ("signal_phone", "signal?q=WC2N%205DU", (390, 844), ".best"),
     ("phone_panel", f"?layer=download_mbps&lat=54.445&lon=-3.105&zoom=10&cell={LANGDALE_CELL}", (390, 844), ".diagnose"),
 ]
 
@@ -42,7 +46,8 @@ def main() -> None:
             page.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
             page.on("pageerror", lambda e: errors.append(str(e)))
             page.goto(args.base + "/" + qs, wait_until="networkidle")
-            page.wait_for_selector("#legend h2", timeout=60_000)
+            if qs.startswith("?"):  # the explorer
+                page.wait_for_selector("#legend h2", timeout=60_000)
             if wait_for:
                 page.wait_for_selector(wait_for, timeout=60_000)
             if wait_for and wait_for.startswith("#"):  # scroll the panel to that section
