@@ -63,6 +63,7 @@ Each dataset is its own Zetaris source (Lightning database), e.g. `CD_CELLS.cell
 | Ofcom Wireless Telegraphy Register | Operators' licensed microwave links: operators *confirmed* at sites, antenna heights | file | Ofcom copyright, free re-use | downloaded 25 Oct 2026 |
 | Ofcom Connected Nations | Predicted coverage by number of operators, per constituency / local authority; per operator by nation | file | OGL | July 2025 |
 | ONS constituencies, local authorities | Which area a cell is in | file | OGL v3.0 | July 2024; Dec 2024 |
+| OpenStreetMap places | Names for gap zones (city, town, village, hamlet) | file (from the OSM extracts) | ODbL 1.0 | downloaded 25 Oct 2026 |
 | Copernicus DEM GLO-30 | Elevation per cell; line of sight to mast sites | file (93 tiles) | Copernicus DEM licence (free, attribution) | 2021 release (data 2011–2015) |
 | postcodes.io | Postcode / place → location, district, region; nearest postcode to a point | REST, live (Python client) | OGL v3 data (ONS, OS, Royal Mail) | at question time |
 | Open-Meteo forecast | Weather now and next 24 h (rain, snow, wind, gusts) → severity | REST, live (Python client) | CC BY 4.0, non-commercial, attribution | at question time |
@@ -152,6 +153,45 @@ operator's line of sight) and a panel with:
   evidence letter" (disabled); "See this area in Explore" goes back to the area view.
 
 ![My signal, near Rhayader](docs/screenshots/signal_rhayader.png)
+
+## Council view
+
+`http://localhost:8000/council` (deep links `?scope=la:E06000064&zone=Z00603`): where are
+the gaps? Pick an area (UK, a nation or a council), adjust the priority weights, and read a
+ranked table of **gap zones** with a map coloured by score. Opening a zone shows its cells,
+an evidence summary, a rule-based fix and the top candidate sites with lines to the cells
+they would reach. Each zone links to Explore (its cells outlined) and My signal (its
+centre). CSV export of the ranking. Agent placeholders: "Diagnose zone", "Write priority
+summary", "Evidence pack".
+
+How zones are built (`scripts/process/build_zones.py`, rules in `planning/zones.py`,
+thresholds in `config.py`):
+
+- A cell with at least 10 people is **poorly served** if (a) its test-weighted download over
+  the cell and neighbour ring is below 5 Mbps from at least 10 tests, or (b) no approximate
+  site lies within 5 km, unless at least 10 tests measure at least 5 Mbps (then it is a gap
+  in our site data, not in coverage: 227 cells, e.g. Penzance), or (c) it has fewer than 10
+  tests and terrain blocks the line (by 10 m or more) to every site within 5 km (the 8
+  nearest are checked).
+- **Zones** are H3-connected clusters of poorly served cells holding at least 50 people in
+  total (a per-cell threshold missed sparse valleys such as Great Langdale). 677 zones,
+  264,561 people (25 Oct data). Named after their largest OSM place.
+- **Priority score** (`planning/scoring.py`), computed per request: people, severity,
+  persistence (share of the last 4 quarters below 5 Mbps), worsening trend and few
+  operators, each normalised 0–1 by rank within the chosen area and weighted (defaults
+  35 / 25 / 15 / 10 / 15). The API returns each factor's contribution. Data confidence
+  (tests) is shown separately. "Need" (deprivation, rural–urban) is left out until built.
+- **Fixes** (`planning/siting.py`): a rule picks new site / add operators / capacity
+  upgrade / gather measurements; up to 30 DEM high points within 5 km of the zone and the
+  existing sites within 10 km are checked by line of sight (25 m mast, 1.5 m receiver) to
+  every populated cell within 8 km, ranked by the zone's people gaining a clear line.
+  Limits: simplified line of sight, no planning, land, power or backhaul checks.
+
+API: `GET /api/council/scopes`, `/api/council/zones?scope=&weights=people:0.4,...`,
+`/api/council/zones.csv`, `/api/council/zones/{zone_id}`, `/api/council/zones/{zone_id}/cells`.
+Check: `python scripts/check_council.py`.
+
+![Council view, Westmorland and Furness, Great Langdale zone open](docs/screenshots/council_westmorland_great_langdale.png)
 
 ## Evidence API
 

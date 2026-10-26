@@ -23,6 +23,7 @@ const state = {
   masts: [],
   tiles: [],
   selected: null,
+  zone: null,          // gap zone outlined from the Council view (?zone=)
   point: null,         // where the cell was clicked or searched (for "Check an exact location here")
 };
 
@@ -98,6 +99,14 @@ function selectedLayer() {
   });
 }
 
+function zoneLayer() {
+  if (!state.zone) return null;
+  return new deck.PolygonLayer({
+    id: "zone", data: state.zone.cell_ids.map((c) => h3.cellToBoundary(c, true)), getPolygon: (p) => p,
+    filled: false, stroked: true, getLineColor: [194, 65, 12, 255], lineWidthUnits: "pixels", getLineWidth: 3,
+  });
+}
+
 function tileLayer() {
   return new deck.PolygonLayer({
     id: "tiles",
@@ -129,7 +138,7 @@ function mastLayer() {
 
 function render() {
   overlay.setProps({
-    layers: [hexLayer(), tileLayer(), selectedLayer(), mastLayer()],
+    layers: [hexLayer(), tileLayer(), zoneLayer(), selectedLayer(), mastLayer()].filter(Boolean),
     onClick: onMapClick,
     onHover: onHover,
   });
@@ -138,6 +147,7 @@ function render() {
     z < MAST_MIN_ZOOM ? `Zoom in to see approximate mast sites (zoom ${MAST_MIN_ZOOM}+)` :
     z < TILE_MIN_ZOOM ? `Zoom in further for Ookla speed tiles (zoom ${TILE_MIN_ZOOM}+)` :
     `Showing Ookla tiles (${state.tilesQuarter || "latest quarter"}) and mast sites`;
+  if (state.zone) $("zoom-hint").textContent = `Gap zone ${state.zone.zone_id}, ${state.zone.name}, outlined in orange · ` + $("zoom-hint").textContent;
 }
 
 /* ---------- layers ---------- */
@@ -407,6 +417,12 @@ async function start() {
     map.jumpTo({ center: [+params.get("lon"), +params.get("lat")], zoom: +(params.get("zoom") || 11) });
   }
   if (params.get("cell")) selectCell(params.get("cell"));
+  if (params.get("zone")) {
+    try {
+      state.zone = await getJSON(`/api/council/zones/${encodeURIComponent(params.get("zone"))}/cells`);
+      render();
+    } catch (e) { /* unknown zone: show the map without it */ }
+  }
   onViewChange();
 }
 

@@ -25,6 +25,10 @@ SHOTS = [
     ("signal_great_langdale", "signal?lat=54.445&lon=-3.105", (1440, 900), ".best"),
     ("signal_rhayader", "signal?lat=52.30&lon=-3.51", (1440, 900), ".best"),
     ("signal_phone", "signal?q=WC2N%205DU", (390, 844), ".best"),
+    ("council_uk", "council", (1440, 900), "table.zones tbody tr"),
+    ("council_westmorland_great_langdale", "council?scope=la:E06000064&zone=Z00603", (1440, 900), ".fix"),
+    ("explore_zone_great_langdale", "?layer=los_blocked&zone=Z00603&lat=54.445&lon=-3.12&zoom=11", (1440, 900), None),
+    ("council_phone", "council?scope=la:E06000064", (390, 844), "table.zones tbody tr"),
     ("phone_panel", f"?layer=download_mbps&lat=54.445&lon=-3.105&zoom=10&cell={LANGDALE_CELL}", (390, 844), ".diagnose"),
 ]
 

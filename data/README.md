@@ -41,6 +41,8 @@ one table) by `scripts/zetaris/register_sources.py`, read from the read-only mou
 | `CD_OFCOM_NATIONS` | `ofcom_nations` | `ofcom_nations.parquet` | 1,035 |
 | `CD_TERRAIN` | `terrain_r7` | `terrain_r7.parquet` | 56,592 |
 | `CD_LOS` | `los_r7` | `los_r7.parquet` | 55,577 |
+| `CD_GAP_ZONES` | `gap_zones` | `gap_zones.parquet` | 677 |
+| `CD_GAP_ZONE_CELLS` | `gap_zone_cells` | `gap_zone_cells.parquet` | 2,921 |
 | `CD_LIVE_EA_FLOODS` | `floods`, `flood_areas` | REST (live EA API, see below) | 136 / 4,208 on 25 Oct 2026 |
 
 ## ONS Countries boundaries
@@ -336,6 +338,23 @@ People with an operator confirmed by the register within 5 km: EE 51.3 m, Three 
     evidence API computes from the exact point.
 - Limits: blocked means weaker signal (diffraction), not none; most antenna heights are
   assumed; no Fresnel zone, clutter or indoor loss; sites are approximate positions.
+
+## OpenStreetMap places (zone names)
+
+- Source: the same Geofabrik GB and Ireland extracts as the masts (downloaded 25 Oct 2026).
+- Licence: ODbL 1.0, © OpenStreetMap contributors.
+- Processing (`scripts/process/build_places.py`, `sources/osm_places.py`): nodes tagged
+  `place=city|town|village|hamlet` with a name (English name preferred), inside the UK box;
+  the same place seen in both extracts is kept once. 38,970 places, with their H3 r7 cell.
+
+## Gap zones (derived)
+
+`scripts/process/build_zones.py` → `gap_zones.parquet`, `gap_zone_cells.parquet`, from cells,
+Ookla (latest quarter and history), mast sites, the DEM (line of sight) and Ofcom areas (local
+authority per cell). Rules, thresholds and factors: README "Council view",
+`coverage_detective/planning/zones.py` and `config.py`. 25 Oct 2026: 3,515 poorly served cells
+before the zone threshold (slow 42, no site 1,346, blocked 2,128), 227 site-data-gap cells left
+out, 677 zones of at least 50 people (264,561 people). Rebuild after Ookla or mast refreshes.
 
 ## Live sources (phase D)
 

@@ -4,6 +4,7 @@
   GET /api/council/zones?scope=&weights=&limit=  ranked zones with each factor's contribution
   GET /api/council/zones.csv?scope=&weights=     the same ranking as CSV
   GET /api/council/zones/{zone_id}               zone details, cells, evidence summary, fix, candidates
+  GET /api/council/zones/{zone_id}/cells         just the zone's cells (for Explore's ?zone= outline)
 
 scope: uk | nation:<England|Scotland|Wales|Northern Ireland> | la:<local authority code>.
 weights: e.g. people:0.4,severity:0.3 (others keep their defaults; see planning/scoring.py).
@@ -184,6 +185,18 @@ def _summary(z: dict, cells: list[dict]) -> list[str]:
     out.append(f"On average {z['operators_mean']:.1f} operators have approximate sites within 5 km of its cells"
                + (f" ({', '.join(ops)} somewhere nearby)." if ops else "; none identified."))
     return out
+
+
+@router.get("/zones/{zone_id}/cells")
+def zone_cells(zone_id: str) -> dict:
+    if not ZONE_RE.match(zone_id):
+        raise HTTPException(400, "zone_id looks like Z00001")
+    log: list = []
+    rows = _q(f"""SELECT c.cell_id, z.name FROM CD_GAP_ZONE_CELLS.gap_zone_cells c
+JOIN CD_GAP_ZONES.gap_zones z ON z.zone_id = c.zone_id WHERE c.zone_id = '{zone_id}'""", log)
+    if not rows:
+        raise HTTPException(404, f"No zone {zone_id}")
+    return {"zone_id": zone_id, "name": rows[0]["name"], "cell_ids": [r["cell_id"] for r in rows], "zetaris_queries": log}
 
 
 @router.get("/zones/{zone_id}")

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Council View · Coverage Detective</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpolygon points='8,2 24,2 32,16 24,30 8,30 0,16' fill='%231D4ED8'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+<body class="page-council">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <div>
+        <h1>Coverage Detective</h1>
+        <p class="brand-sub">Council view · where are the gaps?</p>
+      </div>
+    </div>
+    <nav class="nav" aria-label="Pages">
+      <a href="/">Explore</a>
+      <a href="/signal">My signal</a>
+      <a href="/council" aria-current="page">Council view</a>
+    </nav>
+    <label class="layer-pick">
+      <span>Area</span>
+      <select id="scope" aria-label="Area to rank"></select>
+    </label>
+  </header>
+
+  <main class="council-stage">
+    <section class="council-list" aria-label="Ranked gap zones">
+      <div class="weights card-flat" id="weights">
+        <div class="weights-head">
+          <h2>Priority weights</h2>
+          <div class="weights-actions">
+            <button type="button" id="reset" class="link-btn">Reset</button>
+            <a id="csv" class="link-btn" href="#" download>Export CSV</a>
+          </div>
+        </div>
+        <div id="sliders"></div>
+        <p class="footnote" id="weights-note"></p>
+      </div>
+      <p class="list-summary" id="list-summary">Loading zones…</p>
+      <div class="table-wrap">
+        <table class="zones" id="zones-table">
+          <thead><tr><th>#</th><th>Zone</th><th class="num">People</th><th class="num">Median speed</th>
+            <th class="num">Poor quarters</th><th class="num">Operators</th><th>Score</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+    <div class="council-map-wrap">
+      <div id="map" class="map"></div>
+      <section class="legend card" id="legend" aria-label="Legend"></section>
+      <aside class="panel card" id="panel" aria-label="Zone details" hidden>
+        <button class="panel-close" id="panel-close" aria-label="Close">×</button>
+        <div id="panel-body"></div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="credits">
+    Derived from: Speedtest by Ookla open data (CC BY-NC-SA 4.0) · OpenCelliD (CC BY-SA 4.0) · © OpenStreetMap contributors (ODbL) ·
+    Ofcom (Connected Nations, Wireless Telegraphy Register) · Copernicus DEM GLO-30 (© DLR, Airbus; Copernicus) · ONS, OS (OGL v3) · WorldPop (CC BY 4.0)
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/h3-js@4.5.0/dist/h3-js.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/deck.gl@9.4.0/dist.min.js"></script>
+  <script src="council.js"></script>
+</body>
+</html>

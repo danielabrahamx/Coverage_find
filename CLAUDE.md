@@ -99,6 +99,7 @@ Limitations (state them in outputs):
 coverage_detective/     package
   config.py             paths, .env loading, H3_RES=7, UK_BBOX, SAMPLE_LOCATIONS, sample_mode()
   evidence.py           evidence bundle for a point (Zetaris queries, line of sight, live sources)
+  planning/             zones.py (gap zones), scoring.py (priority score), siting.py (fixes, candidates)
   data/
     grid.py             H3 r7 cells over the UK + WorldPop population
     masts.py            merge OpenCelliD / OSM / Ofcom register sites; per-cell mast stats
@@ -111,16 +112,18 @@ coverage_detective/     package
     live.py             shared live fetching (timeout, retry, cache, sample fallback)
     geocode.py, weather.py, met_office_warnings.py, flood_warnings.py live sources
     ofcom_api.py        stub (Ofcom postcode API not available; returns None)
-  api/app.py            FastAPI: explorer API + /api/live + /api/los + POST /api/evidence; pages / and /signal
+  api/app.py            FastAPI: explorer API + /api/live + /api/los + POST /api/evidence; pages /, /signal, /council
+  api/council.py        /api/council/* (scopes, ranked zones, CSV, zone detail with fixes)
 scripts/download/       fetch raw data into data/raw/<source>/ (skip files that exist)
 scripts/process/        build data/processed/*.parquet (+ build_web_layers.py for the map)
 scripts/zetaris/        compose.sh (data mount), register_sources.py (one function per source)
 scripts/check_*.py      check_data (A, B, E), check_live (D), check_terrain (C), check_evidence
 scripts/refresh.py      refresh stored sources on their cadence
 scripts/screenshots.py  Playwright screenshots -> docs/screenshots/
-tests/                  pytest (59 tests; offline: samples, mocked Zetaris / DEM)
+tests/                  pytest (68 tests; offline: samples, mocked Zetaris / DEM)
 web/                    pages, no build step (MapLibre 5.24 + deck.gl 9.4 + h3-js 4.5):
-                        index.html + app.js (explorer), signal.html + signal.js (My signal), style.css
+                        index.html + app.js (Explore), signal.html + signal.js (My signal),
+                        council.html + council.js (Council view), style.css
 run.py                  start the explorer on :8000 (checks Zetaris)
 data/raw/               raw inputs and downloads (gitignored)
 data/processed/         built Parquet files (gitignored)
@@ -179,6 +182,8 @@ scripts/zetaris/compose.sh up -d driver               # Zetaris with our read-on
 .venv/bin/python scripts/process/build_ofcom.py       # ofcom_area_r7, ofcom_nations (zip in data/raw/ofcom/)
 .venv/bin/python scripts/download/dem.py              # Copernicus GLO-30 tiles (~1.4 GB)
 .venv/bin/python scripts/process/build_terrain.py     # terrain_r7, los_r7 (~2 min; --los = los only)
+.venv/bin/python scripts/process/build_places.py      # OSM place names (for zone names)
+.venv/bin/python scripts/process/build_zones.py       # gap_zones, gap_zone_cells (~30 s)
 .venv/bin/python scripts/zetaris/register_sources.py  # all CD_* sources (or name some)
 .venv/bin/python scripts/download/live_samples.py     # refresh the live samples in data/samples/
 
@@ -187,6 +192,7 @@ scripts/zetaris/compose.sh up -d driver               # Zetaris with our read-on
 .venv/bin/python scripts/check_live.py                # /api/live live, then SAMPLE_MODE
 .venv/bin/python scripts/check_terrain.py             # line of sight at 4 places
 .venv/bin/python scripts/check_evidence.py            # evidence bundles for the sample places
+.venv/bin/python scripts/check_council.py             # top zones UK / Westmorland and Furness, Great Langdale fixes
 .venv/bin/python scripts/refresh.py --check-only      # which stored sources are due
 .venv/bin/python -m pytest -q
 
@@ -262,13 +268,26 @@ G (power cuts) dropped as future work; H (visitor load) only if time. Then the a
   nearest, confirmed on ties; else least obstructed; `reviewed_by_agents: false`). Map draws each
   operator's line (own colour; red dashed when blocked; obstruction marked). Agent placeholders:
   "Explanation (agents)", disabled "Diagnose with agents" / "Draft evidence letter".
-  Council view is a disabled nav item until phase 4.
+- **Levels of detail** (26 Oct): Explore = area level (hexagons; cell panel shows cell aggregates
+  only, line-of-sight grade from the cell centre, "Data details" SQL, "Check an exact location
+  here" → /signal?lat&lon). My signal = point level (no hex colouring: Ookla tiles within 2 km,
+  sites within 10 km marked confirmed / inferred / unknown, hexagon outline, per-operator lines,
+  "See this area in Explore"). Council view = zones.
+- **Council view** (26 Oct): gap zones (build_zones.py; rules in planning/zones.py: (a) < 5 Mbps
+  over cell + ring from >= 10 tests, (b) no site within 5 km unless >= 10 tests measure >= 5 Mbps
+  = "site data gap", (c) < 10 tests and terrain blocking every site within 5 km; cells >= 10 people,
+  zones >= 50 people (user's choice, so sparse valleys like Great Langdale count); 677 zones),
+  scoring.py (rank-normalised factors within the scope, weights adjustable, contributions;
+  "need" omitted until deprivation is built), siting.py (rule-based fix + DEM high points and
+  existing sites by people gaining a clear line), api/council.py, /council page (scope picker,
+  sliders, ranked table, map, zone panel, CSV, agent placeholders). Zones link to Explore
+  (?zone= outline) and My signal (centroid). CD_GAP_ZONES, CD_GAP_ZONE_CELLS.
 
 ### Zetaris sources
 
 `CD_CELLS`, `CD_OOKLA_MOBILE`, `CD_OOKLA_MOBILE_HISTORY`, `CD_OOKLA_MOBILE_TILES`,
 `CD_MASTS_SITES`, `CD_MASTS`, `CD_WTR_POINTS`, `CD_OFCOM_AREA`, `CD_OFCOM_NATIONS`,
-`CD_TERRAIN`, `CD_LOS` (Parquet) and `CD_LIVE_EA_FLOODS` (live REST). Row counts are in
+`CD_TERRAIN`, `CD_LOS`, `CD_GAP_ZONES`, `CD_GAP_ZONE_CELLS` (Parquet) and `CD_LIVE_EA_FLOODS` (live REST). Row counts are in
 data/README.md.
 
 ### Sample places (what the data says, 25 Oct)
@@ -292,6 +311,9 @@ data/README.md.
 - 26 Oct: the Zetaris stack was found removed (containers gone); restarted with
   `scripts/zetaris/compose.sh up -d` (volumes kept, sources intact). Earlier the driver was
   restarted without the mount: always use compose.sh.
+- Top-ranked zones mostly have low data confidence (0-5 tests): the score is about need, the
+  confidence column shows how sure we are. Northern Ireland has many zones (thin crowd-sourced
+  site data there may contribute).
 - Met Office warnings cover whole regions: should "elsewhere in the region" warnings count
   as weaker evidence for `weather`? (asked the user, no answer yet)
 - 47% of populated cells look blocked from their centre; many margins are small (surface
@@ -299,10 +321,6 @@ data/README.md.
 
 ### Next
 
-0. Pages (26 Oct brief): phase 2 gap zones + priority score (backend: build_zones.py,
-   CD_GAP_ZONES / CD_GAP_ZONE_CELLS, /api/council/zones, /api/council/scopes), phase 3
-   candidate fixes (planning/siting.py, /api/council/zones/{id}), phase 4 Council view page
-   (/council). Stop after each phase.
 1. F. Rural–urban classification + deprivation (deciles within each nation) →
    `deprivation_r7`, `CD_DEPRIVATION` (`queries.py` already joins it when the manifest has
    "deprivation"; layer `deprivation_decile` ready in build_web_layers).

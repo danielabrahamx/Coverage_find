@@ -32,4 +32,11 @@ def test_bad_bbox():
 
 def test_pages_are_served():
     assert client.get("/signal").status_code == 200 and "signal.js" in client.get("/signal").text
+    assert client.get("/council").status_code == 200 and "council.js" in client.get("/council").text
     assert client.get("/").status_code == 200
+
+
+def test_council_inputs_are_validated():
+    assert client.get("/api/council/zones", params={"scope": "nation:Atlantis"}).status_code == 400
+    assert client.get("/api/council/zones/Z1' OR 1=1").status_code in (400, 404)
+    assert client.get("/api/council/zones/abc/cells").status_code == 400
