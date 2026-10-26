@@ -168,7 +168,7 @@ def view_caps(zoom: float) -> tuple[int, int]:
 
 def in_bbox(df: pd.DataFrame, bbox: tuple[float, float, float, float] | None) -> pd.DataFrame:
     """Zones whose centroid lies in (min_lon, min_lat, max_lon, max_lat)."""
-    if bbox is None or df.empty:
+    if bbox is None or df.empty or "centroid_lon" not in df:
         return df
     w, s, e, n = bbox
     return df[(df.centroid_lon >= w) & (df.centroid_lon <= e) & (df.centroid_lat >= s) & (df.centroid_lat <= n)]
@@ -176,6 +176,8 @@ def in_bbox(df: pd.DataFrame, bbox: tuple[float, float, float, float] | None) ->
 
 def select_view(scored: pd.DataFrame, bbox, cap: int, selected: str | None = None) -> tuple[pd.DataFrame, int]:
     """The top `cap` zones (by score) in the viewport; a selected zone is always kept. Returns (shown, in view)."""
+    if scored.empty or "zone_id" not in scored:  # no zones of this kind in the scope
+        return scored, 0
     view = in_bbox(scored, bbox)
     shown = view.head(cap) if cap > 0 else view.head(0)
     if selected and selected in set(scored.zone_id) and selected not in set(shown.zone_id):

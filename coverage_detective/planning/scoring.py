@@ -32,6 +32,7 @@ from coverage_detective import config
 
 FACTORS = ["people", "severity", "persistence", "trend", "operator_choice", "need"]
 OPP_FACTORS = ["people", "shortfall", "trend", "operator_choice"]
+NUMERIC = {"population", "severity", "persistence", "trend_pct", "operators_mean", "shortfall_pct", "need"}
 NEUTRAL = 0.5
 
 
@@ -62,6 +63,8 @@ def parse_weights(text: str | None, kind: str = "gap") -> dict[str, float]:
 def raw_factors(zones: pd.DataFrame, kind: str = "gap") -> pd.DataFrame:
     """Raw factor values per zone (NaN = no data)."""
     raw = pd.DataFrame(index=zones.index)
+    # Zetaris returns an all-null column as None objects, not NaN: make every factor numeric first.
+    zones = zones.apply(lambda col: pd.to_numeric(col, errors="coerce") if col.name in NUMERIC else col)
     raw["people"] = zones.population
     if kind == "opportunity":
         raw["shortfall"] = zones.shortfall_pct

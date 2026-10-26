@@ -121,3 +121,13 @@ def test_picker_counts_per_council_and_nation():
     assert alpha["bbox"] == [-4, 53, -2, 55]  # bounds over both parts of the council
     assert p["uk"] == {"scope": "uk", "name": "United Kingdom", "zones": 2, "people": 150, "opportunities": 1}
     assert next(n for n in p["nations"] if n["name"] == "England")["zones"] == 2
+
+
+def test_empty_scope_and_all_null_factors_do_not_crash():
+    from coverage_detective.planning import scoring
+    shown, n = C.select_view(pd.DataFrame(), (-1, 50, 0, 51), cap=40, selected="O00552")
+    assert n == 0 and shown.empty
+    zones = pd.DataFrame({"zone_id": ["O1", "O2"], "population": [100.0, 200.0], "shortfall_pct": [None, None],
+                          "trend_pct": [None, None], "operators_mean": [2.0, 1.0]})
+    out, summary = scoring.score(zones, scoring.parse_weights(None, "opportunity"), "opportunity")
+    assert len(out) == 2 and "trend" not in summary["factors_used"]  # no data: left out, not a crash
