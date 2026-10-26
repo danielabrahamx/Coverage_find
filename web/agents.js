@@ -22,6 +22,7 @@ const AG = (() => {
     context_only: "stopped earlier diagnoses being used as evidence",
     unexplained_change: "kept a confidence the diagnostician changed without a reason",
     verdict_changed: "turned a request for checks that had already run into a downgrade",
+    not_a_candidate: "cleared a fix plan's site that was not a candidate site",
   };
   const word = (c) => (c >= 0.7 ? "likely" : c >= 0.4 ? "possible" : "unlikely");
   const pct = (c) => `${Math.round(c * 100)}%`;

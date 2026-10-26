@@ -99,7 +99,8 @@ Limitations (state them in outputs):
 coverage_detective/     package
   config.py             paths, .env loading, H3_RES=7, UK_BBOX, SAMPLE_LOCATIONS, sample_mode()
   evidence.py           evidence bundle for a point (Zetaris queries, line of sight, live sources)
-  planning/             zones.py (gap zones), scoring.py (priority score), siting.py (fixes, candidates)
+  planning/             zones.py (gap zones), opportunities.py (improvement opportunities), scoring.py
+                        (priority / opportunity score), siting.py (fixes, candidates)
   memory/meterless.py   Meterless client (H-MEM + World Model over HTTP; in-memory fallback)
   agents/               llm.py (Nemotron client), schemas.py (pydantic), tools.py (tools -> Meterless),
                         agents.py (the agents), guard.py (code guard), prompts/*.md,
@@ -127,7 +128,7 @@ scripts/zetaris/        compose.sh (data mount), register_sources.py (one functi
 scripts/check_*.py      check_data (A, B, E), check_live (D), check_terrain (C), check_evidence
 scripts/refresh.py      refresh stored sources on their cadence
 scripts/screenshots.py  Playwright screenshots -> docs/screenshots/
-tests/                  pytest (97 tests; offline: samples, mocked Zetaris / DEM)
+tests/                  pytest (109 tests; offline: samples, mocked Zetaris / DEM)
 web/                    pages, no build step (MapLibre 5.24 + deck.gl 9.4 + h3-js 4.5):
                         index.html + app.js (Explore), signal.html + signal.js (My signal),
                         council.html + council.js (Council view), agents.js (agent UI, shared), style.css
@@ -373,6 +374,26 @@ G (power cuts) dropped as future work; H (visitor load) only if time. Then the a
   cause name, cause names are mapped to belief ids (`guard.map_cause_citations`), and the guard accepts belief
   ids from the advisor (numbers checked against the belief's evidence). Before/after screenshots:
   `scripts/ui_screenshots.py before|after [--summary]` -> docs/screenshots/ui_cleanup/.
+- **Council view: improvement opportunities, zoom levels, area picker, fix view** (26 Oct): second zone type
+  (O00001; planning/opportunities.py, built by build_zones.py, `CD_OPP_ZONES` / `CD_OPP_ZONE_CELLS`; reasons
+  in code: slow / falling / few_operators / capacity, all listed; "limited data" under 10 tests; opportunity
+  score with its own factors in scoring.py, teal scale). `GET /api/council/view?bbox&zoom&scope&show` is the one
+  source for the map and the list (caps in `config.COUNCIL_VIEW`: zoom < 10 top 40 gap zones in view, no
+  opportunities; >= 10 up to 100 gap zones + 60 opportunities; a selected zone is always kept; cap notes).
+  Scopes now carry gap / opportunity counts, people and bounds (`picker_counts`). Page: "Analyse area"
+  combobox (Whole UK, What's on the map now, nations, councils), Gaps | Opportunities | Both, map toggle,
+  per-row Diagnose, "Diagnose the top 3 in view" (one at a time), priority summary of what is listed
+  (gap and opportunity sections; `priority_summary.md` now takes the zone kind as a template value).
+  Agents: zone type line in the inputs; mode line in fix_planner.md / fix_critic.md; coordinator
+  `wording_check` (opportunities must say "opportunity", never "gap" / "no coverage" / "no service";
+  "not a (confirmed) gap" allowed); the fix planner's candidate must be a cand_/existing_ item (a cited
+  [fix_rule] is cleared, guard note "not_a_candidate"). Fix view: zone cells coloured by outcome for the
+  selected candidate (green gains a line, hatched still blocked, muted not tested), lines only for the
+  selected candidate (nearest 12, hover for one), numbered pins, star for the agents' pick, label pills,
+  dashed 250 m site areas, existing sites with operator rings, candidate cards (people reached, nearest
+  existing site, ground height), Today / With candidate N with people counts, fit with room for the panel,
+  Reset view. Opportunity run (Windermere O00332, examples/opportunity_windermere/): 196 s, 1 round.
+  Screenshots: `scripts/council_screenshots.py` -> docs/screenshots/council/.
 
 ### Zetaris sources
 

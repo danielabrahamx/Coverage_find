@@ -108,6 +108,35 @@
         "2026Q3"
       ]
     },
+    "opportunity_zones": {
+      "title": "Improvement opportunities: clusters of populated cells with a measurable weakness",
+      "data_period": "built from Ookla 2026Q3 and mast sites 2026-10-25",
+      "downloaded": {},
+      "built_at": "2026-10-26T23:10:31+00:00",
+      "refresh": "after Ookla or mast refreshes",
+      "licence": "derived from the sources above (see their licences)",
+      "outputs": {
+        "opportunity_zones.parquet": {
+          "sha256": "78a418d2d5066a5c3f73ec69bf3704899d99aae0005c9733e8d4d9e12415b6ac",
+          "bytes": 266656,
+          "rows": 1816
+        },
+        "opportunity_zone_cells.parquet": {
+          "sha256": "48fa14c96c5287f877edb401901ca40c27f169b7159c2e31033dbf762b683538",
+          "bytes": 451317,
+          "rows": 8832
+        }
+      },
+      "rules": {
+        "shortfall": 0.5,
+        "fall_pct": -30.0,
+        "fall_quarters": 3,
+        "capacity_min_pop": 1000,
+        "capacity_speed": 0.75,
+        "capacity_fall_pct": -20.0,
+        "uk_median_mbps": 102.7
+      }
+    },
     "places": {
       "title": "OpenStreetMap named places (city, town, village, hamlet)",
       "data_period": "OSM extracts downloaded 2026-10-25",
@@ -191,7 +220,7 @@
       "title": "Gap zones: clusters of poorly served populated cells",
       "data_period": "built from Ookla 2026Q3 and mast sites 2026-10-25",
       "downloaded": {},
-      "built_at": "2026-10-26T18:47:35+00:00",
+      "built_at": "2026-10-26T23:10:31+00:00",
       "refresh": "after Ookla or mast refreshes",
       "licence": "derived from the sources above (see their licences)",
       "outputs": {
@@ -216,5 +245,5 @@
       }
     }
   },
-  "updated_at": "2026-10-26T18:47:35+00:00"
+  "updated_at": "2026-10-26T23:10:31+00:00"
 }

@@ -1,0 +1,4031 @@
+{
+ "run": {
+  "memory_id": "mem-832",
+  "kind": "run",
+  "ref": "run_20261026232653_82an",
+  "content": "Diagnosis run (zone) for Windermere",
+  "confidence": 1,
+  "source": "coordinator",
+  "created_at": "2026-10-26T23:26:53.860Z",
+  "scope": "zone",
+  "query": "O00332",
+  "label": "Windermere",
+  "location": {
+   "lat": 54.375364919423696,
+   "lon": -2.8830685116360866
+  },
+  "status": "complete",
+  "progress": [
+   {
+    "at": "2026-10-26T23:26:55.002Z",
+    "agent": "coordinator",
+    "round": 1,
+    "kind": "phase",
+    "label": "round 1",
+    "status": "done",
+    "summary": "round 1",
+    "duration_ms": 1
+   },
+   {
+    "at": "2026-10-26T23:27:09.693Z",
+    "agent": "investigator",
+    "round": 1,
+    "kind": "llm",
+    "label": "investigator",
+    "status": "done",
+    "summary": "nemotron-3.5-super-vl-120b-a12b, 14.5s",
+    "duration_ms": 14486
+   },
+   {
+    "at": "2026-10-26T23:27:09.944Z",
+    "agent": "investigator",
+    "round": 1,
+    "kind": "tool",
+    "label": "zone_summary()",
+    "status": "done",
+    "summary": "zone_summary() -> zone_overview, zone_priority, fix_rule",
+    "duration_ms": 141
+   },
+   {
+    "at": "2026-10-26T23:27:10.248Z",
+    "agent": "investigator",
+    "round": 1,
+    "kind": "tool",
+    "label": "candidate_sites()",
+    "status": "done",
+    "summary": "candidate_sites() -> cand_1, cand_2, cand_3, existing_1, existing_2, existing_3",
+    "duration_ms": 273
+   },
+   {
+    "at": "2026-10-26T23:27:10.409Z",
+    "agent": "investigator",
+    "round": 1,
+    "kind": "tool",
+    "label": "prior_diagnoses_nearby()",
+    "status": "done",
+    "summary": "prior_diagnoses_nearby() -> prior_diagnoses",
+    "duration_ms": 124
+   },
+   {
+    "at": "2026-10-26T23:27:51.531Z",
+    "agent": "diagnostician",
+    "round": 1,
+    "kind": "llm",
+    "label": "diagnostician",
+    "status": "done",
+    "summary": "nemotron-3.5-super-vl-120b-a12b, 41.0s",
+    "duration_ms": 40977
+   },
+   {
+    "at": "2026-10-26T23:28:26.852Z",
+    "agent": "critic",
+    "round": 1,
+    "kind": "llm",
+    "label": "critic thinking",
+    "status": "done",
+    "summary": "nemotron-3-ultra-550b-a55b, 35.0s",
+    "duration_ms": 35030
+   },
+   {
+    "at": "2026-10-26T23:28:34.242Z",
+    "agent": "fix_planner",
+    "round": 1,
+    "kind": "llm",
+    "label": "fix_planner",
+    "status": "done",
+    "summary": "nemotron-3.5-super-vl-120b-a12b, 6.9s",
+    "duration_ms": 6949
+   },
+   {
+    "at": "2026-10-26T23:29:14.454Z",
+    "agent": "critic",
+    "round": 1,
+    "kind": "llm",
+    "label": "critic thinking",
+    "status": "done",
+    "summary": "nemotron-3-ultra-550b-a55b, 40.0s",
+    "duration_ms": 39956
+   },
+   {
+    "at": "2026-10-26T23:29:21.071Z",
+    "agent": "fix_planner",
+    "round": 1,
+    "kind": "llm",
+    "label": "fix_planner",
+    "status": "done",
+    "summary": "nemotron-3.5-super-vl-120b-a12b, 6.3s",
+    "duration_ms": 6270
+   },
+   {
+    "at": "2026-10-26T23:29:31.448Z",
+    "agent": "critic",
+    "round": 1,
+    "kind": "llm",
+    "label": "critic thinking",
+    "status": "done",
+    "summary": "nemotron-3-ultra-550b-a55b, 9.9s",
+    "duration_ms": 9902
+   },
+   {
+    "at": "2026-10-26T23:30:09.556Z",
+    "agent": "advisor",
+    "round": 0,
+    "kind": "llm",
+    "label": "advisor",
+    "status": "done",
+    "summary": "nemotron-3.5-super-vl-120b-a12b, 37.5s",
+    "duration_ms": 37478
+   }
+  ],
+  "created": "2026-10-26T23:26:53.860Z",
+  "by": "coordinator",
+  "run_id": "run_20261026232653_82an",
+  "result": {
+   "headline": "Busy-network capacity strain is the likely cause [capacity_strain][zone_overview][fix_rule].",
+   "explanation": "The zone is an improvement opportunity, not poorly served, but 59% of its people are in cells showing a busy-network capacity signal with sites nearby [capacity_strain][fix_rule][zone_overview]. Measured cells average 26% below their reference median, speeds fell 35% from the oldest to the latest quarter, and 4,961 people are in cells whose speeds fell by 30% or more [zone_overview]. 119 tests in the latest quarter averaged 28.5 Mbps [zone_overview]. Existing Vodafone and O2 sites are within 0.4 km with clear line of sight to many people [existing_1][existing_2][existing_3], so distance is not the main issue. The evidence does not confirm mast heights or exact distances at the point [insufficient_data].",
+   "cited_evidence": [
+    "capacity_strain",
+    "zone_overview",
+    "fix_rule",
+    "insufficient_data",
+    "existing_1",
+    "existing_2",
+    "existing_3"
+   ],
+   "hypotheses": [
+    {
+     "id": "capacity_strain",
+     "cause": "capacity_strain",
+     "confidence": 0.75,
+     "status": "active",
+     "supporting": [
+      "zone_overview",
+      "fix_rule"
+     ],
+     "contradicting": [],
+     "explanation": "The zone shows a busy-network capacity signal with sites nearby, and 59% of its people are in cells flagged for capacity strain [zone_overview][fix_rule].",
+     "history": [
+      {
+       "at": "2026-10-26T23:27:51.630Z",
+       "by": "diagnostician",
+       "confidence": 0.75,
+       "previous": null,
+       "reason": "proposed",
+       "round": 1
+      }
+     ]
+    },
+    {
+     "id": "insufficient_data",
+     "cause": "insufficient_data",
+     "confidence": 0.25,
+     "status": "active",
+     "supporting": [
+      "zone_overview"
+     ],
+     "contradicting": [],
+     "explanation": "Operators are only described as somewhere nearby and mast heights are assumed, so distance and terrain cannot be confirmed at the point [zone_overview].",
+     "history": [
+      {
+       "at": "2026-10-26T23:27:51.659Z",
+       "by": "diagnostician",
+       "confidence": 0.45,
+       "previous": null,
+       "reason": "proposed",
+       "round": 1
+      },
+      {
+       "at": "2026-10-26T23:28:27.111Z",
+       "by": "critic",
+       "confidence": 0.25,
+       "previous": 0.45,
+       "reason": "critic: While zone_overview describes operator sites as 'approximate' and 'somewhere nearby', the evidence also includes line-of-sight analyses for three existing sites (existing_1, existing_2, existing_3) and three candidate sites (cand_1, cand_2, cand_3) computed over Copernicus DEM. These provide terrain-confirmed reach for specific Vodafone and O2 sites, contradicting the claim that terrain 'cannot be confirmed at the point'. The belief overstates the data gap given the available LOS results.",
+       "round": 1
+      }
+     ]
+    }
+   ],
+   "fix_plan": {
+    "fix_type": "capacity_upgrade",
+    "candidate": "fix_rule",
+    "why": "The zone is an improvement opportunity, not a gap: sites are nearby (about 4 operators within 5 km) but 4,961 people are in cells with a capacity-strain signal and 3,492 are below half the local reference median [zone_overview]; [fix_rule] recommends a capacity upgrade for exactly this pattern [fix_rule].",
+    "assumptions": [
+     "additional spectrum or carrier aggregation on existing nearby sites",
+     "more sectors or small cells to add capacity where measured speeds are below the reference median",
+     "no new mast build, no planning or land checks"
+    ],
+    "cited_evidence": [
+     "zone_overview",
+     "fix_rule"
+    ],
+    "candidate_values": {
+     "type": "capacity_upgrade",
+     "label": "Capacity upgrade",
+     "why": [
+      "59% of the zone's people are in cells that show a busy-network (capacity) signal, with sites nearby."
+     ],
+     "secondary": null,
+     "secondary_label": null,
+     "rule_based": true,
+     "note": "Rule-based suggestion for an improvement opportunity, not yet reviewed by agents."
+    },
+    "candidate_finding": "Rule-based fix: Capacity upgrade. 59% of the zone's people are in cells that show a busy-network (capacity) signal, with sites nearby.",
+    "review": {
+     "verdict": "approve",
+     "reason": "The plan correctly identifies the zone as an improvement opportunity, cites the zone's people gaining (4,961 with capacity strain, 3,492 below half reference median) from [zone_overview], matches the fix_type capacity_upgrade to the cause per [fix_rule], states assumptions, and does not claim no service. Data confidence is high per [zone_overview] so no weak-data flag needed.",
+     "issues": []
+    },
+    "revisions": 1
+   },
+   "limitations": [
+    "Sites are approximate; antenna heights are assumed; Ofcom figures are area-level [zone_overview][insufficient_data]."
+   ],
+   "rounds": 1,
+   "status": "complete",
+   "run_id": "run_20261026232653_82an",
+   "scope": "zone",
+   "query": "O00332",
+   "zone": {
+    "zone_type": "opportunity",
+    "rank": 655,
+    "zone_id": "O00332",
+    "name": "Windermere",
+    "place_type": "town",
+    "nation": "England",
+    "council": "Westmorland and Furness",
+    "council_code": "E06000064",
+    "councils": [
+     {
+      "code": "E06000064",
+      "name": "Westmorland and Furness"
+     }
+    ],
+    "people": 8452,
+    "cells": 12,
+    "centroid": {
+     "lat": 54.375364919423696,
+     "lon": -2.8830685116360866
+    },
+    "median_speed_mbps": 21.0816,
+    "download_mbps": 28.537789915966385,
+    "tests": 119,
+    "confidence": "high",
+    "trend_pct": -35.2954146090965,
+    "quarters_with_data": 4,
+    "operators_mean": 4,
+    "operators_nearby": [
+     "EE",
+     "O2",
+     "Three",
+     "Vodafone"
+    ],
+    "score": 50.8,
+    "breakdown": {
+     "people": {
+      "raw": 8452.16520151496,
+      "normalised": 0.818,
+      "weight": 0.35,
+      "contribution": 28.6,
+      "no_data": false
+     },
+     "shortfall": {
+      "raw": 26.22077520565469,
+      "normalised": 0.548,
+      "weight": 0.3,
+      "contribution": 16.4,
+      "no_data": false
+     },
+     "trend": {
+      "raw": 35.2954146090965,
+      "normalised": 0.39,
+      "weight": 0.15,
+      "contribution": 5.8,
+      "no_data": false
+     },
+     "operator_choice": {
+      "raw": 0,
+      "normalised": 0.002,
+      "weight": 0.2,
+      "contribution": 0,
+      "no_data": false
+     }
+    },
+    "links": {
+     "explore": "/?zone=O00332&lat=54.37536&lon=-2.88307&zoom=10.5",
+     "signal": "/signal?lat=54.37536&lon=-2.88307"
+    },
+    "people_by_reason": {
+     "slow": 3492,
+     "falling": 4961,
+     "few_operators": 0,
+     "capacity": 4961
+    },
+    "reasons": [
+     "slow",
+     "falling",
+     "capacity"
+    ],
+    "shortfall_pct": 26.22077520565469,
+    "ref_mbps": 66.17426315789473,
+    "uk_median_mbps": 102.66179704301075,
+    "limited_data": false,
+    "cell_ids": [
+     "871955088ffffff",
+     "87195508affffff",
+     "87195508dffffff",
+     "871955098ffffff",
+     "871955099ffffff",
+     "87195509affffff",
+     "87195509bffffff",
+     "87195509dffffff",
+     "8719550f2ffffff",
+     "871955468ffffff",
+     "871955469ffffff",
+     "87195546affffff"
+    ]
+   },
+   "zone_type": "opportunity",
+   "location": {
+    "lat": 54.375364919423696,
+    "lon": -2.8830685116360866,
+    "label": "Windermere"
+   },
+   "critiques": [
+    {
+     "round": 1,
+     "target": "capacity_strain",
+     "verdict": "approve",
+     "reason": "Both zone_overview and fix_rule explicitly identify a busy-network capacity signal affecting 59% of the zone's population (4,961 people in flagged cells). The 119 Ookla tests in the latest quarter exceed the 30-test threshold for reliability, and the 35% speed decline over quarters is consistent with growing capacity pressure. No contradictory evidence appears in the listed items.",
+     "requested_checks": [],
+     "issues": null,
+     "suggested_confidence": null
+    },
+    {
+     "round": 1,
+     "target": "insufficient_data",
+     "verdict": "downgrade",
+     "reason": "While zone_overview describes operator sites as 'approximate' and 'somewhere nearby', the evidence also includes line-of-sight analyses for three existing sites (existing_1, existing_2, existing_3) and three candidate sites (cand_1, cand_2, cand_3) computed over Copernicus DEM. These provide terrain-confirmed reach for specific Vodafone and O2 sites, contradicting the claim that terrain 'cannot be confirmed at the point'. The belief overstates the data gap given the available LOS results.",
+     "requested_checks": [],
+     "issues": null,
+     "suggested_confidence": 0.25
+    },
+    {
+     "round": 1,
+     "target": "fix_plan",
+     "verdict": "revise",
+     "reason": "The plan correctly identifies the zone as an improvement opportunity (not a gap) and cites the zone's people gaining (4,961 in capacity-strain cells, 3,492 below half the reference median) from [zone_overview] and [fix_rule]. However, the assumptions describe a new 25 m mast build with line-of-sight checks, which is a coverage fix, while the fix_type is capacity_upgrade. Assumptions must match the fix type (e.g., additional spectrum, carrier aggregation, small cells).",
+     "requested_checks": [],
+     "issues": [
+      "assumptions describe a new mast build (25 m mast, line of sight, no planning checks) but fix_type is capacity_upgrade; update assumptions to reflect capacity upgrades (e.g., spectrum, sectors, small cells)",
+      "ensure assumptions are relevant to capacity upgrade, not coverage expansion"
+     ],
+     "suggested_confidence": null
+    },
+    {
+     "round": 1,
+     "target": "fix_plan",
+     "verdict": "approve",
+     "reason": "The plan correctly identifies the zone as an improvement opportunity, cites the zone's people gaining (4,961 with capacity strain, 3,492 below half reference median) from [zone_overview], matches the fix_type capacity_upgrade to the cause per [fix_rule], states assumptions, and does not claim no service. Data confidence is high per [zone_overview] so no weak-data flag needed.",
+     "requested_checks": [],
+     "issues": [],
+     "suggested_confidence": null
+    }
+   ],
+   "wording_check": {
+    "applies": true,
+    "ok": false,
+    "mentions_opportunity": true,
+    "forbidden": [
+     [
+      "fix_plan.why",
+      "gap"
+     ]
+    ]
+   },
+   "elapsed_s": 196.4
+  },
+  "counts": {
+   "run": 1,
+   "note": 14,
+   "evidence": 10,
+   "belief": 2,
+   "critique": 4,
+   "diagnosis": 1
+  }
+ },
+ "result": {
+  "headline": "Busy-network capacity strain is the likely cause [capacity_strain][zone_overview][fix_rule].",
+  "explanation": "The zone is an improvement opportunity, not poorly served, but 59% of its people are in cells showing a busy-network capacity signal with sites nearby [capacity_strain][fix_rule][zone_overview]. Measured cells average 26% below their reference median, speeds fell 35% from the oldest to the latest quarter, and 4,961 people are in cells whose speeds fell by 30% or more [zone_overview]. 119 tests in the latest quarter averaged 28.5 Mbps [zone_overview]. Existing Vodafone and O2 sites are within 0.4 km with clear line of sight to many people [existing_1][existing_2][existing_3], so distance is not the main issue. The evidence does not confirm mast heights or exact distances at the point [insufficient_data].",
+  "cited_evidence": [
+   "capacity_strain",
+   "zone_overview",
+   "fix_rule",
+   "insufficient_data",
+   "existing_1",
+   "existing_2",
+   "existing_3"
+  ],
+  "hypotheses": [
+   {
+    "id": "capacity_strain",
+    "cause": "capacity_strain",
+    "confidence": 0.75,
+    "status": "active",
+    "supporting": [
+     "zone_overview",
+     "fix_rule"
+    ],
+    "contradicting": [],
+    "explanation": "The zone shows a busy-network capacity signal with sites nearby, and 59% of its people are in cells flagged for capacity strain [zone_overview][fix_rule].",
+    "history": [
+     {
+      "at": "2026-10-26T23:27:51.630Z",
+      "by": "diagnostician",
+      "confidence": 0.75,
+      "previous": null,
+      "reason": "proposed",
+      "round": 1
+     }
+    ]
+   },
+   {
+    "id": "insufficient_data",
+    "cause": "insufficient_data",
+    "confidence": 0.25,
+    "status": "active",
+    "supporting": [
+     "zone_overview"
+    ],
+    "contradicting": [],
+    "explanation": "Operators are only described as somewhere nearby and mast heights are assumed, so distance and terrain cannot be confirmed at the point [zone_overview].",
+    "history": [
+     {
+      "at": "2026-10-26T23:27:51.659Z",
+      "by": "diagnostician",
+      "confidence": 0.45,
+      "previous": null,
+      "reason": "proposed",
+      "round": 1
+     },
+     {
+      "at": "2026-10-26T23:28:27.111Z",
+      "by": "critic",
+      "confidence": 0.25,
+      "previous": 0.45,
+      "reason": "critic: While zone_overview describes operator sites as 'approximate' and 'somewhere nearby', the evidence also includes line-of-sight analyses for three existing sites (existing_1, existing_2, existing_3) and three candidate sites (cand_1, cand_2, cand_3) computed over Copernicus DEM. These provide terrain-confirmed reach for specific Vodafone and O2 sites, contradicting the claim that terrain 'cannot be confirmed at the point'. The belief overstates the data gap given the available LOS results.",
+      "round": 1
+     }
+    ]
+   }
+  ],
+  "fix_plan": {
+   "fix_type": "capacity_upgrade",
+   "candidate": "fix_rule",
+   "why": "The zone is an improvement opportunity, not a gap: sites are nearby (about 4 operators within 5 km) but 4,961 people are in cells with a capacity-strain signal and 3,492 are below half the local reference median [zone_overview]; [fix_rule] recommends a capacity upgrade for exactly this pattern [fix_rule].",
+   "assumptions": [
+    "additional spectrum or carrier aggregation on existing nearby sites",
+    "more sectors or small cells to add capacity where measured speeds are below the reference median",
+    "no new mast build, no planning or land checks"
+   ],
+   "cited_evidence": [
+    "zone_overview",
+    "fix_rule"
+   ],
+   "candidate_values": {
+    "type": "capacity_upgrade",
+    "label": "Capacity upgrade",
+    "why": [
+     "59% of the zone's people are in cells that show a busy-network (capacity) signal, with sites nearby."
+    ],
+    "secondary": null,
+    "secondary_label": null,
+    "rule_based": true,
+    "note": "Rule-based suggestion for an improvement opportunity, not yet reviewed by agents."
+   },
+   "candidate_finding": "Rule-based fix: Capacity upgrade. 59% of the zone's people are in cells that show a busy-network (capacity) signal, with sites nearby.",
+   "review": {
+    "verdict": "approve",
+    "reason": "The plan correctly identifies the zone as an improvement opportunity, cites the zone's people gaining (4,961 with capacity strain, 3,492 below half reference median) from [zone_overview], matches the fix_type capacity_upgrade to the cause per [fix_rule], states assumptions, and does not claim no service. Data confidence is high per [zone_overview] so no weak-data flag needed.",
+    "issues": []
+   },
+   "revisions": 1
+  },
+  "limitations": [
+   "Sites are approximate; antenna heights are assumed; Ofcom figures are area-level [zone_overview][insufficient_data]."
+  ],
+  "rounds": 1,
+  "status": "complete",
+  "run_id": "run_20261026232653_82an",
+  "scope": "zone",
+  "query": "O00332",
+  "zone": {
+   "zone_type": "opportunity",
+   "rank": 655,
+   "zone_id": "O00332",
+   "name": "Windermere",
+   "place_type": "town",
+   "nation": "England",
+   "council": "Westmorland and Furness",
+   "council_code": "E06000064",
+   "councils": [
+    {
+     "code": "E06000064",
+     "name": "Westmorland and Furness"
+    }
+   ],
+   "people": 8452,
+   "cells": 12,
+   "centroid": {
+    "lat": 54.375364919423696,
+    "lon": -2.8830685116360866
+   },
+   "median_speed_mbps": 21.0816,
+   "download_mbps": 28.537789915966385,
+   "tests": 119,
+   "confidence": "high",
+   "trend_pct": -35.2954146090965,
+   "quarters_with_data": 4,
+   "operators_mean": 4,
+   "operators_nearby": [
+    "EE",
+    "O2",
+    "Three",
+    "Vodafone"
+   ],
+   "score": 50.8,
+   "breakdown": {
+    "people": {
+     "raw": 8452.16520151496,
+     "normalised": 0.818,
+     "weight": 0.35,
+     "contribution": 28.6,
+     "no_data": false
+    },
+    "shortfall": {
+     "raw": 26.22077520565469,
+     "normalised": 0.548,
+     "weight": 0.3,
+     "contribution": 16.4,
+     "no_data": false
+    },
+    "trend": {
+     "raw": 35.2954146090965,
+     "normalised": 0.39,
+     "weight": 0.15,
+     "contribution": 5.8,
+     "no_data": false
+    },
+    "operator_choice": {
+     "raw": 0,
+     "normalised": 0.002,
+     "weight": 0.2,
+     "contribution": 0,
+     "no_data": false
+    }
+   },
+   "links": {
+    "explore": "/?zone=O00332&lat=54.37536&lon=-2.88307&zoom=10.5",
+    "signal": "/signal?lat=54.37536&lon=-2.88307"
+   },
+   "people_by_reason": {
+    "slow": 3492,
+    "falling": 4961,
+    "few_operators": 0,
+    "capacity": 4961
+   },
+   "reasons": [
+    "slow",
+    "falling",
+    "capacity"
+   ],
+   "shortfall_pct": 26.22077520565469,
+   "ref_mbps": 66.17426315789473,
+   "uk_median_mbps": 102.66179704301075,
+   "limited_data": false,
+   "cell_ids": [
+    "871955088ffffff",
+    "87195508affffff",
+    "87195508dffffff",
+    "871955098ffffff",
+    "871955099ffffff",
+    "87195509affffff",
+    "87195509bffffff",
+    "87195509dffffff",
+    "8719550f2ffffff",
+    "871955468ffffff",
+    "871955469ffffff",
+    "87195546affffff"
+   ]
+  },
+  "zone_type": "opportunity",
+  "location": {
+   "lat": 54.375364919423696,
+   "lon": -2.8830685116360866,
+   "label": "Windermere"
+  },
+  "critiques": [
+   {
+    "round": 1,
+    "target": "capacity_strain",
+    "verdict": "approve",
+    "reason": "Both zone_overview and fix_rule explicitly identify a busy-network capacity signal affecting 59% of the zone's population (4,961 people in flagged cells). The 119 Ookla tests in the latest quarter exceed the 30-test threshold for reliability, and the 35% speed decline over quarters is consistent with growing capacity pressure. No contradictory evidence appears in the listed items.",
+    "requested_checks": [],
+    "issues": null,
+    "suggested_confidence": null
+   },
+   {
+    "round": 1,
+    "target": "insufficient_data",
+    "verdict": "downgrade",
+    "reason": "While zone_overview describes operator sites as 'approximate' and 'somewhere nearby', the evidence also includes line-of-sight analyses for three existing sites (existing_1, existing_2, existing_3) and three candidate sites (cand_1, cand_2, cand_3) computed over Copernicus DEM. These provide terrain-confirmed reach for specific Vodafone and O2 sites, contradicting the claim that terrain 'cannot be confirmed at the point'. The belief overstates the data gap given the available LOS results.",
+    "requested_checks": [],
+    "issues": null,
+    "suggested_confidence": 0.25
+   },
+   {
+    "round": 1,
+    "target": "fix_plan",
+    "verdict": "revise",
+    "reason": "The plan correctly identifies the zone as an improvement opportunity (not a gap) and cites the zone's people gaining (4,961 in capacity-strain cells, 3,492 below half the reference median) from [zone_overview] and [fix_rule]. However, the assumptions describe a new 25 m mast build with line-of-sight checks, which is a coverage fix, while the fix_type is capacity_upgrade. Assumptions must match the fix type (e.g., additional spectrum, carrier aggregation, small cells).",
+    "requested_checks": [],
+    "issues": [
+     "assumptions describe a new mast build (25 m mast, line of sight, no planning checks) but fix_type is capacity_upgrade; update assumptions to reflect capacity upgrades (e.g., spectrum, sectors, small cells)",
+     "ensure assumptions are relevant to capacity upgrade, not coverage expansion"
+    ],
+    "suggested_confidence": null
+   },
+   {
+    "round": 1,
+    "target": "fix_plan",
+    "verdict": "approve",
+    "reason": "The plan correctly identifies the zone as an improvement opportunity, cites the zone's people gaining (4,961 with capacity strain, 3,492 below half reference median) from [zone_overview], matches the fix_type capacity_upgrade to the cause per [fix_rule], states assumptions, and does not claim no service. Data confidence is high per [zone_overview] so no weak-data flag needed.",
+    "requested_checks": [],
+    "issues": [],
+    "suggested_confidence": null
+   }
+  ],
+  "wording_check": {
+   "applies": true,
+   "ok": false,
+   "mentions_opportunity": true,
+   "forbidden": [
+    [
+     "fix_plan.why",
+     "gap"
+    ]
+   ]
+  },
+  "elapsed_s": 196.4
+ },
+ "audit": [
+  {
+   "seq": 871,
+   "at": "2026-10-26T23:26:53.864Z",
+   "action": "create",
+   "actor": "coordinator",
+   "kind": "run",
+   "ref": "run_20261026232653_82an",
+   "memory_id": "mem-832",
+   "summary": "Diagnosis run (zone) for Windermere",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "scope": "zone",
+    "query": "O00332",
+    "label": "Windermere",
+    "location": {
+     "lat": 54.375364919423696,
+     "lon": -2.8830685116360866
+    },
+    "status": "complete",
+    "progress": [
+     {
+      "at": "2026-10-26T23:26:55.002Z",
+      "agent": "coordinator",
+      "round": 1,
+      "kind": "phase",
+      "label": "round 1",
+      "status": "done",
+      "summary": "round 1",
+      "duration_ms": 1
+     },
+     {
+      "at": "2026-10-26T23:27:09.693Z",
+      "agent": "investigator",
+      "round": 1,
+      "kind": "llm",
+      "label": "investigator",
+      "status": "done",
+      "summary": "nemotron-3.5-super-vl-120b-a12b, 14.5s",
+      "duration_ms": 14486
+     },
+     {
+      "at": "2026-10-26T23:27:09.944Z",
+      "agent": "investigator",
+      "round": 1,
+      "kind": "tool",
+      "label": "zone_summary()",
+      "status": "done",
+      "summary": "zone_summary() -> zone_overview, zone_priority, fix_rule",
+      "duration_ms": 141
+     },
+     {
+      "at": "2026-10-26T23:27:10.248Z",
+      "agent": "investigator",
+      "round": 1,
+      "kind": "tool",
+      "label": "candidate_sites()",
+      "status": "done",
+      "summary": "candidate_sites() -> cand_1, cand_2, cand_3, existing_1, existing_2, existing_3",
+      "duration_ms": 273
+     },
+     {
+      "at": "2026-10-26T23:27:10.409Z",
+      "agent": "investigator",
+      "round": 1,
+      "kind": "tool",
+      "label": "prior_diagnoses_nearby()",
+      "status": "done",
+      "summary": "prior_diagnoses_nearby() -> prior_diagnoses",
+      "duration_ms": 124
+     },
+     {
+      "at": "2026-10-26T23:27:51.531Z",
+      "agent": "diagnostician",
+      "round": 1,
+      "kind": "llm",
+      "label": "diagnostician",
+      "status": "done",
+      "summary": "nemotron-3.5-super-vl-120b-a12b, 41.0s",
+      "duration_ms": 40977
+     },
+     {
+      "at": "2026-10-26T23:28:26.852Z",
+      "agent": "critic",
+      "round": 1,
+      "kind": "llm",
+      "label": "critic thinking",
+      "status": "done",
+      "summary": "nemotron-3-ultra-550b-a55b, 35.0s",
+      "duration_ms": 35030
+     },
+     {
+      "at": "2026-10-26T23:28:34.242Z",
+      "agent": "fix_planner",
+      "round": 1,
+      "kind": "llm",
+      "label": "fix_planner",
+      "status": "done",
+      "summary": "nemotron-3.5-super-vl-120b-a12b, 6.9s",
+      "duration_ms": 6949
+     },
+     {
+      "at": "2026-10-26T23:29:14.454Z",
+      "agent": "critic",
+      "round": 1,
+      "kind": "llm",
+      "label": "critic thinking",
+      "status": "done",
+      "summary": "nemotron-3-ultra-550b-a55b, 40.0s",
+      "duration_ms": 39956
+     },
+     {
+      "at": "2026-10-26T23:29:21.071Z",
+      "agent": "fix_planner",
+      "round": 1,
+      "kind": "llm",
+      "label": "fix_planner",
+      "status": "done",
+      "summary": "nemotron-3.5-super-vl-120b-a12b, 6.3s",
+      "duration_ms": 6270
+     },
+     {
+      "at": "2026-10-26T23:29:31.448Z",
+      "agent": "critic",
+      "round": 1,
+      "kind": "llm",
+      "label": "critic thinking",
+      "status": "done",
+      "summary": "nemotron-3-ultra-550b-a55b, 9.9s",
+      "duration_ms": 9902
+     },
+     {
+      "at": "2026-10-26T23:30:09.556Z",
+      "agent": "advisor",
+      "round": 0,
+      "kind": "llm",
+      "label": "advisor",
+      "status": "done",
+      "summary": "nemotron-3.5-super-vl-120b-a12b, 37.5s",
+      "duration_ms": 37478
+     }
+    ],
+    "created": "2026-10-26T23:26:53.860Z",
+    "by": "coordinator",
+    "kind": "run",
+    "run_id": "run_20261026232653_82an",
+    "ref": "run_20261026232653_82an",
+    "result": {
+     "headline": "Busy-network capacity strain is the likely cause [capacity_strain][zone_overview][fix_rule].",
+     "explanation": "The zone is an improvement opportunity, not poorly served, but 59% of its people are in cells showing a busy-network capacity signal with sites nearby [capacity_strain][fix_rule][zone_overview]. Measured cells average 26% below their reference median, speeds fell 35% from the oldest to the latest quarter, and 4,961 people are in cells whose speeds fell by 30% or more [zone_overview]. 119 tests in the latest quarter averaged 28.5 Mbps [zone_overview]. Existing Vodafone and O2 sites are within 0.4 km with clear line of sight to many people [existing_1][existing_2][existing_3], so distance is not the main issue. The evidence does not confirm mast heights or exact distances at the point [insufficient_data].",
+     "cited_evidence": [
+      "capacity_strain",
+      "zone_overview",
+      "fix_rule",
+      "insufficient_data",
+      "existing_1",
+      "existing_2",
+      "existing_3"
+     ],
+     "hypotheses": [
+      {
+       "id": "capacity_strain",
+       "cause": "capacity_strain",
+       "confidence": 0.75,
+       "status": "active",
+       "supporting": [
+        "zone_overview",
+        "fix_rule"
+       ],
+       "contradicting": [],
+       "explanation": "The zone shows a busy-network capacity signal with sites nearby, and 59% of its people are in cells flagged for capacity strain [zone_overview][fix_rule].",
+       "history": [
+        {
+         "at": "2026-10-26T23:27:51.630Z",
+         "by": "diagnostician",
+         "confidence": 0.75,
+         "previous": null,
+         "reason": "proposed",
+         "round": 1
+        }
+       ]
+      },
+      {
+       "id": "insufficient_data",
+       "cause": "insufficient_data",
+       "confidence": 0.25,
+       "status": "active",
+       "supporting": [
+        "zone_overview"
+       ],
+       "contradicting": [],
+       "explanation": "Operators are only described as somewhere nearby and mast heights are assumed, so distance and terrain cannot be confirmed at the point [zone_overview].",
+       "history": [
+        {
+         "at": "2026-10-26T23:27:51.659Z",
+         "by": "diagnostician",
+         "confidence": 0.45,
+         "previous": null,
+         "reason": "proposed",
+         "round": 1
+        },
+        {
+         "at": "2026-10-26T23:28:27.111Z",
+         "by": "critic",
+         "confidence": 0.25,
+         "previous": 0.45,
+         "reason": "critic: While zone_overview describes operator sites as 'approximate' and 'somewhere nearby', the evidence also includes line-of-sight analyses for three existing sites (existing_1, existing_2, existing_3) and three candidate sites (cand_1, cand_2, cand_3) computed over Copernicus DEM. These provide terrain-confirmed reach for specific Vodafone and O2 sites, contradicting the claim that terrain 'cannot be confirmed at the point'. The belief overstates the data gap given the available LOS results.",
+         "round": 1
+        }
+       ]
+      }
+     ],
+     "fix_plan": {
+      "fix_type": "capacity_upgrade",
+      "candidate": "fix_rule",
+      "why": "The zone is an improvement opportunity, not a gap: sites are nearby (about 4 operators within 5 km) but 4,961 people are in cells with a capacity-strain signal and 3,492 are below half the local reference median [zone_overview]; [fix_rule] recommends a capacity upgrade for exactly this pattern [fix_rule].",
+      "assumptions": [
+       "additional spectrum or carrier aggregation on existing nearby sites",
+       "more sectors or small cells to add capacity where measured speeds are below the reference median",
+       "no new mast build, no planning or land checks"
+      ],
+      "cited_evidence": [
+       "zone_overview",
+       "fix_rule"
+      ],
+      "candidate_values": {
+       "type": "capacity_upgrade",
+       "label": "Capacity upgrade",
+       "why": [
+        "59% of the zone's people are in cells that show a busy-network (capacity) signal, with sites nearby."
+       ],
+       "secondary": null,
+       "secondary_label": null,
+       "rule_based": true,
+       "note": "Rule-based suggestion for an improvement opportunity, not yet reviewed by agents."
+      },
+      "candidate_finding": "Rule-based fix: Capacity upgrade. 59% of the zone's people are in cells that show a busy-network (capacity) signal, with sites nearby.",
+      "review": {
+       "verdict": "approve",
+       "reason": "The plan correctly identifies the zone as an improvement opportunity, cites the zone's people gaining (4,961 with capacity strain, 3,492 below half reference median) from [zone_overview], matches the fix_type capacity_upgrade to the cause per [fix_rule], states assumptions, and does not claim no service. Data confidence is high per [zone_overview] so no weak-data flag needed.",
+       "issues": []
+      },
+      "revisions": 1
+     },
+     "limitations": [
+      "Sites are approximate; antenna heights are assumed; Ofcom figures are area-level [zone_overview][insufficient_data]."
+     ],
+     "rounds": 1,
+     "status": "complete",
+     "run_id": "run_20261026232653_82an",
+     "scope": "zone",
+     "query": "O00332",
+     "zone": {
+      "zone_type": "opportunity",
+      "rank": 655,
+      "zone_id": "O00332",
+      "name": "Windermere",
+      "place_type": "town",
+      "nation": "England",
+      "council": "Westmorland and Furness",
+      "council_code": "E06000064",
+      "councils": [
+       {
+        "code": "E06000064",
+        "name": "Westmorland and Furness"
+       }
+      ],
+      "people": 8452,
+      "cells": 12,
+      "centroid": {
+       "lat": 54.375364919423696,
+       "lon": -2.8830685116360866
+      },
+      "median_speed_mbps": 21.0816,
+      "download_mbps": 28.537789915966385,
+      "tests": 119,
+      "confidence": "high",
+      "trend_pct": -35.2954146090965,
+      "quarters_with_data": 4,
+      "operators_mean": 4,
+      "operators_nearby": [
+       "EE",
+       "O2",
+       "Three",
+       "Vodafone"
+      ],
+      "score": 50.8,
+      "breakdown": {
+       "people": {
+        "raw": 8452.16520151496,
+        "normalised": 0.818,
+        "weight": 0.35,
+        "contribution": 28.6,
+        "no_data": false
+       },
+       "shortfall": {
+        "raw": 26.22077520565469,
+        "normalised": 0.548,
+        "weight": 0.3,
+        "contribution": 16.4,
+        "no_data": false
+       },
+       "trend": {
+        "raw": 35.2954146090965,
+        "normalised": 0.39,
+        "weight": 0.15,
+        "contribution": 5.8,
+        "no_data": false
+       },
+       "operator_choice": {
+        "raw": 0,
+        "normalised": 0.002,
+        "weight": 0.2,
+        "contribution": 0,
+        "no_data": false
+       }
+      },
+      "links": {
+       "explore": "/?zone=O00332&lat=54.37536&lon=-2.88307&zoom=10.5",
+       "signal": "/signal?lat=54.37536&lon=-2.88307"
+      },
+      "people_by_reason": {
+       "slow": 3492,
+       "falling": 4961,
+       "few_operators": 0,
+       "capacity": 4961
+      },
+      "reasons": [
+       "slow",
+       "falling",
+       "capacity"
+      ],
+      "shortfall_pct": 26.22077520565469,
+      "ref_mbps": 66.17426315789473,
+      "uk_median_mbps": 102.66179704301075,
+      "limited_data": false,
+      "cell_ids": [
+       "871955088ffffff",
+       "87195508affffff",
+       "87195508dffffff",
+       "871955098ffffff",
+       "871955099ffffff",
+       "87195509affffff",
+       "87195509bffffff",
+       "87195509dffffff",
+       "8719550f2ffffff",
+       "871955468ffffff",
+       "871955469ffffff",
+       "87195546affffff"
+      ]
+     },
+     "zone_type": "opportunity",
+     "location": {
+      "lat": 54.375364919423696,
+      "lon": -2.8830685116360866,
+      "label": "Windermere"
+     },
+     "critiques": [
+      {
+       "round": 1,
+       "target": "capacity_strain",
+       "verdict": "approve",
+       "reason": "Both zone_overview and fix_rule explicitly identify a busy-network capacity signal affecting 59% of the zone's population (4,961 people in flagged cells). The 119 Ookla tests in the latest quarter exceed the 30-test threshold for reliability, and the 35% speed decline over quarters is consistent with growing capacity pressure. No contradictory evidence appears in the listed items.",
+       "requested_checks": [],
+       "issues": null,
+       "suggested_confidence": null
+      },
+      {
+       "round": 1,
+       "target": "insufficient_data",
+       "verdict": "downgrade",
+       "reason": "While zone_overview describes operator sites as 'approximate' and 'somewhere nearby', the evidence also includes line-of-sight analyses for three existing sites (existing_1, existing_2, existing_3) and three candidate sites (cand_1, cand_2, cand_3) computed over Copernicus DEM. These provide terrain-confirmed reach for specific Vodafone and O2 sites, contradicting the claim that terrain 'cannot be confirmed at the point'. The belief overstates the data gap given the available LOS results.",
+       "requested_checks": [],
+       "issues": null,
+       "suggested_confidence": 0.25
+      },
+      {
+       "round": 1,
+       "target": "fix_plan",
+       "verdict": "revise",
+       "reason": "The plan correctly identifies the zone as an improvement opportunity (not a gap) and cites the zone's people gaining (4,961 in capacity-strain cells, 3,492 below half the reference median) from [zone_overview] and [fix_rule]. However, the assumptions describe a new 25 m mast build with line-of-sight checks, which is a coverage fix, while the fix_type is capacity_upgrade. Assumptions must match the fix type (e.g., additional spectrum, carrier aggregation, small cells).",
+       "requested_checks": [],
+       "issues": [
+        "assumptions describe a new mast build (25 m mast, line of sight, no planning checks) but fix_type is capacity_upgrade; update assumptions to reflect capacity upgrades (e.g., spectrum, sectors, small cells)",
+        "ensure assumptions are relevant to capacity upgrade, not coverage expansion"
+       ],
+       "suggested_confidence": null
+      },
+      {
+       "round": 1,
+       "target": "fix_plan",
+       "verdict": "approve",
+       "reason": "The plan correctly identifies the zone as an improvement opportunity, cites the zone's people gaining (4,961 with capacity strain, 3,492 below half reference median) from [zone_overview], matches the fix_type capacity_upgrade to the cause per [fix_rule], states assumptions, and does not claim no service. Data confidence is high per [zone_overview] so no weak-data flag needed.",
+       "requested_checks": [],
+       "issues": [],
+       "suggested_confidence": null
+      }
+     ],
+     "wording_check": {
+      "applies": true,
+      "ok": false,
+      "mentions_opportunity": true,
+      "forbidden": [
+       [
+        "fix_plan.why",
+        "gap"
+       ]
+      ]
+     },
+     "elapsed_s": 196.4
+    }
+   }
+  },
+  {
+   "seq": 872,
+   "at": "2026-10-26T23:26:55.044Z",
+   "action": "create",
+   "actor": "coordinator",
+   "kind": "note",
+   "ref": "n1",
+   "memory_id": "mem-833",
+   "round": 1,
+   "summary": "round 1 starts",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "round",
+    "summary": "round 1 starts",
+    "by": "coordinator",
+    "round": 1,
+    "requested": [],
+    "note_id": "n1",
+    "kind": "note",
+    "run_id": "run_20261026232653_82an",
+    "ref": "n1"
+   }
+  },
+  {
+   "seq": 873,
+   "at": "2026-10-26T23:27:09.714Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "note",
+   "ref": "n2",
+   "memory_id": "mem-834",
+   "round": 1,
+   "summary": "investigator via nemotron-3.5-super-vl-120b-a12b in 14.5s",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "llm_call",
+    "summary": "investigator via nemotron-3.5-super-vl-120b-a12b in 14.5s",
+    "by": "investigator",
+    "round": 1,
+    "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+    "duration_ms": 14486,
+    "tokens": {
+     "prompt_tokens": 633,
+     "completion_tokens": 338,
+     "total_tokens": 971,
+     "prompt_tokens_details": {
+      "audio_tokens": null,
+      "cached_tokens": 0
+     },
+     "completion_tokens_details": {
+      "accepted_prediction_tokens": null,
+      "audio_tokens": null,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": null
+     }
+    },
+    "attempts": 1,
+    "retries": [],
+    "fallback": null,
+    "thinking": false,
+    "purpose": null,
+    "note_id": "n2",
+    "kind": "note",
+    "run_id": "run_20261026232653_82an",
+    "ref": "n2"
+   }
+  },
+  {
+   "seq": 874,
+   "at": "2026-10-26T23:27:09.760Z",
+   "action": "create",
+   "actor": "coordinator",
+   "kind": "note",
+   "ref": "n3",
+   "memory_id": "mem-835",
+   "round": 1,
+   "summary": "added required checks the investigator skipped: zone_summary(), candidate_sites(), prior_diagnoses_nearby()",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "coordinator",
+    "summary": "added required checks the investigator skipped: zone_summary(), candidate_sites(), prior_diagnoses_nearby()",
+    "by": "coordinator",
+    "round": 1,
+    "note_id": "n3",
+    "kind": "note",
+    "run_id": "run_20261026232653_82an",
+    "ref": "n3"
+   }
+  },
+  {
+   "seq": 875,
+   "at": "2026-10-26T23:27:09.795Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "evidence",
+   "ref": "zone_overview",
+   "memory_id": "mem-836",
+   "round": 1,
+   "summary": "8,452 people in 12 H3 cells (Westmorland and Furness, England); an improvement opportunity: not poorly served, but with a measurable weakness. Weaknesses: 3,492 in cells measured below half the local reference median (66 Mbps, the lower of the area and UK medians); 4,961 in cells whose speeds fell by 30% or more over the last quarters; 4,961 in busy cells with a capacity-strain signal. Measured cells are on average 26% below their reference median. 119 Ookla tests in the latest quarter averaging 28.5 Mbps (data confidence: high). Speed fell 35% from the oldest to the latest quarter. On average 4.0 operators have approximate sites within 5 km of its cells (EE, O2, Three, Vodafone somewhere nearby).",
+   "old_confidence": null,
+   "new_confidence": 0.9,
+   "reason": null,
+   "payload": {
+    "id": "zone_overview",
+    "source": "Improvement opportunities (Zetaris CD_OPP_ZONES)",
+    "data_period": "built from Ookla 2026Q3 and mast sites 2026-10-25",
+    "as_of": "2026-10-26",
+    "query_or_url": "zetaris:CD_OPP_ZONES, zetaris:CD_OPP_ZONE_CELLS",
+    "cell_ids": [
+     "871955088ffffff",
+     "87195508affffff",
+     "87195508dffffff",
+     "871955098ffffff",
+     "871955099ffffff",
+     "87195509affffff",
+     "87195509bffffff",
+     "87195509dffffff",
+     "8719550f2ffffff",
+     "871955468ffffff",
+     "871955469ffffff",
+     "87195546affffff"
+    ],
+    "finding": "8,452 people in 12 H3 cells (Westmorland and Furness, England); an improvement opportunity: not poorly served, but with a measurable weakness. Weaknesses: 3,492 in cells measured below half the local reference median (66 Mbps, the lower of the area and UK medians); 4,961 in cells whose speeds fell by 30% or more over the last quarters; 4,961 in busy cells with a capacity-strain signal. Measured cells are on average 26% below their reference median. 119 Ookla tests in the latest quarter averaging 28.5 Mbps (data confidence: high). Speed fell 35% from the oldest to the latest quarter. On average 4.0 operators have approximate sites within 5 km of its cells (EE, O2, Three, Vodafone somewhere nearby).",
+    "value": {
+     "people": 8452,
+     "cells": 12,
+     "people_by_reason": {
+      "slow": 3492,
+      "falling": 4961,
+      "few_operators": 0,
+      "capacity": 4961
+     },
+     "median_speed_mbps": 21.0816,
+     "trend_pct": -35.2954146090965,
+     "operators_mean": 4,
+     "operators_nearby": [
+      "EE",
+      "O2",
+      "Three",
+      "Vodafone"
+     ],
+     "council": "Westmorland and Furness",
+     "nation": "England",
+     "reasons": [
+      "slow",
+      "falling",
+      "capacity"
+     ],
+     "shortfall_pct": 26.22077520565469,
+     "ref_mbps": 66.17426315789473,
+     "limited_data": false
+    },
+    "sample_size": {
+     "tests": 119,
+     "cells": 12
+    },
+    "strength": "strong",
+    "bears_on": [
+     "distance_to_mast",
+     "terrain_blocking",
+     "single_operator",
+     "capacity_strain",
+     "insufficient_data"
+    ],
+    "evidence_id": "zone_overview",
+    "tool": "zone_summary",
+    "round": 1,
+    "zetaris": [],
+    "by": "investigator",
+    "kind": "evidence",
+    "run_id": "run_20261026232653_82an",
+    "ref": "zone_overview"
+   }
+  },
+  {
+   "seq": 876,
+   "at": "2026-10-26T23:27:09.828Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "evidence",
+   "ref": "zone_priority",
+   "memory_id": "mem-837",
+   "round": 1,
+   "summary": "Priority: rank 655 of 1816 in uk; rank 6 of 23 in la:E06000064.",
+   "old_confidence": null,
+   "new_confidence": 0.7,
+   "reason": null,
+   "payload": {
+    "id": "zone_priority",
+    "source": "Priority score (computed, planning/scoring.py)",
+    "data_period": "built from Ookla 2026Q3 and mast sites 2026-10-25",
+    "as_of": "2026-10-26",
+    "query_or_url": "zetaris:CD_OPP_ZONES, zetaris:CD_OPP_ZONE_CELLS",
+    "cell_ids": [
+     "871955088ffffff",
+     "87195508affffff",
+     "87195508dffffff",
+     "871955098ffffff",
+     "871955099ffffff",
+     "87195509affffff",
+     "87195509bffffff",
+     "87195509dffffff",
+     "8719550f2ffffff",
+     "871955468ffffff",
+     "871955469ffffff",
+     "87195546affffff"
+    ],
+    "finding": "Priority: rank 655 of 1816 in uk; rank 6 of 23 in la:E06000064.",
+    "value": {
+     "uk": {
+      "rank": 655,
+      "of": 1816,
+      "score": 50.8,
+      "breakdown": {
+       "people": {
+        "raw": 8452.16520151496,
+        "normalised": 0.818,
+        "weight": 0.35,
+        "contribution": 28.6,
+        "no_data": false
+       },
+       "shortfall": {
+        "raw": 26.22077520565469,
+        "normalised": 0.548,
+        "weight": 0.3,
+        "contribution": 16.4,
+        "no_data": false
+       },
+       "trend": {
+        "raw": 35.2954146090965,
+        "normalised": 0.39,
+        "weight": 0.15,
+        "contribution": 5.8,
+        "no_data": false
+       },
+       "operator_choice": {
+        "raw": 0,
+        "normalised": 0.002,
+        "weight": 0.2,
+        "contribution": 0,
+        "no_data": false
+       }
+      }
+     },
+     "la:E06000064": {
+      "rank": 6,
+      "of": 23,
+      "score": 55.6,
+      "breakdown": {
+       "people": {
+        "raw": 8452.16520151496,
+        "normalised": 1,
+        "weight": 0.35,
+        "contribution": 35,
+        "no_data": false
+       },
+       "shortfall": {
+        "raw": 26.22077520565469,
+        "normalised": 0.353,
+        "weight": 0.3,
+        "contribution": 10.6,
+        "no_data": false
+       },
+       "trend": {
+        "raw": 35.2954146090965,
+        "normalised": 0.667,
+        "weight": 0.15,
+        "contribution": 10,
+        "no_data": false
+       },
+       "operator_choice": {
+        "raw": 0,
+        "normalised": 0,
+        "weight": 0.2,
+        "contribution": 0,
+        "no_data": false
+       }
+      }
+     }
+    },
+    "sample_size": null,
+    "strength": "moderate",
+    "bears_on": [],
+    "evidence_id": "zone_priority",
+    "tool": "zone_summary",
+    "round": 1,
+    "zetaris": [],
+    "by": "investigator",
+    "kind": "evidence",
+    "run_id": "run_20261026232653_82an",
+    "ref": "zone_priority"
+   }
+  },
+  {
+   "seq": 877,
+   "at": "2026-10-26T23:27:09.865Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "evidence",
+   "ref": "fix_rule",
+   "memory_id": "mem-838",
+   "round": 1,
+   "summary": "Rule-based fix: Capacity upgrade. 59% of the zone's people are in cells that show a busy-network (capacity) signal, with sites nearby.",
+   "old_confidence": null,
+   "new_confidence": 0.7,
+   "reason": null,
+   "payload": {
+    "id": "fix_rule",
+    "source": "Rule-based fix suggestion (planning/siting.py)",
+    "data_period": "built from Ookla 2026Q3 and mast sites 2026-10-25",
+    "as_of": "2026-10-26",
+    "query_or_url": "zetaris:CD_OPP_ZONES, zetaris:CD_OPP_ZONE_CELLS",
+    "cell_ids": [
+     "871955088ffffff",
+     "87195508affffff",
+     "87195508dffffff",
+     "871955098ffffff",
+     "871955099ffffff",
+     "87195509affffff",
+     "87195509bffffff",
+     "87195509dffffff",
+     "8719550f2ffffff",
+     "871955468ffffff",
+     "871955469ffffff",
+     "87195546affffff"
+    ],
+    "finding": "Rule-based fix: Capacity upgrade. 59% of the zone's people are in cells that show a busy-network (capacity) signal, with sites nearby.",
+    "value": {
+     "type": "capacity_upgrade",
+     "label": "Capacity upgrade",
+     "why": [
+      "59% of the zone's people are in cells that show a busy-network (capacity) signal, with sites nearby."
+     ],
+     "secondary": null,
+     "secondary_label": null,
+     "rule_based": true,
+     "note": "Rule-based suggestion for an improvement opportunity, not yet reviewed by agents."
+    },
+    "sample_size": null,
+    "strength": "moderate",
+    "bears_on": [],
+    "evidence_id": "fix_rule",
+    "tool": "zone_summary",
+    "round": 1,
+    "zetaris": [],
+    "by": "investigator",
+    "kind": "evidence",
+    "run_id": "run_20261026232653_82an",
+    "ref": "fix_rule"
+   }
+  },
+  {
+   "seq": 878,
+   "at": "2026-10-26T23:27:09.906Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "note",
+   "ref": "n4",
+   "memory_id": "mem-839",
+   "round": 1,
+   "summary": "zone_summary() -> zone_overview, zone_priority, fix_rule",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "tool_call",
+    "summary": "zone_summary() -> zone_overview, zone_priority, fix_rule",
+    "by": "investigator",
+    "tool": "zone_summary",
+    "args": {},
+    "round": 1,
+    "evidence_ids": [
+     "zone_overview",
+     "zone_priority",
+     "fix_rule"
+    ],
+    "new": [
+     "zone_overview",
+     "zone_priority",
+     "fix_rule"
+    ],
+    "duration_ms": 102,
+    "zetaris_queries": [],
+    "note_id": "n4",
+    "kind": "note",
+    "run_id": "run_20261026232653_82an",
+    "ref": "n4"
+   }
+  },
+  {
+   "seq": 879,
+   "at": "2026-10-26T23:27:09.967Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "evidence",
+   "ref": "cand_1",
+   "memory_id": "mem-840",
+   "round": 1,
+   "summary": "Candidate 1: a new 25 m mast on high ground (238 m, inside the zone) would give 7698 of the zone's people a clear line of sight (7698 people in all, in this zone and in nearby poorly served cells; 11959 people reached in 17 of 50 cells checked).",
+   "old_confidence": null,
+   "new_confidence": 0.7,
+   "reason": null,
+   "payload": {
+    "id": "cand_1",
+    "source": "Candidate site (line of sight over Copernicus DEM, planning/siting.py)",
+    "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
+    "as_of": "2026-10-25",
+    "query_or_url": "zetaris:CD_CELLS, zetaris:CD_GAP_ZONE_CELLS",
+    "cell_ids": [
+     "871955093ffffff",
+     "871955098ffffff",
+     "87195509affffff",
+     "87195509dffffff",
+     "871955441ffffff",
+     "87195544effffff",
+     "871955460ffffff",
+     "871955461ffffff",
+     "871955463ffffff",
+     "871955468ffffff",
+     "871955469ffffff",
+     "87195546affffff",
+     "87195546cffffff",
+     "87195546dffffff",
+     "87195546effffff",
+     "871955471ffffff",
+     "871955734ffffff"
+    ],
+    "finding": "Candidate 1: a new 25 m mast on high ground (238 m, inside the zone) would give 7698 of the zone's people a clear line of sight (7698 people in all, in this zone and in nearby poorly served cells; 11959 people reached in 17 of 50 cells checked).",
+    "value": {
+     "lat": 54.38404313920181,
+     "lon": -2.9750518219842768,
+     "ground_m": 238.4,
+     "zone_people_gaining": 7698,
+     "poor_people_gaining": 7698,
+     "people_reached": 11959
+    },
+    "sample_size": {
+     "cells_checked": 50
+    },
+    "strength": "moderate",
+    "bears_on": [
+     "terrain_blocking",
+     "distance_to_mast"
+    ],
+    "evidence_id": "cand_1",
+    "tool": "candidate_sites",
+    "round": 1,
+    "zetaris": [],
+    "by": "investigator",
+    "kind": "evidence",
+    "run_id": "run_20261026232653_82an",
+    "ref": "cand_1"
+   }
+  },
+  {
+   "seq": 880,
+   "at": "2026-10-26T23:27:09.994Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "evidence",
+   "ref": "cand_2",
+   "memory_id": "mem-841",
+   "round": 1,
+   "summary": "Candidate 2: a new 25 m mast on high ground (466 m, near the zone) would give 6903 of the zone's people a clear line of sight (6925 people in all, in this zone and in nearby poorly served cells; 9204 people reached in 18 of 41 cells checked).",
+   "old_confidence": null,
+   "new_confidence": 0.7,
+   "reason": null,
+   "payload": {
+    "id": "cand_2",
+    "source": "Candidate site (line of sight over Copernicus DEM, planning/siting.py)",
+    "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
+    "as_of": "2026-10-25",
+    "query_or_url": "zetaris:CD_CELLS, zetaris:CD_GAP_ZONE_CELLS",
+    "cell_ids": [
+     "871955092ffffff",
+     "871955093ffffff",
+     "871955098ffffff",
+     "87195509dffffff",
+     "8719550f2ffffff",
+     "871955441ffffff",
+     "871955445ffffff",
+     "871955460ffffff",
+     "871955462ffffff",
+     "871955465ffffff",
+     "871955466ffffff",
+     "871955468ffffff",
+     "871955469ffffff",
+     "87195546affffff",
+     "87195546bffffff",
+     "87195546dffffff",
+     "871955475ffffff",
+     "87195554bffffff"
+    ],
+    "finding": "Candidate 2: a new 25 m mast on high ground (466 m, near the zone) would give 6903 of the zone's people a clear line of sight (6925 people in all, in this zone and in nearby poorly served cells; 9204 people reached in 18 of 41 cells checked).",
+    "value": {
+     "lat": 54.42985700912644,
+     "lon": -2.9357286825355717,
+     "ground_m": 466.5,
+     "zone_people_gaining": 6903,
+     "poor_people_gaining": 6925,
+     "people_reached": 9204
+    },
+    "sample_size": {
+     "cells_checked": 41
+    },
+    "strength": "moderate",
+    "bears_on": [
+     "terrain_blocking",
+     "distance_to_mast"
+    ],
+    "evidence_id": "cand_2",
+    "tool": "candidate_sites",
+    "round": 1,
+    "zetaris": [],
+    "by": "investigator",
+    "kind": "evidence",
+    "run_id": "run_20261026232653_82an",
+    "ref": "cand_2"
+   }
+  },
+  {
+   "seq": 881,
+   "at": "2026-10-26T23:27:10.037Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "evidence",
+   "ref": "cand_3",
+   "memory_id": "mem-842",
+   "round": 1,
+   "summary": "Candidate 3: a new 25 m mast on high ground (232 m, near the zone) would give 6652 of the zone's people a clear line of sight (6652 people in all, in this zone and in nearby poorly served cells; 9319 people reached in 18 of 43 cells checked).",
+   "old_confidence": null,
+   "new_confidence": 0.7,
+   "reason": null,
+   "payload": {
+    "id": "cand_3",
+    "source": "Candidate site (line of sight over Copernicus DEM, planning/siting.py)",
+    "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
+    "as_of": "2026-10-25",
+    "query_or_url": "zetaris:CD_CELLS, zetaris:CD_GAP_ZONE_CELLS",
+    "cell_ids": [
+     "871955082ffffff",
+     "871955083ffffff",
+     "871955092ffffff",
+     "871955093ffffff",
+     "871955098ffffff",
+     "87195509affffff",
+     "8719550f2ffffff",
+     "87195544effffff",
+     "871955463ffffff",
+     "871955468ffffff",
+     "871955469ffffff",
+     "87195546affffff",
+     "87195546bffffff",
+     "87195546cffffff",
+     "87195546dffffff",
+     "87195546effffff",
+     "871955733ffffff",
+     "871955736ffffff"
+    ],
+    "finding": "Candidate 3: a new 25 m mast on high ground (232 m, near the zone) would give 6652 of the zone's people a clear line of sight (6652 people in all, in this zone and in nearby poorly served cells; 9319 people reached in 18 of 43 cells checked).",
+    "value": {
+     "lat": 54.386738072726786,
+     "lon": -2.903344920636638,
+     "ground_m": 231.7,
+     "zone_people_gaining": 6652,
+     "poor_people_gaining": 6652,
+     "people_reached": 9319
+    },
+    "sample_size": {
+     "cells_checked": 43
+    },
+    "strength": "moderate",
+    "bears_on": [
+     "terrain_blocking",
+     "distance_to_mast"
+    ],
+    "evidence_id": "cand_3",
+    "tool": "candidate_sites",
+    "round": 1,
+    "zetaris": [],
+    "by": "investigator",
+    "kind": "evidence",
+    "run_id": "run_20261026232653_82an",
+    "ref": "cand_3"
+   }
+  },
+  {
+   "seq": 882,
+   "at": "2026-10-26T23:27:10.088Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "evidence",
+   "ref": "existing_1",
+   "memory_id": "mem-843",
+   "round": 1,
+   "summary": "Existing site S049663 (Vodafone, 0.3 km from the zone) reaches 5413 of the zone's people with a clear line (7345 people in all).",
+   "old_confidence": null,
+   "new_confidence": 0.7,
+   "reason": null,
+   "payload": {
+    "id": "existing_1",
+    "source": "Existing site (line of sight over Copernicus DEM, planning/siting.py)",
+    "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
+    "as_of": "2026-10-25",
+    "query_or_url": "zetaris:CD_MASTS_SITES",
+    "cell_ids": [
+     "871955463ffffff",
+     "871955468ffffff",
+     "871955469ffffff",
+     "87195546affffff",
+     "87195546bffffff",
+     "87195546cffffff",
+     "87195546effffff",
+     "871955736ffffff"
+    ],
+    "finding": "Existing site S049663 (Vodafone, 0.3 km from the zone) reaches 5413 of the zone's people with a clear line (7345 people in all).",
+    "value": {
+     "site_id": "S049663",
+     "lat": 54.393,
+     "lon": -2.9335,
+     "operators": [
+      "Vodafone"
+     ],
+     "zone_people_gaining": 5413,
+     "people_reached": 7345
+    },
+    "sample_size": {
+     "cells_checked": 44
+    },
+    "strength": "moderate",
+    "bears_on": [
+     "single_operator"
+    ],
+    "evidence_id": "existing_1",
+    "tool": "candidate_sites",
+    "round": 1,
+    "zetaris": [],
+    "by": "investigator",
+    "kind": "evidence",
+    "run_id": "run_20261026232653_82an",
+    "ref": "existing_1"
+   }
+  },
+  {
+   "seq": 883,
+   "at": "2026-10-26T23:27:10.126Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "evidence",
+   "ref": "existing_2",
+   "memory_id": "mem-844",
+   "round": 1,
+   "summary": "Existing site S036295 (O2, 0.4 km from the zone) reaches 5413 of the zone's people with a clear line (7295 people in all).",
+   "old_confidence": null,
+   "new_confidence": 0.7,
+   "reason": null,
+   "payload": {
+    "id": "existing_2",
+    "source": "Existing site (line of sight over Copernicus DEM, planning/siting.py)",
+    "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
+    "as_of": "2026-10-25",
+    "query_or_url": "zetaris:CD_MASTS_SITES",
+    "cell_ids": [
+     "871955463ffffff",
+     "871955468ffffff",
+     "871955469ffffff",
+     "87195546affffff",
+     "87195546bffffff",
+     "87195546effffff",
+     "871955736ffffff"
+    ],
+    "finding": "Existing site S036295 (O2, 0.4 km from the zone) reaches 5413 of the zone's people with a clear line (7295 people in all).",
+    "value": {
+     "site_id": "S036295",
+     "lat": 54.3928,
+     "lon": -2.9433,
+     "operators": [
+      "O2"
+     ],
+     "zone_people_gaining": 5413,
+     "people_reached": 7295
+    },
+    "sample_size": {
+     "cells_checked": 47
+    },
+    "strength": "moderate",
+    "bears_on": [
+     "single_operator"
+    ],
+    "evidence_id": "existing_2",
+    "tool": "candidate_sites",
+    "round": 1,
+    "zetaris": [],
+    "by": "investigator",
+    "kind": "evidence",
+    "run_id": "run_20261026232653_82an",
+    "ref": "existing_2"
+   }
+  },
+  {
+   "seq": 884,
+   "at": "2026-10-26T23:27:10.171Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "evidence",
+   "ref": "existing_3",
+   "memory_id": "mem-845",
+   "round": 1,
+   "summary": "Existing site S054566 (Vodafone, 0.4 km from the zone) reaches 5362 of the zone's people with a clear line (7553 people in all).",
+   "old_confidence": null,
+   "new_confidence": 0.7,
+   "reason": null,
+   "payload": {
+    "id": "existing_3",
+    "source": "Existing site (line of sight over Copernicus DEM, planning/siting.py)",
+    "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
+    "as_of": "2026-10-25",
+    "query_or_url": "zetaris:CD_MASTS_SITES",
+    "cell_ids": [
+     "871955083ffffff",
+     "871955092ffffff",
+     "871955463ffffff",
+     "871955468ffffff",
+     "871955469ffffff",
+     "87195546bffffff",
+     "87195546cffffff",
+     "87195546effffff",
+     "871955714ffffff",
+     "871955736ffffff"
+    ],
+    "finding": "Existing site S054566 (Vodafone, 0.4 km from the zone) reaches 5362 of the zone's people with a clear line (7553 people in all).",
+    "value": {
+     "site_id": "S054566",
+     "lat": 54.3758,
+     "lon": -2.9087,
+     "operators": [
+      "Vodafone"
+     ],
+     "zone_people_gaining": 5362,
+     "people_reached": 7553
+    },
+    "sample_size": {
+     "cells_checked": 44
+    },
+    "strength": "moderate",
+    "bears_on": [
+     "single_operator"
+    ],
+    "evidence_id": "existing_3",
+    "tool": "candidate_sites",
+    "round": 1,
+    "zetaris": [],
+    "by": "investigator",
+    "kind": "evidence",
+    "run_id": "run_20261026232653_82an",
+    "ref": "existing_3"
+   }
+  },
+  {
+   "seq": 885,
+   "at": "2026-10-26T23:27:10.206Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "note",
+   "ref": "n5",
+   "memory_id": "mem-846",
+   "round": 1,
+   "summary": "candidate_sites() -> cand_1, cand_2, cand_3, existing_1, existing_2, existing_3",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "tool_call",
+    "summary": "candidate_sites() -> cand_1, cand_2, cand_3, existing_1, existing_2, existing_3",
+    "by": "investigator",
+    "tool": "candidate_sites",
+    "args": {},
+    "round": 1,
+    "evidence_ids": [
+     "cand_1",
+     "cand_2",
+     "cand_3",
+     "existing_1",
+     "existing_2",
+     "existing_3"
+    ],
+    "new": [
+     "cand_1",
+     "cand_2",
+     "cand_3",
+     "existing_1",
+     "existing_2",
+     "existing_3"
+    ],
+    "duration_ms": 243,
+    "zetaris_queries": [],
+    "note_id": "n5",
+    "kind": "note",
+    "run_id": "run_20261026232653_82an",
+    "ref": "n5"
+   }
+  },
+  {
+   "seq": 886,
+   "at": "2026-10-26T23:27:10.318Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "evidence",
+   "ref": "prior_diagnoses",
+   "memory_id": "mem-847",
+   "round": 1,
+   "summary": "No earlier diagnoses within 10 km in Meterless.",
+   "old_confidence": null,
+   "new_confidence": 0.4,
+   "reason": null,
+   "payload": {
+    "id": "prior_diagnoses",
+    "source": "Meterless H-MEM (earlier diagnoses)",
+    "data_period": "Meterless H-MEM (earlier runs)",
+    "as_of": "2026-10-26T23:27:10+00:00",
+    "query_or_url": "meterless:/diagnoses/near",
+    "cell_ids": [
+     "87195509affffff"
+    ],
+    "finding": "No earlier diagnoses within 10 km in Meterless.",
+    "value": [],
+    "sample_size": {
+     "diagnoses": 0
+    },
+    "strength": "weak",
+    "bears_on": [],
+    "evidence_id": "prior_diagnoses",
+    "tool": "prior_diagnoses_nearby",
+    "round": 1,
+    "zetaris": [],
+    "by": "investigator",
+    "kind": "evidence",
+    "run_id": "run_20261026232653_82an",
+    "ref": "prior_diagnoses"
+   }
+  },
+  {
+   "seq": 887,
+   "at": "2026-10-26T23:27:10.361Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "note",
+   "ref": "n6",
+   "memory_id": "mem-848",
+   "round": 1,
+   "summary": "prior_diagnoses_nearby() -> prior_diagnoses",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "tool_call",
+    "summary": "prior_diagnoses_nearby() -> prior_diagnoses",
+    "by": "investigator",
+    "tool": "prior_diagnoses_nearby",
+    "args": {},
+    "round": 1,
+    "evidence_ids": [
+     "prior_diagnoses"
+    ],
+    "new": [
+     "prior_diagnoses"
+    ],
+    "duration_ms": 91,
+    "zetaris_queries": [],
+    "note_id": "n6",
+    "kind": "note",
+    "run_id": "run_20261026232653_82an",
+    "ref": "n6"
+   }
+  },
+  {
+   "seq": 888,
+   "at": "2026-10-26T23:27:51.551Z",
+   "action": "create",
+   "actor": "diagnostician",
+   "kind": "note",
+   "ref": "n7",
+   "memory_id": "mem-849",
+   "round": 1,
+   "summary": "diagnostician via nemotron-3.5-super-vl-120b-a12b in 41.0s",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "llm_call",
+    "summary": "diagnostician via nemotron-3.5-super-vl-120b-a12b in 41.0s",
+    "by": "diagnostician",
+    "round": 1,
+    "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+    "duration_ms": 40959,
+    "tokens": {
+     "prompt_tokens": 1828,
+     "completion_tokens": 197,
+     "total_tokens": 2025,
+     "prompt_tokens_details": {
+      "audio_tokens": null,
+      "cached_tokens": 0
+     },
+     "completion_tokens_details": {
+      "accepted_prediction_tokens": null,
+      "audio_tokens": null,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": null
+     }
+    },
+    "attempts": 1,
+    "retries": [],
+    "fallback": null,
+    "thinking": false,
+    "purpose": null,
+    "note_id": "n7",
+    "kind": "note",
+    "run_id": "run_20261026232653_82an",
+    "ref": "n7"
+   }
+  },
+  {
+   "seq": 889,
+   "at": "2026-10-26T23:27:51.630Z",
+   "action": "create",
+   "actor": "diagnostician",
+   "kind": "belief",
+   "ref": "capacity_strain",
+   "memory_id": "mem-850",
+   "round": 1,
+   "summary": "capacity_strain: The zone shows a busy-network capacity signal with sites nearby, and 59% of its people are in cells flagged for capacity strain [zone_overview][fix_rule].",
+   "old_confidence": null,
+   "new_confidence": 0.75,
+   "reason": null,
+   "payload": {
+    "belief_id": "capacity_strain",
+    "cause": "capacity_strain",
+    "explanation": "The zone shows a busy-network capacity signal with sites nearby, and 59% of its people are in cells flagged for capacity strain [zone_overview][fix_rule].",
+    "supporting": [
+     "zone_overview",
+     "fix_rule"
+    ],
+    "contradicting": [],
+    "round": 1,
+    "by": "diagnostician",
+    "status": "active",
+    "kind": "belief",
+    "run_id": "run_20261026232653_82an",
+    "ref": "capacity_strain"
+   }
+  },
+  {
+   "seq": 890,
+   "at": "2026-10-26T23:27:51.659Z",
+   "action": "create",
+   "actor": "diagnostician",
+   "kind": "belief",
+   "ref": "insufficient_data",
+   "memory_id": "mem-851",
+   "round": 1,
+   "summary": "insufficient_data: Operators are only described as somewhere nearby and mast heights are assumed, so distance and terrain cannot be confirmed at the point [zone_overview].",
+   "old_confidence": null,
+   "new_confidence": 0.45,
+   "reason": null,
+   "payload": {
+    "belief_id": "insufficient_data",
+    "cause": "insufficient_data",
+    "explanation": "Operators are only described as somewhere nearby and mast heights are assumed, so distance and terrain cannot be confirmed at the point [zone_overview].",
+    "supporting": [
+     "zone_overview"
+    ],
+    "contradicting": [],
+    "round": 1,
+    "by": "diagnostician",
+    "status": "active",
+    "kind": "belief",
+    "run_id": "run_20261026232653_82an",
+    "ref": "insufficient_data"
+   }
+  },
+  {
+   "seq": 891,
+   "at": "2026-10-26T23:28:26.896Z",
+   "action": "create",
+   "actor": "critic",
+   "kind": "note",
+   "ref": "n8",
+   "memory_id": "mem-852",
+   "round": 1,
+   "summary": "critic via nemotron-3-ultra-550b-a55b in 35.0s",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "llm_call",
+    "summary": "critic via nemotron-3-ultra-550b-a55b in 35.0s",
+    "by": "critic",
+    "round": 1,
+    "model": "nvidia/nemotron-3-ultra-550b-a55b",
+    "duration_ms": 35016,
+    "tokens": {
+     "prompt_tokens": 2392,
+     "completion_tokens": 2404,
+     "total_tokens": 4796
+    },
+    "attempts": 1,
+    "retries": [],
+    "fallback": null,
+    "thinking": true,
+    "purpose": null,
+    "note_id": "n8",
+    "kind": "note",
+    "run_id": "run_20261026232653_82an",
+    "ref": "n8"
+   }
+  },
+  {
+   "seq": 892,
+   "at": "2026-10-26T23:28:27.018Z",
+   "action": "create",
+   "actor": "critic",
+   "kind": "critique",
+   "ref": "c1",
+   "memory_id": "mem-853",
+   "round": 1,
+   "summary": "approve on capacity_strain: Both zone_overview and fix_rule explicitly identify a busy-network capacity signal affecting 59% of the zone's population (4,961 people in flagged cells). The 119 Ookla tests in the latest quarter exceed the 30-test threshold for reliability, and the 35% speed decline over quarters is consistent with growing capacity pressure. No contradictory evidence appears in the listed items.",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "belief_id": "capacity_strain",
+    "verdict": "approve",
+    "reason": "Both zone_overview and fix_rule explicitly identify a busy-network capacity signal affecting 59% of the zone's population (4,961 people in flagged cells). The 119 Ookla tests in the latest quarter exceed the 30-test threshold for reliability, and the 35% speed decline over quarters is consistent with growing capacity pressure. No contradictory evidence appears in the listed items.",
+    "requested_checks": [],
+    "suggested_confidence": null,
+    "round": 1,
+    "by": "critic",
+    "critique_id": "c1",
+    "kind": "critique",
+    "run_id": "run_20261026232653_82an",
+    "ref": "c1"
+   }
+  },
+  {
+   "seq": 893,
+   "at": "2026-10-26T23:28:27.111Z",
+   "action": "update",
+   "actor": "critic",
+   "kind": "belief",
+   "ref": "insufficient_data",
+   "memory_id": "mem-851",
+   "round": 1,
+   "summary": "critic: While zone_overview describes operator sites as 'approximate' and 'somewhere nearby', the evidence also includes line-of-sight analyses for three existing sites (existing_1, existing_2, existing_3) and three candidate sites (cand_1, cand_2, cand_3) computed over Copernicus DEM. These provide terrain-confirmed reach for specific Vodafone and O2 sites, contradicting the claim that terrain 'cannot be confirmed at the point'. The belief overstates the data gap given the available LOS results.",
+   "old_confidence": 0.45,
+   "new_confidence": 0.25,
+   "reason": "critic: While zone_overview describes operator sites as 'approximate' and 'somewhere nearby', the evidence also includes line-of-sight analyses for three existing sites (existing_1, existing_2, existing_3) and three candidate sites (cand_1, cand_2, cand_3) computed over Copernicus DEM. These provide terrain-confirmed reach for specific Vodafone and O2 sites, contradicting the claim that terrain 'cannot be confirmed at the point'. The belief overstates the data gap given the available LOS results."
+  },
+  {
+   "seq": 894,
+   "at": "2026-10-26T23:28:27.154Z",
+   "action": "create",
+   "actor": "critic",
+   "kind": "critique",
+   "ref": "c2",
+   "memory_id": "mem-854",
+   "round": 1,
+   "summary": "downgrade on insufficient_data: While zone_overview describes operator sites as 'approximate' and 'somewhere nearby', the evidence also includes line-of-sight analyses for three existing sites (existing_1, existing_2, existing_3) and three candidate sites (cand_1, cand_2, cand_3) computed over Copernicus DEM. These provide terrain-confirmed reach for specific Vodafone and O2 sites, contradicting the claim that terrain 'cannot be confirmed at the point'. The belief overstates the data gap given the available LOS results.",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "belief_id": "insufficient_data",
+    "verdict": "downgrade",
+    "reason": "While zone_overview describes operator sites as 'approximate' and 'somewhere nearby', the evidence also includes line-of-sight analyses for three existing sites (existing_1, existing_2, existing_3) and three candidate sites (cand_1, cand_2, cand_3) computed over Copernicus DEM. These provide terrain-confirmed reach for specific Vodafone and O2 sites, contradicting the claim that terrain 'cannot be confirmed at the point'. The belief overstates the data gap given the available LOS results.",
+    "requested_checks": [],
+    "suggested_confidence": 0.25,
+    "round": 1,
+    "by": "critic",
+    "critique_id": "c2",
+    "kind": "critique",
+    "run_id": "run_20261026232653_82an",
+    "ref": "c2"
+   }
+  },
+  {
+   "seq": 895,
+   "at": "2026-10-26T23:28:34.289Z",
+   "action": "create",
+   "actor": "fix_planner",
+   "kind": "note",
+   "ref": "n9",
+   "memory_id": "mem-855",
+   "round": 1,
+   "summary": "fix_planner via nemotron-3.5-super-vl-120b-a12b in 6.9s",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "llm_call",
+    "summary": "fix_planner via nemotron-3.5-super-vl-120b-a12b in 6.9s",
+    "by": "fix_planner",
+    "round": 1,
+    "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+    "duration_ms": 6945,
+    "tokens": {
+     "prompt_tokens": 1746,
+     "completion_tokens": 200,
+     "total_tokens": 1946,
+     "prompt_tokens_details": {
+      "audio_tokens": null,
+      "cached_tokens": 0
+     },
+     "completion_tokens_details": {
+      "accepted_prediction_tokens": null,
+      "audio_tokens": null,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": null
+     }
+    },
+    "attempts": 1,
+    "retries": [],
+    "fallback": null,
+    "thinking": false,
+    "purpose": null,
+    "note_id": "n9",
+    "kind": "note",
+    "run_id": "run_20261026232653_82an",
+    "ref": "n9"
+   }
+  },
+  {
+   "seq": 896,
+   "at": "2026-10-26T23:29:14.495Z",
+   "action": "create",
+   "actor": "critic",
+   "kind": "note",
+   "ref": "n10",
+   "memory_id": "mem-856",
+   "round": 1,
+   "summary": "critic via nemotron-3-ultra-550b-a55b in 40.0s",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "llm_call",
+    "summary": "critic via nemotron-3-ultra-550b-a55b in 40.0s",
+    "by": "critic",
+    "round": 1,
+    "model": "nvidia/nemotron-3-ultra-550b-a55b",
+    "duration_ms": 39952,
+    "tokens": {
+     "prompt_tokens": 1879,
+     "completion_tokens": 2357,
+     "total_tokens": 4236
+    },
+    "attempts": 1,
+    "retries": [],
+    "fallback": null,
+    "thinking": true,
+    "purpose": null,
+    "note_id": "n10",
+    "kind": "note",
+    "run_id": "run_20261026232653_82an",
+    "ref": "n10"
+   }
+  },
+  {
+   "seq": 897,
+   "at": "2026-10-26T23:29:14.546Z",
+   "action": "create",
+   "actor": "critic",
+   "kind": "critique",
+   "ref": "c3",
+   "memory_id": "mem-857",
+   "round": 1,
+   "summary": "revise on fix_plan: The plan correctly identifies the zone as an improvement opportunity (not a gap) and cites the zone's people gaining (4,961 in capacity-strain cells, 3,492 below half the reference median) from [zone_overview] and [fix_rule]. However, the assumptions describe a new 25 m mast build with line-of-sight checks, which is a coverage fix, while the fix_type is capacity_upgrade. Assumptions must match the fix type (e.g., additional spectrum, carrier aggregation, small cells).",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "belief_id": null,
+    "target": "fix_plan",
+    "verdict": "revise",
+    "reason": "The plan correctly identifies the zone as an improvement opportunity (not a gap) and cites the zone's people gaining (4,961 in capacity-strain cells, 3,492 below half the reference median) from [zone_overview] and [fix_rule]. However, the assumptions describe a new 25 m mast build with line-of-sight checks, which is a coverage fix, while the fix_type is capacity_upgrade. Assumptions must match the fix type (e.g., additional spectrum, carrier aggregation, small cells).",
+    "issues": [
+     "assumptions describe a new mast build (25 m mast, line of sight, no planning checks) but fix_type is capacity_upgrade; update assumptions to reflect capacity upgrades (e.g., spectrum, sectors, small cells)",
+     "ensure assumptions are relevant to capacity upgrade, not coverage expansion"
+    ],
+    "requested_checks": [],
+    "round": 1,
+    "by": "critic",
+    "critique_id": "c3",
+    "kind": "critique",
+    "run_id": "run_20261026232653_82an",
+    "ref": "c3"
+   }
+  },
+  {
+   "seq": 898,
+   "at": "2026-10-26T23:29:21.241Z",
+   "action": "create",
+   "actor": "fix_planner",
+   "kind": "note",
+   "ref": "n11",
+   "memory_id": "mem-858",
+   "round": 1,
+   "summary": "fix_planner via nemotron-3.5-super-vl-120b-a12b in 6.3s",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "llm_call",
+    "summary": "fix_planner via nemotron-3.5-super-vl-120b-a12b in 6.3s",
+    "by": "fix_planner",
+    "round": 1,
+    "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+    "duration_ms": 6260,
+    "tokens": {
+     "prompt_tokens": 1925,
+     "completion_tokens": 163,
+     "total_tokens": 2088,
+     "prompt_tokens_details": {
+      "audio_tokens": null,
+      "cached_tokens": 0
+     },
+     "completion_tokens_details": {
+      "accepted_prediction_tokens": null,
+      "audio_tokens": null,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": null
+     }
+    },
+    "attempts": 1,
+    "retries": [],
+    "fallback": null,
+    "thinking": false,
+    "purpose": null,
+    "note_id": "n11",
+    "kind": "note",
+    "run_id": "run_20261026232653_82an",
+    "ref": "n11"
+   }
+  },
+  {
+   "seq": 899,
+   "at": "2026-10-26T23:29:31.490Z",
+   "action": "create",
+   "actor": "critic",
+   "kind": "note",
+   "ref": "n12",
+   "memory_id": "mem-859",
+   "round": 1,
+   "summary": "critic via nemotron-3-ultra-550b-a55b in 9.9s",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "llm_call",
+    "summary": "critic via nemotron-3-ultra-550b-a55b in 9.9s",
+    "by": "critic",
+    "round": 1,
+    "model": "nvidia/nemotron-3-ultra-550b-a55b",
+    "duration_ms": 9898,
+    "tokens": {
+     "prompt_tokens": 1842,
+     "completion_tokens": 1196,
+     "total_tokens": 3038
+    },
+    "attempts": 1,
+    "retries": [],
+    "fallback": null,
+    "thinking": true,
+    "purpose": null,
+    "note_id": "n12",
+    "kind": "note",
+    "run_id": "run_20261026232653_82an",
+    "ref": "n12"
+   }
+  },
+  {
+   "seq": 900,
+   "at": "2026-10-26T23:29:31.557Z",
+   "action": "create",
+   "actor": "critic",
+   "kind": "critique",
+   "ref": "c4",
+   "memory_id": "mem-860",
+   "round": 1,
+   "summary": "approve on fix_plan: The plan correctly identifies the zone as an improvement opportunity, cites the zone's people gaining (4,961 with capacity strain, 3,492 below half reference median) from [zone_overview], matches the fix_type capacity_upgrade to the cause per [fix_rule], states assumptions, and does not claim no service. Data confidence is high per [zone_overview] so no weak-data flag needed.",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "belief_id": null,
+    "target": "fix_plan",
+    "verdict": "approve",
+    "reason": "The plan correctly identifies the zone as an improvement opportunity, cites the zone's people gaining (4,961 with capacity strain, 3,492 below half reference median) from [zone_overview], matches the fix_type capacity_upgrade to the cause per [fix_rule], states assumptions, and does not claim no service. Data confidence is high per [zone_overview] so no weak-data flag needed.",
+    "issues": [],
+    "requested_checks": [],
+    "round": 1,
+    "by": "critic",
+    "critique_id": "c4",
+    "kind": "critique",
+    "run_id": "run_20261026232653_82an",
+    "ref": "c4"
+   }
+  },
+  {
+   "seq": 901,
+   "at": "2026-10-26T23:30:09.641Z",
+   "action": "create",
+   "actor": "advisor",
+   "kind": "note",
+   "ref": "n13",
+   "memory_id": "mem-861",
+   "round": 0,
+   "summary": "advisor via nemotron-3.5-super-vl-120b-a12b in 37.5s",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "llm_call",
+    "summary": "advisor via nemotron-3.5-super-vl-120b-a12b in 37.5s",
+    "by": "advisor",
+    "round": 0,
+    "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+    "duration_ms": 37477,
+    "tokens": {
+     "prompt_tokens": 1704,
+     "completion_tokens": 291,
+     "total_tokens": 1995,
+     "prompt_tokens_details": {
+      "audio_tokens": null,
+      "cached_tokens": 0
+     },
+     "completion_tokens_details": {
+      "accepted_prediction_tokens": null,
+      "audio_tokens": null,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": null
+     }
+    },
+    "attempts": 1,
+    "retries": [],
+    "fallback": null,
+    "thinking": false,
+    "purpose": null,
+    "note_id": "n13",
+    "kind": "note",
+    "run_id": "run_20261026232653_82an",
+    "ref": "n13"
+   }
+  },
+  {
+   "seq": 902,
+   "at": "2026-10-26T23:30:10.023Z",
+   "action": "create",
+   "actor": "coordinator",
+   "kind": "note",
+   "ref": "n14",
+   "memory_id": "mem-862",
+   "summary": "opportunity wording problems: fix_plan.why: gap",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "wording_check",
+    "summary": "opportunity wording problems: fix_plan.why: gap",
+    "by": "coordinator",
+    "applies": true,
+    "ok": false,
+    "mentions_opportunity": true,
+    "forbidden": [
+     [
+      "fix_plan.why",
+      "gap"
+     ]
+    ],
+    "note_id": "n14",
+    "kind": "note",
+    "run_id": "run_20261026232653_82an",
+    "ref": "n14"
+   }
+  },
+  {
+   "seq": 903,
+   "at": "2026-10-26T23:30:10.222Z",
+   "action": "create",
+   "actor": "diagnosis",
+   "kind": "diagnosis",
+   "ref": "diagnosis",
+   "memory_id": "mem-863",
+   "summary": "Busy-network capacity strain is the likely cause [capacity_strain][zone_overview][fix_rule].",
+   "old_confidence": null,
+   "new_confidence": 0.75,
+   "reason": null,
+   "payload": {
+    "run_id": "run_20261026232653_82an",
+    "lat": 54.375364919423696,
+    "lon": -2.8830685116360866,
+    "scope": "zone",
+    "zone_id": "O00332",
+    "headline": "Busy-network capacity strain is the likely cause [capacity_strain][zone_overview][fix_rule].",
+    "causes": [
+     {
+      "cause": "capacity_strain",
+      "confidence": 0.75
+     },
+     {
+      "cause": "insufficient_data",
+      "confidence": 0.25
+     }
+    ],
+    "confidence": 0.75,
+    "status": "complete",
+    "recorded": "2026-10-26T23:30:10.214Z",
+    "kind": "diagnosis",
+    "ref": "diagnosis"
+   }
+  },
+  {
+   "seq": 904,
+   "at": "2026-10-26T23:30:10.400Z",
+   "action": "update",
+   "actor": "coordinator",
+   "kind": "run",
+   "ref": "run_20261026232653_82an",
+   "memory_id": "mem-832",
+   "summary": "complete",
+   "old_confidence": null,
+   "new_confidence": null,
+   "reason": null
+  }
+ ],
+ "evidence": [
+  {
+   "memory_id": "mem-836",
+   "kind": "evidence",
+   "ref": "zone_overview",
+   "content": "8,452 people in 12 H3 cells (Westmorland and Furness, England); an improvement opportunity: not poorly served, but with a measurable weakness. Weaknesses: 3,492 in cells measured below half the local reference median (66 Mbps, the lower of the area and UK medians); 4,961 in cells whose speeds fell by 30% or more over the last quarters; 4,961 in busy cells with a capacity-strain signal. Measured cells are on average 26% below their reference median. 119 Ookla tests in the latest quarter averaging 28.5 Mbps (data confidence: high). Speed fell 35% from the oldest to the latest quarter. On average 4.0 operators have approximate sites within 5 km of its cells (EE, O2, Three, Vodafone somewhere nearby).",
+   "confidence": 0.9,
+   "source": "Improvement opportunities (Zetaris CD_OPP_ZONES)",
+   "created_at": "2026-10-26T23:27:09.794Z",
+   "id": "zone_overview",
+   "data_period": "built from Ookla 2026Q3 and mast sites 2026-10-25",
+   "as_of": "2026-10-26",
+   "query_or_url": "zetaris:CD_OPP_ZONES, zetaris:CD_OPP_ZONE_CELLS",
+   "cell_ids": [
+    "871955088ffffff",
+    "87195508affffff",
+    "87195508dffffff",
+    "871955098ffffff",
+    "871955099ffffff",
+    "87195509affffff",
+    "87195509bffffff",
+    "87195509dffffff",
+    "8719550f2ffffff",
+    "871955468ffffff",
+    "871955469ffffff",
+    "87195546affffff"
+   ],
+   "finding": "8,452 people in 12 H3 cells (Westmorland and Furness, England); an improvement opportunity: not poorly served, but with a measurable weakness. Weaknesses: 3,492 in cells measured below half the local reference median (66 Mbps, the lower of the area and UK medians); 4,961 in cells whose speeds fell by 30% or more over the last quarters; 4,961 in busy cells with a capacity-strain signal. Measured cells are on average 26% below their reference median. 119 Ookla tests in the latest quarter averaging 28.5 Mbps (data confidence: high). Speed fell 35% from the oldest to the latest quarter. On average 4.0 operators have approximate sites within 5 km of its cells (EE, O2, Three, Vodafone somewhere nearby).",
+   "value": {
+    "people": 8452,
+    "cells": 12,
+    "people_by_reason": {
+     "slow": 3492,
+     "falling": 4961,
+     "few_operators": 0,
+     "capacity": 4961
+    },
+    "median_speed_mbps": 21.0816,
+    "trend_pct": -35.2954146090965,
+    "operators_mean": 4,
+    "operators_nearby": [
+     "EE",
+     "O2",
+     "Three",
+     "Vodafone"
+    ],
+    "council": "Westmorland and Furness",
+    "nation": "England",
+    "reasons": [
+     "slow",
+     "falling",
+     "capacity"
+    ],
+    "shortfall_pct": 26.22077520565469,
+    "ref_mbps": 66.17426315789473,
+    "limited_data": false
+   },
+   "sample_size": {
+    "tests": 119,
+    "cells": 12
+   },
+   "strength": "strong",
+   "bears_on": [
+    "distance_to_mast",
+    "terrain_blocking",
+    "single_operator",
+    "capacity_strain",
+    "insufficient_data"
+   ],
+   "evidence_id": "zone_overview",
+   "tool": "zone_summary",
+   "round": 1,
+   "zetaris": [],
+   "by": "investigator",
+   "run_id": "run_20261026232653_82an"
+  },
+  {
+   "memory_id": "mem-837",
+   "kind": "evidence",
+   "ref": "zone_priority",
+   "content": "Priority: rank 655 of 1816 in uk; rank 6 of 23 in la:E06000064.",
+   "confidence": 0.7,
+   "source": "Priority score (computed, planning/scoring.py)",
+   "created_at": "2026-10-26T23:27:09.827Z",
+   "id": "zone_priority",
+   "data_period": "built from Ookla 2026Q3 and mast sites 2026-10-25",
+   "as_of": "2026-10-26",
+   "query_or_url": "zetaris:CD_OPP_ZONES, zetaris:CD_OPP_ZONE_CELLS",
+   "cell_ids": [
+    "871955088ffffff",
+    "87195508affffff",
+    "87195508dffffff",
+    "871955098ffffff",
+    "871955099ffffff",
+    "87195509affffff",
+    "87195509bffffff",
+    "87195509dffffff",
+    "8719550f2ffffff",
+    "871955468ffffff",
+    "871955469ffffff",
+    "87195546affffff"
+   ],
+   "finding": "Priority: rank 655 of 1816 in uk; rank 6 of 23 in la:E06000064.",
+   "value": {
+    "uk": {
+     "rank": 655,
+     "of": 1816,
+     "score": 50.8,
+     "breakdown": {
+      "people": {
+       "raw": 8452.16520151496,
+       "normalised": 0.818,
+       "weight": 0.35,
+       "contribution": 28.6,
+       "no_data": false
+      },
+      "shortfall": {
+       "raw": 26.22077520565469,
+       "normalised": 0.548,
+       "weight": 0.3,
+       "contribution": 16.4,
+       "no_data": false
+      },
+      "trend": {
+       "raw": 35.2954146090965,
+       "normalised": 0.39,
+       "weight": 0.15,
+       "contribution": 5.8,
+       "no_data": false
+      },
+      "operator_choice": {
+       "raw": 0,
+       "normalised": 0.002,
+       "weight": 0.2,
+       "contribution": 0,
+       "no_data": false
+      }
+     }
+    },
+    "la:E06000064": {
+     "rank": 6,
+     "of": 23,
+     "score": 55.6,
+     "breakdown": {
+      "people": {
+       "raw": 8452.16520151496,
+       "normalised": 1,
+       "weight": 0.35,
+       "contribution": 35,
+       "no_data": false
+      },
+      "shortfall": {
+       "raw": 26.22077520565469,
+       "normalised": 0.353,
+       "weight": 0.3,
+       "contribution": 10.6,
+       "no_data": false
+      },
+      "trend": {
+       "raw": 35.2954146090965,
+       "normalised": 0.667,
+       "weight": 0.15,
+       "contribution": 10,
+       "no_data": false
+      },
+      "operator_choice": {
+       "raw": 0,
+       "normalised": 0,
+       "weight": 0.2,
+       "contribution": 0,
+       "no_data": false
+      }
+     }
+    }
+   },
+   "sample_size": null,
+   "strength": "moderate",
+   "bears_on": [],
+   "evidence_id": "zone_priority",
+   "tool": "zone_summary",
+   "round": 1,
+   "zetaris": [],
+   "by": "investigator",
+   "run_id": "run_20261026232653_82an"
+  },
+  {
+   "memory_id": "mem-838",
+   "kind": "evidence",
+   "ref": "fix_rule",
+   "content": "Rule-based fix: Capacity upgrade. 59% of the zone's people are in cells that show a busy-network (capacity) signal, with sites nearby.",
+   "confidence": 0.7,
+   "source": "Rule-based fix suggestion (planning/siting.py)",
+   "created_at": "2026-10-26T23:27:09.864Z",
+   "id": "fix_rule",
+   "data_period": "built from Ookla 2026Q3 and mast sites 2026-10-25",
+   "as_of": "2026-10-26",
+   "query_or_url": "zetaris:CD_OPP_ZONES, zetaris:CD_OPP_ZONE_CELLS",
+   "cell_ids": [
+    "871955088ffffff",
+    "87195508affffff",
+    "87195508dffffff",
+    "871955098ffffff",
+    "871955099ffffff",
+    "87195509affffff",
+    "87195509bffffff",
+    "87195509dffffff",
+    "8719550f2ffffff",
+    "871955468ffffff",
+    "871955469ffffff",
+    "87195546affffff"
+   ],
+   "finding": "Rule-based fix: Capacity upgrade. 59% of the zone's people are in cells that show a busy-network (capacity) signal, with sites nearby.",
+   "value": {
+    "type": "capacity_upgrade",
+    "label": "Capacity upgrade",
+    "why": [
+     "59% of the zone's people are in cells that show a busy-network (capacity) signal, with sites nearby."
+    ],
+    "secondary": null,
+    "secondary_label": null,
+    "rule_based": true,
+    "note": "Rule-based suggestion for an improvement opportunity, not yet reviewed by agents."
+   },
+   "sample_size": null,
+   "strength": "moderate",
+   "bears_on": [],
+   "evidence_id": "fix_rule",
+   "tool": "zone_summary",
+   "round": 1,
+   "zetaris": [],
+   "by": "investigator",
+   "run_id": "run_20261026232653_82an"
+  },
+  {
+   "memory_id": "mem-840",
+   "kind": "evidence",
+   "ref": "cand_1",
+   "content": "Candidate 1: a new 25 m mast on high ground (238 m, inside the zone) would give 7698 of the zone's people a clear line of sight (7698 people in all, in this zone and in nearby poorly served cells; 11959 people reached in 17 of 50 cells checked).",
+   "confidence": 0.7,
+   "source": "Candidate site (line of sight over Copernicus DEM, planning/siting.py)",
+   "created_at": "2026-10-26T23:27:09.967Z",
+   "id": "cand_1",
+   "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
+   "as_of": "2026-10-25",
+   "query_or_url": "zetaris:CD_CELLS, zetaris:CD_GAP_ZONE_CELLS",
+   "cell_ids": [
+    "871955093ffffff",
+    "871955098ffffff",
+    "87195509affffff",
+    "87195509dffffff",
+    "871955441ffffff",
+    "87195544effffff",
+    "871955460ffffff",
+    "871955461ffffff",
+    "871955463ffffff",
+    "871955468ffffff",
+    "871955469ffffff",
+    "87195546affffff",
+    "87195546cffffff",
+    "87195546dffffff",
+    "87195546effffff",
+    "871955471ffffff",
+    "871955734ffffff"
+   ],
+   "finding": "Candidate 1: a new 25 m mast on high ground (238 m, inside the zone) would give 7698 of the zone's people a clear line of sight (7698 people in all, in this zone and in nearby poorly served cells; 11959 people reached in 17 of 50 cells checked).",
+   "value": {
+    "lat": 54.38404313920181,
+    "lon": -2.9750518219842768,
+    "ground_m": 238.4,
+    "zone_people_gaining": 7698,
+    "poor_people_gaining": 7698,
+    "people_reached": 11959
+   },
+   "sample_size": {
+    "cells_checked": 50
+   },
+   "strength": "moderate",
+   "bears_on": [
+    "terrain_blocking",
+    "distance_to_mast"
+   ],
+   "evidence_id": "cand_1",
+   "tool": "candidate_sites",
+   "round": 1,
+   "zetaris": [],
+   "by": "investigator",
+   "run_id": "run_20261026232653_82an"
+  },
+  {
+   "memory_id": "mem-841",
+   "kind": "evidence",
+   "ref": "cand_2",
+   "content": "Candidate 2: a new 25 m mast on high ground (466 m, near the zone) would give 6903 of the zone's people a clear line of sight (6925 people in all, in this zone and in nearby poorly served cells; 9204 people reached in 18 of 41 cells checked).",
+   "confidence": 0.7,
+   "source": "Candidate site (line of sight over Copernicus DEM, planning/siting.py)",
+   "created_at": "2026-10-26T23:27:09.994Z",
+   "id": "cand_2",
+   "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
+   "as_of": "2026-10-25",
+   "query_or_url": "zetaris:CD_CELLS, zetaris:CD_GAP_ZONE_CELLS",
+   "cell_ids": [
+    "871955092ffffff",
+    "871955093ffffff",
+    "871955098ffffff",
+    "87195509dffffff",
+    "8719550f2ffffff",
+    "871955441ffffff",
+    "871955445ffffff",
+    "871955460ffffff",
+    "871955462ffffff",
+    "871955465ffffff",
+    "871955466ffffff",
+    "871955468ffffff",
+    "871955469ffffff",
+    "87195546affffff",
+    "87195546bffffff",
+    "87195546dffffff",
+    "871955475ffffff",
+    "87195554bffffff"
+   ],
+   "finding": "Candidate 2: a new 25 m mast on high ground (466 m, near the zone) would give 6903 of the zone's people a clear line of sight (6925 people in all, in this zone and in nearby poorly served cells; 9204 people reached in 18 of 41 cells checked).",
+   "value": {
+    "lat": 54.42985700912644,
+    "lon": -2.9357286825355717,
+    "ground_m": 466.5,
+    "zone_people_gaining": 6903,
+    "poor_people_gaining": 6925,
+    "people_reached": 9204
+   },
+   "sample_size": {
+    "cells_checked": 41
+   },
+   "strength": "moderate",
+   "bears_on": [
+    "terrain_blocking",
+    "distance_to_mast"
+   ],
+   "evidence_id": "cand_2",
+   "tool": "candidate_sites",
+   "round": 1,
+   "zetaris": [],
+   "by": "investigator",
+   "run_id": "run_20261026232653_82an"
+  },
+  {
+   "memory_id": "mem-842",
+   "kind": "evidence",
+   "ref": "cand_3",
+   "content": "Candidate 3: a new 25 m mast on high ground (232 m, near the zone) would give 6652 of the zone's people a clear line of sight (6652 people in all, in this zone and in nearby poorly served cells; 9319 people reached in 18 of 43 cells checked).",
+   "confidence": 0.7,
+   "source": "Candidate site (line of sight over Copernicus DEM, planning/siting.py)",
+   "created_at": "2026-10-26T23:27:10.037Z",
+   "id": "cand_3",
+   "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
+   "as_of": "2026-10-25",
+   "query_or_url": "zetaris:CD_CELLS, zetaris:CD_GAP_ZONE_CELLS",
+   "cell_ids": [
+    "871955082ffffff",
+    "871955083ffffff",
+    "871955092ffffff",
+    "871955093ffffff",
+    "871955098ffffff",
+    "87195509affffff",
+    "8719550f2ffffff",
+    "87195544effffff",
+    "871955463ffffff",
+    "871955468ffffff",
+    "871955469ffffff",
+    "87195546affffff",
+    "87195546bffffff",
+    "87195546cffffff",
+    "87195546dffffff",
+    "87195546effffff",
+    "871955733ffffff",
+    "871955736ffffff"
+   ],
+   "finding": "Candidate 3: a new 25 m mast on high ground (232 m, near the zone) would give 6652 of the zone's people a clear line of sight (6652 people in all, in this zone and in nearby poorly served cells; 9319 people reached in 18 of 43 cells checked).",
+   "value": {
+    "lat": 54.386738072726786,
+    "lon": -2.903344920636638,
+    "ground_m": 231.7,
+    "zone_people_gaining": 6652,
+    "poor_people_gaining": 6652,
+    "people_reached": 9319
+   },
+   "sample_size": {
+    "cells_checked": 43
+   },
+   "strength": "moderate",
+   "bears_on": [
+    "terrain_blocking",
+    "distance_to_mast"
+   ],
+   "evidence_id": "cand_3",
+   "tool": "candidate_sites",
+   "round": 1,
+   "zetaris": [],
+   "by": "investigator",
+   "run_id": "run_20261026232653_82an"
+  },
+  {
+   "memory_id": "mem-843",
+   "kind": "evidence",
+   "ref": "existing_1",
+   "content": "Existing site S049663 (Vodafone, 0.3 km from the zone) reaches 5413 of the zone's people with a clear line (7345 people in all).",
+   "confidence": 0.7,
+   "source": "Existing site (line of sight over Copernicus DEM, planning/siting.py)",
+   "created_at": "2026-10-26T23:27:10.088Z",
+   "id": "existing_1",
+   "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
+   "as_of": "2026-10-25",
+   "query_or_url": "zetaris:CD_MASTS_SITES",
+   "cell_ids": [
+    "871955463ffffff",
+    "871955468ffffff",
+    "871955469ffffff",
+    "87195546affffff",
+    "87195546bffffff",
+    "87195546cffffff",
+    "87195546effffff",
+    "871955736ffffff"
+   ],
+   "finding": "Existing site S049663 (Vodafone, 0.3 km from the zone) reaches 5413 of the zone's people with a clear line (7345 people in all).",
+   "value": {
+    "site_id": "S049663",
+    "lat": 54.393,
+    "lon": -2.9335,
+    "operators": [
+     "Vodafone"
+    ],
+    "zone_people_gaining": 5413,
+    "people_reached": 7345
+   },
+   "sample_size": {
+    "cells_checked": 44
+   },
+   "strength": "moderate",
+   "bears_on": [
+    "single_operator"
+   ],
+   "evidence_id": "existing_1",
+   "tool": "candidate_sites",
+   "round": 1,
+   "zetaris": [],
+   "by": "investigator",
+   "run_id": "run_20261026232653_82an"
+  },
+  {
+   "memory_id": "mem-844",
+   "kind": "evidence",
+   "ref": "existing_2",
+   "content": "Existing site S036295 (O2, 0.4 km from the zone) reaches 5413 of the zone's people with a clear line (7295 people in all).",
+   "confidence": 0.7,
+   "source": "Existing site (line of sight over Copernicus DEM, planning/siting.py)",
+   "created_at": "2026-10-26T23:27:10.126Z",
+   "id": "existing_2",
+   "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
+   "as_of": "2026-10-25",
+   "query_or_url": "zetaris:CD_MASTS_SITES",
+   "cell_ids": [
+    "871955463ffffff",
+    "871955468ffffff",
+    "871955469ffffff",
+    "87195546affffff",
+    "87195546bffffff",
+    "87195546effffff",
+    "871955736ffffff"
+   ],
+   "finding": "Existing site S036295 (O2, 0.4 km from the zone) reaches 5413 of the zone's people with a clear line (7295 people in all).",
+   "value": {
+    "site_id": "S036295",
+    "lat": 54.3928,
+    "lon": -2.9433,
+    "operators": [
+     "O2"
+    ],
+    "zone_people_gaining": 5413,
+    "people_reached": 7295
+   },
+   "sample_size": {
+    "cells_checked": 47
+   },
+   "strength": "moderate",
+   "bears_on": [
+    "single_operator"
+   ],
+   "evidence_id": "existing_2",
+   "tool": "candidate_sites",
+   "round": 1,
+   "zetaris": [],
+   "by": "investigator",
+   "run_id": "run_20261026232653_82an"
+  },
+  {
+   "memory_id": "mem-845",
+   "kind": "evidence",
+   "ref": "existing_3",
+   "content": "Existing site S054566 (Vodafone, 0.4 km from the zone) reaches 5362 of the zone's people with a clear line (7553 people in all).",
+   "confidence": 0.7,
+   "source": "Existing site (line of sight over Copernicus DEM, planning/siting.py)",
+   "created_at": "2026-10-26T23:27:10.171Z",
+   "id": "existing_3",
+   "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
+   "as_of": "2026-10-25",
+   "query_or_url": "zetaris:CD_MASTS_SITES",
+   "cell_ids": [
+    "871955083ffffff",
+    "871955092ffffff",
+    "871955463ffffff",
+    "871955468ffffff",
+    "871955469ffffff",
+    "87195546bffffff",
+    "87195546cffffff",
+    "87195546effffff",
+    "871955714ffffff",
+    "871955736ffffff"
+   ],
+   "finding": "Existing site S054566 (Vodafone, 0.4 km from the zone) reaches 5362 of the zone's people with a clear line (7553 people in all).",
+   "value": {
+    "site_id": "S054566",
+    "lat": 54.3758,
+    "lon": -2.9087,
+    "operators": [
+     "Vodafone"
+    ],
+    "zone_people_gaining": 5362,
+    "people_reached": 7553
+   },
+   "sample_size": {
+    "cells_checked": 44
+   },
+   "strength": "moderate",
+   "bears_on": [
+    "single_operator"
+   ],
+   "evidence_id": "existing_3",
+   "tool": "candidate_sites",
+   "round": 1,
+   "zetaris": [],
+   "by": "investigator",
+   "run_id": "run_20261026232653_82an"
+  },
+  {
+   "memory_id": "mem-847",
+   "kind": "evidence",
+   "ref": "prior_diagnoses",
+   "content": "No earlier diagnoses within 10 km in Meterless.",
+   "confidence": 0.4,
+   "source": "Meterless H-MEM (earlier diagnoses)",
+   "created_at": "2026-10-26T23:27:10.318Z",
+   "id": "prior_diagnoses",
+   "data_period": "Meterless H-MEM (earlier runs)",
+   "as_of": "2026-10-26T23:27:10+00:00",
+   "query_or_url": "meterless:/diagnoses/near",
+   "cell_ids": [
+    "87195509affffff"
+   ],
+   "finding": "No earlier diagnoses within 10 km in Meterless.",
+   "value": [],
+   "sample_size": {
+    "diagnoses": 0
+   },
+   "strength": "weak",
+   "bears_on": [],
+   "evidence_id": "prior_diagnoses",
+   "tool": "prior_diagnoses_nearby",
+   "round": 1,
+   "zetaris": [],
+   "by": "investigator",
+   "run_id": "run_20261026232653_82an"
+  }
+ ],
+ "beliefs": [
+  {
+   "memory_id": "mem-850",
+   "kind": "belief",
+   "ref": "capacity_strain",
+   "content": "capacity_strain: The zone shows a busy-network capacity signal with sites nearby, and 59% of its people are in cells flagged for capacity strain [zone_overview][fix_rule].",
+   "confidence": 0.75,
+   "source": "diagnostician",
+   "created_at": "2026-10-26T23:27:51.629Z",
+   "belief_id": "capacity_strain",
+   "cause": "capacity_strain",
+   "explanation": "The zone shows a busy-network capacity signal with sites nearby, and 59% of its people are in cells flagged for capacity strain [zone_overview][fix_rule].",
+   "supporting": [
+    "zone_overview",
+    "fix_rule"
+   ],
+   "contradicting": [],
+   "round": 1,
+   "by": "diagnostician",
+   "status": "active",
+   "run_id": "run_20261026232653_82an",
+   "history": [
+    {
+     "at": "2026-10-26T23:27:51.630Z",
+     "by": "diagnostician",
+     "confidence": 0.75,
+     "previous": null,
+     "reason": "proposed",
+     "round": 1
+    }
+   ]
+  },
+  {
+   "memory_id": "mem-851",
+   "kind": "belief",
+   "ref": "insufficient_data",
+   "content": "insufficient_data: Operators are only described as somewhere nearby and mast heights are assumed, so distance and terrain cannot be confirmed at the point [zone_overview].",
+   "confidence": 0.25,
+   "source": "diagnostician",
+   "created_at": "2026-10-26T23:27:51.659Z",
+   "belief_id": "insufficient_data",
+   "cause": "insufficient_data",
+   "explanation": "Operators are only described as somewhere nearby and mast heights are assumed, so distance and terrain cannot be confirmed at the point [zone_overview].",
+   "supporting": [
+    "zone_overview"
+   ],
+   "contradicting": [],
+   "round": 1,
+   "by": "diagnostician",
+   "status": "active",
+   "run_id": "run_20261026232653_82an",
+   "history": [
+    {
+     "at": "2026-10-26T23:27:51.659Z",
+     "by": "diagnostician",
+     "confidence": 0.45,
+     "previous": null,
+     "reason": "proposed",
+     "round": 1
+    },
+    {
+     "at": "2026-10-26T23:28:27.111Z",
+     "by": "critic",
+     "confidence": 0.25,
+     "previous": 0.45,
+     "reason": "critic: While zone_overview describes operator sites as 'approximate' and 'somewhere nearby', the evidence also includes line-of-sight analyses for three existing sites (existing_1, existing_2, existing_3) and three candidate sites (cand_1, cand_2, cand_3) computed over Copernicus DEM. These provide terrain-confirmed reach for specific Vodafone and O2 sites, contradicting the claim that terrain 'cannot be confirmed at the point'. The belief overstates the data gap given the available LOS results.",
+     "round": 1
+    }
+   ]
+  }
+ ],
+ "critiques": [
+  {
+   "memory_id": "mem-853",
+   "kind": "critique",
+   "ref": "c1",
+   "content": "approve on capacity_strain: Both zone_overview and fix_rule explicitly identify a busy-network capacity signal affecting 59% of the zone's population (4,961 people in flagged cells). The 119 Ookla tests in the latest quarter exceed the 30-test threshold for reliability, and the 35% speed decline over quarters is consistent with growing capacity pressure. No contradictory evidence appears in the listed items.",
+   "confidence": 1,
+   "source": "critic",
+   "created_at": "2026-10-26T23:28:27.017Z",
+   "belief_id": "capacity_strain",
+   "verdict": "approve",
+   "reason": "Both zone_overview and fix_rule explicitly identify a busy-network capacity signal affecting 59% of the zone's population (4,961 people in flagged cells). The 119 Ookla tests in the latest quarter exceed the 30-test threshold for reliability, and the 35% speed decline over quarters is consistent with growing capacity pressure. No contradictory evidence appears in the listed items.",
+   "requested_checks": [],
+   "suggested_confidence": null,
+   "round": 1,
+   "by": "critic",
+   "critique_id": "c1",
+   "run_id": "run_20261026232653_82an"
+  },
+  {
+   "memory_id": "mem-854",
+   "kind": "critique",
+   "ref": "c2",
+   "content": "downgrade on insufficient_data: While zone_overview describes operator sites as 'approximate' and 'somewhere nearby', the evidence also includes line-of-sight analyses for three existing sites (existing_1, existing_2, existing_3) and three candidate sites (cand_1, cand_2, cand_3) computed over Copernicus DEM. These provide terrain-confirmed reach for specific Vodafone and O2 sites, contradicting the claim that terrain 'cannot be confirmed at the point'. The belief overstates the data gap given the available LOS results.",
+   "confidence": 1,
+   "source": "critic",
+   "created_at": "2026-10-26T23:28:27.153Z",
+   "belief_id": "insufficient_data",
+   "verdict": "downgrade",
+   "reason": "While zone_overview describes operator sites as 'approximate' and 'somewhere nearby', the evidence also includes line-of-sight analyses for three existing sites (existing_1, existing_2, existing_3) and three candidate sites (cand_1, cand_2, cand_3) computed over Copernicus DEM. These provide terrain-confirmed reach for specific Vodafone and O2 sites, contradicting the claim that terrain 'cannot be confirmed at the point'. The belief overstates the data gap given the available LOS results.",
+   "requested_checks": [],
+   "suggested_confidence": 0.25,
+   "round": 1,
+   "by": "critic",
+   "critique_id": "c2",
+   "run_id": "run_20261026232653_82an"
+  },
+  {
+   "memory_id": "mem-857",
+   "kind": "critique",
+   "ref": "c3",
+   "content": "revise on fix_plan: The plan correctly identifies the zone as an improvement opportunity (not a gap) and cites the zone's people gaining (4,961 in capacity-strain cells, 3,492 below half the reference median) from [zone_overview] and [fix_rule]. However, the assumptions describe a new 25 m mast build with line-of-sight checks, which is a coverage fix, while the fix_type is capacity_upgrade. Assumptions must match the fix type (e.g., additional spectrum, carrier aggregation, small cells).",
+   "confidence": 1,
+   "source": "critic",
+   "created_at": "2026-10-26T23:29:14.545Z",
+   "belief_id": null,
+   "target": "fix_plan",
+   "verdict": "revise",
+   "reason": "The plan correctly identifies the zone as an improvement opportunity (not a gap) and cites the zone's people gaining (4,961 in capacity-strain cells, 3,492 below half the reference median) from [zone_overview] and [fix_rule]. However, the assumptions describe a new 25 m mast build with line-of-sight checks, which is a coverage fix, while the fix_type is capacity_upgrade. Assumptions must match the fix type (e.g., additional spectrum, carrier aggregation, small cells).",
+   "issues": [
+    "assumptions describe a new mast build (25 m mast, line of sight, no planning checks) but fix_type is capacity_upgrade; update assumptions to reflect capacity upgrades (e.g., spectrum, sectors, small cells)",
+    "ensure assumptions are relevant to capacity upgrade, not coverage expansion"
+   ],
+   "requested_checks": [],
+   "round": 1,
+   "by": "critic",
+   "critique_id": "c3",
+   "run_id": "run_20261026232653_82an"
+  },
+  {
+   "memory_id": "mem-860",
+   "kind": "critique",
+   "ref": "c4",
+   "content": "approve on fix_plan: The plan correctly identifies the zone as an improvement opportunity, cites the zone's people gaining (4,961 with capacity strain, 3,492 below half reference median) from [zone_overview], matches the fix_type capacity_upgrade to the cause per [fix_rule], states assumptions, and does not claim no service. Data confidence is high per [zone_overview] so no weak-data flag needed.",
+   "confidence": 1,
+   "source": "critic",
+   "created_at": "2026-10-26T23:29:31.556Z",
+   "belief_id": null,
+   "target": "fix_plan",
+   "verdict": "approve",
+   "reason": "The plan correctly identifies the zone as an improvement opportunity, cites the zone's people gaining (4,961 with capacity strain, 3,492 below half reference median) from [zone_overview], matches the fix_type capacity_upgrade to the cause per [fix_rule], states assumptions, and does not claim no service. Data confidence is high per [zone_overview] so no weak-data flag needed.",
+   "issues": [],
+   "requested_checks": [],
+   "round": 1,
+   "by": "critic",
+   "critique_id": "c4",
+   "run_id": "run_20261026232653_82an"
+  }
+ ],
+ "notes": [
+  {
+   "memory_id": "mem-833",
+   "kind": "note",
+   "ref": "n1",
+   "content": "round 1 starts",
+   "confidence": 1,
+   "source": "coordinator",
+   "created_at": "2026-10-26T23:26:55.040Z",
+   "type": "round",
+   "summary": "round 1 starts",
+   "by": "coordinator",
+   "round": 1,
+   "requested": [],
+   "note_id": "n1",
+   "run_id": "run_20261026232653_82an"
+  },
+  {
+   "memory_id": "mem-834",
+   "kind": "note",
+   "ref": "n2",
+   "content": "investigator via nemotron-3.5-super-vl-120b-a12b in 14.5s",
+   "confidence": 1,
+   "source": "investigator",
+   "created_at": "2026-10-26T23:27:09.710Z",
+   "type": "llm_call",
+   "summary": "investigator via nemotron-3.5-super-vl-120b-a12b in 14.5s",
+   "by": "investigator",
+   "round": 1,
+   "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+   "duration_ms": 14486,
+   "tokens": {
+    "prompt_tokens": 633,
+    "completion_tokens": 338,
+    "total_tokens": 971,
+    "prompt_tokens_details": {
+     "audio_tokens": null,
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "accepted_prediction_tokens": null,
+     "audio_tokens": null,
+     "reasoning_tokens": 0,
+     "rejected_prediction_tokens": null
+    }
+   },
+   "attempts": 1,
+   "retries": [],
+   "fallback": null,
+   "thinking": false,
+   "purpose": null,
+   "note_id": "n2",
+   "run_id": "run_20261026232653_82an"
+  },
+  {
+   "memory_id": "mem-835",
+   "kind": "note",
+   "ref": "n3",
+   "content": "added required checks the investigator skipped: zone_summary(), candidate_sites(), prior_diagnoses_nearby()",
+   "confidence": 1,
+   "source": "coordinator",
+   "created_at": "2026-10-26T23:27:09.757Z",
+   "type": "coordinator",
+   "summary": "added required checks the investigator skipped: zone_summary(), candidate_sites(), prior_diagnoses_nearby()",
+   "by": "coordinator",
+   "round": 1,
+   "note_id": "n3",
+   "run_id": "run_20261026232653_82an"
+  },
+  {
+   "memory_id": "mem-839",
+   "kind": "note",
+   "ref": "n4",
+   "content": "zone_summary() -> zone_overview, zone_priority, fix_rule",
+   "confidence": 1,
+   "source": "investigator",
+   "created_at": "2026-10-26T23:27:09.906Z",
+   "type": "tool_call",
+   "summary": "zone_summary() -> zone_overview, zone_priority, fix_rule",
+   "by": "investigator",
+   "tool": "zone_summary",
+   "args": {},
+   "round": 1,
+   "evidence_ids": [
+    "zone_overview",
+    "zone_priority",
+    "fix_rule"
+   ],
+   "new": [
+    "zone_overview",
+    "zone_priority",
+    "fix_rule"
+   ],
+   "duration_ms": 102,
+   "zetaris_queries": [],
+   "note_id": "n4",
+   "run_id": "run_20261026232653_82an"
+  },
+  {
+   "memory_id": "mem-846",
+   "kind": "note",
+   "ref": "n5",
+   "content": "candidate_sites() -> cand_1, cand_2, cand_3, existing_1, existing_2, existing_3",
+   "confidence": 1,
+   "source": "investigator",
+   "created_at": "2026-10-26T23:27:10.205Z",
+   "type": "tool_call",
+   "summary": "candidate_sites() -> cand_1, cand_2, cand_3, existing_1, existing_2, existing_3",
+   "by": "investigator",
+   "tool": "candidate_sites",
+   "args": {},
+   "round": 1,
+   "evidence_ids": [
+    "cand_1",
+    "cand_2",
+    "cand_3",
+    "existing_1",
+    "existing_2",
+    "existing_3"
+   ],
+   "new": [
+    "cand_1",
+    "cand_2",
+    "cand_3",
+    "existing_1",
+    "existing_2",
+    "existing_3"
+   ],
+   "duration_ms": 243,
+   "zetaris_queries": [],
+   "note_id": "n5",
+   "run_id": "run_20261026232653_82an"
+  },
+  {
+   "memory_id": "mem-848",
+   "kind": "note",
+   "ref": "n6",
+   "content": "prior_diagnoses_nearby() -> prior_diagnoses",
+   "confidence": 1,
+   "source": "investigator",
+   "created_at": "2026-10-26T23:27:10.360Z",
+   "type": "tool_call",
+   "summary": "prior_diagnoses_nearby() -> prior_diagnoses",
+   "by": "investigator",
+   "tool": "prior_diagnoses_nearby",
+   "args": {},
+   "round": 1,
+   "evidence_ids": [
+    "prior_diagnoses"
+   ],
+   "new": [
+    "prior_diagnoses"
+   ],
+   "duration_ms": 91,
+   "zetaris_queries": [],
+   "note_id": "n6",
+   "run_id": "run_20261026232653_82an"
+  },
+  {
+   "memory_id": "mem-849",
+   "kind": "note",
+   "ref": "n7",
+   "content": "diagnostician via nemotron-3.5-super-vl-120b-a12b in 41.0s",
+   "confidence": 1,
+   "source": "diagnostician",
+   "created_at": "2026-10-26T23:27:51.551Z",
+   "type": "llm_call",
+   "summary": "diagnostician via nemotron-3.5-super-vl-120b-a12b in 41.0s",
+   "by": "diagnostician",
+   "round": 1,
+   "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+   "duration_ms": 40959,
+   "tokens": {
+    "prompt_tokens": 1828,
+    "completion_tokens": 197,
+    "total_tokens": 2025,
+    "prompt_tokens_details": {
+     "audio_tokens": null,
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "accepted_prediction_tokens": null,
+     "audio_tokens": null,
+     "reasoning_tokens": 0,
+     "rejected_prediction_tokens": null
+    }
+   },
+   "attempts": 1,
+   "retries": [],
+   "fallback": null,
+   "thinking": false,
+   "purpose": null,
+   "note_id": "n7",
+   "run_id": "run_20261026232653_82an"
+  },
+  {
+   "memory_id": "mem-852",
+   "kind": "note",
+   "ref": "n8",
+   "content": "critic via nemotron-3-ultra-550b-a55b in 35.0s",
+   "confidence": 1,
+   "source": "critic",
+   "created_at": "2026-10-26T23:28:26.895Z",
+   "type": "llm_call",
+   "summary": "critic via nemotron-3-ultra-550b-a55b in 35.0s",
+   "by": "critic",
+   "round": 1,
+   "model": "nvidia/nemotron-3-ultra-550b-a55b",
+   "duration_ms": 35016,
+   "tokens": {
+    "prompt_tokens": 2392,
+    "completion_tokens": 2404,
+    "total_tokens": 4796
+   },
+   "attempts": 1,
+   "retries": [],
+   "fallback": null,
+   "thinking": true,
+   "purpose": null,
+   "note_id": "n8",
+   "run_id": "run_20261026232653_82an"
+  },
+  {
+   "memory_id": "mem-855",
+   "kind": "note",
+   "ref": "n9",
+   "content": "fix_planner via nemotron-3.5-super-vl-120b-a12b in 6.9s",
+   "confidence": 1,
+   "source": "fix_planner",
+   "created_at": "2026-10-26T23:28:34.286Z",
+   "type": "llm_call",
+   "summary": "fix_planner via nemotron-3.5-super-vl-120b-a12b in 6.9s",
+   "by": "fix_planner",
+   "round": 1,
+   "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+   "duration_ms": 6945,
+   "tokens": {
+    "prompt_tokens": 1746,
+    "completion_tokens": 200,
+    "total_tokens": 1946,
+    "prompt_tokens_details": {
+     "audio_tokens": null,
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "accepted_prediction_tokens": null,
+     "audio_tokens": null,
+     "reasoning_tokens": 0,
+     "rejected_prediction_tokens": null
+    }
+   },
+   "attempts": 1,
+   "retries": [],
+   "fallback": null,
+   "thinking": false,
+   "purpose": null,
+   "note_id": "n9",
+   "run_id": "run_20261026232653_82an"
+  },
+  {
+   "memory_id": "mem-856",
+   "kind": "note",
+   "ref": "n10",
+   "content": "critic via nemotron-3-ultra-550b-a55b in 40.0s",
+   "confidence": 1,
+   "source": "critic",
+   "created_at": "2026-10-26T23:29:14.493Z",
+   "type": "llm_call",
+   "summary": "critic via nemotron-3-ultra-550b-a55b in 40.0s",
+   "by": "critic",
+   "round": 1,
+   "model": "nvidia/nemotron-3-ultra-550b-a55b",
+   "duration_ms": 39952,
+   "tokens": {
+    "prompt_tokens": 1879,
+    "completion_tokens": 2357,
+    "total_tokens": 4236
+   },
+   "attempts": 1,
+   "retries": [],
+   "fallback": null,
+   "thinking": true,
+   "purpose": null,
+   "note_id": "n10",
+   "run_id": "run_20261026232653_82an"
+  },
+  {
+   "memory_id": "mem-858",
+   "kind": "note",
+   "ref": "n11",
+   "content": "fix_planner via nemotron-3.5-super-vl-120b-a12b in 6.3s",
+   "confidence": 1,
+   "source": "fix_planner",
+   "created_at": "2026-10-26T23:29:21.237Z",
+   "type": "llm_call",
+   "summary": "fix_planner via nemotron-3.5-super-vl-120b-a12b in 6.3s",
+   "by": "fix_planner",
+   "round": 1,
+   "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+   "duration_ms": 6260,
+   "tokens": {
+    "prompt_tokens": 1925,
+    "completion_tokens": 163,
+    "total_tokens": 2088,
+    "prompt_tokens_details": {
+     "audio_tokens": null,
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "accepted_prediction_tokens": null,
+     "audio_tokens": null,
+     "reasoning_tokens": 0,
+     "rejected_prediction_tokens": null
+    }
+   },
+   "attempts": 1,
+   "retries": [],
+   "fallback": null,
+   "thinking": false,
+   "purpose": null,
+   "note_id": "n11",
+   "run_id": "run_20261026232653_82an"
+  },
+  {
+   "memory_id": "mem-859",
+   "kind": "note",
+   "ref": "n12",
+   "content": "critic via nemotron-3-ultra-550b-a55b in 9.9s",
+   "confidence": 1,
+   "source": "critic",
+   "created_at": "2026-10-26T23:29:31.484Z",
+   "type": "llm_call",
+   "summary": "critic via nemotron-3-ultra-550b-a55b in 9.9s",
+   "by": "critic",
+   "round": 1,
+   "model": "nvidia/nemotron-3-ultra-550b-a55b",
+   "duration_ms": 9898,
+   "tokens": {
+    "prompt_tokens": 1842,
+    "completion_tokens": 1196,
+    "total_tokens": 3038
+   },
+   "attempts": 1,
+   "retries": [],
+   "fallback": null,
+   "thinking": true,
+   "purpose": null,
+   "note_id": "n12",
+   "run_id": "run_20261026232653_82an"
+  },
+  {
+   "memory_id": "mem-861",
+   "kind": "note",
+   "ref": "n13",
+   "content": "advisor via nemotron-3.5-super-vl-120b-a12b in 37.5s",
+   "confidence": 1,
+   "source": "advisor",
+   "created_at": "2026-10-26T23:30:09.636Z",
+   "type": "llm_call",
+   "summary": "advisor via nemotron-3.5-super-vl-120b-a12b in 37.5s",
+   "by": "advisor",
+   "round": 0,
+   "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+   "duration_ms": 37477,
+   "tokens": {
+    "prompt_tokens": 1704,
+    "completion_tokens": 291,
+    "total_tokens": 1995,
+    "prompt_tokens_details": {
+     "audio_tokens": null,
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "accepted_prediction_tokens": null,
+     "audio_tokens": null,
+     "reasoning_tokens": 0,
+     "rejected_prediction_tokens": null
+    }
+   },
+   "attempts": 1,
+   "retries": [],
+   "fallback": null,
+   "thinking": false,
+   "purpose": null,
+   "note_id": "n13",
+   "run_id": "run_20261026232653_82an"
+  },
+  {
+   "memory_id": "mem-862",
+   "kind": "note",
+   "ref": "n14",
+   "content": "opportunity wording problems: fix_plan.why: gap",
+   "confidence": 1,
+   "source": "coordinator",
+   "created_at": "2026-10-26T23:30:10.010Z",
+   "type": "wording_check",
+   "summary": "opportunity wording problems: fix_plan.why: gap",
+   "by": "coordinator",
+   "applies": true,
+   "ok": false,
+   "mentions_opportunity": true,
+   "forbidden": [
+    [
+     "fix_plan.why",
+     "gap"
+    ]
+   ],
+   "note_id": "n14",
+   "run_id": "run_20261026232653_82an"
+  }
+ ],
+ "world": {
+  "entities": [
+   {
+    "type": "zone",
+    "id": "zone:cd:O00332",
+    "attrs": {
+     "people": 8452,
+     "cells": 12,
+     "council": "Westmorland and Furness",
+     "nation": "England",
+     "zone_type": "opportunity",
+     "reasons": [
+      "slow",
+      "falling",
+      "capacity"
+     ]
+    },
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T23:26:54.850Z",
+     "runId": "run_20261026232653_82an"
+    },
+    "createdAt": "2026-10-26T23:26:54.850Z",
+    "updatedAt": "2026-10-26T23:26:54.850Z",
+    "name": "Windermere",
+    "aliases": [
+     "Windermere"
+    ],
+    "state": "active"
+   },
+   {
+    "type": "area",
+    "id": "area:cd:Westmorland and Furness",
+    "attrs": {
+     "kind": "local authority"
+    },
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T23:26:54.908Z",
+     "runId": "run_20261026232653_82an"
+    },
+    "createdAt": "2026-10-26T20:56:00.708Z",
+    "updatedAt": "2026-10-26T23:26:54.908Z",
+    "name": "Westmorland and Furness",
+    "aliases": [
+     "Westmorland and Furness"
+    ],
+    "state": "active"
+   },
+   {
+    "type": "candidate_site",
+    "id": "candidate_site:cd:O00332:cand_1",
+    "attrs": {
+     "lat": 54.38404313920181,
+     "lon": -2.9750518219842768,
+     "ground_m": 238.4,
+     "zone_people_gaining": 7698,
+     "poor_people_gaining": 7698,
+     "people_reached": 11959
+    },
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T23:29:31.649Z",
+     "runId": "run_20261026232653_82an"
+    },
+    "createdAt": "2026-10-26T23:29:31.649Z",
+    "updatedAt": "2026-10-26T23:29:31.649Z",
+    "aliases": [],
+    "state": "active"
+   },
+   {
+    "type": "candidate_site",
+    "id": "candidate_site:cd:O00332:cand_2",
+    "attrs": {
+     "lat": 54.42985700912644,
+     "lon": -2.9357286825355717,
+     "ground_m": 466.5,
+     "zone_people_gaining": 6903,
+     "poor_people_gaining": 6925,
+     "people_reached": 9204
+    },
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T23:29:31.765Z",
+     "runId": "run_20261026232653_82an"
+    },
+    "createdAt": "2026-10-26T23:29:31.765Z",
+    "updatedAt": "2026-10-26T23:29:31.765Z",
+    "aliases": [],
+    "state": "active"
+   },
+   {
+    "type": "candidate_site",
+    "id": "candidate_site:cd:O00332:cand_3",
+    "attrs": {
+     "lat": 54.386738072726786,
+     "lon": -2.903344920636638,
+     "ground_m": 231.7,
+     "zone_people_gaining": 6652,
+     "poor_people_gaining": 6652,
+     "people_reached": 9319
+    },
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T23:29:31.861Z",
+     "runId": "run_20261026232653_82an"
+    },
+    "createdAt": "2026-10-26T23:29:31.861Z",
+    "updatedAt": "2026-10-26T23:29:31.861Z",
+    "aliases": [],
+    "state": "active"
+   },
+   {
+    "type": "event",
+    "id": "event:cd:fix_plan_proposed:run_20261026232653_82an:zone:cd:O00332:1793057409838",
+    "attrs": {
+     "kind": "fix_plan_proposed",
+     "fix_type": "capacity_upgrade",
+     "candidate": "fix_rule",
+     "approved": true,
+     "run_id": "run_20261026232653_82an",
+     "at": "2026-10-26T23:30:09.839Z"
+    },
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T23:30:09.839Z",
+     "runId": "run_20261026232653_82an"
+    },
+    "createdAt": "2026-10-26T23:30:09.839Z",
+    "updatedAt": "2026-10-26T23:30:09.839Z",
+    "name": "fix_plan_proposed",
+    "aliases": [
+     "fix_plan_proposed"
+    ],
+    "state": "active"
+   },
+   {
+    "type": "event",
+    "id": "event:cd:diagnosis_completed:run_20261026232653_82an:zone:cd:O00332:1793057410320",
+    "attrs": {
+     "kind": "diagnosis_completed",
+     "headline": "Busy-network capacity strain is the likely cause [capacity_strain][zone_overview][fix_rule].",
+     "status": "complete",
+     "run_id": "run_20261026232653_82an",
+     "at": "2026-10-26T23:30:10.320Z"
+    },
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T23:30:10.320Z",
+     "runId": "run_20261026232653_82an"
+    },
+    "createdAt": "2026-10-26T23:30:10.320Z",
+    "updatedAt": "2026-10-26T23:30:10.320Z",
+    "name": "diagnosis_completed",
+    "aliases": [
+     "diagnosis_completed"
+    ],
+    "state": "active"
+   },
+   {
+    "type": "place",
+    "id": "place:cd:54.44500,-3.10500",
+    "attrs": {
+     "lat": 54.445,
+     "lon": -3.105,
+     "cell_id": "871955454ffffff",
+     "postcode": "LA22 9JY",
+     "district": "Westmorland and Furness",
+     "country": "England"
+    },
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T21:49:58.835Z",
+     "runId": "run_20261026214958_kzyq"
+    },
+    "createdAt": "2026-10-26T20:56:00.683Z",
+    "updatedAt": "2026-10-26T21:49:58.835Z",
+    "name": "54.44500, -3.10500",
+    "aliases": [
+     "54.44500, -3.10500"
+    ],
+    "state": "active"
+   },
+   {
+    "type": "zone",
+    "id": "zone:cd:Z00072",
+    "attrs": {
+     "people": 873,
+     "cells": 8,
+     "council": "Westmorland and Furness",
+     "nation": "England"
+    },
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T21:52:13.780Z",
+     "runId": "run_20261026215212_94hi"
+    },
+    "createdAt": "2026-10-26T21:06:19.475Z",
+    "updatedAt": "2026-10-26T21:52:13.780Z",
+    "name": "Ousby",
+    "aliases": [
+     "Ousby"
+    ],
+    "state": "active"
+   }
+  ],
+  "relationships": [
+   {
+    "id": "rel_e01101443aa5d785",
+    "from": "place:cd:54.44500,-3.10500",
+    "type": "in_area",
+    "to": "area:cd:Westmorland and Furness",
+    "attrs": null,
+    "validFrom": "2026-10-26T20:56:00.731Z",
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T20:56:00.731Z",
+     "runId": "run_20261026205600_c6qi"
+    },
+    "createdAt": "2026-10-26T20:56:00.731Z"
+   },
+   {
+    "id": "rel_49ce1f861e504c95",
+    "from": "zone:cd:Z00072",
+    "type": "in_area",
+    "to": "area:cd:Westmorland and Furness",
+    "attrs": null,
+    "validFrom": "2026-10-26T21:06:19.524Z",
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T21:06:19.524Z",
+     "runId": "run_20261026210619_ymly"
+    },
+    "createdAt": "2026-10-26T21:06:19.524Z"
+   },
+   {
+    "id": "rel_db0122e7320764c8",
+    "from": "zone:cd:O00332",
+    "type": "in_area",
+    "to": "area:cd:Westmorland and Furness",
+    "attrs": null,
+    "validFrom": "2026-10-26T23:26:54.950Z",
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T23:26:54.950Z",
+     "runId": "run_20261026232653_82an"
+    },
+    "createdAt": "2026-10-26T23:26:54.950Z"
+   },
+   {
+    "id": "rel_7a211bc8bdf5d368",
+    "from": "zone:cd:O00332",
+    "type": "candidate_site",
+    "to": "candidate_site:cd:O00332:cand_1",
+    "attrs": {
+     "zone_people_gaining": 7698,
+     "evidence": "cand_1"
+    },
+    "validFrom": "2026-10-26T23:29:31.697Z",
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T23:29:31.697Z",
+     "runId": "run_20261026232653_82an"
+    },
+    "createdAt": "2026-10-26T23:29:31.697Z"
+   },
+   {
+    "id": "rel_2477a5b87c75500a",
+    "from": "zone:cd:O00332",
+    "type": "candidate_site",
+    "to": "candidate_site:cd:O00332:cand_2",
+    "attrs": {
+     "zone_people_gaining": 6903,
+     "evidence": "cand_2"
+    },
+    "validFrom": "2026-10-26T23:29:31.814Z",
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T23:29:31.814Z",
+     "runId": "run_20261026232653_82an"
+    },
+    "createdAt": "2026-10-26T23:29:31.814Z"
+   },
+   {
+    "id": "rel_38a7c0683a121237",
+    "from": "zone:cd:O00332",
+    "type": "candidate_site",
+    "to": "candidate_site:cd:O00332:cand_3",
+    "attrs": {
+     "zone_people_gaining": 6652,
+     "evidence": "cand_3"
+    },
+    "validFrom": "2026-10-26T23:29:31.896Z",
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T23:29:31.896Z",
+     "runId": "run_20261026232653_82an"
+    },
+    "createdAt": "2026-10-26T23:29:31.896Z"
+   },
+   {
+    "id": "rel_28874e391e9e5332",
+    "from": "event:cd:fix_plan_proposed:run_20261026232653_82an:zone:cd:O00332:1793057409838",
+    "type": "concerns",
+    "to": "zone:cd:O00332",
+    "validFrom": "2026-10-26T23:30:09.858Z",
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T23:30:09.858Z",
+     "runId": "run_20261026232653_82an"
+    },
+    "createdAt": "2026-10-26T23:30:09.858Z"
+   },
+   {
+    "id": "rel_82732325beb75348",
+    "from": "event:cd:diagnosis_completed:run_20261026232653_82an:zone:cd:O00332:1793057410320",
+    "type": "concerns",
+    "to": "zone:cd:O00332",
+    "validFrom": "2026-10-26T23:30:10.330Z",
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T23:30:10.330Z",
+     "runId": "run_20261026232653_82an"
+    },
+    "createdAt": "2026-10-26T23:30:10.330Z"
+   }
+  ]
+ },
+ "memory_mode": "service"
+}

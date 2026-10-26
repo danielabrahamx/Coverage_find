@@ -156,6 +156,23 @@ def register_gap_zone_cells() -> None:
     )
 
 
+def register_opportunity_zones() -> None:
+    _register(
+        "CD_OPP_ZONES", "opportunity_zones", "opportunity_zones.parquet",
+        "Improvement opportunities, connected clusters of populated H3 r7 cells that are not poorly served but have a "
+        "measurable weakness, at least 50 people. Per zone, people per reason slow, falling, few_operators, capacity, "
+        "shortfall against the area or UK median, trend, operators, tests and a limited data flag. Scored per request.",
+    )
+
+
+def register_opportunity_zone_cells() -> None:
+    _register(
+        "CD_OPP_ZONE_CELLS", "opportunity_zone_cells", "opportunity_zone_cells.parquet",
+        "H3 r7 cells in improvement opportunity zones, with zone_id, population, reasons slow, falling, few_operators, "
+        "capacity, neighbour-ring speed and tests, reference median, local authority.",
+    )
+
+
 def _rest_table(database: str, table: str, endpoint: str) -> None:
     """A Lightning REST table: each query calls the endpoint live (Zetaris infers the JSON schema
     from one call at creation). Endpoints must work as written: a ${param} placeholder for the
@@ -197,6 +214,8 @@ SOURCES = {
     "los": register_los,
     "gap_zones": register_gap_zones,
     "gap_zone_cells": register_gap_zone_cells,
+    "opportunity_zones": register_opportunity_zones,
+    "opportunity_zone_cells": register_opportunity_zone_cells,
     "ea_floods": register_ea_floods,
 }
 

@@ -16,6 +16,7 @@ If an agent fails twice the run ends "partial", built from the evidence alone.
 from __future__ import annotations
 
 import json
+import re
 import threading
 import time
 from datetime import datetime, timezone
@@ -265,7 +266,8 @@ def diagnose_zone(zone_id: str, memory: Meterless = default_memory, run_id: str 
     status = "complete"
     try:
         zone_ent = memory.upsert_entity("zone", zone_id, name=z["name"], attrs={"people": z["people"], "cells": z["cells"],
-                                        "council": z["council"], "nation": z["nation"]}, run_id=run_id)
+                                        "council": z["council"], "nation": z["nation"],
+                                        "zone_type": z["zone_type"], "reasons": z.get("reasons")}, run_id=run_id)
         council = memory.upsert_entity("area", z["council"], name=z["council"], attrs={"kind": "local authority"}, run_id=run_id)
         memory.relate(zone_ent["id"], "in_area", council["id"], run_id=run_id)
         rounds, ok = _loop(case, prog)
@@ -303,8 +305,13 @@ def diagnose_zone(zone_id: str, memory: Meterless = default_memory, run_id: str 
                 memory.add_event("fix_plan_proposed", zone_ent["id"], {"fix_type": plan["fix_type"],
                                  "candidate": plan.get("candidate"), "approved": bool(review and review.verdict == "approve")},
                                  run_id=run_id)
-        result.update(run_id=run_id, scope="zone", query=zone_id, zone=z, location={**z["centroid"], "label": z["name"]},
-                      critiques=_critic_summary(case))
+        result.update(run_id=run_id, scope="zone", query=zone_id, zone=z, zone_type=z["zone_type"],
+                      location={**z["centroid"], "label": z["name"]}, critiques=_critic_summary(case))
+        result["wording_check"] = wording_check(result)
+        if result["wording_check"]["applies"]:
+            memory.add_note(run_id, "wording_check", "opportunity wording " + ("ok" if result["wording_check"]["ok"] else
+                            "problems: " + "; ".join(f"{f}: {w}" for f, w in result["wording_check"]["forbidden"])),
+                            by="coordinator", **result["wording_check"])
         top = next((h for h in result["hypotheses"] if h["status"] == "active"), None)
         memory.record_diagnosis(run_id, z["centroid"]["lat"], z["centroid"]["lon"], scope="zone", zone_id=zone_id,
                                 headline=result["headline"], causes=[{"cause": h["cause"], "confidence": h["confidence"]}
@@ -322,6 +329,25 @@ def diagnose_zone(zone_id: str, memory: Meterless = default_memory, run_id: str 
     prog.finish(status, result)
     export(run_id, memory)
     return result
+
+
+FORBIDDEN_FOR_OPPORTUNITIES = [r"\bgaps?\b", r"\bno coverage\b", r"\bno service\b", r"\bno signal\b"]
+
+
+def wording_check(result: dict) -> dict:
+    """For an improvement opportunity: the agents' text says "opportunity" and never "gap", "no coverage" or
+    "no service". Reported (and noted in Meterless), not rewritten."""
+    if result.get("zone_type") != "opportunity":
+        return {"applies": False}
+    fix = result.get("fix_plan") or {}
+    fields = {"headline": result.get("headline"), "explanation": result.get("explanation"), "fix_plan.why": fix.get("why"),
+              **{f"fix_plan.assumptions.{i}": a for i, a in enumerate(fix.get("assumptions") or [])},
+              **{f"belief.{h['cause']}": h.get("explanation") for h in result.get("hypotheses") or []}}
+    allowed = re.compile(r"\bnot an? (confirmed )?gap\b", re.IGNORECASE)  # "an opportunity, not a confirmed gap" is the asked-for wording
+    forbidden = [(k, m.group(0)) for k, v in fields.items() if v for pat in FORBIDDEN_FOR_OPPORTUNITIES
+                 for m in re.finditer(pat, allowed.sub("", v), re.IGNORECASE)]
+    says = any(re.search(r"opportunit", v or "", re.IGNORECASE) for v in (fields["headline"], fields["explanation"], fields["fix_plan.why"]))
+    return {"applies": True, "ok": says and not forbidden, "mentions_opportunity": says, "forbidden": forbidden}
 
 
 def export(run_id: str, memory: Meterless = default_memory) -> Path:

@@ -214,3 +214,13 @@ def test_zone_advice_keeps_belief_citations_given_as_cause_names(monkeypatch):
     assert out.cited_evidence == ["distance_to_mast", "zone_overview"]
     assert out.headline.endswith("[distance_to_mast].") and "[distance_to_mast][zone_overview]" in out.explanation
     assert "made_up" not in out.explanation and "836 of 873" in out.explanation  # numbers checked via the belief's evidence
+
+
+def test_opportunity_wording_check():
+    ok = {"zone_type": "opportunity", "headline": "An improvement opportunity: speeds are falling.",
+          "fix_plan": {"why": "This is an opportunity, not a confirmed gap: add capacity.", "assumptions": []}, "hypotheses": []}
+    assert C.wording_check(ok)["ok"]
+    bad = {**ok, "explanation": "People here have no coverage and the gap is large."}
+    r = C.wording_check(bad)
+    assert not r["ok"] and {w.lower() for _, w in r["forbidden"]} == {"no coverage", "gap"}
+    assert C.wording_check({"zone_type": "gap", "headline": "A gap"}) == {"applies": False}

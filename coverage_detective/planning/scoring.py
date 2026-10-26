@@ -1,4 +1,5 @@
-"""Priority score for gap zones, computed per request so the weights can change.
+"""Priority score for gap zones and opportunity score for improvement opportunities, computed per
+request so the weights can change.
 
 Each factor is normalised 0-1 within the chosen scope (UK, a nation or a council area) by
 rank: the lowest raw value in the scope scores 0, the highest 1 (ties share a rank). Rank
@@ -12,6 +13,13 @@ normalisation keeps one huge zone from flattening every other zone's people scor
   operator_choice  4 - mean operators with sites within 5 km
   need             rural-urban + deprivation: only when built (not yet), otherwise left out
 
+Improvement opportunities use their own factors (kind="opportunity"):
+  people           population of the zone
+  shortfall        population-weighted % by which measured cells fall below their reference median
+                   (the lower of the area and UK medians); no measurements: neutral 0.5, flagged
+  trend            -(change in download %), so worsening scores higher
+  operator_choice  4 - mean operators with sites within 5 km
+
 score = 100 * sum(weight * normalised) / sum(weights of the factors used). Each factor's
 contribution is reported. Data confidence (Ookla tests) is shown beside the score, not in it.
 """
@@ -23,12 +31,18 @@ import pandas as pd
 from coverage_detective import config
 
 FACTORS = ["people", "severity", "persistence", "trend", "operator_choice", "need"]
+OPP_FACTORS = ["people", "shortfall", "trend", "operator_choice"]
 NEUTRAL = 0.5
 
 
-def parse_weights(text: str | None) -> dict[str, float]:
+def factors(kind: str = "gap") -> list[str]:
+    return OPP_FACTORS if kind == "opportunity" else FACTORS
+
+
+def parse_weights(text: str | None, kind: str = "gap") -> dict[str, float]:
     """'people:0.4,severity:0.2' -> weights (defaults for factors not given)."""
-    weights = dict(config.PRIORITY_WEIGHTS)
+    FACTORS = factors(kind)  # noqa: N806 - the factor list for this kind of zone
+    weights = dict(config.OPPORTUNITY_WEIGHTS if kind == "opportunity" else config.PRIORITY_WEIGHTS)
     if not text:
         return weights
     for part in text.split(","):
@@ -45,10 +59,15 @@ def parse_weights(text: str | None) -> dict[str, float]:
     return weights
 
 
-def raw_factors(zones: pd.DataFrame) -> pd.DataFrame:
+def raw_factors(zones: pd.DataFrame, kind: str = "gap") -> pd.DataFrame:
     """Raw factor values per zone (NaN = no data)."""
     raw = pd.DataFrame(index=zones.index)
     raw["people"] = zones.population
+    if kind == "opportunity":
+        raw["shortfall"] = zones.shortfall_pct
+        raw["trend"] = -zones.trend_pct
+        raw["operator_choice"] = 4 - zones.operators_mean
+        return raw
     raw["severity"] = zones.severity
     raw["persistence"] = zones.persistence
     raw["trend"] = -zones.trend_pct
@@ -73,11 +92,12 @@ def confidence(tests: int) -> str:
     return "high" if tests >= 50 else "medium" if tests >= 10 else "low"
 
 
-def score(zones: pd.DataFrame, weights: dict[str, float]) -> tuple[pd.DataFrame, dict]:
+def score(zones: pd.DataFrame, weights: dict[str, float], kind: str = "gap") -> tuple[pd.DataFrame, dict]:
     """Zones with score, rank and per-factor breakdown; plus a summary of the weights used."""
     if zones.empty:
         return zones.assign(score=[], rank=[], breakdown=[]), {"factors_used": [], "weights": {}}
-    raw = raw_factors(zones)
+    FACTORS = factors(kind)  # noqa: N806
+    raw = raw_factors(zones, kind)
     used = [f for f in FACTORS if f in raw and raw[f].notna().any() and weights.get(f, 0) > 0]
     total = sum(weights[f] for f in used) or 1.0
     norm = {f: normalise(raw[f]) for f in used}

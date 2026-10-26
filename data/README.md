@@ -43,6 +43,8 @@ one table) by `scripts/zetaris/register_sources.py`, read from the read-only mou
 | `CD_LOS` | `los_r7` | `los_r7.parquet` | 55,577 |
 | `CD_GAP_ZONES` | `gap_zones` | `gap_zones.parquet` | 677 |
 | `CD_GAP_ZONE_CELLS` | `gap_zone_cells` | `gap_zone_cells.parquet` | 2,921 |
+| `CD_OPP_ZONES` | `opportunity_zones` | `opportunity_zones.parquet` | 1,816 |
+| `CD_OPP_ZONE_CELLS` | `opportunity_zone_cells` | `opportunity_zone_cells.parquet` | 8,832 |
 | `CD_LIVE_EA_FLOODS` | `floods`, `flood_areas` | REST (live EA API, see below) | 136 / 4,208 on 25 Oct 2026 |
 
 ## ONS Countries boundaries
@@ -355,6 +357,19 @@ authority per cell). Rules, thresholds and factors: README "Council view",
 `coverage_detective/planning/zones.py` and `config.py`. 25 Oct 2026: 3,515 poorly served cells
 before the zone threshold (slow 42, no site 1,346, blocked 2,128), 227 site-data-gap cells left
 out, 677 zones of at least 50 people (264,561 people). Rebuild after Ookla or mast refreshes.
+
+## Improvement opportunities (derived)
+
+Same script, `opportunity_zones.parquet` and `opportunity_zone_cells.parquet`: populated cells (>= 10
+people) that are NOT in a gap zone but have a measurable weakness, clustered like gap zones (zones of
+>= 50 people). Reasons, computed in code (`coverage_detective/planning/opportunities.py`, thresholds in
+`config.py`): `slow` (ring speed from >= 10 tests below half the lower of the local authority median and
+the UK median), `falling` (download down >= 30% over >= 3 quarters), `few_operators` (only 1-2 operators
+identified within 5 km and no unknown-operator sites nearby), `capacity` (>= 1,000 people, below 75% of
+the UK median, and devices per head >= UK 90th percentile or a 20% fall). Zones with < 10 tests are
+"limited data". 26 Oct 2026 (UK median 102.7 Mbps): slow 4,293 cells, falling 1,357, few_operators
+3,656, capacity 947; 1,816 zones, 9.41 m people, 622 with limited data. Same sources and licences as
+the gap zones (derived data).
 
 ## Live sources (phase D)
 

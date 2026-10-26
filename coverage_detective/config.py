@@ -64,3 +64,28 @@ GAP_SITES_CHECKED = 8      # nearest sites within 5 km checked for criterion (c)
 # remaining weights rescaled.
 PRIORITY_WEIGHTS = {"people": 0.35, "severity": 0.25, "persistence": 0.15, "trend": 0.10, "operator_choice": 0.15,
                     "need": 0.0}
+
+# Improvement opportunities (Council view): populated cells that are NOT poorly served but have a
+# measurable weakness, clustered like gap zones (zones >= GAP_MIN_ZONE_POPULATION people). A cell
+# can have several reasons (all listed); see coverage_detective/planning/opportunities.py.
+#   slow         ring speed (>= GAP_MIN_TESTS tests) below OPP_SHORTFALL x the lower of the area
+#                (local authority) median and the UK median
+#   falling      download fell by OPP_FALL_PCT % or more over >= OPP_FALL_QUARTERS quarters (>= 10 tests)
+#   few_operators only 1-2 operators identified within 5 km and no sites with unknown operators
+#   capacity     >= OPP_CAPACITY_MIN_POP people, ring speed below OPP_CAPACITY_SPEED x UK median, and
+#                devices per head >= the UK 90th percentile or a fall of OPP_CAPACITY_FALL_PCT % or more
+# Zones with fewer than GAP_MIN_TESTS tests are marked "limited data".
+OPP_SHORTFALL = 0.5
+OPP_FALL_PCT = -30.0
+OPP_FALL_QUARTERS = 3
+OPP_CAPACITY_MIN_POP = 1000
+OPP_CAPACITY_SPEED = 0.75
+OPP_CAPACITY_FALL_PCT = -20.0
+OPPORTUNITY_WEIGHTS = {"people": 0.35, "shortfall": 0.30, "trend": 0.15, "operator_choice": 0.20}
+
+# Council view map: how much is listed at each zoom (the list always matches the map viewport).
+COUNCIL_VIEW = [  # (min zoom, max gap zones, max opportunities; 0 = none shown)
+    (0.0, 40, 0),
+    (8.0, 40, 0),
+    (10.0, 100, 60),
+]

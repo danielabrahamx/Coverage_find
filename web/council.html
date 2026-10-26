@@ -17,7 +17,7 @@
       <span class="brand-mark" aria-hidden="true"></span>
       <div>
         <h1>Coverage Detective</h1>
-        <p class="brand-sub">Council view · where are the gaps?</p>
+        <p class="brand-sub">Council view · gaps and improvement opportunities</p>
       </div>
     </div>
     <nav class="nav" aria-label="Pages">
@@ -25,19 +25,32 @@
       <a href="/signal">My signal</a>
       <a href="/council" aria-current="page">Council view</a>
     </nav>
-    <label class="layer-pick">
-      <span>Area</span>
-      <select id="scope" aria-label="Area to rank"></select>
-    </label>
+    <div class="area-pick">
+      <label class="area-label" for="area-input">Analyse area</label>
+      <div class="combo">
+        <input id="area-input" type="text" role="combobox" aria-expanded="false" aria-controls="area-list" aria-autocomplete="list"
+          autocomplete="off" placeholder="Search a council or nation">
+        <ul id="area-list" class="combo-list" role="listbox" hidden></ul>
+      </div>
+      <p class="area-help">Pick an area, then select a zone to ask the agents why and what to fix.</p>
+    </div>
+    <div class="seg" id="show-seg" role="radiogroup" aria-label="Show">
+      <button type="button" role="radio" data-show="gaps">Gaps</button>
+      <button type="button" role="radio" data-show="opportunities">Opportunities</button>
+      <button type="button" role="radio" data-show="both">Both</button>
+    </div>
   </header>
 
   <main class="council-stage">
-    <section class="council-list" aria-label="Ranked gap zones">
+    <section class="council-list" aria-label="Zones in view">
       <div class="weights card-flat" id="weights">
         <div class="weights-head">
-          <h2>Priority weights</h2>
+          <h2>Score weights</h2>
+          <div class="seg seg-small" id="weights-seg" role="radiogroup" aria-label="Weights for">
+            <button type="button" role="radio" data-w="gap">Gap score</button>
+            <button type="button" role="radio" data-w="opportunity">Opportunity score</button>
+          </div>
           <div class="weights-actions">
-            <button type="button" id="summary-btn" class="link-btn">Priority summary (agents)</button>
             <button type="button" id="reset" class="link-btn">Reset</button>
             <a id="csv" class="link-btn" href="#" download>Export CSV</a>
           </div>
@@ -45,21 +58,24 @@
         <div id="sliders"></div>
         <p class="footnote" id="weights-note"></p>
       </div>
-      <p class="list-summary" id="list-summary">Loading zones…</p>
-      <div class="table-wrap">
-        <table class="zones" id="zones-table">
-          <colgroup><col class="c-rank"><col><col class="c-num"><col class="c-num"><col class="c-num"><col class="c-ops"><col class="c-score"></colgroup>
-          <thead><tr><th>#</th><th>Zone</th><th class="num" title="People living in the zone's poorly served cells">People</th>
-            <th class="num" title="Median download speed of the zone's cells (Mbps), latest quarter; tests below">Mbps</th>
-            <th class="num" title="Share of quarters with poor speeds">Poor qtrs</th>
-            <th class="num" title="Average number of operators with a site within 5 km">Ops</th>
-            <th title="Priority score, 0 to 100 within the chosen area">Score</th></tr></thead>
-          <tbody></tbody>
-        </table>
+      <div class="list-bar">
+        <p class="list-summary" id="list-summary">Loading zones…</p>
+        <div class="list-actions">
+          <button type="button" id="summary-btn" class="link-btn">Priority summary (agents)</button>
+          <button type="button" id="top3-btn" class="link-btn">Diagnose the top 3 in view</button>
+        </div>
       </div>
+      <div id="queue" class="queue" hidden></div>
+      <div class="table-wrap" id="list"></div>
     </section>
     <div class="council-map-wrap">
       <div id="map" class="map"></div>
+      <div class="map-tools">
+        <label class="map-toggle" id="opp-toggle-wrap"><input type="checkbox" id="opp-toggle" checked> Improvement opportunities</label>
+        <button type="button" class="map-btn" id="reset-view" hidden>Reset view</button>
+      </div>
+      <div class="map-note card" id="map-note" hidden></div>
+      <div class="fix-switch card" id="fix-switch" hidden></div>
       <section class="legend card" id="legend" aria-label="Legend"></section>
       <aside class="panel card rp" id="panel" aria-label="Zone details" hidden>
         <button type="button" class="rp-handle" id="panel-collapse" aria-label="Hide panel" aria-expanded="true">›</button>

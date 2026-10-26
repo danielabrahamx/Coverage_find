@@ -1,4 +1,7 @@
-"""Candidate fixes for one gap zone (rule-based; becomes an agent tool later).
+"""Candidate fixes for one gap zone or improvement opportunity (rule-based; the agents' candidate_sites tool).
+
+suggest_opportunity_fix() does the same for improvement opportunities: add_operators, capacity_upgrade,
+a (small) new_site when no site is within 5 km, or gather_data; limited data adds "measure first".
 
 suggest_fix()   fix type by rule, from the zone's raw factors:
   new_site           most people are in cells with no site within 5 km, or with terrain
@@ -92,6 +95,39 @@ def suggest_fix(zone: dict, sites_within_5km: int) -> dict:
             "rule_based": True, "note": "Rule-based suggestion, not yet reviewed by agents."}
 
 
+def suggest_opportunity_fix(zone: dict, sites_within_5km: int) -> dict:
+    """Upgrade for an improvement opportunity (not a confirmed gap), from its people per reason."""
+    pop = zone["population"] or 1.0
+    share = {r: zone[f"pop_{r}"] / pop for r in ("slow", "falling", "few_operators", "capacity")}
+    thin = zone["tests"] < config.GAP_MIN_TESTS
+    why = []
+    if share["few_operators"] >= 0.5 and sites_within_5km > 0:
+        kind = "add_operators"
+        why.append(f"{share['few_operators']:.0%} of the zone's people are in cells where only 1-2 operators are "
+                   f"identified, and {sites_within_5km} approximate sites nearby could host more.")
+    elif max(share["capacity"], share["slow"], share["falling"]) >= 0.5 and sites_within_5km > 0:
+        kind = "capacity_upgrade"
+        main = max(("capacity", "slow", "falling"), key=lambda r: share[r])
+        words = {"capacity": "show a busy-network (capacity) signal", "slow": "measure well below the area or UK median",
+                 "falling": "have falling speeds"}
+        why.append(f"{share[main]:.0%} of the zone's people are in cells that {words[main]}, with sites nearby.")
+    elif sites_within_5km == 0:
+        kind = "new_site"
+        why.append("No approximate site lies within 5 km of the zone's cells, so a small new site could help.")
+    else:
+        kind = "gather_data"
+        why.append("No single weakness dominates the zone's cells.")
+    secondary = None
+    if thin and kind != "gather_data":
+        secondary = "gather_data"
+        why.append(f"Only {_tests(zone['tests'])} in the zone (limited data), so measure first to confirm.")
+    elif thin:
+        why.append(f"Only {_tests(zone['tests'])} in the zone (limited data).")
+    return {"type": kind, "label": FIX_LABELS[kind], "why": why,
+            "secondary": secondary, "secondary_label": FIX_LABELS.get(secondary),
+            "rule_based": True, "note": "Rule-based suggestion for an improvement opportunity, not yet reviewed by agents."}
+
+
 def high_points(zone_cells: list[dict], dem=None) -> list[dict]:
     """Local high points in and up to 5 km around the zone, >= 500 m apart, most prominent first."""
     dem = dem or terrain.dem()
@@ -173,13 +209,14 @@ def evaluate(cands: list[dict], zone_cells: list[dict], area_cells: list[dict], 
     return cands
 
 
-def plan(zone: dict, zone_cells: list[dict], area_cells: list[dict], sites: list[dict], dem=None, top: int = 3) -> dict:
-    """Fix suggestion + the top candidates (new and existing sites) for one zone."""
+def plan(zone: dict, zone_cells: list[dict], area_cells: list[dict], sites: list[dict], dem=None, top: int = 3,
+         kind: str = "gap") -> dict:
+    """Fix suggestion + the top candidates (new and existing sites) for one zone (gap or opportunity)."""
     lat0 = float(np.mean([c["lat"] for c in zone_cells]))
     tree = cKDTree(_xy([c["lat"] for c in zone_cells], [c["lon"] for c in zone_cells], lat0))
     d, _ = tree.query(_xy([s["lat"] for s in sites], [s["lon"] for s in sites], lat0)) if sites else ([], None)
     within_5 = int(np.sum(np.asarray(d) <= 5000)) if sites else 0
-    fix = suggest_fix(zone, within_5)
+    fix = suggest_opportunity_fix(zone, within_5) if kind == "opportunity" else suggest_fix(zone, within_5)
     cands = evaluate(high_points(zone_cells, dem) + existing_candidates(zone_cells, sites), zone_cells, area_cells, dem)
     # This zone's people first, then poorly served people in other zones nearby, then everyone reached.
     cands.sort(key=lambda c: (-c["zone_people_gaining"], -c["poor_people_gaining"], -c["people_reached"]))

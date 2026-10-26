@@ -15,6 +15,7 @@ switches); every guard intervention as a "guard" note.
 from __future__ import annotations
 
 import json
+import re
 import time
 from pathlib import Path
 
@@ -108,6 +109,16 @@ def make_guard(case: Case, agent: str, round: int, beliefs: list[dict] | None = 
         case.memory.add_note(case.run_id, "guard", iv.summary, by="guard", round=round, agent=agent,
                              guard_kind=iv.kind, **iv.details)
     return Guard(evidence_map(case), record, {b["belief_id"]: b for b in beliefs or []})
+
+
+def zone_type_line(case: Case) -> str:
+    """For zone runs: which kind of zone this is (the agents' wording depends on it)."""
+    if case.scope != "zone":
+        return ""
+    kind = ((case.cache.get("zone") or {}).get("zone") or {}).get("zone_type", "gap")
+    return ("Zone type: improvement opportunity (cells that are not poorly served but have a measurable weakness; "
+            "call it an opportunity, never a gap, and never say people have no service or no coverage).\n"
+            if kind == "opportunity" else "Zone type: gap zone (poorly served cells).\n")
 
 
 def advisor_beliefs_text(beliefs: list[dict]) -> str:
@@ -208,7 +219,7 @@ def diagnose(case: Case, round: int) -> list[dict]:
     beliefs = case.memory.beliefs(case.run_id)
     crit = [c for c in case.memory.critiques(case.run_id) if c.get("round") == round - 1]
     system = prompt("diagnostician")
-    user = (f"Round {round}. Scope: {case.scope}.\n\nEvidence:\n{evidence_text(ev)}\n\nCurrent beliefs:\n{beliefs_text(beliefs)}\n\n"
+    user = (f"Round {round}. Scope: {case.scope}.\n{zone_type_line(case)}\nEvidence:\n{evidence_text(ev)}\n\nCurrent beliefs:\n{beliefs_text(beliefs)}\n\n"
             "Critic's last review:\n" + ("\n".join(f"- {c.get('belief_id') or c.get('target')}: {c['verdict']}: {c['reason']}"
                                                     for c in crit) or "(none)"))
     r = ask(case, "diagnostician", round, [{"role": "system", "content": system}, {"role": "user", "content": user}],
@@ -269,7 +280,8 @@ def critique(case: Case, round: int, final_round: bool) -> list[dict]:
     done = already_run(case)
     names = ZONE_TOOLS if case.scope == "zone" else POINT_TOOLS
     system = prompt("critic")
-    user = (f"Round {round}{' (final round: only approve, downgrade or reject)' if final_round else ''}.\n\n"
+    user = (f"Round {round}{' (final round: only approve, downgrade or reject)' if final_round else ''}.\n"
+            f"{zone_type_line(case)}\n"
             f"Evidence:\n{evidence_text(ev)}\n\nBeliefs:\n{beliefs_text(beliefs)}\n\n"
             f"Tools available: {', '.join(names)}\nAlready run: {_fmt_run(done)}")
     r = ask(case, "critic", round, [{"role": "system", "content": system}, {"role": "user", "content": user}],
@@ -419,7 +431,7 @@ def write_letter(case: Case, recipient: str, diagnosis: dict) -> S.Letter:
 def plan_fix(case: Case, round: int, review: S.FixReview | None = None) -> dict:
     ev = evidence_map(case)
     system = prompt("fix_planner")
-    user = (f"Zone {case.zone_id}.\nBeliefs:\n{beliefs_text(case.memory.beliefs(case.run_id))}\n\nEvidence:\n{evidence_text(ev)}"
+    user = (f"Zone {case.zone_id}.\n{zone_type_line(case)}Beliefs:\n{beliefs_text(case.memory.beliefs(case.run_id))}\n\nEvidence:\n{evidence_text(ev)}"
             + (f"\n\nThe critic asked you to revise: {review.reason} Issues: {'; '.join(review.issues)}" if review else ""))
     r = ask(case, "fix_planner", round, [{"role": "system", "content": system}, {"role": "user", "content": user}],
             schema=S.FixPlan)
@@ -428,6 +440,10 @@ def plan_fix(case: Case, round: int, review: S.FixReview | None = None) -> dict:
     plan.cited_evidence = guard.known(plan.cited_evidence, "fix plan")
     if plan.candidate and plan.candidate not in ev:
         guard.known([plan.candidate], "fix plan candidate")
+        plan.candidate = None
+    elif plan.candidate and not re.match(r"^(cand|existing)_\d+$", plan.candidate):  # e.g. [fix_rule]: not a site
+        guard.record(Intervention("not_a_candidate", f"fix plan: {plan.candidate} is not a candidate site; candidate cleared",
+                                  {"candidate": plan.candidate}))
         plan.candidate = None
     why = guard.strip_unknown_brackets(plan.why, "fix plan")
     plan.why = guard.check_numbers({"why": why}, set(plan.cited_evidence) | cited_in_text(why) | {plan.candidate or ""},
@@ -441,7 +457,7 @@ def plan_fix(case: Case, round: int, review: S.FixReview | None = None) -> dict:
 
 def review_fix(case: Case, round: int, plan: dict) -> S.FixReview:
     ev = evidence_map(case)
-    user = f"Fix plan:\n{json.dumps(plan, indent=1)}\n\nEvidence:\n{evidence_text(ev)}"
+    user = f"{zone_type_line(case)}Fix plan:\n{json.dumps(plan, indent=1)}\n\nEvidence:\n{evidence_text(ev)}"
     r = ask(case, "critic", round, [{"role": "system", "content": prompt("fix_critic")}, {"role": "user", "content": user}],
             reasoning=True, schema=S.FixReview)
     case.memory.add_critique(case.run_id, {"belief_id": None, "target": "fix_plan", "verdict": r.parsed.verdict,
@@ -454,7 +470,7 @@ def advise_zone(case: Case) -> S.ZoneAdvice:
     ev = evidence_map(case)
     beliefs = case.memory.beliefs(case.run_id)
     system = prompt("advisor", audience="council officer") + "\nFor a zone: headline and explanation only."
-    user = (f"Zone {case.zone_id}.\nReviewed beliefs (cite a belief by its id in [brackets], evidence by its id):\n"
+    user = (f"Zone {case.zone_id}.\n{zone_type_line(case)}Reviewed beliefs (cite a belief by its id in [brackets], evidence by its id):\n"
             f"{advisor_beliefs_text(beliefs)}\n\nEvidence:\n{evidence_text(ev)}")
     r = ask(case, "advisor", 0, [{"role": "system", "content": system}, {"role": "user", "content": user}],
             schema=S.ZoneAdvice)
@@ -475,27 +491,51 @@ def advise_zone(case: Case) -> S.ZoneAdvice:
 # ------------------------------------------------------------------ council: priority summary
 
 
+SUMMARY_KINDS = {
+    "gap": {"kind": "mobile coverage gaps", "reasons": "slow measured speeds, no identified site within 5 km, or terrain "
+            "blocking every site", "extra_rule": "",
+            "example": "1. Ousby [Z00072]: 836 of 873 people have no identified site within 5 km; low data confidence (0 tests)."},
+    "opportunity": {"kind": "mobile improvement opportunities (areas that are not poorly served but have a measurable "
+                    "weakness)", "reasons": "speed well below the area or UK median, falling speeds, only 1-2 operators "
+                    "identified, or a busy-network signal",
+                    "extra_rule": " Call them opportunities, never gaps, and never say people have no service or no coverage.",
+                    "example": "1. Townsend [O00042]: 420 of 1,300 people are in cells where speeds fell 30% or more; an "
+                               "opportunity for a capacity upgrade; limited data (4 tests)."},
+}
+OPP_REASON_WORDS = {"slow": "in cells measured below half the reference median", "falling": "in cells whose speeds fell 30% or more",
+                    "few_operators": "in cells with only 1-2 operators identified", "capacity": "in busy cells (capacity signal)"}
+
+
 def zone_item(z: dict, diagnosis: dict | None = None) -> dict:
     """A ranked zone as an evidence item (id = zone id), so the guard can check the summary against it."""
     r = z["people_by_reason"]
-    finding = (f"{z['name']} ({z['council']}) is ranked {z['rank']} with {z['people']} people in {z['cells']} cells: "
-               f"{r['slow']} where measured speeds are under 5 Mbps, {r['no_site']} with no identified site within 5 km, "
-               f"{r['blocked']} where terrain blocks every site. {z['tests']} tests ({z['confidence']} data confidence); "
-               f"operators with sites nearby: {', '.join(z['operators_nearby']) or 'none identified'}.")
+    if z.get("zone_type") == "opportunity":
+        finding = (f"{z['name']} ({z['council']}) is improvement opportunity {z['rank']} with {z['people']} people in "
+                   f"{z['cells']} cells: " + ", ".join(f"{r[k]} {OPP_REASON_WORDS[k]}" for k in z["reasons"]) + ". "
+                   f"{z['tests']} tests ({'limited data' if z.get('limited_data') else z['confidence'] + ' data confidence'}); "
+                   f"operators with sites nearby: {', '.join(z['operators_nearby']) or 'none identified'}.")
+        source, ref = "Improvement opportunities (Zetaris CD_OPP_ZONES)", "zetaris:CD_OPP_ZONES"
+    else:
+        finding = (f"{z['name']} ({z['council']}) is ranked {z['rank']} with {z['people']} people in {z['cells']} cells: "
+                   f"{r['slow']} where measured speeds are under 5 Mbps, {r['no_site']} with no identified site within 5 km, "
+                   f"{r['blocked']} where terrain blocks every site. {z['tests']} tests ({z['confidence']} data confidence); "
+                   f"operators with sites nearby: {', '.join(z['operators_nearby']) or 'none identified'}.")
+        source, ref = "Gap zones (Zetaris CD_GAP_ZONES)", "zetaris:CD_GAP_ZONES"
     if diagnosis:
         finding += f" Agent diagnosis ({str(diagnosis.get('created_at') or '')[:10]}): {diagnosis.get('headline')}"
-    return {"id": z["zone_id"], "source": "Gap zones (Zetaris CD_GAP_ZONES)", "data_period": z.get("data_period"),
-            "as_of": z.get("as_of"), "query_or_url": "zetaris:CD_GAP_ZONES", "cell_ids": z.get("cell_ids") or [],
+    return {"id": z["zone_id"], "source": source, "data_period": z.get("data_period"),
+            "as_of": z.get("as_of"), "query_or_url": ref, "cell_ids": z.get("cell_ids") or [],
             "finding": finding, "value": {k: z.get(k) for k in ("rank", "people", "cells", "tests", "score")} | r,
             "sample_size": {"tests": z["tests"]}, "strength": "moderate", "bears_on": []}
 
 
-def write_priority_summary(case: Case, scope_name: str, zones: list[dict], diagnoses: dict[str, dict]) -> S.PrioritySummary:
+def write_priority_summary(case: Case, scope_name: str, zones: list[dict], diagnoses: dict[str, dict],
+                           kind: str = "gap") -> S.PrioritySummary:
     items = [zone_item(z, diagnoses.get(z["zone_id"])) for z in zones]
     for it in items:
         case.memory.add_evidence(case.run_id, {**it, "evidence_id": it["id"], "round": 0}, by="coordinator")
-    ev = evidence_map(case)
-    system = prompt("priority_summary", scope=scope_name)
+    ev = {i: e for i, e in evidence_map(case).items() if i in {it["id"] for it in items}}
+    system = prompt("priority_summary", scope=scope_name, **SUMMARY_KINDS[kind])
     r = ask(case, "advisor", 0, [{"role": "system", "content": system},
                                  {"role": "user", "content": f"Ranked zones in {scope_name}:\n{evidence_text(ev)}"}],
             schema=S.PrioritySummary)

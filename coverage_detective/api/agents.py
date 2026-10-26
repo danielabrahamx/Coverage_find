@@ -52,9 +52,18 @@ class LetterRequest(BaseModel):
 
 
 class SummaryRequest(BaseModel):
+    """Summarise what is listed: the zone ids shown (gap and opportunity), or the top `top` gap zones in `scope`."""
     scope: str = "uk"
+    label: str | None = Field(None, max_length=80, description='e.g. "the current map view"')
     weights: str | None = None
-    top: int = Field(10, ge=3, le=20)
+    opp_weights: str | None = None
+    top: int = Field(10, ge=3, le=40)
+    gap_ids: list[str] | None = Field(None, max_length=40)
+    opportunity_ids: list[str] | None = Field(None, max_length=60)
+
+
+class ZoneDiagnoseRequest(BaseModel):
+    zone_type: Literal["gap", "opportunity"] | None = None
 
 
 def _need_llm() -> None:
@@ -105,15 +114,19 @@ def diagnose(req: DiagnoseRequest) -> dict:
 
 
 @router.post("/council/zones/{zone_id}/diagnose")
-def diagnose_zone(zone_id: str) -> dict:
+def diagnose_zone(zone_id: str, req: ZoneDiagnoseRequest | None = None) -> dict:
+    """Diagnose any zone, gap (Z...) or improvement opportunity (O...), on demand."""
     _need_llm()
-    from coverage_detective.api.council import zone_detail
+    from coverage_detective.api.council import kind_of, zone_detail
 
+    kind = kind_of(zone_id)
+    if req and req.zone_type and req.zone_type != kind:
+        raise HTTPException(400, f"{zone_id} is a {kind} zone, not {req.zone_type}")
     z = zone_detail(zone_id)["zone"]  # 404s for an unknown zone
     run_id = memory.create_run("zone", query=zone_id, label=z["name"], location=z["centroid"])
     _queued(run_id, "zone", z["name"])
     _start(run_id, C.diagnose_zone, zone_id=zone_id)
-    return {"run_id": run_id, "status": "queued", "label": z["name"], "zone_id": zone_id}
+    return {"run_id": run_id, "status": "queued", "label": z["name"], "zone_id": zone_id, "zone_type": kind}
 
 
 def _rounds(notes: list[dict], critiques: list[dict], beliefs: list[dict], evidence: list[dict]) -> list[dict]:
@@ -212,32 +225,51 @@ def letter(run_id: str, req: LetterRequest) -> dict:
 
 @router.post("/council/summary")
 def priority_summary(req: SummaryRequest) -> dict:
-    """A priority summary of the top zones in a scope, with any agent diagnoses of them from Meterless."""
+    """A priority summary of what is listed (gap zones and improvement opportunities in separate sections), with any
+    agent diagnoses of those zones from Meterless. Without ids: the top gap zones in the scope."""
     _need_llm()
-    from coverage_detective.api.council import scopes, zones
+    from coverage_detective.api.council import ranked, scopes, zone_cell_ids, _zone_row
 
-    ranked = zones(scope=req.scope, weights=req.weights, limit=req.top)
-    if not ranked["zones"]:
-        raise HTTPException(404, f"No gap zones in {req.scope}")
     names = {s["scope"]: s["name"] for s in [scopes()["uk"], *scopes()["nations"], *scopes()["councils"]]}
-    scope_name = names.get(req.scope, req.scope)
-    diagnoses: dict[str, dict] = {}
-    for z in ranked["zones"]:
-        near = [d for d in memory.diagnoses_near(z["centroid"]["lat"], z["centroid"]["lon"], km=1.0)
-                if d.get("zone_id") == z["zone_id"]]
-        if near:
-            diagnoses[z["zone_id"]] = max(near, key=lambda d: d.get("created_at") or "")
-    run_id = memory.create_run("summary", query=req.scope, label=f"Priority summary: {scope_name}")
-    case = Case(run_id=run_id, scope="summary", point={"label": scope_name}, memory=memory)
-    try:
-        out = A.write_priority_summary(case, scope_name, ranked["zones"], diagnoses)
-    except LLMError as e:
-        raise HTTPException(502, f"The advisor is unavailable: {str(e)[:160]}") from e
-    title = f"Mobile coverage gaps in {scope_name}: priorities"
-    memory.update_run(run_id, status="complete", result={"title": title, **out.model_dump()})
+    area = req.label or names.get(req.scope, req.scope)
+    log: list = []
+    lists: dict[str, list[dict]] = {}
+    for kind, ids, w in [("gap", req.gap_ids, req.weights), ("opportunity", req.opportunity_ids, req.opp_weights)]:
+        if kind == "opportunity" and not ids:
+            continue
+        scored, _ = ranked(req.scope, w, log, kind)
+        rows = scored[scored.zone_id.isin(ids)] if ids else scored.head(req.top)
+        cells = zone_cell_ids(kind, log)
+        if len(rows):
+            lists[kind] = [_zone_row(r, cells.get(r["zone_id"], []), kind) for r in rows.to_dict("records")]
+    if not lists:
+        raise HTTPException(404, f"No zones listed in {area}")
+    run_id = memory.create_run("summary", query=req.scope, label=f"Priority summary: {area}")
+    case = Case(run_id=run_id, scope="summary", point={"label": area}, memory=memory)
+    sections = {}
+    for kind, zs in lists.items():
+        diagnoses: dict[str, dict] = {}
+        for z in zs:
+            near = [d for d in memory.diagnoses_near(z["centroid"]["lat"], z["centroid"]["lon"], km=1.0)
+                    if d.get("zone_id") == z["zone_id"]]
+            if near:
+                diagnoses[z["zone_id"]] = max(near, key=lambda d: d.get("created_at") or "")
+        try:
+            out = A.write_priority_summary(case, area, zs, diagnoses, kind)
+        except LLMError as e:
+            raise HTTPException(502, f"The advisor is unavailable: {str(e)[:160]}") from e
+        sections[kind] = {**out.model_dump(), "diagnosed": sorted(diagnoses), "zones": [z["zone_id"] for z in zs],
+                          "zone_rows": [{k: z[k] for k in ("zone_id", "zone_type", "rank", "name", "council", "people",
+                                                           "people_by_reason", "tests", "confidence")}
+                                        | {"reasons": z.get("reasons"), "limited_data": z.get("limited_data"),
+                                           "diagnosis": (diagnoses.get(z["zone_id"]) or {}).get("headline")} for z in zs]}
+    title = f"Mobile coverage in {area}: priorities"
+    body = "\n\n".join(f"## {'Gap zones' if k == 'gap' else 'Improvement opportunities'}\n\n{v['body_markdown']}"
+                        for k, v in sections.items())
+    memory.update_run(run_id, status="complete", result={"title": title, "sections": sections})
     guard = [n.get("summary") for n in memory.notes(run_id) if n.get("type") == "guard"]
-    rows = [{k: z[k] for k in ("zone_id", "rank", "name", "council", "people", "people_by_reason", "tests", "confidence")}
-            | {"diagnosis": (diagnoses.get(z["zone_id"]) or {}).get("headline")} for z in ranked["zones"]]
-    return {"title": title, **out.model_dump(), "run_id": run_id, "scope": req.scope, "zones": [z["zone_id"] for z in ranked["zones"]],
-            "zone_rows": rows,
-            "diagnosed": sorted(diagnoses), "guard": guard}
+    gap = sections.get("gap") or {}
+    return {"title": title, "area": area, "run_id": run_id, "scope": req.scope, "sections": sections,
+            "body_markdown": body, "guard": guard,
+            # kept for older callers: the gap section's fields
+            "zones": gap.get("zones", []), "zone_rows": gap.get("zone_rows", []), "diagnosed": gap.get("diagnosed", [])}

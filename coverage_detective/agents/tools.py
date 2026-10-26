@@ -227,14 +227,19 @@ def _zone(case: Case) -> dict:
 
 
 def zone_summary(case: Case) -> list[dict]:
-    """The zone's people, why its cells are poorly served, data confidence, rank and score."""
+    """The zone's people, why its cells are poorly served (gap zone) or which weakness they have
+    (improvement opportunity), data confidence, rank and score."""
     d = _zone(case)
     z, b = d["zone"], _scratch(case)
-    meta = {"data_period": ev._meta("gap_zones")["data_period"], "as_of": ev._meta("gap_zones")["as_of"]}
-    ref = "zetaris:CD_GAP_ZONES, zetaris:CD_GAP_ZONE_CELLS"
-    b.add("zone_overview", "Gap zones (Zetaris CD_GAP_ZONES)", meta, ref, z["cell_ids"], " ".join(d["summary"]),
-          {k: z[k] for k in ("people", "cells", "people_by_reason", "median_speed_mbps", "persistence", "trend_pct",
-                             "operators_mean", "operators_nearby", "council", "nation")},
+    opp = z["zone_type"] == "opportunity"
+    meta_key = "opportunity_zones" if opp else "gap_zones"
+    meta = {"data_period": ev._meta(meta_key)["data_period"], "as_of": ev._meta(meta_key)["as_of"]}
+    ref = "zetaris:CD_OPP_ZONES, zetaris:CD_OPP_ZONE_CELLS" if opp else "zetaris:CD_GAP_ZONES, zetaris:CD_GAP_ZONE_CELLS"
+    keys = ("people", "cells", "people_by_reason", "median_speed_mbps", "trend_pct", "operators_mean", "operators_nearby",
+            "council", "nation") + (("reasons", "shortfall_pct", "ref_mbps", "limited_data") if opp else ("persistence",))
+    b.add("zone_overview", "Improvement opportunities (Zetaris CD_OPP_ZONES)" if opp else "Gap zones (Zetaris CD_GAP_ZONES)",
+          meta, ref, z["cell_ids"], " ".join(d["summary"]),
+          {k: z[k] for k in keys},
           {"tests": z["tests"], "cells": z["cells"]}, {"high": "strong", "medium": "moderate"}.get(z["confidence"], "weak"),
           ["distance_to_mast", "terrain_blocking", "single_operator", "capacity_strain", "insufficient_data"])
     ranks = "; ".join(f"rank {r['rank']} of {r['of']} in {k}" for k, r in d["ranks"].items())
@@ -252,12 +257,14 @@ def candidate_sites(case: Case) -> list[dict]:
     d = _zone(case)
     b = _scratch(case)
     meta = {"data_period": ev._meta("terrain_r7")["data_period"], "as_of": ev._meta("masts_sites")["as_of"]}
+    poor_words = ("people in all, in this zone and in nearby poorly served cells" if d["zone"]["zone_type"] == "opportunity"
+                  else "poorly served people in all")
     for i, c in enumerate(d["candidates"], 1):
         b.add(f"cand_{i}", "Candidate site (line of sight over Copernicus DEM, planning/siting.py)", meta,
               "zetaris:CD_CELLS, zetaris:CD_GAP_ZONE_CELLS", sorted({r["cell_id"] for r in c["reached"]}),
               f"Candidate {i}: a new 25 m mast on high ground ({c['ground_m']:.0f} m, "
               f"{'inside' if c['in_zone'] else 'near'} the zone) would give {c['zone_people_gaining']} of the zone's "
-              f"people a clear line of sight ({c['poor_people_gaining']} poorly served people in all; "
+              f"people a clear line of sight ({c['poor_people_gaining']} {poor_words}; "
               f"{c['people_reached']} people reached in {len(c['reached'])} of {c['cells_checked']} cells checked).",
               {k: c[k] for k in ("lat", "lon", "ground_m", "zone_people_gaining", "poor_people_gaining", "people_reached")},
               {"cells_checked": c["cells_checked"]}, "moderate", ["terrain_blocking", "distance_to_mast"])
