@@ -101,7 +101,8 @@ coverage_detective/     package
   evidence.py           evidence bundle for a point (Zetaris queries, line of sight, live sources)
   planning/             zones.py (gap zones), scoring.py (priority score), siting.py (fixes, candidates)
   memory/meterless.py   Meterless client (H-MEM + World Model over HTTP; in-memory fallback)
-  agents/               llm.py (Nemotron client), schemas.py (pydantic), tools.py (tools -> Meterless)
+  agents/               llm.py (Nemotron client), schemas.py (pydantic), tools.py (tools -> Meterless),
+                        agents.py (the agents), guard.py (code guard), prompts/*.md
 meterless_service/      Node HTTP service on :8100 over vendor/meterless (H-MEM, World Model); data/meterless/
 vendor/meterless/       Meterless reference engines, vendored unchanged (Apache 2.0)
   data/
@@ -306,6 +307,16 @@ G (power cuts) dropped as future work; H (visitor load) only if time. Then the a
   terrain, ofcom_area, live_conditions, prior_diagnoses_nearby, zone_summary, candidate_sites
   (+ network_comparison, code only); each writes items with stable ids to Meterless (with their
   Zetaris SQL) and logs a tool_call note. Check: scripts/check_agent_tools.py.
+- **Agents, phase 3: agents + guard** (26 Oct): agents.py (investigate, diagnose, critique, advise,
+  write_letter, plan_fix, review_fix, advise_zone), prompts/*.md (short, 1-2 examples each).
+  Guard after every agent: unknown evidence ids removed (belief dropped if nothing supports it),
+  weak-only beliefs capped at 0.5, numbers must match a value in the cited evidence within rounding /
+  unit changes (else one rewrite by the same agent, then the sentence is removed); all recorded as
+  "guard" notes. LLM: 5xx retried after 2 s then 6 s, then the other model; retries and switches are
+  in "llm_call" notes. Code also enforces: round-1 checks, max 8 calls a round, no repeated checks,
+  round-3 needs_evidence -> downgrade, mandatory resident actions, one ranking entry per operator,
+  letter sources listed from evidence. Timings (26 Oct): investigator ~3 s, diagnostician ~19 s,
+  critic ~40 s (Ultra), advisor / letter ~5 s, fix planner ~2 s. Check: scripts/check_agents.py.
 
 ### Zetaris sources
 

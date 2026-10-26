@@ -23,6 +23,7 @@ def reply(content=None, tool_calls=None, status=200, reasoning="secret chain of 
 @pytest.fixture
 def client(monkeypatch):
     monkeypatch.setattr(L, "_throttle", L._Throttle(1000))
+    monkeypatch.setattr(L.time, "sleep", lambda s: None)
     c = L.LLM()
     c.base_url, c.model, c.reasoning_model, c._key = "https://x", "fast-model", "reason-model", "nvapi-SECRET"
     return c
@@ -70,11 +71,22 @@ def test_corrective_retry_on_invalid_json(client, monkeypatch):
     assert r.parsed is not None and len(sent) == 2 and "did not match the schema" in sent[1]["messages"][-1]["content"]
 
 
-def test_falls_back_to_the_other_model_on_server_errors(client, monkeypatch):
-    sent = script(monkeypatch, [reply(status=500), reply(status=500), reply(json.dumps(GOOD))])
+def test_server_errors_retry_2s_then_6s_then_switch_model(client, monkeypatch):
+    waits = []
+    monkeypatch.setattr(L.time, "sleep", waits.append)
+    sent = script(monkeypatch, [reply(status=500), reply(status=500), reply(status=500), reply(json.dumps(GOOD))])
     r = client.chat([{"role": "system", "content": "s"}], reasoning=True, schema=S.HypothesisSet)
-    assert [b["model"] for b in sent] == ["reason-model", "reason-model", "fast-model"]
+    assert [b["model"] for b in sent] == ["reason-model"] * 3 + ["fast-model"]
+    assert waits == [2.0, 6.0]
     assert r.model == "fast-model" and "reasoning model failed" in r.fallback
+    assert [x.get("wait_s") for x in r.retries[:2]] == [2.0, 6.0] and r.retries[2]["switched_to"] == "fast-model"
+
+
+def test_a_500_then_success_is_one_recorded_retry(client, monkeypatch):
+    script(monkeypatch, [reply(status=500), reply(json.dumps(GOOD))])
+    r = client.chat([{"role": "system", "content": "s"}], schema=S.HypothesisSet)
+    assert r.model == "fast-model" and r.fallback is None and r.retries == [
+        {"model": "fast-model", "attempt": 1, "error": "HTTP 500", "wait_s": 2.0}]
 
 
 def test_tool_calls_parsed(client, monkeypatch):
@@ -85,7 +97,7 @@ def test_tool_calls_parsed(client, monkeypatch):
 
 
 def test_key_never_logged(client, monkeypatch, caplog):
-    script(monkeypatch, [reply(status=500), reply(status=500), reply(status=500), reply(status=500)])
+    script(monkeypatch, [reply(status=500)] * 6)
     with caplog.at_level(logging.DEBUG), pytest.raises(L.LLMError) as e:
         client.chat([{"role": "system", "content": "s"}], schema=S.HypothesisSet)
     assert "SECRET" not in caplog.text and "SECRET" not in str(e.value)

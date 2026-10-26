@@ -165,3 +165,21 @@ class Diagnosis(BaseModel):
     rounds: int
     status: Literal["complete", "partial", "failed"]
     notes: list[str] = []
+
+
+class FixReview(Strict):
+    verdict: Literal["approve", "revise"]
+    reason: str
+    issues: list[str]
+
+
+# --------------------------------------------------------------- guard
+
+
+class Rewrite(Strict):
+    original: str
+    rewritten: str = Field(description="the sentence again, with numbers only as written in the cited evidence, or none")
+
+
+class RewriteSet(Strict):
+    rewrites: list[Rewrite]
