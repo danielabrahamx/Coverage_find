@@ -48,8 +48,12 @@
       <p class="list-summary" id="list-summary">Loading zones…</p>
       <div class="table-wrap">
         <table class="zones" id="zones-table">
-          <thead><tr><th>#</th><th>Zone</th><th class="num">People</th><th class="num">Median speed</th>
-            <th class="num">Poor quarters</th><th class="num">Operators</th><th>Score</th></tr></thead>
+          <colgroup><col class="c-rank"><col><col class="c-num"><col class="c-num"><col class="c-num"><col class="c-ops"><col class="c-score"></colgroup>
+          <thead><tr><th>#</th><th>Zone</th><th class="num" title="People living in the zone's poorly served cells">People</th>
+            <th class="num" title="Median download speed of the zone's cells (Mbps), latest quarter; tests below">Mbps</th>
+            <th class="num" title="Share of quarters with poor speeds">Poor qtrs</th>
+            <th class="num" title="Average number of operators with a site within 5 km">Ops</th>
+            <th title="Priority score, 0 to 100 within the chosen area">Score</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
@@ -57,9 +61,16 @@
     <div class="council-map-wrap">
       <div id="map" class="map"></div>
       <section class="legend card" id="legend" aria-label="Legend"></section>
-      <aside class="panel card" id="panel" aria-label="Zone details" hidden>
-        <button class="panel-close" id="panel-close" aria-label="Close">×</button>
-        <div id="panel-body"></div>
+      <aside class="panel card rp" id="panel" aria-label="Zone details" hidden>
+        <button type="button" class="rp-handle" id="panel-collapse" aria-label="Hide panel" aria-expanded="true">›</button>
+        <header class="rp-header">
+          <div class="rp-title-row">
+            <div class="rp-title"><h2 id="rp-title"></h2><p class="rp-sub" id="rp-sub"></p></div>
+            <button type="button" class="panel-close" id="panel-close" aria-label="Close">×</button>
+          </div>
+          <div id="rp-tabs"></div>
+        </header>
+        <div class="rp-body" id="panel-body"></div>
       </aside>
     </div>
   </main>

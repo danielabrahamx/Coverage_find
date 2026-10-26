@@ -190,3 +190,27 @@ def test_confidence_change_without_a_reason_is_discarded(setup, monkeypatch):
     r = C.diagnose_point(lat=54.445, lon=-3.105, memory=memory)
     assert r["rounds"] == 2 and r["hypotheses"][0]["confidence"] == 0.8
     assert any(n.get("guard_kind") == "unexplained_change" for n in memory.notes(r["run_id"]) if n.get("type") == "guard")
+
+
+def test_zone_advice_keeps_belief_citations_given_as_cause_names(monkeypatch):
+    memory = offline_memory(monkeypatch)
+    run_id = memory.create_run("zone", query="Z1")
+    case = T.Case(run_id=run_id, scope="zone", point={"lat": 54.7, "lon": -2.6, "label": "Ousby"}, zone_id="Z1", memory=memory)
+    memory.add_evidence(run_id, {**item("zone_overview", "836 of 873 people have no identified site within 5 km."),
+                                 "evidence_id": "zone_overview"})
+    memory.add_belief(run_id, "distance_to_mast", 0.65, "No site within 5 km [zone_overview].", ["zone_overview"], [], round=1)
+    seen = {}
+
+    def chat(messages, **kw):
+        seen["user"] = messages[-1]["content"]
+        return LLMResult(model="m", parsed=S.ZoneAdvice(
+            headline="Distance is the likely cause [Distance_To_Mast].",
+            explanation="836 of 873 people have no site nearby [distance_to_mast][zone_overview] [made_up].",
+            cited_evidence=["distance_to_mast", "zone_overview", "made_up"], limitations="Sites are approximate."))
+
+    monkeypatch.setattr(A.llm, "chat", chat)
+    out = A.advise_zone(case)
+    assert "[distance_to_mast] cause distance_to_mast" in seen["user"]  # beliefs listed with id and cause name
+    assert out.cited_evidence == ["distance_to_mast", "zone_overview"]
+    assert out.headline.endswith("[distance_to_mast].") and "[distance_to_mast][zone_overview]" in out.explanation
+    assert "made_up" not in out.explanation and "836 of 873" in out.explanation  # numbers checked via the belief's evidence

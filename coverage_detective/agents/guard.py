@@ -107,25 +107,53 @@ def bad_sentences(text: str, allowed: set[float]) -> list[str]:
     return [s for s in _SENTENCE.split(text or "") if any(not number_ok(v, d, allowed) for v, d, _ in numbers_in(s))]
 
 
-class Guard:
-    """Applies the checks for one run; `evidence` maps id -> item (from Meterless)."""
+def map_cause_citations(ids: list[str], text_fields: dict[str, str], beliefs: dict[str, dict]) -> tuple[list[str], dict[str, str]]:
+    """Map cause names an agent cited (e.g. [Terrain_Blocking]) to the matching belief id, in lists and text."""
+    by_cause = {str(b.get("cause") or bid).lower(): bid for bid, b in beliefs.items()}
 
-    def __init__(self, evidence: dict[str, dict], record: Callable[[Intervention], None]):
+    def one(i: str) -> str:
+        return i if i in beliefs else by_cause.get(i.lower(), i)
+
+    fields = {k: _BRACKET.sub(lambda m: f"[{one(m.group(1))}]", v or "") for k, v in text_fields.items()}
+    return [one(i) for i in ids], fields
+
+
+class Guard:
+    """Applies the checks for one run; `evidence` maps id -> item (from Meterless).
+
+    `beliefs` (id -> belief) is given only for agents that may cite the reviewed beliefs (the advisor):
+    a belief id is then a valid citation, and its numbers are those of the belief's supporting evidence.
+    """
+
+    def __init__(self, evidence: dict[str, dict], record: Callable[[Intervention], None],
+                 beliefs: dict[str, dict] | None = None):
         self.evidence = evidence
         self.record = record
+        self.beliefs = beliefs or {}
+
+    def citable(self, i: str) -> bool:
+        return i in self.evidence or i in self.beliefs
+
+    def expand(self, ids: set[str]) -> set[str]:
+        """Evidence ids behind a set of citations (a belief stands for its supporting evidence)."""
+        out = {i for i in ids if i in self.evidence}
+        for i in ids:
+            if i in self.beliefs:
+                out |= set(self.beliefs[i].get("supporting") or [])
+        return out
 
     # ---------------------------------------------------- citations
 
     def known(self, ids: list[str], where: str) -> list[str]:
-        good = [i for i in dict.fromkeys(ids) if i in self.evidence]
-        bad = [i for i in ids if i not in self.evidence]
+        good = [i for i in dict.fromkeys(ids) if self.citable(i)]
+        bad = [i for i in ids if not self.citable(i)]
         if bad:
             self.record(Intervention("unknown_citation", f"{where}: removed citations not in Meterless: {', '.join(bad)}",
                                      {"where": where, "removed": bad}))
         return good
 
     def strip_unknown_brackets(self, text: str, where: str) -> str:
-        bad = [i for i in cited_in_text(text) if i not in self.evidence]
+        bad = [i for i in cited_in_text(text) if not self.citable(i)]
         for i in bad:
             text = text.replace(f"[{i}]", "")
         if bad:
@@ -151,7 +179,7 @@ class Guard:
     def check_numbers(self, fields: dict[str, str], cited: set[str], where: str,
                       rewrite: Callable[[list[str], list[str]], dict[str, str]] | None) -> dict[str, str]:
         """Return the fields with unsupported sentences rewritten once (by the agent) or removed."""
-        allowed = evidence_numbers([self.evidence[i] for i in cited if i in self.evidence])
+        allowed = evidence_numbers([self.evidence[i] for i in self.expand(set(cited)) if i in self.evidence])
         offenders = {k: bad_sentences(v, allowed) for k, v in fields.items()}
         flat = [s for v in offenders.values() for s in v]
         if not flat:

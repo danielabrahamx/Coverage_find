@@ -236,5 +236,8 @@ def priority_summary(req: SummaryRequest) -> dict:
     title = f"Mobile coverage gaps in {scope_name}: priorities"
     memory.update_run(run_id, status="complete", result={"title": title, **out.model_dump()})
     guard = [n.get("summary") for n in memory.notes(run_id) if n.get("type") == "guard"]
+    rows = [{k: z[k] for k in ("zone_id", "rank", "name", "council", "people", "people_by_reason", "tests", "confidence")}
+            | {"diagnosis": (diagnoses.get(z["zone_id"]) or {}).get("headline")} for z in ranked["zones"]]
     return {"title": title, **out.model_dump(), "run_id": run_id, "scope": req.scope, "zones": [z["zone_id"] for z in ranked["zones"]],
+            "zone_rows": rows,
             "diagnosed": sorted(diagnoses), "guard": guard}

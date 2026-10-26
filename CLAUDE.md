@@ -127,7 +127,7 @@ scripts/zetaris/        compose.sh (data mount), register_sources.py (one functi
 scripts/check_*.py      check_data (A, B, E), check_live (D), check_terrain (C), check_evidence
 scripts/refresh.py      refresh stored sources on their cadence
 scripts/screenshots.py  Playwright screenshots -> docs/screenshots/
-tests/                  pytest (96 tests; offline: samples, mocked Zetaris / DEM)
+tests/                  pytest (97 tests; offline: samples, mocked Zetaris / DEM)
 web/                    pages, no build step (MapLibre 5.24 + deck.gl 9.4 + h3-js 4.5):
                         index.html + app.js (Explore), signal.html + signal.js (My signal),
                         council.html + council.js (Council view), agents.js (agent UI, shared), style.css
@@ -358,6 +358,21 @@ G (power cuts) dropped as future work; H (visitor load) only if time. Then the a
   recommended fix with the chosen candidate outlined on the map and people from its evidence, critic notes,
   trace), "Priority summary (agents)" for the area. Guard rewrite calls carry `purpose`. Screenshots:
   `scripts/screenshots.py --agents` (live runs, docs/screenshots/*agents*).
+- **Panel UI cleanup** (26 Oct, layout and wording only; no agent logic or prompt changes): one tabbed run view
+  in agents.js (`AG.runView`) used by both pages: Result (headline, recommended-fix card or best-network card,
+  "Why we think this" = top 3 causes with bars and one plain sentence, ruled out; citations are small numbers
+  that open the Evidence tab), How the agents decided (timeline, one collapsed card per round with a one-line
+  summary, plain-language steps, critic text trimmed, guard corrections merged "x3"; models, timings, function
+  names and guard codes behind "Technical details", off by default; total run time once), Evidence (numbered
+  cards with Zetaris SQL, data details, World Model graph at the bottom, 12px labels). Council panel: 440px,
+  sticky header (name, close, tabs), body scrolls inside, collapse handle; My signal: 440px column with the
+  same handle. Spacing tokens 4/8/12/16/24, font sizes 13/14/17. Zone table: data-confidence dot with tooltip
+  (label only for good data), names on one line with "id · council" truncated below, short headers with
+  tooltips. Priority summary: ranked list built from the zone data (name, cause tag, "836 of 873 people", id as
+  muted text); the API now returns `zone_rows`. Advisor citations: the reviewed beliefs are listed with id and
+  cause name, cause names are mapped to belief ids (`guard.map_cause_citations`), and the guard accepts belief
+  ids from the advisor (numbers checked against the belief's evidence). Before/after screenshots:
+  `scripts/ui_screenshots.py before|after [--summary]` -> docs/screenshots/ui_cleanup/.
 
 ### Zetaris sources
 

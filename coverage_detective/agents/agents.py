@@ -19,7 +19,8 @@ import time
 from pathlib import Path
 
 from coverage_detective.agents import schemas as S
-from coverage_detective.agents.guard import CAP_WEAK_ONLY, CONTEXT_ONLY, Guard, Intervention, cited_in_text
+from coverage_detective.agents.guard import (CAP_WEAK_ONLY, CONTEXT_ONLY, Guard, Intervention, cited_in_text,
+                                             map_cause_citations)
 from coverage_detective.agents.llm import LLMError, LLMResult, llm
 from coverage_detective.agents.tools import (OPERATORS, POINT_TOOLS, ZONE_TOOLS, Case, network_comparison, run_tool,
                                              tool_specs)
@@ -101,11 +102,20 @@ def _fmt_run(runs: list[tuple[str, str | None]]) -> str:
     return ", ".join(f"{t}({o})" if o else f"{t}()" for t, o in runs) or "(nothing yet)"
 
 
-def make_guard(case: Case, agent: str, round: int) -> Guard:
+def make_guard(case: Case, agent: str, round: int, beliefs: list[dict] | None = None) -> Guard:
+    """beliefs: given for the advisor, which may cite the reviewed beliefs by id."""
     def record(iv: Intervention) -> None:
         case.memory.add_note(case.run_id, "guard", iv.summary, by="guard", round=round, agent=agent,
                              guard_kind=iv.kind, **iv.details)
-    return Guard(evidence_map(case), record)
+    return Guard(evidence_map(case), record, {b["belief_id"]: b for b in beliefs or []})
+
+
+def advisor_beliefs_text(beliefs: list[dict]) -> str:
+    """The reviewed beliefs for the advisor, each with the id to cite and its cause name."""
+    if not beliefs:
+        return "(none)"
+    return "\n".join(f"- [{b['belief_id']}] cause {b.get('cause') or b['belief_id']}, {b.get('status', 'active')}, confidence "
+                     f"{b['confidence']:.2f}; for {b.get('supporting')}: {b.get('explanation')}" for b in beliefs)
 
 
 def rewriter(case: Case, agent: str, round: int, system: str, reasoning: bool = False):
@@ -323,14 +333,17 @@ def advise(case: Case, audience: str = "resident") -> S.AdvisorOutput:
     beliefs = case.memory.beliefs(case.run_id)
     system = prompt("advisor", audience=audience)
     user = (f"Location: {case.point.get('label')} ({case.point.get('admin_district')}, {case.point.get('country')}).\n\n"
-            f"Reviewed beliefs (final confidence):\n{beliefs_text(beliefs)}\n\nEvidence:\n{evidence_text(ev)}")
+            f"Reviewed beliefs (cite a belief by its id in [brackets], evidence by its id):\n{advisor_beliefs_text(beliefs)}"
+            f"\n\nEvidence:\n{evidence_text(ev)}")
     r = ask(case, "advisor", 0, [{"role": "system", "content": system}, {"role": "user", "content": user}],
             schema=S.AdvisorOutput)
     out = r.parsed
-    guard = make_guard(case, "advisor", 0)
+    guard = make_guard(case, "advisor", 0, beliefs)
+    bmap = {b["belief_id"]: b for b in beliefs}
+    out.cited_evidence = map_cause_citations(out.cited_evidence, {}, bmap)[0]
     out.cited_evidence = guard.known(out.cited_evidence, "advisor")
     for ro in out.ruled_out:
-        ro.evidence = guard.known(ro.evidence, f"advisor ruled_out {ro.cause}")
+        ro.evidence = guard.known(map_cause_citations(ro.evidence, {}, bmap)[0], f"advisor ruled_out {ro.cause}")
     for n in out.best_network.ranking:
         n.evidence = guard.known(n.evidence, f"advisor best_network {n.operator}")
     fields = {"headline": out.headline, "explanation": out.explanation, "limitations": out.limitations,
@@ -338,6 +351,7 @@ def advise(case: Case, audience: str = "resident") -> S.AdvisorOutput:
               **{f"ruled_out.{i}": x.reason for i, x in enumerate(out.ruled_out)},
               **{f"best_network.{i}": x.why for i, x in enumerate(out.best_network.ranking)},
               **{f"actions.{i}": x.text for i, x in enumerate(out.actions)}}
+    fields = map_cause_citations([], fields, bmap)[1]
     fields = {k: guard.strip_unknown_brackets(v, f"advisor {k}") for k, v in fields.items()}
     cited = set(out.cited_evidence) | {i for v in fields.values() for i in cited_in_text(v)} \
         | {i for x in out.ruled_out for i in x.evidence} | {i for x in out.best_network.ranking for i in x.evidence}
@@ -438,14 +452,19 @@ def review_fix(case: Case, round: int, plan: dict) -> S.FixReview:
 
 def advise_zone(case: Case) -> S.ZoneAdvice:
     ev = evidence_map(case)
+    beliefs = case.memory.beliefs(case.run_id)
     system = prompt("advisor", audience="council officer") + "\nFor a zone: headline and explanation only."
-    user = f"Zone {case.zone_id}.\nBeliefs:\n{beliefs_text(case.memory.beliefs(case.run_id))}\n\nEvidence:\n{evidence_text(ev)}"
+    user = (f"Zone {case.zone_id}.\nReviewed beliefs (cite a belief by its id in [brackets], evidence by its id):\n"
+            f"{advisor_beliefs_text(beliefs)}\n\nEvidence:\n{evidence_text(ev)}")
     r = ask(case, "advisor", 0, [{"role": "system", "content": system}, {"role": "user", "content": user}],
             schema=S.ZoneAdvice)
     out = r.parsed
-    guard = make_guard(case, "advisor", 0)
+    guard = make_guard(case, "advisor", 0, beliefs)
+    keys = ("headline", "explanation", "limitations")
+    out.cited_evidence, mapped = map_cause_citations(out.cited_evidence, {k: getattr(out, k) for k in keys},
+                                                     {b["belief_id"]: b for b in beliefs})
     out.cited_evidence = guard.known(out.cited_evidence, "zone advice")
-    fields = {k: guard.strip_unknown_brackets(getattr(out, k), f"zone advice {k}") for k in ("headline", "explanation", "limitations")}
+    fields = {k: guard.strip_unknown_brackets(mapped[k], f"zone advice {k}") for k in keys}
     fields = guard.check_numbers(fields, set(out.cited_evidence) | {i for v in fields.values() for i in cited_in_text(v)},
                                  "zone advice", rewriter(case, "advisor", 0, system, False))
     for k, v in fields.items():
