@@ -37,7 +37,8 @@ from coverage_detective import evidence as evidence_bundle
 from coverage_detective.config import UK_BBOX
 from coverage_detective.data import manifest, terrain
 from coverage_detective.data.queries import cell_sql
-from coverage_detective.data.zetaris import QUERY_LOG, ZetarisError, query
+from coverage_detective.data.zetaris import QUERY_LOG, ZetarisError, explain, query
+from coverage_detective.data.zetaris import status as zetaris_status
 from coverage_detective.sources import flood_warnings, geocode as geocoder, live as live_sources
 from coverage_detective.sources import met_office_warnings, weather
 
@@ -92,11 +93,7 @@ def _bbox(bbox: str) -> tuple[float, float, float, float]:
 
 @app.get("/health")
 def health() -> dict:
-    try:
-        query("SELECT 1 AS ok", timeout=5)
-        zetaris = "ok"
-    except ZetarisError as e:
-        zetaris = f"unreachable: {e}"
+    zetaris = zetaris_status()
     layers = len(json.loads((LAYERS_DIR / "index.json").read_text())) if (LAYERS_DIR / "index.json").exists() else 0
     return {"status": "ok", "layers": layers, "zetaris": zetaris}
 
@@ -150,7 +147,7 @@ def cell(cell_id: str) -> dict:
     try:
         rows = query(sql, timeout=60)
     except ZetarisError as e:
-        raise HTTPException(502, f"Zetaris query failed: {e}") from e
+        raise HTTPException(502, f"Zetaris query failed: {explain(e)}") from e
     if not rows:
         raise HTTPException(404, f"Cell {cell_id} is not in the UK grid")
     data = rows[0]

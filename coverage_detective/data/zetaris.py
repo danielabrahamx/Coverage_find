@@ -170,3 +170,25 @@ def execute(sql: str, timeout: float | None = None) -> list[list]:
     data = body.get("data", [])
     _log(sql, started, len(data), None)
     return data
+
+
+NO_MOUNT_HINT = ("Zetaris cannot see the data files: the driver was restarted without our data mount "
+                 "(a plain docker compose up/restart in ~/zetaris-platform). Fix: scripts/zetaris/compose.sh up -d driver")
+
+
+def explain(error: Exception) -> str:
+    """A ZetarisError message, with the fix when the cause is the missing data mount."""
+    return NO_MOUNT_HINT if "PATH_NOT_FOUND" in str(error) else str(error)
+
+
+def status() -> str:
+    """'ok', or what is wrong: Zetaris unreachable, or up without the data mount."""
+    try:
+        query("SELECT 1 AS ok", timeout=10)
+    except ZetarisError as e:
+        return f"unreachable: {e}. Start it with: scripts/zetaris/compose.sh up -d"
+    try:
+        query("SELECT count(*) AS n FROM CD_CELLS.cells_r7", timeout=30)
+    except ZetarisError as e:
+        return explain(e)
+    return "ok"
