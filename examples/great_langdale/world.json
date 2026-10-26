@@ -15,11 +15,11 @@
    "source": {
     "kind": "agent",
     "by": "coordinator",
-    "at": "2026-10-26T20:56:00.683Z",
-    "runId": "run_20261026205600_c6qi"
+    "at": "2026-10-26T21:37:02.183Z",
+    "runId": "run_20261026213702_fgoz"
    },
    "createdAt": "2026-10-26T20:56:00.683Z",
-   "updatedAt": "2026-10-26T20:56:00.683Z",
+   "updatedAt": "2026-10-26T21:37:02.183Z",
    "name": "54.44500, -3.10500",
    "aliases": [
     "54.44500, -3.10500"
@@ -36,11 +36,11 @@
    "source": {
     "kind": "agent",
     "by": "coordinator",
-    "at": "2026-10-26T20:56:00.708Z",
-    "runId": "run_20261026205600_c6qi"
+    "at": "2026-10-26T21:37:02.207Z",
+    "runId": "run_20261026213702_fgoz"
    },
    "createdAt": "2026-10-26T20:56:00.708Z",
-   "updatedAt": "2026-10-26T20:56:00.708Z",
+   "updatedAt": "2026-10-26T21:37:02.207Z",
    "name": "Westmorland and Furness",
    "aliases": [
     "Westmorland and Furness"
@@ -61,11 +61,11 @@
    "source": {
     "kind": "agent",
     "by": "coordinator",
-    "at": "2026-10-26T20:58:07.068Z",
-    "runId": "run_20261026205600_c6qi"
+    "at": "2026-10-26T21:39:38.394Z",
+    "runId": "run_20261026213702_fgoz"
    },
    "createdAt": "2026-10-26T20:58:06.924Z",
-   "updatedAt": "2026-10-26T20:58:07.068Z",
+   "updatedAt": "2026-10-26T21:39:38.394Z",
    "aliases": [],
    "state": "active"
   },
@@ -77,11 +77,11 @@
    "source": {
     "kind": "agent",
     "by": "coordinator",
-    "at": "2026-10-26T20:58:06.949Z",
-    "runId": "run_20261026205600_c6qi"
+    "at": "2026-10-26T21:39:38.255Z",
+    "runId": "run_20261026213702_fgoz"
    },
    "createdAt": "2026-10-26T20:58:06.949Z",
-   "updatedAt": "2026-10-26T20:58:06.949Z",
+   "updatedAt": "2026-10-26T21:39:38.255Z",
    "name": "EE",
    "aliases": [
     "EE"
@@ -101,11 +101,11 @@
    "source": {
     "kind": "agent",
     "by": "coordinator",
-    "at": "2026-10-26T20:58:07.005Z",
-    "runId": "run_20261026205600_c6qi"
+    "at": "2026-10-26T21:39:38.312Z",
+    "runId": "run_20261026213702_fgoz"
    },
    "createdAt": "2026-10-26T20:58:07.005Z",
-   "updatedAt": "2026-10-26T20:58:07.005Z",
+   "updatedAt": "2026-10-26T21:39:38.312Z",
    "aliases": [],
    "state": "active"
   },
@@ -117,11 +117,11 @@
    "source": {
     "kind": "agent",
     "by": "coordinator",
-    "at": "2026-10-26T20:58:07.020Z",
-    "runId": "run_20261026205600_c6qi"
+    "at": "2026-10-26T21:39:38.337Z",
+    "runId": "run_20261026213702_fgoz"
    },
    "createdAt": "2026-10-26T20:58:07.020Z",
-   "updatedAt": "2026-10-26T20:58:07.020Z",
+   "updatedAt": "2026-10-26T21:39:38.337Z",
    "name": "O2",
    "aliases": [
     "O2"
@@ -136,11 +136,11 @@
    "source": {
     "kind": "agent",
     "by": "coordinator",
-    "at": "2026-10-26T20:58:07.095Z",
-    "runId": "run_20261026205600_c6qi"
+    "at": "2026-10-26T21:39:38.419Z",
+    "runId": "run_20261026213702_fgoz"
    },
    "createdAt": "2026-10-26T20:58:07.095Z",
-   "updatedAt": "2026-10-26T20:58:07.095Z",
+   "updatedAt": "2026-10-26T21:39:38.419Z",
    "name": "Three",
    "aliases": [
     "Three"
@@ -160,11 +160,11 @@
    "source": {
     "kind": "agent",
     "by": "coordinator",
-    "at": "2026-10-26T20:58:07.144Z",
-    "runId": "run_20261026205600_c6qi"
+    "at": "2026-10-26T21:39:38.472Z",
+    "runId": "run_20261026213702_fgoz"
    },
    "createdAt": "2026-10-26T20:58:07.144Z",
-   "updatedAt": "2026-10-26T20:58:07.144Z",
+   "updatedAt": "2026-10-26T21:39:38.472Z",
    "aliases": [],
    "state": "active"
   },
@@ -176,11 +176,11 @@
    "source": {
     "kind": "agent",
     "by": "coordinator",
-    "at": "2026-10-26T20:58:07.161Z",
-    "runId": "run_20261026205600_c6qi"
+    "at": "2026-10-26T21:39:38.489Z",
+    "runId": "run_20261026213702_fgoz"
    },
    "createdAt": "2026-10-26T20:58:07.161Z",
-   "updatedAt": "2026-10-26T20:58:07.161Z",
+   "updatedAt": "2026-10-26T21:39:38.489Z",
    "name": "Vodafone",
    "aliases": [
     "Vodafone"
@@ -203,14 +203,41 @@
    "source": {
     "kind": "agent",
     "by": "coordinator",
-    "at": "2026-10-26T20:58:07.215Z",
-    "runId": "run_20261026205600_c6qi"
+    "at": "2026-10-26T21:39:38.547Z",
+    "runId": "run_20261026213702_fgoz"
    },
    "createdAt": "2026-10-26T20:58:07.215Z",
-   "updatedAt": "2026-10-26T20:58:07.215Z",
+   "updatedAt": "2026-10-26T21:39:38.547Z",
    "name": "Yellow warning of wind affecting North West England",
    "aliases": [
-    "Yellow warning of wind affecting North West England"
+    "Yellow warning of wind affecting North West England",
+    "Yellow warning of wind affecting Wales"
+   ],
+   "state": "active"
+  },
+  {
+   "type": "event",
+   "id": "event:cd:diagnosis_completed:run_20261026213702_fgoz:place:cd:54.44500,-3.10500:1793050792991",
+   "attrs": {
+    "kind": "diagnosis_completed",
+    "headline": "Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison].",
+    "status": "complete",
+    "top_cause": "terrain_blocking",
+    "run_id": "run_20261026213702_fgoz",
+    "at": "2026-10-26T21:39:52.991Z"
+   },
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:39:52.991Z",
+    "runId": "run_20261026213702_fgoz"
+   },
+   "createdAt": "2026-10-26T21:39:52.991Z",
+   "updatedAt": "2026-10-26T21:39:52.991Z",
+   "name": "diagnosis_completed",
+   "aliases": [
+    "diagnosis_completed"
    ],
    "state": "active"
   },
@@ -234,6 +261,302 @@
    },
    "createdAt": "2026-10-26T20:58:26.904Z",
    "updatedAt": "2026-10-26T20:58:26.904Z",
+   "name": "diagnosis_completed",
+   "aliases": [
+    "diagnosis_completed"
+   ],
+   "state": "active"
+  },
+  {
+   "type": "site",
+   "id": "site:cd:S031161",
+   "attrs": {
+    "operators": [
+     "EE",
+     "O2",
+     "Vodafone"
+    ],
+    "operators_confirmed": [
+     "Vodafone"
+    ]
+   },
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:29:42.174Z",
+    "runId": "run_20261026212846_cw46"
+   },
+   "createdAt": "2026-10-26T21:00:25.290Z",
+   "updatedAt": "2026-10-26T21:29:42.174Z",
+   "aliases": [],
+   "state": "active"
+  },
+  {
+   "type": "site",
+   "id": "site:cd:S006617",
+   "attrs": {
+    "operators": [
+     "EE",
+     "O2",
+     "Three",
+     "Vodafone"
+    ],
+    "operators_confirmed": []
+   },
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:29:42.087Z",
+    "runId": "run_20261026212846_cw46"
+   },
+   "createdAt": "2026-10-26T21:00:25.471Z",
+   "updatedAt": "2026-10-26T21:29:42.087Z",
+   "aliases": [],
+   "state": "active"
+  },
+  {
+   "type": "site",
+   "id": "site:cd:S004298",
+   "attrs": {
+    "operators": [
+     "EE",
+     "Three"
+    ],
+    "operators_confirmed": [
+     "EE",
+     "Three"
+    ]
+   },
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:30:56.329Z",
+    "runId": "run_20261026212949_szk5"
+   },
+   "createdAt": "2026-10-26T21:02:53.108Z",
+   "updatedAt": "2026-10-26T21:30:56.329Z",
+   "aliases": [],
+   "state": "active"
+  },
+  {
+   "type": "site",
+   "id": "site:cd:S002966",
+   "attrs": {
+    "operators": [
+     "Vodafone"
+    ],
+    "operators_confirmed": [
+     "Vodafone"
+    ]
+   },
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:30:56.413Z",
+    "runId": "run_20261026212949_szk5"
+   },
+   "createdAt": "2026-10-26T21:02:53.299Z",
+   "updatedAt": "2026-10-26T21:30:56.413Z",
+   "aliases": [],
+   "state": "active"
+  },
+  {
+   "type": "place",
+   "id": "place:cd:52.30000,-3.51000",
+   "attrs": {
+    "lat": 52.3,
+    "lon": -3.51,
+    "cell_id": "87195e3aeffffff",
+    "postcode": "LD6 5AD",
+    "district": "Powys",
+    "country": "Wales"
+   },
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:29:49.981Z",
+    "runId": "run_20261026212949_szk5"
+   },
+   "createdAt": "2026-10-26T21:00:37.601Z",
+   "updatedAt": "2026-10-26T21:29:49.981Z",
+   "name": "52.30000, -3.51000",
+   "aliases": [
+    "52.30000, -3.51000"
+   ],
+   "state": "active"
+  },
+  {
+   "type": "site",
+   "id": "site:cd:S000310",
+   "attrs": {
+    "operators": [
+     "EE",
+     "O2",
+     "Three"
+    ],
+    "operators_confirmed": [
+     "EE",
+     "O2",
+     "Three"
+    ]
+   },
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:06:10.492Z",
+    "runId": "run_20261026210259_q6df"
+   },
+   "createdAt": "2026-10-26T21:06:10.323Z",
+   "updatedAt": "2026-10-26T21:06:10.492Z",
+   "aliases": [],
+   "state": "active"
+  },
+  {
+   "type": "site",
+   "id": "site:cd:S091576",
+   "attrs": {
+    "operators": [
+     "O2"
+    ],
+    "operators_confirmed": [
+     "O2"
+    ]
+   },
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:06:10.404Z",
+    "runId": "run_20261026210259_q6df"
+   },
+   "createdAt": "2026-10-26T21:06:10.404Z",
+   "updatedAt": "2026-10-26T21:06:10.404Z",
+   "aliases": [],
+   "state": "active"
+  },
+  {
+   "type": "site",
+   "id": "site:cd:S042990",
+   "attrs": {
+    "operators": [
+     "Vodafone"
+    ],
+    "operators_confirmed": []
+   },
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:06:10.593Z",
+    "runId": "run_20261026210259_q6df"
+   },
+   "createdAt": "2026-10-26T21:06:10.593Z",
+   "updatedAt": "2026-10-26T21:06:10.593Z",
+   "aliases": [],
+   "state": "active"
+  },
+  {
+   "type": "zone",
+   "id": "zone:cd:Z00072",
+   "attrs": {
+    "people": 873,
+    "cells": 8,
+    "council": "Westmorland and Furness",
+    "nation": "England"
+   },
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:06:19.475Z",
+    "runId": "run_20261026210619_ymly"
+   },
+   "createdAt": "2026-10-26T21:06:19.475Z",
+   "updatedAt": "2026-10-26T21:06:19.475Z",
+   "name": "Ousby",
+   "aliases": [
+    "Ousby"
+   ],
+   "state": "active"
+  },
+  {
+   "type": "event",
+   "id": "event:cd:diagnosis_completed:run_20261026210948_68wd:place:cd:54.44500,-3.10500:1793049260996",
+   "attrs": {
+    "kind": "diagnosis_completed",
+    "headline": "Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison][prior_diagnoses].",
+    "status": "complete",
+    "top_cause": "terrain_blocking",
+    "run_id": "run_20261026210948_68wd",
+    "at": "2026-10-26T21:14:20.996Z"
+   },
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:14:20.996Z",
+    "runId": "run_20261026210948_68wd"
+   },
+   "createdAt": "2026-10-26T21:14:20.996Z",
+   "updatedAt": "2026-10-26T21:14:20.996Z",
+   "name": "diagnosis_completed",
+   "aliases": [
+    "diagnosis_completed"
+   ],
+   "state": "active"
+  },
+  {
+   "type": "event",
+   "id": "event:cd:diagnosis_completed:run_20261026212637_dlth:place:cd:54.44500,-3.10500:1793050126149",
+   "attrs": {
+    "kind": "diagnosis_completed",
+    "headline": "Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison].",
+    "status": "complete",
+    "top_cause": "terrain_blocking",
+    "run_id": "run_20261026212637_dlth",
+    "at": "2026-10-26T21:28:46.149Z"
+   },
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:28:46.149Z",
+    "runId": "run_20261026212637_dlth"
+   },
+   "createdAt": "2026-10-26T21:28:46.149Z",
+   "updatedAt": "2026-10-26T21:28:46.149Z",
+   "name": "diagnosis_completed",
+   "aliases": [
+    "diagnosis_completed"
+   ],
+   "state": "active"
+  },
+  {
+   "type": "event",
+   "id": "event:cd:diagnosis_completed:run_20261026213152_k7ig:place:cd:54.44500,-3.10500:1793050596282",
+   "attrs": {
+    "kind": "diagnosis_completed",
+    "headline": "Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison].",
+    "status": "complete",
+    "top_cause": "terrain_blocking",
+    "run_id": "run_20261026213152_k7ig",
+    "at": "2026-10-26T21:36:36.282Z"
+   },
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:36:36.282Z",
+    "runId": "run_20261026213152_k7ig"
+   },
+   "createdAt": "2026-10-26T21:36:36.282Z",
+   "updatedAt": "2026-10-26T21:36:36.282Z",
    "name": "diagnosis_completed",
    "aliases": [
     "diagnosis_completed"
@@ -450,6 +773,287 @@
     "runId": "run_20261026205600_c6qi"
    },
    "createdAt": "2026-10-26T20:58:26.906Z"
+  },
+  {
+   "id": "rel_831ed6fb26e78646",
+   "from": "site:cd:S031161",
+   "type": "inferred_operator",
+   "to": "operator:cd:EE",
+   "context": "operator:cd:EE",
+   "attrs": null,
+   "validFrom": "2026-10-26T21:00:25.359Z",
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:00:25.359Z",
+    "runId": "run_20261026205827_zsti"
+   },
+   "createdAt": "2026-10-26T21:00:25.359Z"
+  },
+  {
+   "id": "rel_6b91cf7a11e9b1fb",
+   "from": "site:cd:S031161",
+   "type": "inferred_operator",
+   "to": "operator:cd:O2",
+   "context": "operator:cd:O2",
+   "attrs": null,
+   "validFrom": "2026-10-26T21:00:25.455Z",
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:00:25.455Z",
+    "runId": "run_20261026205827_zsti"
+   },
+   "createdAt": "2026-10-26T21:00:25.455Z"
+  },
+  {
+   "id": "rel_9ed4b102b7c0ed6f",
+   "from": "site:cd:S006617",
+   "type": "inferred_operator",
+   "to": "operator:cd:Three",
+   "context": "operator:cd:Three",
+   "attrs": null,
+   "validFrom": "2026-10-26T21:00:25.523Z",
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:00:25.523Z",
+    "runId": "run_20261026205827_zsti"
+   },
+   "createdAt": "2026-10-26T21:00:25.523Z"
+  },
+  {
+   "id": "rel_7a71300ad413e022",
+   "from": "site:cd:S031161",
+   "type": "operated_by",
+   "to": "operator:cd:Vodafone",
+   "context": "operator:cd:Vodafone",
+   "attrs": null,
+   "validFrom": "2026-10-26T21:00:25.603Z",
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:00:25.603Z",
+    "runId": "run_20261026205827_zsti"
+   },
+   "createdAt": "2026-10-26T21:00:25.603Z"
+  },
+  {
+   "id": "rel_4b27d056d9bec4fa",
+   "from": "site:cd:S004298",
+   "type": "operated_by",
+   "to": "operator:cd:EE",
+   "context": "operator:cd:EE",
+   "attrs": null,
+   "validFrom": "2026-10-26T21:02:53.175Z",
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:02:53.175Z",
+    "runId": "run_20261026210037_y2hh"
+   },
+   "createdAt": "2026-10-26T21:02:53.175Z"
+  },
+  {
+   "id": "rel_4f87ac3a4dca3fbe",
+   "from": "site:cd:S004298",
+   "type": "operated_by",
+   "to": "operator:cd:Three",
+   "context": "operator:cd:Three",
+   "attrs": null,
+   "validFrom": "2026-10-26T21:02:53.278Z",
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:02:53.278Z",
+    "runId": "run_20261026210037_y2hh"
+   },
+   "createdAt": "2026-10-26T21:02:53.278Z"
+  },
+  {
+   "id": "rel_1d5358cc418298e5",
+   "from": "site:cd:S002966",
+   "type": "operated_by",
+   "to": "operator:cd:Vodafone",
+   "context": "operator:cd:Vodafone",
+   "attrs": null,
+   "validFrom": "2026-10-26T21:02:53.367Z",
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:02:53.367Z",
+    "runId": "run_20261026210037_y2hh"
+   },
+   "createdAt": "2026-10-26T21:02:53.367Z"
+  },
+  {
+   "id": "rel_a8f0b607ecf2d1f1",
+   "from": "place:cd:52.30000,-3.51000",
+   "type": "under_warning",
+   "to": "warning:cd:metoffice:yellow:wind:2026-10-27T03:00:00+00:00",
+   "attrs": {
+    "district_listed": false
+   },
+   "validFrom": "2026-10-26T21:02:53.414Z",
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:02:53.414Z",
+    "runId": "run_20261026210037_y2hh"
+   },
+   "createdAt": "2026-10-26T21:02:53.414Z"
+  },
+  {
+   "id": "rel_19c7890cb406759c",
+   "from": "site:cd:S000310",
+   "type": "operated_by",
+   "to": "operator:cd:EE",
+   "context": "operator:cd:EE",
+   "attrs": null,
+   "validFrom": "2026-10-26T21:06:10.386Z",
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:06:10.386Z",
+    "runId": "run_20261026210259_q6df"
+   },
+   "createdAt": "2026-10-26T21:06:10.386Z"
+  },
+  {
+   "id": "rel_46d72f8b5fb383ef",
+   "from": "site:cd:S091576",
+   "type": "operated_by",
+   "to": "operator:cd:O2",
+   "context": "operator:cd:O2",
+   "attrs": null,
+   "validFrom": "2026-10-26T21:06:10.466Z",
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:06:10.466Z",
+    "runId": "run_20261026210259_q6df"
+   },
+   "createdAt": "2026-10-26T21:06:10.466Z"
+  },
+  {
+   "id": "rel_88df7f2116b63781",
+   "from": "site:cd:S000310",
+   "type": "operated_by",
+   "to": "operator:cd:Three",
+   "context": "operator:cd:Three",
+   "attrs": null,
+   "validFrom": "2026-10-26T21:06:10.560Z",
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:06:10.560Z",
+    "runId": "run_20261026210259_q6df"
+   },
+   "createdAt": "2026-10-26T21:06:10.560Z"
+  },
+  {
+   "id": "rel_2520e8b927194e78",
+   "from": "site:cd:S042990",
+   "type": "inferred_operator",
+   "to": "operator:cd:Vodafone",
+   "context": "operator:cd:Vodafone",
+   "attrs": null,
+   "validFrom": "2026-10-26T21:06:10.653Z",
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:06:10.653Z",
+    "runId": "run_20261026210259_q6df"
+   },
+   "createdAt": "2026-10-26T21:06:10.653Z"
+  },
+  {
+   "id": "rel_49ce1f861e504c95",
+   "from": "zone:cd:Z00072",
+   "type": "in_area",
+   "to": "area:cd:Westmorland and Furness",
+   "attrs": null,
+   "validFrom": "2026-10-26T21:06:19.524Z",
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:06:19.524Z",
+    "runId": "run_20261026210619_ymly"
+   },
+   "createdAt": "2026-10-26T21:06:19.524Z"
+  },
+  {
+   "id": "rel_ed7655a206bc9337",
+   "from": "event:cd:diagnosis_completed:run_20261026210948_68wd:place:cd:54.44500,-3.10500:1793049260996",
+   "type": "concerns",
+   "to": "place:cd:54.44500,-3.10500",
+   "validFrom": "2026-10-26T21:14:20.998Z",
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:14:20.998Z",
+    "runId": "run_20261026210948_68wd"
+   },
+   "createdAt": "2026-10-26T21:14:20.998Z"
+  },
+  {
+   "id": "rel_668b32874a5a2dbf",
+   "from": "event:cd:diagnosis_completed:run_20261026212637_dlth:place:cd:54.44500,-3.10500:1793050126149",
+   "type": "concerns",
+   "to": "place:cd:54.44500,-3.10500",
+   "validFrom": "2026-10-26T21:28:46.151Z",
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:28:46.151Z",
+    "runId": "run_20261026212637_dlth"
+   },
+   "createdAt": "2026-10-26T21:28:46.151Z"
+  },
+  {
+   "id": "rel_20b5b03e26f1452f",
+   "from": "event:cd:diagnosis_completed:run_20261026213152_k7ig:place:cd:54.44500,-3.10500:1793050596282",
+   "type": "concerns",
+   "to": "place:cd:54.44500,-3.10500",
+   "validFrom": "2026-10-26T21:36:36.286Z",
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:36:36.286Z",
+    "runId": "run_20261026213152_k7ig"
+   },
+   "createdAt": "2026-10-26T21:36:36.286Z"
+  },
+  {
+   "id": "rel_5ebed291407dad7d",
+   "from": "event:cd:diagnosis_completed:run_20261026213702_fgoz:place:cd:54.44500,-3.10500:1793050792991",
+   "type": "concerns",
+   "to": "place:cd:54.44500,-3.10500",
+   "validFrom": "2026-10-26T21:39:52.993Z",
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T21:39:52.993Z",
+    "runId": "run_20261026213702_fgoz"
+   },
+   "createdAt": "2026-10-26T21:39:52.993Z"
   }
  ]
 }

@@ -126,7 +126,7 @@ scripts/zetaris/        compose.sh (data mount), register_sources.py (one functi
 scripts/check_*.py      check_data (A, B, E), check_live (D), check_terrain (C), check_evidence
 scripts/refresh.py      refresh stored sources on their cadence
 scripts/screenshots.py  Playwright screenshots -> docs/screenshots/
-tests/                  pytest (68 tests; offline: samples, mocked Zetaris / DEM)
+tests/                  pytest (91 tests; offline: samples, mocked Zetaris / DEM)
 web/                    pages, no build step (MapLibre 5.24 + deck.gl 9.4 + h3-js 4.5):
                         index.html + app.js (Explore), signal.html + signal.js (My signal),
                         council.html + council.js (Council view), style.css
@@ -330,6 +330,18 @@ G (power cuts) dropped as future work; H (visitor load) only if time. Then the a
   caps weather / active_incident at 0.4 when poor service is long-standing. Guard rewrites use the
   same agent prompt on the fast model. Meterless payloads can no longer overwrite record fields.
   Check: scripts/check_coordinator.py (summary in data/runs/phase4_summary.json).
+- **Phase 4 review fixes** (26 Oct, user's go-ahead): diagnostician moved to 3.5 Super (strict json_schema;
+  DIAGNOSTICIAN_ULTRA_ROUNDS in agents.py can put rounds back on Ultra), critic stays on Ultra; calls with
+  thinking on time out at 90 s (45 s otherwise). Guard rules now in code, not only prompts: weakness is decided
+  by code (`guard.weak_reason`: labelled weak, Ookla < 30 tests, sites crowd-sourced only, sites with unknown
+  operators) for the 0.5 cap; [prior_diagnoses] is context only (stripped from belief evidence, and not shown
+  to the critic, which kept using it as support); a confidence change without a revision reason is discarded
+  ("unexplained_change"). Prompts: critic (b) must downgrade weak beliefs above 0.5, (e) only calls service
+  long-standing when the trend shows it; diagnostician: 30+ tests above the UK median -> no problem cause
+  above 0.3; advisor: "service measures well here" headline. Check (examples/compare/): wall clock 63-171 s
+  (Phase 4: 130-272 s; one run 284 s from fast-model timeouts), diagnostician 3-19 s (was 49-100 s); London now
+  "No strong cause was found; the service measures well here". examples/great_langdale/ re-recorded from
+  run_20261026213702_fgoz.
 
 ### Zetaris sources
 

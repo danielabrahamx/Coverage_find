@@ -1,41 +1,126 @@
 [
  {
-  "memory_id": "mem-2",
+  "memory_id": "mem-440",
   "kind": "evidence",
   "ref": "prior_diagnoses",
-  "content": "No earlier diagnoses within 10 km in Meterless.",
-  "confidence": 0.4,
+  "content": "4 earlier diagnosises within 10 km: Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison][prior_diagnoses]. (0.0 km away, run run_20261026210948_68wd, 2026-10-26); Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison]. (0.0 km away, run run_20261026205600_c6qi, 2026-10-26); Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison]. (0.0 km away, run run_20261026212637_dlth, 2026-10-26).",
+  "confidence": 0.7,
   "source": "Meterless H-MEM (earlier diagnoses)",
-  "created_at": "2026-10-26T20:56:00.768Z",
+  "created_at": "2026-10-26T21:37:02.261Z",
   "id": "prior_diagnoses",
   "data_period": "Meterless H-MEM (earlier runs)",
-  "as_of": "2026-10-26T20:56:00+00:00",
+  "as_of": "2026-10-26T21:37:02+00:00",
   "query_or_url": "meterless:/diagnoses/near",
   "cell_ids": [
    "871955454ffffff"
   ],
-  "finding": "No earlier diagnoses within 10 km in Meterless.",
-  "value": [],
+  "finding": "4 earlier diagnosises within 10 km: Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison][prior_diagnoses]. (0.0 km away, run run_20261026210948_68wd, 2026-10-26); Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison]. (0.0 km away, run run_20261026205600_c6qi, 2026-10-26); Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison]. (0.0 km away, run run_20261026212637_dlth, 2026-10-26).",
+  "value": [
+   {
+    "run_id": "run_20261026210948_68wd",
+    "headline": "Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison][prior_diagnoses].",
+    "distance_km": 0,
+    "causes": [
+     {
+      "cause": "terrain_blocking",
+      "confidence": 0.85
+     },
+     {
+      "cause": "distance_to_mast",
+      "confidence": 0.4
+     },
+     {
+      "cause": "weather",
+      "confidence": 0.3
+     }
+    ],
+    "recorded": "2026-10-26T21:14:20.976Z"
+   },
+   {
+    "run_id": "run_20261026205600_c6qi",
+    "headline": "Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison].",
+    "distance_km": 0,
+    "causes": [
+     {
+      "cause": "terrain_blocking",
+      "confidence": 0.5
+     },
+     {
+      "cause": "distance_to_mast",
+      "confidence": 0.35
+     },
+     {
+      "cause": "weather",
+      "confidence": 0.2
+     }
+    ],
+    "recorded": "2026-10-26T20:58:26.889Z"
+   },
+   {
+    "run_id": "run_20261026212637_dlth",
+    "headline": "Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison].",
+    "distance_km": 0,
+    "causes": [
+     {
+      "cause": "terrain_blocking",
+      "confidence": 0.75
+     },
+     {
+      "cause": "insufficient_data",
+      "confidence": 0.5
+     },
+     {
+      "cause": "weather",
+      "confidence": 0.2
+     }
+    ],
+    "recorded": "2026-10-26T21:28:46.119Z"
+   },
+   {
+    "run_id": "run_20261026213152_k7ig",
+    "headline": "Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison].",
+    "distance_km": 0,
+    "causes": [
+     {
+      "cause": "terrain_blocking",
+      "confidence": 0.75
+     },
+     {
+      "cause": "distance_to_mast",
+      "confidence": 0.35
+     },
+     {
+      "cause": "insufficient_data",
+      "confidence": 0.3
+     },
+     {
+      "cause": "weather",
+      "confidence": 0.2
+     }
+    ],
+    "recorded": "2026-10-26T21:36:36.260Z"
+   }
+  ],
   "sample_size": {
-   "diagnoses": 0
+   "diagnoses": 4
   },
-  "strength": "weak",
+  "strength": "moderate",
   "bears_on": [],
   "evidence_id": "prior_diagnoses",
   "tool": "prior_diagnoses_nearby",
   "round": 1,
   "zetaris": [],
   "by": "coordinator",
-  "run_id": "run_20261026205600_c6qi"
+  "run_id": "run_20261026213702_fgoz"
  },
  {
-  "memory_id": "mem-6",
+  "memory_id": "mem-444",
   "kind": "evidence",
   "ref": "speed_1km",
   "content": "No Ookla speed tests were recorded within 1 km of this point in 2026Q3.",
   "confidence": 0.4,
   "source": "Ookla open data tiles (Zetaris CD_OOKLA_MOBILE_TILES)",
-  "created_at": "2026-10-26T20:56:13.475Z",
+  "created_at": "2026-10-26T21:37:10.778Z",
   "id": "speed_1km",
   "data_period": "2026Q3",
   "as_of": "2026-10-23",
@@ -72,21 +157,21 @@
    {
     "id": "Q4",
     "sql": "SELECT quadkey, lat, lon, download_mbps, upload_mbps, latency_ms, tests, devices, distance_km FROM ( SELECT t.*, 2 * 6371 * asin(sqrt(pow(sin(radians(t.lat - 54.445) / 2), 2) + cos(radians(54.445)) * cos(radians(t.lat)) * pow(sin(radians(t.lon - (-3.105)) / 2), 2))) AS distance_km FROM CD_OOKLA_MOBILE_TILES.ookla_mobile_tiles t WHERE t.quarter = '2026Q3' AND t.lat BETWEEN 54.42698 AND 54.46302 AND t.lon BETWEEN -3.13590 AND -3.07410 ) x WHERE distance_km <= 2.0 ORDER BY distance_km",
-    "duration_ms": 294,
+    "duration_ms": 391,
     "rows": 1
    }
   ],
   "by": "investigator",
-  "run_id": "run_20261026205600_c6qi"
+  "run_id": "run_20261026213702_fgoz"
  },
  {
-  "memory_id": "mem-7",
+  "memory_id": "mem-445",
   "kind": "evidence",
   "ref": "speed_cell",
   "content": "No Ookla speed tests were recorded in this cell in 2026Q3, so there is no measured speed here.",
   "confidence": 0.4,
   "source": "Ookla open data (Zetaris CD_OOKLA_MOBILE)",
-  "created_at": "2026-10-26T20:56:13.498Z",
+  "created_at": "2026-10-26T21:37:10.810Z",
   "id": "speed_cell",
   "data_period": "2026Q3",
   "as_of": "2026-10-23",
@@ -110,21 +195,21 @@
    {
     "id": "Q1",
     "sql": "SELECT c.cell_id, c.lat, c.lon, c.population, c.nation, o.quarter, o.download_mbps, o.upload_mbps, o.latency_ms, o.tests, o.devices, o.tests_per_1k_pop, o.devices_per_1k_pop, o.quarters_with_data, o.download_mbps_oldest, o.download_change_pct, o.download_trend_mbps_per_quarter, hst.history_json, nb.neighbour_download_mbps, nb.neighbour_tests, nb.neighbour_cells_with_data, m.nearest_mast_km, m.nearest_mast_bearing_deg, m.nearest_mast_id, m.nearest_mast_lat, m.nearest_mast_lon, m.nearest_mast_sources, m.nearest_mast_operators, m.nearest_mast_operators_confirmed, m.nearest_mast_antenna_height_m, m.masts_within_5km, m.masts_known_operator_within_5km, m.masts_unknown_operator_within_5km, m.masts_osm_only_within_5km, m.distinct_operators_within_5km, m.operators_within_5km, m.operators_confirmed_within_5km, m.wtr_sites_within_5km, m.microwave_backhaul_sites_within_5km, m.operator_data_status, a.pcon_code, a.pcon_name, a.laua_code, a.laua_name, a.g4_geo_out_0, a.g4_geo_out_1, a.g4_prem_out_0, a.g4_prem_in_0, a.g4_abrd_in_0, a.g5hc_prem_out_at_least_one, a.laua_g4_geo_out_0, a.laua_g4_geo_out_1, a.data_date AS ofcom_data_date, t.elevation_mean_m, t.elevation_range_m, l.blocked AS los_blocked, l.obstruction_m AS los_obstruction_m, l.los_class FROM CD_CELLS.cells_r7 c LEFT JOIN CD_OOKLA_MOBILE.ookla_mobile_r7 o ON o.cell_id = c.cell_id LEFT JOIN ( SELECT cell_id, to_json(collect_list(named_struct('quarter', quarter, 'download_mbps', download_mbps, 'tests', tests))) AS history_json FROM CD_OOKLA_MOBILE_HISTORY.ookla_mobile_history_r7 WHERE cell_id = '871955454ffffff' GROUP BY cell_id ) hst ON hst.cell_id = c.cell_id CROSS JOIN ( SELECT sum(download_mbps * tests) / sum(tests) AS neighbour_download_mbps, sum(tests) AS neighbour_tests, count(*) AS neighbour_cells_with_data FROM CD_OOKLA_MOBILE.ookla_mobile_r7 WHERE cell_id IN ('871955409ffffff', '871955450ffffff', '871955455ffffff', '871955456ffffff', '871955472ffffff', '871955473ffffff') ) nb LEFT JOIN CD_MASTS.masts_r7 m ON m.cell_id = c.cell_id LEFT JOIN CD_OFCOM_AREA.ofcom_area_r7 a ON a.cell_id = c.cell_id LEFT JOIN CD_TERRAIN.terrain_r7 t ON t.cell_id = c.cell_id LEFT JOIN CD_LOS.los_r7 l ON l.cell_id = c.cell_id WHERE c.cell_id = '871955454ffffff'",
-    "duration_ms": 530,
+    "duration_ms": 422,
     "rows": 1
    }
   ],
   "by": "investigator",
-  "run_id": "run_20261026205600_c6qi"
+  "run_id": "run_20261026213702_fgoz"
  },
  {
-  "memory_id": "mem-8",
+  "memory_id": "mem-446",
   "kind": "evidence",
   "ref": "speed_neighbours",
   "content": "The 6 neighbouring cells (2 with data) averaged 7.9 Mbps from 2 tests in 2026Q3.",
   "confidence": 0.4,
   "source": "Ookla open data (Zetaris CD_OOKLA_MOBILE)",
-  "created_at": "2026-10-26T20:56:13.515Z",
+  "created_at": "2026-10-26T21:37:10.835Z",
   "id": "speed_neighbours",
   "data_period": "2026Q3",
   "as_of": "2026-10-23",
@@ -157,21 +242,21 @@
    {
     "id": "Q1",
     "sql": "SELECT c.cell_id, c.lat, c.lon, c.population, c.nation, o.quarter, o.download_mbps, o.upload_mbps, o.latency_ms, o.tests, o.devices, o.tests_per_1k_pop, o.devices_per_1k_pop, o.quarters_with_data, o.download_mbps_oldest, o.download_change_pct, o.download_trend_mbps_per_quarter, hst.history_json, nb.neighbour_download_mbps, nb.neighbour_tests, nb.neighbour_cells_with_data, m.nearest_mast_km, m.nearest_mast_bearing_deg, m.nearest_mast_id, m.nearest_mast_lat, m.nearest_mast_lon, m.nearest_mast_sources, m.nearest_mast_operators, m.nearest_mast_operators_confirmed, m.nearest_mast_antenna_height_m, m.masts_within_5km, m.masts_known_operator_within_5km, m.masts_unknown_operator_within_5km, m.masts_osm_only_within_5km, m.distinct_operators_within_5km, m.operators_within_5km, m.operators_confirmed_within_5km, m.wtr_sites_within_5km, m.microwave_backhaul_sites_within_5km, m.operator_data_status, a.pcon_code, a.pcon_name, a.laua_code, a.laua_name, a.g4_geo_out_0, a.g4_geo_out_1, a.g4_prem_out_0, a.g4_prem_in_0, a.g4_abrd_in_0, a.g5hc_prem_out_at_least_one, a.laua_g4_geo_out_0, a.laua_g4_geo_out_1, a.data_date AS ofcom_data_date, t.elevation_mean_m, t.elevation_range_m, l.blocked AS los_blocked, l.obstruction_m AS los_obstruction_m, l.los_class FROM CD_CELLS.cells_r7 c LEFT JOIN CD_OOKLA_MOBILE.ookla_mobile_r7 o ON o.cell_id = c.cell_id LEFT JOIN ( SELECT cell_id, to_json(collect_list(named_struct('quarter', quarter, 'download_mbps', download_mbps, 'tests', tests))) AS history_json FROM CD_OOKLA_MOBILE_HISTORY.ookla_mobile_history_r7 WHERE cell_id = '871955454ffffff' GROUP BY cell_id ) hst ON hst.cell_id = c.cell_id CROSS JOIN ( SELECT sum(download_mbps * tests) / sum(tests) AS neighbour_download_mbps, sum(tests) AS neighbour_tests, count(*) AS neighbour_cells_with_data FROM CD_OOKLA_MOBILE.ookla_mobile_r7 WHERE cell_id IN ('871955409ffffff', '871955450ffffff', '871955455ffffff', '871955456ffffff', '871955472ffffff', '871955473ffffff') ) nb LEFT JOIN CD_MASTS.masts_r7 m ON m.cell_id = c.cell_id LEFT JOIN CD_OFCOM_AREA.ofcom_area_r7 a ON a.cell_id = c.cell_id LEFT JOIN CD_TERRAIN.terrain_r7 t ON t.cell_id = c.cell_id LEFT JOIN CD_LOS.los_r7 l ON l.cell_id = c.cell_id WHERE c.cell_id = '871955454ffffff'",
-    "duration_ms": 530,
+    "duration_ms": 422,
     "rows": 1
    }
   ],
   "by": "investigator",
-  "run_id": "run_20261026205600_c6qi"
+  "run_id": "run_20261026213702_fgoz"
  },
  {
-  "memory_id": "mem-10",
+  "memory_id": "mem-448",
   "kind": "evidence",
   "ref": "nearest_site",
   "content": "The nearest approximate mast site is 3.8 km south-east (OpenCelliD; operator Vodafone, inferred from crowd-sourced data).",
   "confidence": 0.7,
   "source": "Approximate mast sites (Zetaris CD_MASTS_SITES)",
-  "created_at": "2026-10-26T20:56:13.814Z",
+  "created_at": "2026-10-26T21:37:11.202Z",
   "id": "nearest_site",
   "data_period": "OpenCelliD downloaded 2026-10-25; OpenStreetMap extract downloaded 2026-10-25; Ofcom WTR downloaded 2026-10-25",
   "as_of": "2026-10-25",
@@ -204,21 +289,21 @@
    {
     "id": "Q2",
     "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 54.445) / 2), 2) + cos(radians(54.445)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (-3.105)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 54.35491 AND 54.53509 AND s.lon BETWEEN -3.25949 AND -2.95051 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
-    "duration_ms": 231,
+    "duration_ms": 284,
     "rows": 99
    }
   ],
   "by": "investigator",
-  "run_id": "run_20261026205600_c6qi"
+  "run_id": "run_20261026213702_fgoz"
  },
  {
-  "memory_id": "mem-11",
+  "memory_id": "mem-449",
   "kind": "evidence",
   "ref": "operators_5km",
   "content": "Only 3 operators (EE, Three and Vodafone) have approximate mast sites within 5 km. Operators are inferred from crowd-sourced data.",
   "confidence": 0.7,
   "source": "Approximate mast sites (Zetaris CD_MASTS_SITES)",
-  "created_at": "2026-10-26T20:56:13.841Z",
+  "created_at": "2026-10-26T21:37:11.234Z",
   "id": "operators_5km",
   "data_period": "OpenCelliD downloaded 2026-10-25; OpenStreetMap extract downloaded 2026-10-25; Ofcom WTR downloaded 2026-10-25",
   "as_of": "2026-10-25",
@@ -252,21 +337,21 @@
    {
     "id": "Q2",
     "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 54.445) / 2), 2) + cos(radians(54.445)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (-3.105)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 54.35491 AND 54.53509 AND s.lon BETWEEN -3.25949 AND -2.95051 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
-    "duration_ms": 231,
+    "duration_ms": 284,
     "rows": 99
    }
   ],
   "by": "investigator",
-  "run_id": "run_20261026205600_c6qi"
+  "run_id": "run_20261026213702_fgoz"
  },
  {
-  "memory_id": "mem-13",
+  "memory_id": "mem-451",
   "kind": "evidence",
   "ref": "los_ee",
   "content": "EE's nearest approximate site is 4.5 km east (operator inferred from crowd-sourced data). Terrain rises 260 m above the direct line 1.9 km from here (antenna height assumed 25 m), so the signal is likely weakened, not necessarily lost.",
   "confidence": 0.9,
   "source": "Line of sight over Copernicus DEM GLO-30 (computed)",
-  "created_at": "2026-10-26T20:56:14.056Z",
+  "created_at": "2026-10-26T21:37:11.431Z",
   "id": "los_ee",
   "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
   "as_of": "2026-10-25",
@@ -316,21 +401,21 @@
    {
     "id": "Q2",
     "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 54.445) / 2), 2) + cos(radians(54.445)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (-3.105)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 54.35491 AND 54.53509 AND s.lon BETWEEN -3.25949 AND -2.95051 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
-    "duration_ms": 231,
+    "duration_ms": 284,
     "rows": 99
    }
   ],
   "by": "investigator",
-  "run_id": "run_20261026205600_c6qi"
+  "run_id": "run_20261026213702_fgoz"
  },
  {
-  "memory_id": "mem-15",
+  "memory_id": "mem-453",
   "kind": "evidence",
   "ref": "los_o2",
   "content": "O2's nearest approximate site is 5.7 km south-east (operator inferred from crowd-sourced data). Terrain rises 129 m above the direct line 985 m from here (antenna height assumed 25 m), so the signal is likely weakened, not necessarily lost.",
   "confidence": 0.9,
   "source": "Line of sight over Copernicus DEM GLO-30 (computed)",
-  "created_at": "2026-10-26T20:56:14.113Z",
+  "created_at": "2026-10-26T21:37:11.496Z",
   "id": "los_o2",
   "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
   "as_of": "2026-10-25",
@@ -379,21 +464,21 @@
    {
     "id": "Q2",
     "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 54.445) / 2), 2) + cos(radians(54.445)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (-3.105)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 54.35491 AND 54.53509 AND s.lon BETWEEN -3.25949 AND -2.95051 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
-    "duration_ms": 231,
+    "duration_ms": 284,
     "rows": 99
    }
   ],
   "by": "investigator",
-  "run_id": "run_20261026205600_c6qi"
+  "run_id": "run_20261026213702_fgoz"
  },
  {
-  "memory_id": "mem-17",
+  "memory_id": "mem-455",
   "kind": "evidence",
   "ref": "los_three",
   "content": "Three's nearest approximate site is 4.5 km east (operator inferred from crowd-sourced data). Terrain rises 260 m above the direct line 1.9 km from here (antenna height assumed 25 m), so the signal is likely weakened, not necessarily lost.",
   "confidence": 0.9,
   "source": "Line of sight over Copernicus DEM GLO-30 (computed)",
-  "created_at": "2026-10-26T20:56:14.180Z",
+  "created_at": "2026-10-26T21:37:11.579Z",
   "id": "los_three",
   "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
   "as_of": "2026-10-25",
@@ -443,21 +528,21 @@
    {
     "id": "Q2",
     "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 54.445) / 2), 2) + cos(radians(54.445)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (-3.105)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 54.35491 AND 54.53509 AND s.lon BETWEEN -3.25949 AND -2.95051 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
-    "duration_ms": 231,
+    "duration_ms": 284,
     "rows": 99
    }
   ],
   "by": "investigator",
-  "run_id": "run_20261026205600_c6qi"
+  "run_id": "run_20261026213702_fgoz"
  },
  {
-  "memory_id": "mem-19",
+  "memory_id": "mem-457",
   "kind": "evidence",
   "ref": "los_vodafone",
   "content": "Vodafone's nearest approximate site is 3.8 km south-east (operator inferred from crowd-sourced data). Terrain rises 288 m above the direct line 2.2 km from here (antenna height assumed 25 m), so the signal is likely weakened, not necessarily lost.",
   "confidence": 0.9,
   "source": "Line of sight over Copernicus DEM GLO-30 (computed)",
-  "created_at": "2026-10-26T20:56:14.237Z",
+  "created_at": "2026-10-26T21:37:11.658Z",
   "id": "los_vodafone",
   "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
   "as_of": "2026-10-25",
@@ -506,21 +591,21 @@
    {
     "id": "Q2",
     "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 54.445) / 2), 2) + cos(radians(54.445)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (-3.105)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 54.35491 AND 54.53509 AND s.lon BETWEEN -3.25949 AND -2.95051 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
-    "duration_ms": 231,
+    "duration_ms": 284,
     "rows": 99
    }
   ],
   "by": "investigator",
-  "run_id": "run_20261026205600_c6qi"
+  "run_id": "run_20261026213702_fgoz"
  },
  {
-  "memory_id": "mem-21",
+  "memory_id": "mem-459",
   "kind": "evidence",
   "ref": "ofcom_area",
   "content": "In Westmorland and Lonsdale, 5.6% of land has no outdoor 4G from any operator and 5.3% from only one (Ofcom Connected Nations, July 2025). This is a predicted figure for the whole constituency, not this exact location.",
   "confidence": 0.7,
   "source": "Ofcom Connected Nations (Zetaris CD_OFCOM_AREA)",
-  "created_at": "2026-10-26T20:56:14.308Z",
+  "created_at": "2026-10-26T21:37:11.724Z",
   "id": "ofcom_area",
   "data_period": "2025-07 (release 202507_mobile_coverage_r01)",
   "as_of": "2026-10-25",
@@ -550,49 +635,49 @@
    {
     "id": "Q1",
     "sql": "SELECT c.cell_id, c.lat, c.lon, c.population, c.nation, o.quarter, o.download_mbps, o.upload_mbps, o.latency_ms, o.tests, o.devices, o.tests_per_1k_pop, o.devices_per_1k_pop, o.quarters_with_data, o.download_mbps_oldest, o.download_change_pct, o.download_trend_mbps_per_quarter, hst.history_json, nb.neighbour_download_mbps, nb.neighbour_tests, nb.neighbour_cells_with_data, m.nearest_mast_km, m.nearest_mast_bearing_deg, m.nearest_mast_id, m.nearest_mast_lat, m.nearest_mast_lon, m.nearest_mast_sources, m.nearest_mast_operators, m.nearest_mast_operators_confirmed, m.nearest_mast_antenna_height_m, m.masts_within_5km, m.masts_known_operator_within_5km, m.masts_unknown_operator_within_5km, m.masts_osm_only_within_5km, m.distinct_operators_within_5km, m.operators_within_5km, m.operators_confirmed_within_5km, m.wtr_sites_within_5km, m.microwave_backhaul_sites_within_5km, m.operator_data_status, a.pcon_code, a.pcon_name, a.laua_code, a.laua_name, a.g4_geo_out_0, a.g4_geo_out_1, a.g4_prem_out_0, a.g4_prem_in_0, a.g4_abrd_in_0, a.g5hc_prem_out_at_least_one, a.laua_g4_geo_out_0, a.laua_g4_geo_out_1, a.data_date AS ofcom_data_date, t.elevation_mean_m, t.elevation_range_m, l.blocked AS los_blocked, l.obstruction_m AS los_obstruction_m, l.los_class FROM CD_CELLS.cells_r7 c LEFT JOIN CD_OOKLA_MOBILE.ookla_mobile_r7 o ON o.cell_id = c.cell_id LEFT JOIN ( SELECT cell_id, to_json(collect_list(named_struct('quarter', quarter, 'download_mbps', download_mbps, 'tests', tests))) AS history_json FROM CD_OOKLA_MOBILE_HISTORY.ookla_mobile_history_r7 WHERE cell_id = '871955454ffffff' GROUP BY cell_id ) hst ON hst.cell_id = c.cell_id CROSS JOIN ( SELECT sum(download_mbps * tests) / sum(tests) AS neighbour_download_mbps, sum(tests) AS neighbour_tests, count(*) AS neighbour_cells_with_data FROM CD_OOKLA_MOBILE.ookla_mobile_r7 WHERE cell_id IN ('871955409ffffff', '871955450ffffff', '871955455ffffff', '871955456ffffff', '871955472ffffff', '871955473ffffff') ) nb LEFT JOIN CD_MASTS.masts_r7 m ON m.cell_id = c.cell_id LEFT JOIN CD_OFCOM_AREA.ofcom_area_r7 a ON a.cell_id = c.cell_id LEFT JOIN CD_TERRAIN.terrain_r7 t ON t.cell_id = c.cell_id LEFT JOIN CD_LOS.los_r7 l ON l.cell_id = c.cell_id WHERE c.cell_id = '871955454ffffff'",
-    "duration_ms": 530,
+    "duration_ms": 422,
     "rows": 1
    }
   ],
   "by": "investigator",
-  "run_id": "run_20261026205600_c6qi"
+  "run_id": "run_20261026213702_fgoz"
  },
  {
-  "memory_id": "mem-23",
+  "memory_id": "mem-461",
   "kind": "evidence",
   "ref": "weather",
-  "content": "Weather now: dense drizzle, wind 26 km/h gusting 60 km/h, rain 1.2 mm/h. Next 24 h: gusts up to 76.3 km/h, rain up to 7.2 mm/h: severe (gusts up to 76.3 km/h).",
+  "content": "Weather now: light rain, wind 27 km/h gusting 62 km/h, rain 2.4 mm/h. Next 24 h: gusts up to 74.9 km/h, rain up to 8.0 mm/h: severe (gusts up to 74.9 km/h; heavy rain up to 8.0 mm/h).",
   "confidence": 0.7,
   "source": "Open-Meteo forecast",
-  "created_at": "2026-10-26T20:56:14.378Z",
+  "created_at": "2026-10-26T21:37:11.798Z",
   "id": "weather",
   "data_period": "live",
-  "as_of": "2026-10-26T20:48:35+00:00",
+  "as_of": "2026-10-26T21:26:42+00:00",
   "query_or_url": "https://api.open-meteo.com/v1/forecast?latitude=54.445&longitude=-3.105&current=precipitation%2Crain%2Csnowfall%2Cwind_speed_10m%2Cwind_gusts_10m%2Cweather_code&hourly=precipitation%2Crain%2Csnowfall%2Cwind_speed_10m%2Cwind_gusts_10m%2Cweather_code&forecast_hours=24&timezone=Europe%2FLondon",
   "cell_ids": [
    "871955454ffffff"
   ],
-  "finding": "Weather now: dense drizzle, wind 26 km/h gusting 60 km/h, rain 1.2 mm/h. Next 24 h: gusts up to 76.3 km/h, rain up to 7.2 mm/h: severe (gusts up to 76.3 km/h).",
+  "finding": "Weather now: light rain, wind 27 km/h gusting 62 km/h, rain 2.4 mm/h. Next 24 h: gusts up to 74.9 km/h, rain up to 8.0 mm/h: severe (gusts up to 74.9 km/h; heavy rain up to 8.0 mm/h).",
   "value": {
    "severity": "severe",
    "now": {
-    "time": "2026-10-26T20:45",
-    "precipitation_mm_h": 1.2,
-    "rain_mm_h": 1.2,
+    "time": "2026-10-26T21:15",
+    "precipitation_mm_h": 2.4,
+    "rain_mm_h": 2.4,
     "snowfall_cm_h": 0,
-    "wind_kmh": 25.9,
-    "gust_kmh": 60.1,
-    "weather_code": 55,
-    "weather": "dense drizzle"
+    "wind_kmh": 26.6,
+    "gust_kmh": 61.6,
+    "weather_code": 61,
+    "weather": "light rain"
    },
    "next_24h": {
     "hours": 24,
-    "max_precipitation_mm_h": 7.2,
-    "max_precipitation_at": "2026-10-27T01:00",
-    "max_gust_kmh": 76.3,
-    "max_gust_at": "2026-10-27T02:00",
+    "max_precipitation_mm_h": 8,
+    "max_precipitation_at": "2026-10-26T23:00",
+    "max_gust_kmh": 74.9,
+    "max_gust_at": "2026-10-27T01:00",
     "max_snowfall_cm_h": 0,
-    "total_precipitation_mm": 25.1,
+    "total_precipitation_mm": 26.7,
     "thunderstorm_expected": false
    }
   },
@@ -608,19 +693,19 @@
   "round": 1,
   "zetaris": [],
   "by": "investigator",
-  "run_id": "run_20261026205600_c6qi"
+  "run_id": "run_20261026213702_fgoz"
  },
  {
-  "memory_id": "mem-24",
+  "memory_id": "mem-462",
   "kind": "evidence",
   "ref": "met_office_warnings",
   "content": "Met Office warnings for North West England: yellow wind warning (in force until Tue 27 Oct 03:00, covering this district).",
   "confidence": 0.9,
   "source": "Met Office severe weather warnings (RSS)",
-  "created_at": "2026-10-26T20:56:14.399Z",
+  "created_at": "2026-10-26T21:37:11.823Z",
   "id": "met_office_warnings",
   "data_period": "live",
-  "as_of": "2026-10-26T20:48:36+00:00",
+  "as_of": "2026-10-26T21:26:42+00:00",
   "query_or_url": "https://www.metoffice.gov.uk/public/data/PWSCache/WarningsRSS/Region/nw",
   "cell_ids": [
    "871955454ffffff"
@@ -659,19 +744,19 @@
   "round": 1,
   "zetaris": [],
   "by": "investigator",
-  "run_id": "run_20261026205600_c6qi"
+  "run_id": "run_20261026213702_fgoz"
  },
  {
-  "memory_id": "mem-25",
+  "memory_id": "mem-463",
   "kind": "evidence",
   "ref": "flood_warnings",
   "content": "2 flood alerts or warnings within 10 km: flood alert for Upper River Derwent, Stonethwaite Beck and Derwent Water (raised Mon 26 Oct 09:21); flood alert for Rivers Brathay, Rothay and Winster (raised Mon 26 Oct 09:21).",
   "confidence": 0.7,
   "source": "Environment Agency flood monitoring",
-  "created_at": "2026-10-26T20:56:14.427Z",
+  "created_at": "2026-10-26T21:37:11.848Z",
   "id": "flood_warnings",
   "data_period": "live",
-  "as_of": "2026-10-26T20:48:43+00:00",
+  "as_of": "2026-10-26T21:26:46+00:00",
   "query_or_url": "https://environment.data.gov.uk/flood-monitoring/id/floods?lat=54.445&long=-3.105&dist=10",
   "cell_ids": [
    "871955454ffffff"
@@ -716,16 +801,16 @@
   "round": 1,
   "zetaris": [],
   "by": "investigator",
-  "run_id": "run_20261026205600_c6qi"
+  "run_id": "run_20261026213702_fgoz"
  },
  {
-  "memory_id": "mem-27",
+  "memory_id": "mem-465",
   "kind": "evidence",
   "ref": "network_comparison",
   "content": "No operator has a clear line of sight to an identified site from here. Least obstructed: O2, a site 5.7 km south-east (inferred from crowd-sourced data), with terrain 129 m above the line.",
   "confidence": 0.7,
   "source": "Rule-based network comparison (computed from line of sight and sites)",
-  "created_at": "2026-10-26T20:56:14.523Z",
+  "created_at": "2026-10-26T21:37:11.916Z",
   "id": "network_comparison",
   "data_period": "OpenCelliD downloaded 2026-10-25; OpenStreetMap extract downloaded 2026-10-25; Ofcom WTR downloaded 2026-10-25",
   "as_of": "2026-10-25",
@@ -867,21 +952,21 @@
    {
     "id": "Q2",
     "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 54.445) / 2), 2) + cos(radians(54.445)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (-3.105)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 54.35491 AND 54.53509 AND s.lon BETWEEN -3.25949 AND -2.95051 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
-    "duration_ms": 231,
+    "duration_ms": 284,
     "rows": 99
    }
   ],
   "by": "coordinator",
-  "run_id": "run_20261026205600_c6qi"
+  "run_id": "run_20261026213702_fgoz"
  },
  {
-  "memory_id": "mem-42",
+  "memory_id": "mem-483",
   "kind": "evidence",
   "ref": "speed_trend",
   "content": "Not enough quarters with Ookla tests in this cell for a trend.",
   "confidence": 0.4,
   "source": "Ookla open data (Zetaris CD_OOKLA_MOBILE_HISTORY)",
-  "created_at": "2026-10-26T20:57:17.490Z",
+  "created_at": "2026-10-26T21:37:56.808Z",
   "id": "speed_trend",
   "data_period": "2026Q3",
   "as_of": "2026-10-23",
@@ -914,11 +999,11 @@
    {
     "id": "Q1",
     "sql": "SELECT c.cell_id, c.lat, c.lon, c.population, c.nation, o.quarter, o.download_mbps, o.upload_mbps, o.latency_ms, o.tests, o.devices, o.tests_per_1k_pop, o.devices_per_1k_pop, o.quarters_with_data, o.download_mbps_oldest, o.download_change_pct, o.download_trend_mbps_per_quarter, hst.history_json, nb.neighbour_download_mbps, nb.neighbour_tests, nb.neighbour_cells_with_data, m.nearest_mast_km, m.nearest_mast_bearing_deg, m.nearest_mast_id, m.nearest_mast_lat, m.nearest_mast_lon, m.nearest_mast_sources, m.nearest_mast_operators, m.nearest_mast_operators_confirmed, m.nearest_mast_antenna_height_m, m.masts_within_5km, m.masts_known_operator_within_5km, m.masts_unknown_operator_within_5km, m.masts_osm_only_within_5km, m.distinct_operators_within_5km, m.operators_within_5km, m.operators_confirmed_within_5km, m.wtr_sites_within_5km, m.microwave_backhaul_sites_within_5km, m.operator_data_status, a.pcon_code, a.pcon_name, a.laua_code, a.laua_name, a.g4_geo_out_0, a.g4_geo_out_1, a.g4_prem_out_0, a.g4_prem_in_0, a.g4_abrd_in_0, a.g5hc_prem_out_at_least_one, a.laua_g4_geo_out_0, a.laua_g4_geo_out_1, a.data_date AS ofcom_data_date, t.elevation_mean_m, t.elevation_range_m, l.blocked AS los_blocked, l.obstruction_m AS los_obstruction_m, l.los_class FROM CD_CELLS.cells_r7 c LEFT JOIN CD_OOKLA_MOBILE.ookla_mobile_r7 o ON o.cell_id = c.cell_id LEFT JOIN ( SELECT cell_id, to_json(collect_list(named_struct('quarter', quarter, 'download_mbps', download_mbps, 'tests', tests))) AS history_json FROM CD_OOKLA_MOBILE_HISTORY.ookla_mobile_history_r7 WHERE cell_id = '871955454ffffff' GROUP BY cell_id ) hst ON hst.cell_id = c.cell_id CROSS JOIN ( SELECT sum(download_mbps * tests) / sum(tests) AS neighbour_download_mbps, sum(tests) AS neighbour_tests, count(*) AS neighbour_cells_with_data FROM CD_OOKLA_MOBILE.ookla_mobile_r7 WHERE cell_id IN ('871955409ffffff', '871955450ffffff', '871955455ffffff', '871955456ffffff', '871955472ffffff', '871955473ffffff') ) nb LEFT JOIN CD_MASTS.masts_r7 m ON m.cell_id = c.cell_id LEFT JOIN CD_OFCOM_AREA.ofcom_area_r7 a ON a.cell_id = c.cell_id LEFT JOIN CD_TERRAIN.terrain_r7 t ON t.cell_id = c.cell_id LEFT JOIN CD_LOS.los_r7 l ON l.cell_id = c.cell_id WHERE c.cell_id = '871955454ffffff'",
-    "duration_ms": 530,
+    "duration_ms": 422,
     "rows": 1
    }
   ],
   "by": "investigator",
-  "run_id": "run_20261026205600_c6qi"
+  "run_id": "run_20261026213702_fgoz"
  }
 ]

@@ -2,7 +2,7 @@
 writes its result back to Meterless. Agents never message each other.
 
   investigate()   Investigator    3.5 Super, tool calling, thinking off
-  diagnose()      Diagnostician   Ultra, thinking on, JSON schema in the prompt
+  diagnose()      Diagnostician   3.5 Super, strict json_schema (DIAGNOSTICIAN_ULTRA_ROUNDS: rounds on Ultra)
   critique()      Critic          Ultra, thinking on, JSON schema in the prompt
   advise()        Advisor         3.5 Super, strict json_schema
   write_letter()  Letter writer   3.5 Super, strict json_schema
@@ -19,13 +19,14 @@ import time
 from pathlib import Path
 
 from coverage_detective.agents import schemas as S
-from coverage_detective.agents.guard import Guard, Intervention, cited_in_text
+from coverage_detective.agents.guard import CAP_WEAK_ONLY, CONTEXT_ONLY, Guard, Intervention, cited_in_text
 from coverage_detective.agents.llm import LLMError, LLMResult, llm
 from coverage_detective.agents.tools import (OPERATORS, POINT_TOOLS, ZONE_TOOLS, Case, network_comparison, run_tool,
                                              tool_specs)
 
 PROMPTS = Path(__file__).parent / "prompts"
 MAX_CALLS_PER_ROUND = 8
+DIAGNOSTICIAN_ULTRA_ROUNDS: set[int] = set()  # rounds where the diagnostician uses Ultra with thinking
 ROUND1_POINT = [("speeds_near", {}), ("sites_near", {}), *[("line_of_sight", {"operator": o}) for o in OPERATORS],
                 ("ofcom_area", {}), ("live_conditions", {})]
 ROUND1_ZONE = [("zone_summary", {}), ("candidate_sites", {}), ("prior_diagnoses_nearby", {})]
@@ -201,7 +202,7 @@ def diagnose(case: Case, round: int) -> list[dict]:
             "Critic's last review:\n" + ("\n".join(f"- {c.get('belief_id') or c.get('target')}: {c['verdict']}: {c['reason']}"
                                                     for c in crit) or "(none)"))
     r = ask(case, "diagnostician", round, [{"role": "system", "content": system}, {"role": "user", "content": user}],
-            reasoning=True, schema=S.HypothesisSet)
+            reasoning=round in DIAGNOSTICIAN_ULTRA_ROUNDS, schema=S.HypothesisSet)
     guard = make_guard(case, "diagnostician", round)
     reasons = {x.id: x.reason for x in r.parsed.revision_reasons}
     existing = {b["belief_id"]: b for b in beliefs}
@@ -211,25 +212,34 @@ def diagnose(case: Case, round: int) -> list[dict]:
         if bid in seen:
             continue
         seen.add(bid)
-        sup = guard.known(h.supporting_evidence, f"belief {bid} (supporting)")
-        con = guard.known(h.contradicting_evidence, f"belief {bid} (contradicting)")
+        sup = guard.context_only(guard.known(h.supporting_evidence, f"belief {bid} (supporting)"), f"belief {bid} (supporting)")
+        con = guard.context_only(guard.known(h.contradicting_evidence, f"belief {bid} (contradicting)"),
+                                 f"belief {bid} (contradicting)")
         if not sup and bid != "insufficient_data":
             guard.record(Intervention("dropped_belief", f"dropped belief {bid}: none of its supporting evidence is in Meterless",
                                       {"belief": bid}))
             continue
         conf = h.confidence
-        if guard.weak_only(sup) and conf > 0.5:
-            guard.record(Intervention("weak_cap", f"capped {bid} at 0.5: it cites only weak evidence ({', '.join(sup)})",
-                                      {"belief": bid, "from": conf, "to": 0.5}))
-            conf = 0.5
+        weak = guard.weak_only(sup)
+        if weak and conf > CAP_WEAK_ONLY:
+            guard.record(Intervention("weak_cap", f"capped {bid} at {CAP_WEAK_ONLY}: all its evidence is weak ("
+                                      + "; ".join(f"{i}: {w}" for i, w in weak.items()) + ")",
+                                      {"belief": bid, "from": conf, "to": CAP_WEAK_ONLY, "weak": weak}))
+            conf = CAP_WEAK_ONLY
         text = guard.strip_unknown_brackets(h.explanation, f"belief {bid}")
         text = guard.check_numbers({"explanation": text}, set(sup) | set(con) | cited_in_text(text), f"belief {bid}",
                                    rewriter(case, "diagnostician", round, system, True))["explanation"]
         if bid in existing:
             old = existing[bid]
+            reason = reasons.get(bid) or reasons.get(h.id)
+            if abs(old["confidence"] - conf) >= 0.005 and not reason:  # a change needs a stated reason
+                guard.record(Intervention("unexplained_change", f"kept {bid} at {old['confidence']:.2f}: the diagnostician "
+                                          f"moved it to {conf:.2f} without a reason", {"belief": bid, "from": old["confidence"],
+                                                                                        "proposed": conf}))
+                conf = old["confidence"]
             if abs(old["confidence"] - conf) >= 0.005 or old.get("supporting") != sup:
-                case.memory.update_belief(case.run_id, bid, conf, reasons.get(bid) or reasons.get(h.id)
-                                          or f"re-assessed with round {round} evidence", by="diagnostician", round=round,
+                case.memory.update_belief(case.run_id, bid, conf, reason or f"evidence updated in round {round}",
+                                          by="diagnostician", round=round,
                                           explanation=text, supporting=sup, contradicting=con, status="active")
         else:
             case.memory.add_belief(case.run_id, bid, conf, text, sup, con, round=round)
@@ -242,7 +252,9 @@ def diagnose(case: Case, round: int) -> list[dict]:
 
 def critique(case: Case, round: int, final_round: bool) -> list[dict]:
     """Review every active belief; apply downgrades and rejections; return the requested checks."""
-    ev = evidence_map(case)
+    # The critic judges the evidence of this run only: earlier diagnoses (context) are not shown to it,
+    # since in Phase 4 and again in testing it treated them as support or as proof of a time pattern.
+    ev = {i: e for i, e in evidence_map(case).items() if i not in CONTEXT_ONLY}
     beliefs = [b for b in case.memory.beliefs(case.run_id) if b.get("status", "active") == "active"]
     done = already_run(case)
     names = ZONE_TOOLS if case.scope == "zone" else POINT_TOOLS

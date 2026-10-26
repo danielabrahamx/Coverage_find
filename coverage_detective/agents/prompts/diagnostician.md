@@ -13,10 +13,15 @@ Rules
   a Met Office warning covering the district. active_incident needs a live warning or incident affecting service.
   weather and active_incident explain current or recent degradation only; if measured speeds have been poor across
   several quarters, these causes sit alongside a persistent cause, not instead of it, and stay at or below 0.4.
+- If the cell has 30+ tests and its measured download speed is above the UK median [speed_cell], no problem cause
+  may go above 0.3: the honest result is "service measures well here, no strong cause found".
+- [prior_diagnoses] is context from earlier runs on the same data, not independent evidence: never cite it in
+  supporting_evidence and never use it to raise a confidence.
 - If the evidence cannot separate causes, use insufficient_data. It is a valid answer.
 - Explanations: one or two sentences citing ids in [brackets]. Use numbers only as written in the cited evidence.
-- Later rounds: keep the same ids for existing beliefs, change confidence only with a reason in revision_reasons,
-  and add a belief only if new evidence supports it.
+- Later rounds: keep the same ids for existing beliefs and add a belief only if new evidence supports it. Every
+  confidence you change needs an entry in revision_reasons naming the new evidence or critique; without one the
+  change is discarded.
 
 Example hypothesis:
 {"id": "terrain_blocking", "cause": "terrain_blocking", "confidence": 0.75,

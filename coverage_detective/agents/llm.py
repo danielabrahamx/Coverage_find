@@ -2,8 +2,8 @@
 
     LLM_BASE_URL=https://integrate.api.nvidia.com/v1
     LLM_API_KEY=nvapi-...                  never logged or printed
-    LLM_MODEL=nvidia/nemotron-3.5-super-vl-120b-a12b      investigator, advisor, letters, fix planner
-    LLM_MODEL_REASONING=nvidia/nemotron-3-ultra-550b-a55b diagnostician, critic (thinking on)
+    LLM_MODEL=nvidia/nemotron-3.5-super-vl-120b-a12b      investigator, diagnostician, advisor, letters, fix planner
+    LLM_MODEL_REASONING=nvidia/nemotron-3-ultra-550b-a55b critic (thinking on)
 
 Structured output, chosen by probes on 26 Oct 2026 (repeated tries per combination):
   - tool calling (investigator): Super 3/3, ~1-2 s.
@@ -17,8 +17,10 @@ Replies are validated with pydantic; one corrective retry on invalid JSON. If a 
 (the endpoint has bursts of HTTP 500), the other model answers once: reasoning -> fast with strict
 json_schema, fast -> reasoning model with thinking off and the schema in the prompt; the result's
 `fallback` says so. Tool calling falls back to the reasoning model too (Ultra, thinking off: 3/3,
-3-7 s); if both fail, the coordinator uses a fixed tool plan in code. Reasoning text (`reasoning_content`) is never stored or returned. 45 s timeout,
-one retry on timeouts, 5xx retried after 2 s and 6 s before switching model, a shared throttle
+3-7 s); if both fail, the coordinator uses a fixed tool plan in code. Reasoning text
+(`reasoning_content`) is never stored or returned. Timeout 45 s, 90 s with thinking on (Ultra often
+needs 50-90 s, and retrying at 45 s threw that work away); one retry on timeouts, 5xx retried after
+2 s and 6 s before switching model, a shared throttle
 under 40 requests per minute, backoff on 429. Every retry and model switch is in `retries`.
 """
 
@@ -38,6 +40,7 @@ from coverage_detective.config import env
 
 log = logging.getLogger("coverage_detective.llm")
 TIMEOUT_S = 45.0
+THINKING_TIMEOUT_S = 90.0
 MAX_PER_MINUTE = 38
 SERVER_ERROR_WAITS_S = (2.0, 6.0)  # retry a 5xx after 2 s, then 6 s, then switch model
 
@@ -125,14 +128,15 @@ class LLM:
         attempts = 0
         rate_backoff = 2.0
         server_waits = list(SERVER_ERROR_WAITS_S)
+        timeout = THINKING_TIMEOUT_S if body.get("chat_template_kwargs", {}).get("enable_thinking") else TIMEOUT_S
         while True:
             attempts += 1
             _throttle.wait()
             try:
-                r = httpx.post(f"{self.base_url}/chat/completions", json=body, timeout=TIMEOUT_S,
+                r = httpx.post(f"{self.base_url}/chat/completions", json=body, timeout=timeout,
                                headers={"Authorization": f"Bearer {self._key}", "Accept": "application/json"})
             except httpx.HTTPError as e:
-                what = f"no answer within {TIMEOUT_S:.0f} s" if isinstance(e, httpx.TimeoutException) else type(e).__name__
+                what = f"no answer within {timeout:.0f} s" if isinstance(e, httpx.TimeoutException) else type(e).__name__
                 if attempts >= 2:  # one retry on timeouts / connection errors
                     raise LLMError(f"{model}: {what} (twice)", retries) from None
                 retries.append({"model": model, "attempt": attempts, "error": what, "wait_s": 0})

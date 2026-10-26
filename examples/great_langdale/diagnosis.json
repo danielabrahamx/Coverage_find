@@ -1,6 +1,6 @@
 {
  "headline": "Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison].",
- "explanation": "The ground rises well above the direct line from your address to the nearest mast sites for all four operators, so signals are likely weakened [los_ee][los_o2][los_three][los_vodafone]. No operator has a clear line of sight [network_comparison]. The nearest identified site is 3.8 km away [nearest_site]. Dense drizzle and strong winds may also reduce signal quality right now [weather][met_office_warnings].",
+ "explanation": "The ground rises above the direct line to every identified mobile mast site, so your signal is likely weakened rather than completely lost. O2's site is the least obstructed, with terrain 129 m above the line 985 m away [los_o2][network_comparison]. All identified sites are 3.8\u20135.7 km away [nearest_site][los_vodafone][los_ee][los_three][los_o2], which can also weaken signal . There are no speed tests recorded near your address this quarter, so we cannot confirm current speeds from measurements [speed_cell][speed_neighbours]. A Met Office yellow wind warning is in force with gusts up to 74.9 km/h and heavy rain [weather][met_office_warnings], which may cause temporary degradation now but does not explain a persistent problem [weather].",
  "cited_evidence": [
   "los_ee",
   "los_o2",
@@ -8,6 +8,8 @@
   "los_vodafone",
   "network_comparison",
   "nearest_site",
+  "speed_cell",
+  "speed_neighbours",
   "weather",
   "met_office_warnings"
  ],
@@ -15,7 +17,7 @@
   {
    "id": "terrain_blocking",
    "cause": "terrain_blocking",
-   "confidence": 0.5,
+   "confidence": 0.75,
    "status": "active",
    "supporting": [
     "los_ee",
@@ -25,12 +27,12 @@
     "network_comparison"
    ],
    "contradicting": [],
-   "explanation": "All four operators have terrain rising 129-288 m above the direct line to their nearest sites, with assumed 25 m antenna heights, indicating significant obstruction [los_ee][los_o2][los_three][los_vodafone]; the network comparison confirms no operator has a clear line of sight [network_comparison].",
+   "explanation": "Terrain rises above the direct line to every identified operator site, with O2 least obstructed at 129 m above the line 985 m away [los_o2][network_comparison]; antenna heights are assumed, so the exact margin is uncertain.",
    "history": [
     {
-     "at": "2026-10-26T20:56:43.446Z",
+     "at": "2026-10-26T21:37:26.368Z",
      "by": "diagnostician",
-     "confidence": 0.5,
+     "confidence": 0.75,
      "previous": null,
      "reason": "proposed",
      "round": 1
@@ -40,19 +42,22 @@
   {
    "id": "distance_to_mast",
    "cause": "distance_to_mast",
-   "confidence": 0.35,
+   "confidence": 0.55,
    "status": "active",
    "supporting": [
     "nearest_site",
-    "operators_5km"
+    "los_vodafone",
+    "los_ee",
+    "los_three",
+    "los_o2"
    ],
    "contradicting": [],
-   "explanation": "The nearest identified site is 3.8 km away and only three operators have sites within 5 km, all inferred from crowd-sourced data [nearest_site][operators_5km].",
+   "explanation": "The nearest identified site is 3.8 km away and all operator sites are 3.8\u20135.7 km distant [nearest_site][los_vodafone][los_ee][los_three][los_o2]; operators are crowd-sourced inferred, so distances are not certain.",
    "history": [
     {
-     "at": "2026-10-26T20:56:43.490Z",
+     "at": "2026-10-26T21:37:26.401Z",
      "by": "diagnostician",
-     "confidence": 0.35,
+     "confidence": 0.55,
      "previous": null,
      "reason": "proposed",
      "round": 1
@@ -62,46 +67,68 @@
   {
    "id": "weather",
    "cause": "weather",
-   "confidence": 0.2,
+   "confidence": 0.4,
    "status": "active",
    "supporting": [
     "weather",
     "met_office_warnings"
    ],
    "contradicting": [],
-   "explanation": "Current conditions include dense drizzle and wind gusts up to 76 km/h with a Met Office yellow wind warning for the district, which can degrade signals [weather][met_office_warnings].",
+   "explanation": "A Met Office yellow wind warning covers the district with gusts up to 74.9 km/h and heavy rain [weather][met_office_warnings]; this can only explain current or recent degradation, not a persistent problem.",
    "history": [
     {
-     "at": "2026-10-26T20:56:43.463Z",
+     "at": "2026-10-26T21:37:26.453Z",
      "by": "diagnostician",
      "confidence": 0.4,
      "previous": null,
      "reason": "proposed",
      "round": 1
-    },
+    }
+   ]
+  },
+  {
+   "id": "single_operator",
+   "cause": "single_operator",
+   "confidence": 0.1,
+   "status": "rejected",
+   "supporting": [
+    "operators_5km"
+   ],
+   "contradicting": [],
+   "explanation": "Only EE, Three and Vodafone have approximate sites within 5 km, but operators are inferred from crowd-sourced data and O2 is not listed despite a nearby site [operators_5km][los_o2], so a single-operator gap is not proven.",
+   "history": [
     {
-     "at": "2026-10-26T20:57:15.562Z",
-     "by": "critic",
-     "confidence": 0.3,
-     "previous": 0.4,
-     "reason": "critic: Current conditions (dense drizzle, gusts to 76 km/h, yellow wind warning) can degrade signals, but weather is short-lived. The speed evidence shows no Ookla tests in the cell or 1 km in 2026Q3 [speed_cell], suggesting chronic poor performance. A live weather event cannot explain long-standing poor service across quarters; at most it explains a drop in the latest period. Confidence should be lowered to reflect this.",
+     "at": "2026-10-26T21:37:26.432Z",
+     "by": "diagnostician",
+     "confidence": 0.45,
+     "previous": null,
+     "reason": "proposed",
      "round": 1
     },
     {
-     "at": "2026-10-26T20:58:06.849Z",
+     "at": "2026-10-26T21:39:36.615Z",
      "by": "critic",
-     "confidence": 0.2,
-     "previous": 0.3,
-     "reason": "critic: A transient weather event cannot explain persistent low speeds across quarters.",
+     "confidence": 0.1,
+     "previous": 0.45,
+     "reason": "critic rejected: This indicates multi-operator presence, not a single-operator gap.",
      "round": 2
     }
    ]
   }
  ],
- "ruled_out": [],
+ "ruled_out": [
+  {
+   "cause": "single_operator",
+   "reason": "Only EE, Three and Vodafone have approximate sites within 5 km, but O2 is not listed despite a nearby site, so a single-operator gap is not proven [operators_5km][los_o2].",
+   "evidence": [
+    "operators_5km",
+    "los_o2"
+   ]
+  }
+ ],
  "actions": [
   {
-   "text": "Try O2 first as the likely best network [network_comparison][los_o2].",
+   "text": "Try O2 first as the likely best network, then Vodafone, EE, or Three if O2 does not work [network_comparison][los_o2][los_vodafone][los_ee][los_three].",
    "audience": "resident"
   },
   {
@@ -109,7 +136,7 @@
    "audience": "resident"
   },
   {
-   "text": "Check your address on Ofcom's mobile coverage checker: https://www.ofcom.org.uk/mobile-coverage-checker",
+   "text": "Check your exact address on Ofcom's mobile coverage checker: https://www.ofcom.org.uk/mobile-coverage-checker",
    "audience": "resident"
   },
   {
@@ -118,23 +145,37 @@
   }
  ],
  "best_network": {
-  "summary": "O2 is likely the best option because its site is least obstructed, though it is farther away [network_comparison][los_o2]. EE and Three have closer sites but more terrain blocking [los_ee][los_three]. Vodafone has the nearest site but the most blocking [los_vodafone][network_comparison]. All operator sites are inferred from crowd-sourced data, not confirmed by Ofcom's licence register [nearest_site][operators_5km]. No nearby measured speeds are available to confirm performance [speed_1km][speed_cell][speed_neighbours].",
+  "summary": "O2 is likely the best option because it has the least obstructed line of sight, though its site is the farthest at 5.7 km and all operators are inferred rather than confirmed by Ofcom's licence register [network_comparison][los_o2][los_vodafone][los_ee][los_three].",
   "ranking": [
    {
     "operator": "O2",
     "rank": 1,
     "confidence": "low",
-    "why": "Least obstructed line of sight (terrain 129 m above the line) [los_o2][network_comparison]; site 5.7 km south-east [los_o2]; operator inferred from crowd-sourced data [los_o2].",
+    "why": "Least obstructed line of sight (terrain 129 m above the line 985 m away), but site is 5.7 km south-east and operator is inferred from crowd-sourced data, not confirmed by Ofcom's licence register [network_comparison][los_o2][los_vodafone][los_ee][los_three].",
     "evidence": [
+     "network_comparison",
      "los_o2",
+     "los_vodafone",
+     "los_ee",
+     "los_three"
+    ]
+   },
+   {
+    "operator": "Vodafone",
+    "rank": 2,
+    "confidence": "low",
+    "why": "Nearest identified site at 3.8 km south-east, but terrain rises 288 m above the direct line 2.2 km away, and operator is inferred from crowd-sourced data [los_vodafone][nearest_site][network_comparison].",
+    "evidence": [
+     "los_vodafone",
+     "nearest_site",
      "network_comparison"
     ]
    },
    {
     "operator": "EE",
-    "rank": 2,
+    "rank": 3,
     "confidence": "low",
-    "why": "Site 4.5 km east [los_ee]; terrain rises 260 m above the line [los_ee]; operator inferred from crowd-sourced data [los_ee].",
+    "why": "Site 4.5 km east with terrain 260 m above the direct line 1.9 km away; operator inferred from crowd-sourced data [los_ee][network_comparison].",
     "evidence": [
      "los_ee",
      "network_comparison"
@@ -142,22 +183,11 @@
    },
    {
     "operator": "Three",
-    "rank": 3,
-    "confidence": "low",
-    "why": "Site 4.5 km east [los_three]; terrain rises 260 m above the line [los_three]; operator inferred from crowd-sourced data [los_three].",
-    "evidence": [
-     "los_three",
-     "network_comparison"
-    ]
-   },
-   {
-    "operator": "Vodafone",
     "rank": 4,
     "confidence": "low",
-    "why": "Nearest site at 3.8 km south-east [los_vodafone][nearest_site], but terrain rises 288 m above the line, the most blocking [los_vodafone][network_comparison]; operator inferred from crowd-sourced data [los_vodafone].",
+    "why": "Site 4.5 km east with terrain 260 m above the direct line 1.9 km away; operator inferred from crowd-sourced data [los_three][network_comparison].",
     "evidence": [
-     "los_vodafone",
-     "nearest_site",
+     "los_three",
      "network_comparison"
     ]
    }
@@ -280,7 +310,7 @@
   ]
  },
  "limitations": [
-  "Sites are approximate; antenna heights assumed; Ofcom figures are area-level.",
+  "Sites are approximate and operator names are inferred from crowd-sourced data, so distances and margins are uncertain; antenna heights are assumed; Ofcom figures are area-level predictions, not exact for this address [nearest_site][operators_5km][los_ee][los_o2][los_three][los_vodafone][ofcom_area].",
   "Causes are inferred from public data, not confirmed: operators' network data is not public.",
   "Ookla speeds are quarterly aggregates with no time-of-day detail; congestion can only be inferred.",
   "No address-level Ofcom coverage; Ofcom figures are for the whole constituency and are predictions.",
@@ -289,7 +319,7 @@
  ],
  "rounds": 2,
  "status": "complete",
- "run_id": "run_20261026205600_c6qi",
+ "run_id": "run_20261026213702_fgoz",
  "scope": "point",
  "query": null,
  "audience": "resident",
@@ -309,7 +339,25 @@
    "round": 1,
    "target": "terrain_blocking",
    "verdict": "approve",
-   "reason": "Four independent line-of-sight checks (EE, O2, Three, Vodafone) show terrain rising 129\u2013288 m above the direct line to the nearest crowd-sourced sites, assuming 25 m antenna heights. The network comparison confirms no operator has a clear line of sight. The obstruction magnitude is large enough that even with somewhat higher antennas the terrain would still block, making this a robust, permanent cause.",
+   "reason": "All four line-of-sight checks show terrain rising 129\u2013288 m above the direct line to the nearest identified sites, with assumed 25 m antenna heights. Even allowing for higher antennas, the obstructions are substantial. The evidence is strong and consistent.",
+   "requested_checks": [],
+   "issues": null,
+   "suggested_confidence": null
+  },
+  {
+   "round": 1,
+   "target": "distance_to_mast",
+   "verdict": "approve",
+   "reason": "The nearest site is 3.8 km away and all operator sites lie 3.8\u20135.7 km distant. Crowd-sourced positions add uncertainty, which the belief acknowledges, so the confidence is appropriate.",
+   "requested_checks": [],
+   "issues": null,
+   "suggested_confidence": null
+  },
+  {
+   "round": 1,
+   "target": "single_operator",
+   "verdict": "approve",
+   "reason": "Only 3 operators (EE, Three and Vodafone) have approximate mast sites within 5 km [operators_5km]. Operators are inferred from crowd-sourced data [operators_5km]. The belief correctly states a single-operator gap is not proven and assigns a low confidence.",
    "requested_checks": [],
    "issues": null,
    "suggested_confidence": null
@@ -317,24 +365,15 @@
   {
    "round": 1,
    "target": "weather",
-   "verdict": "downgrade",
-   "reason": "Current conditions (dense drizzle, gusts to 76 km/h, yellow wind warning) can degrade signals, but weather is short-lived. The speed evidence shows no Ookla tests in the cell or 1 km in 2026Q3 [speed_cell], suggesting chronic poor performance. A live weather event cannot explain long-standing poor service across quarters; at most it explains a drop in the latest period. Confidence should be lowered to reflect this.",
+   "verdict": "needs_evidence",
+   "reason": "The weather evidence is live (forecast and warning) and can only explain a recent drop. Without speed trend data we cannot tell whether poor service is persistent (which would downgrade weather's role) or only recent (which would support it).",
    "requested_checks": [
     {
      "tool": "speed_trend",
      "operator": null,
-     "why": "determine whether speeds have been poor across multiple quarters (chronic) or only recently dropped (acute)"
+     "why": "determine if low speeds are long-standing or only recent"
     }
    ],
-   "issues": null,
-   "suggested_confidence": 0.3
-  },
-  {
-   "round": 1,
-   "target": "distance_to_mast",
-   "verdict": "approve",
-   "reason": "The nearest identified site is 3.8 km away and only three operators have sites within 5 km, all inferred from crowd-sourced data (less reliable than Ofcom's register). While 3.8 km is not inherently prohibitive, combined with the confirmed terrain blocking it contributes to poor coverage. The low confidence appropriately reflects the uncertainty of crowd-sourced site locations [nearest_site][operators_5km].",
-   "requested_checks": [],
    "issues": null,
    "suggested_confidence": null
   },
@@ -342,29 +381,38 @@
    "round": 2,
    "target": "terrain_blocking",
    "verdict": "approve",
-   "reason": "Four independent line-of-sight analyses show terrain rising 129-288 m above direct lines to nearest sites (assumed 25 m antenna heights), and network comparison confirms no operator has clear line of sight. Evidence is strong (computed LOS) though antenna heights assumed and operators inferred from crowd-sourced data.",
+   "reason": "Four independent line-of-sight checks (strong evidence) show terrain rising 129\u2013288 m above the direct line to each operator's nearest crowd-sourced site. The network_comparison summary confirms no operator has a clear line of sight. Assumed antenna heights (25 m) are a noted uncertainty, but the obstruction margins are large enough that the conclusion holds.",
    "requested_checks": [],
    "issues": null,
    "suggested_confidence": null
-  },
-  {
-   "round": 2,
-   "target": "weather",
-   "verdict": "downgrade",
-   "reason": "A transient weather event cannot explain persistent low speeds across quarters.",
-   "requested_checks": [],
-   "issues": null,
-   "suggested_confidence": 0.2
   },
   {
    "round": 2,
    "target": "distance_to_mast",
    "verdict": "approve",
-   "reason": "Nearest identified site is 3.8 km away (OpenCelliD, crowd-sourced), only three operators have sites within 5 km (all inferred from crowd-sourced data). Distance is a permanent factor consistent with long-standing poor service, though crowd-sourced positions are less reliable than Ofcom register.",
+   "reason": "The nearest identified site is 3.8 km away and all four operators' nearest sites lie 3.8\u20135.7 km distant, per moderate-strength crowd-sourced site data and strong line-of-sight computations. The belief correctly notes the crowd-sourced inference uncertainty [los_ee][los_o2][los_three][los_vodafone][nearest_site].",
+   "requested_checks": [],
+   "issues": null,
+   "suggested_confidence": null
+  },
+  {
+   "round": 2,
+   "target": "single_operator",
+   "verdict": "reject",
+   "reason": "This indicates multi-operator presence, not a single-operator gap.",
+   "requested_checks": [],
+   "issues": null,
+   "suggested_confidence": 0.1
+  },
+  {
+   "round": 2,
+   "target": "weather",
+   "verdict": "approve",
+   "reason": "Live weather and Met Office warning (strong) confirm severe conditions (gusts to 74.9 km/h, heavy rain) that can degrade signals. The belief correctly limits the explanation to current/recent degradation.",
    "requested_checks": [],
    "issues": null,
    "suggested_confidence": null
   }
  ],
- "elapsed_s": 146.3
+ "elapsed_s": 170.9
 }

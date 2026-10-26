@@ -2,6 +2,7 @@
 
     python scripts/check_coordinator.py            # all runs below, in order
     python scripts/check_coordinator.py langdale   # just some (names below)
+    python scripts/check_coordinator.py --tag compare langdale london rhayader   # -> data/runs/compare_summary.json
 
 Runs: Great Langdale, central London (WC2N 5DU), near Rhayader, Sutton St Edmund, the top zone in
 Westmorland and Furness, then Great Langdale again (should find the first run as a prior
@@ -96,18 +97,25 @@ def show(name: str, r: dict) -> dict:
             "headline": r["headline"], "objections": len(objections),
             "confidence_changes": sum(len(h.get("history") or []) - 1 for h in r["hypotheses"]),
             "llm_calls": len(calls), "retries": retries, "model_switches": len(switches),
-            "time_by_agent": {a: round(sum(v), 1) for a, v in by_agent.items()}, "guard_interventions": len(guards)}
+            "time_by_agent": {a: round(sum(v), 1) for a, v in by_agent.items()}, "guard_interventions": len(guards),
+            "guard_kinds": [g.get("guard_kind") for g in guards]}
 
 
 def main() -> None:
-    names = sys.argv[1:] or list(RUNS)
+    args = sys.argv[1:]
+    tag = "phase4"
+    if "--tag" in args:
+        i = args.index("--tag")
+        tag = args[i + 1]
+        del args[i:i + 2]
+    names = args or list(RUNS)
     summary = []
     for name in names:
         t = time.time()
         r = RUNS[name]()
         summary.append(show(name, r))
         print(f"  ({time.time() - t:.0f}s)")
-    out = RUNS_DIR / "phase4_summary.json"
+    out = RUNS_DIR / f"{tag}_summary.json"
     old = json.loads(out.read_text()) if out.exists() else []
     out.write_text(json.dumps(old + summary, indent=1))
     print("\nSUMMARY")

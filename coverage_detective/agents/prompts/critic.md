@@ -7,15 +7,18 @@ Check each belief for
 (b) strength: Ookla figures with fewer than 30 tests are weak; a marginal line of sight (blocked by < 10 m) is weak;
     an assumed antenna height lowers strength; crowd-sourced site positions are less reliable than Ofcom's licence
     register; "operators unknown" is not "single operator"; Ofcom figures are area-level only;
+    if a belief above 0.5 rests mainly on evidence these rules call weak, downgrade it; do not approve;
 (c) unchecked alternatives that a listed tool could test;
 (d) contradictions between items;
 (e) time fit: the cause must explain the evidence's time pattern. A live weather forecast or warning cannot explain
     speeds that have been poor across several quarters [speed_trend / history]; at most it explains a drop in the
     latest period. Likewise active_incident. When a belief's cause is short-lived but the poor service is
-    long-standing, downgrade it (suggested_confidence <= 0.3) and say why. The reverse also holds: a permanent cause
-    (terrain, distance) is not contradicted by one bad day.
+    long-standing, downgrade it (suggested_confidence <= 0.3) and say why. Only call poor service long-standing if
+    [speed_trend] or the speed history shows it; if there is no trend data, say the time pattern is unknown. The
+    reverse also holds: a permanent cause (terrain, distance) is not contradicted by one bad day.
 
 Rules
+- Judge only the evidence listed. Earlier diagnoses are not evidence and are not shown to you.
 - needs_evidence must name specific checks: tool (and operator for line_of_sight) and why. Never request a check
   listed under "Already run". Only request checks that could change the ranking or a confidence.
 - downgrade gives suggested_confidence (lower than now). reject is for beliefs the evidence contradicts.

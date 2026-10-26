@@ -146,3 +146,47 @@ def test_guard_drops_beliefs_citing_unknown_evidence(setup, monkeypatch):
     assert r["hypotheses"] == []
     guards = [n for n in memory.notes(r["run_id"]) if n.get("type") == "guard"]
     assert any(n.get("guard_kind") == "dropped_belief" for n in guards)
+
+
+def test_guard_caps_weak_beliefs_and_strips_prior_diagnoses(setup, monkeypatch):
+    memory, _, _ = setup
+    chat, _ = scripted_llm(critic_rounds_needing_evidence=0)
+    weak = {"speeds_near": item("speed_cell", "Speed 14.4 Mbps (25 tests).", "moderate"),
+            "sites_near": item("operators_5km", "Only Vodafone has sites.", "moderate"),
+            "prior_diagnoses_nearby": item("prior_diagnoses", "1 earlier diagnosis within 10 km.", "moderate")}
+    weak["speeds_near"]["sample_size"] = {"tests": 25}
+    weak["sites_near"].update(source="Approximate mast sites (Zetaris CD_MASTS_SITES)",
+                              value={"operators_confirmed": ["Vodafone"]}, sample_size={"sites_unknown_operator": 2})
+    for name, it in weak.items():
+        monkeypatch.setitem(T.TOOLS, name, (lambda it: lambda case, operator=None: [it])(it))
+
+    def diag(messages, **kw):
+        if kw.get("schema") is S.HypothesisSet:
+            return LLMResult(model="m", parsed=S.HypothesisSet(hypotheses=[S.Hypothesis(
+                id="single_operator", cause="single_operator", confidence=0.8,
+                supporting_evidence=["speed_cell", "operators_5km", "prior_diagnoses"], contradicting_evidence=[],
+                explanation="Only Vodafone has sites nearby [operators_5km].")], revision_reasons=[]))
+        return chat(messages, **kw)
+
+    monkeypatch.setattr(A.llm, "chat", diag)
+    r = C.diagnose_point(lat=54.445, lon=-3.105, memory=memory)
+    b = r["hypotheses"][0]
+    assert b["confidence"] == 0.5 and "prior_diagnoses" not in b["supporting"]
+    kinds = {n.get("guard_kind") for n in memory.notes(r["run_id"]) if n.get("type") == "guard"}
+    assert {"weak_cap", "context_only"} <= kinds
+
+
+def test_confidence_change_without_a_reason_is_discarded(setup, monkeypatch):
+    memory, _, _ = setup
+    chat, _ = scripted_llm(critic_rounds_needing_evidence=1)
+
+    def no_reasons(messages, **kw):
+        r = chat(messages, **kw)
+        if kw.get("schema") is S.HypothesisSet:
+            r.parsed.revision_reasons = []
+        return r
+
+    monkeypatch.setattr(A.llm, "chat", no_reasons)
+    r = C.diagnose_point(lat=54.445, lon=-3.105, memory=memory)
+    assert r["rounds"] == 2 and r["hypotheses"][0]["confidence"] == 0.8
+    assert any(n.get("guard_kind") == "unexplained_change" for n in memory.notes(r["run_id"]) if n.get("type") == "guard")

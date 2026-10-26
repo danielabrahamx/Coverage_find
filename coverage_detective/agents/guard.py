@@ -2,8 +2,13 @@
 
 1. Citations: every cited evidence id must exist in Meterless for this run. Unknown ids are
    removed (lists and [bracket] mentions); a belief left with no supporting evidence is dropped.
-2. Weak evidence: a belief whose supporting evidence is all weak is capped at 0.5.
-3. Numbers: every number in agent text must match a value in the evidence that output cites,
+2. Context only: [prior_diagnoses] (earlier runs on the same data) is removed from a belief's
+   evidence lists; it may be mentioned, never cited as support.
+3. Weak evidence: a belief whose supporting evidence is all weak is capped at 0.5. Weak is decided
+   here, not by the model: an item labelled weak, an Ookla figure from fewer than 30 tests, mast
+   sites from crowd-sourced data only (no operator confirmed by Ofcom's licence register), or sites
+   with unknown operators.
+4. Numbers: every number in agent text must match a value in the evidence that output cites,
    within rounding and simple unit changes (3.84 -> "3.8 km", 288.4 -> "288 m", 3838 m ->
    "3.8 km", 0.25 -> "25%"). Integers 0-4 (counts of operators, rounds, ranks) are allowed.
    Offending sentences go back to the same agent once to rewrite; if they still fail they are
@@ -17,6 +22,8 @@ from dataclasses import dataclass, field
 from typing import Callable
 
 CAP_WEAK_ONLY = 0.5
+MIN_TESTS = 30          # Ookla figures from fewer tests are weak
+CONTEXT_ONLY = {"prior_diagnoses"}
 FREE_INTEGERS = {0, 1, 2, 3, 4}
 _BRACKET = re.compile(r"\[([A-Za-z0-9_]+)\]")
 _URL = re.compile(r"https?://\S+")
@@ -26,7 +33,8 @@ _SENTENCE = re.compile(r"(?<=[.!?])\s+(?=[A-Z\[(\"'])")
 
 @dataclass
 class Intervention:
-    kind: str           # unknown_citation | dropped_belief | weak_cap | number_rewritten | sentence_removed
+    kind: str  # unknown_citation | context_only | dropped_belief | weak_cap | unexplained_change |
+               # number_rewritten | sentence_removed | verdict_changed
     summary: str
     details: dict = field(default_factory=dict)
 
@@ -43,6 +51,21 @@ def numbers_in(text: str) -> list[tuple[float, int, str]]:
         whole, frac = m.group(1).replace(",", ""), m.group(2)
         out.append((float(f"{whole}.{frac}" if frac else whole), len(frac or ""), m.group(0)))
     return out
+
+
+def weak_reason(item: dict) -> str | None:
+    """Why an evidence item counts as weak for the cap, or None."""
+    size, value = item.get("sample_size") or {}, item.get("value") or {}
+    if item.get("strength") == "weak":
+        return "labelled weak"
+    if isinstance(size.get("tests"), (int, float)) and size["tests"] < MIN_TESTS:
+        return f"{size['tests']:.0f} tests"
+    if isinstance(value, dict) and "Approximate mast sites" in (item.get("source") or ""):
+        if size.get("sites_unknown_operator"):
+            return "sites with unknown operators"
+        if not value.get("operators_confirmed"):
+            return "crowd-sourced sites only"
+    return None
 
 
 def evidence_numbers(items: list[dict]) -> set[float]:
@@ -110,8 +133,18 @@ class Guard:
                                      {"where": where, "removed": bad}))
         return re.sub(r"\s{2,}", " ", text).strip()
 
-    def weak_only(self, ids: list[str]) -> bool:
-        return bool(ids) and all(self.evidence[i].get("strength") == "weak" for i in ids)
+    def context_only(self, ids: list[str], where: str) -> list[str]:
+        """Remove context-only items (earlier diagnoses) from a belief's evidence."""
+        drop = [i for i in ids if i in CONTEXT_ONLY]
+        if drop:
+            self.record(Intervention("context_only", f"{where}: removed {', '.join(drop)} (earlier diagnoses are "
+                                     "context, not evidence)", {"where": where, "removed": drop}))
+        return [i for i in ids if i not in CONTEXT_ONLY]
+
+    def weak_only(self, ids: list[str]) -> dict[str, str] | None:
+        """{id: why weak} when every item is weak, else None."""
+        reasons = {i: weak_reason(self.evidence[i]) for i in ids}
+        return reasons if ids and all(reasons.values()) else None
 
     # ---------------------------------------------------- numbers
 

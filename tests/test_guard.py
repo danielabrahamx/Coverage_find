@@ -1,6 +1,6 @@
 """Code guard: citations, weak-evidence cap and the numeric check (no LLM)."""
 
-from coverage_detective.agents.guard import Guard, bad_sentences, evidence_numbers, numbers_in
+from coverage_detective.agents.guard import Guard, bad_sentences, evidence_numbers, numbers_in, weak_reason
 
 EV = {
     "los_vodafone": {"finding": "Vodafone's nearest approximate site is 3.8 km south-east. Terrain rises 288 m above the "
@@ -43,6 +43,23 @@ def test_unknown_citations_removed_and_recorded():
 def test_weak_only_detection():
     g, _ = guard()
     assert g.weak_only(["speed_cell", "speed_trend"]) and not g.weak_only(["speed_cell", "los_vodafone"])
+
+
+def test_weakness_is_decided_by_code_not_the_label():
+    sites = "Approximate mast sites (Zetaris CD_MASTS_SITES)"
+    assert weak_reason({"strength": "moderate", "sample_size": {"tests": 25}}) == "25 tests"
+    assert weak_reason({"strength": "strong", "sample_size": {"tests": 1425}}) is None
+    assert weak_reason({"strength": "moderate", "source": sites, "value": {"operators_confirmed": []}}) == \
+        "crowd-sourced sites only"
+    assert weak_reason({"strength": "moderate", "source": sites, "value": {"operators_confirmed": ["Vodafone"]},
+                        "sample_size": {"sites_unknown_operator": 2}}) == "sites with unknown operators"
+    assert weak_reason({"strength": "moderate", "source": sites, "value": {"operators_confirmed": ["EE"]}}) is None
+
+
+def test_prior_diagnoses_is_context_not_evidence():
+    g, log = guard()
+    assert g.context_only(["los_vodafone", "prior_diagnoses"], "belief terrain_blocking") == ["los_vodafone"]
+    assert [i.kind for i in log] == ["context_only"]
 
 
 def test_bad_sentence_rewritten_once_then_removed():
