@@ -116,6 +116,11 @@ class Letter(Strict):
     cited_evidence: list[str]
 
 
+class PrioritySummary(Strict):  # no title field: 3.5 Super left it out under strict json_schema; code sets it
+    body_markdown: str = Field(description="the summary for council officers; cite zone ids in [brackets]")
+    cited_evidence: list[str]
+
+
 # --------------------------------------------------------------- fix planner (zone)
 
 

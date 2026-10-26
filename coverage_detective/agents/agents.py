@@ -40,11 +40,11 @@ def prompt(name: str, **fmt) -> str:
 # ------------------------------------------------------------------ shared helpers
 
 
-def ask(case: Case, agent: str, round: int, messages: list[dict], **kw) -> LLMResult:
-    """One LLM call, recorded in Meterless (success or failure)."""
+def ask(case: Case, agent: str, round: int, messages: list[dict], purpose: str | None = None, **kw) -> LLMResult:
+    """One LLM call, recorded in Meterless (success or failure). purpose: e.g. "guard rewrite"."""
     t0 = time.monotonic()
-    step = case.progress.start(agent, round, "llm", f"{agent} thinking" if kw.get("reasoning") else agent) \
-        if case.progress else None
+    label = f"{agent} {purpose}" if purpose else f"{agent} thinking" if kw.get("reasoning") else agent
+    step = case.progress.start(agent, round, "llm", label) if case.progress else None
     try:
         r = llm.chat(messages, **kw)
     except LLMError as e:
@@ -61,7 +61,7 @@ def ask(case: Case, agent: str, round: int, messages: list[dict], **kw) -> LLMRe
                          + (f"; {r.fallback}" if r.fallback else ""),
                          by=agent, round=round, model=r.model, duration_ms=r.duration_ms, tokens=r.usage,
                          attempts=r.attempts, retries=r.retries, fallback=r.fallback,
-                         thinking=bool(kw.get("reasoning")))
+                         thinking=bool(kw.get("reasoning")), purpose=purpose)
     return r
 
 
@@ -119,7 +119,7 @@ def rewriter(case: Case, agent: str, round: int, system: str, reasoning: bool = 
         # Same agent and prompt; the fast model without thinking (rewriting one sentence needs no reasoning,
         # and on Ultra a rewrite took up to 82 s).
         r = ask(case, agent, round, [{"role": "system", "content": system}, {"role": "user", "content": msg}],
-                schema=S.RewriteSet)
+                purpose="guard rewrite", schema=S.RewriteSet)
         return {w.original: w.rewritten for w in r.parsed.rewrites}
     return rewrite
 
@@ -450,4 +450,40 @@ def advise_zone(case: Case) -> S.ZoneAdvice:
                                  "zone advice", rewriter(case, "advisor", 0, system, False))
     for k, v in fields.items():
         setattr(out, k, v)
+    return out
+
+
+# ------------------------------------------------------------------ council: priority summary
+
+
+def zone_item(z: dict, diagnosis: dict | None = None) -> dict:
+    """A ranked zone as an evidence item (id = zone id), so the guard can check the summary against it."""
+    r = z["people_by_reason"]
+    finding = (f"{z['name']} ({z['council']}) is ranked {z['rank']} with {z['people']} people in {z['cells']} cells: "
+               f"{r['slow']} where measured speeds are under 5 Mbps, {r['no_site']} with no identified site within 5 km, "
+               f"{r['blocked']} where terrain blocks every site. {z['tests']} tests ({z['confidence']} data confidence); "
+               f"operators with sites nearby: {', '.join(z['operators_nearby']) or 'none identified'}.")
+    if diagnosis:
+        finding += f" Agent diagnosis ({str(diagnosis.get('created_at') or '')[:10]}): {diagnosis.get('headline')}"
+    return {"id": z["zone_id"], "source": "Gap zones (Zetaris CD_GAP_ZONES)", "data_period": z.get("data_period"),
+            "as_of": z.get("as_of"), "query_or_url": "zetaris:CD_GAP_ZONES", "cell_ids": z.get("cell_ids") or [],
+            "finding": finding, "value": {k: z.get(k) for k in ("rank", "people", "cells", "tests", "score")} | r,
+            "sample_size": {"tests": z["tests"]}, "strength": "moderate", "bears_on": []}
+
+
+def write_priority_summary(case: Case, scope_name: str, zones: list[dict], diagnoses: dict[str, dict]) -> S.PrioritySummary:
+    items = [zone_item(z, diagnoses.get(z["zone_id"])) for z in zones]
+    for it in items:
+        case.memory.add_evidence(case.run_id, {**it, "evidence_id": it["id"], "round": 0}, by="coordinator")
+    ev = evidence_map(case)
+    system = prompt("priority_summary", scope=scope_name)
+    r = ask(case, "advisor", 0, [{"role": "system", "content": system},
+                                 {"role": "user", "content": f"Ranked zones in {scope_name}:\n{evidence_text(ev)}"}],
+            schema=S.PrioritySummary)
+    out = r.parsed
+    guard = make_guard(case, "advisor", 0)
+    out.cited_evidence = guard.known(out.cited_evidence, "priority summary")
+    body = guard.strip_unknown_brackets(out.body_markdown, "priority summary")
+    out.body_markdown = guard.check_numbers({"body": body}, set(ev), "priority summary",
+                                            rewriter(case, "advisor", 0, system))["body"]
     return out

@@ -120,16 +120,17 @@ vendor/meterless/       Meterless reference engines, vendored unchanged (Apache 
     ofcom_api.py        stub (Ofcom postcode API not available; returns None)
   api/app.py            FastAPI: explorer API + /api/live + /api/los + POST /api/evidence; pages /, /signal, /council
   api/council.py        /api/council/* (scopes, ranked zones, CSV, zone detail with fixes)
+  api/agents.py         agent runs: /api/diagnose, /api/runs/{id}, letters, zone runs, priority summary
 scripts/download/       fetch raw data into data/raw/<source>/ (skip files that exist)
 scripts/process/        build data/processed/*.parquet (+ build_web_layers.py for the map)
 scripts/zetaris/        compose.sh (data mount), register_sources.py (one function per source)
 scripts/check_*.py      check_data (A, B, E), check_live (D), check_terrain (C), check_evidence
 scripts/refresh.py      refresh stored sources on their cadence
 scripts/screenshots.py  Playwright screenshots -> docs/screenshots/
-tests/                  pytest (91 tests; offline: samples, mocked Zetaris / DEM)
+tests/                  pytest (96 tests; offline: samples, mocked Zetaris / DEM)
 web/                    pages, no build step (MapLibre 5.24 + deck.gl 9.4 + h3-js 4.5):
                         index.html + app.js (Explore), signal.html + signal.js (My signal),
-                        council.html + council.js (Council view), style.css
+                        council.html + council.js (Council view), agents.js (agent UI, shared), style.css
 run.py                  start the explorer on :8000 (checks Zetaris)
 data/raw/               raw inputs and downloads (gitignored)
 data/processed/         built Parquet files (gitignored)
@@ -342,6 +343,21 @@ G (power cuts) dropped as future work; H (visitor load) only if time. Then the a
   (Phase 4: 130-272 s; one run 284 s from fast-model timeouts), diagnostician 3-19 s (was 49-100 s); London now
   "No strong cause was found; the service measures well here". examples/great_langdale/ re-recorded from
   run_20261026213702_fgoz.
+- **Agents, phase 5: pages** (26 Oct): api/agents.py: POST /api/diagnose and POST
+  /api/council/zones/{id}/diagnose start a run in a thread (max 2 at once, later ones "queued") and return
+  run_id; GET /api/runs/{id} gives progress steps (always) and, once finished (or ?detail=1), the trace
+  (round cards built from Meterless notes, critiques, belief history), evidence (with Zetaris SQL) and the
+  run's World Model; POST /api/runs/{id}/letter {recipient}; POST /api/council/summary {scope, weights}
+  (priority summary of the top zones by the advisor, zone rows as evidence items so the guard checks its
+  numbers, plus any agent diagnoses of those zones from Meterless). web/agents.js (shared): progress strip
+  (one chip per agent call, tool calls grouped, retries / model switches outlined, guard rewrites labelled),
+  causes with confidence bars (hover / focus: old -> new with the reason), evidence tags that open the item
+  and its SQL, round cards, a small World Model graph, Markdown and download helpers. My signal: "Diagnose
+  with agents" (audience picker), headline, causes, ruled out, agents' best network, actions, editable
+  letter with .md download, trace; `?run=` reopens a run. Council view: "Diagnose zone (agents)" (cause,
+  recommended fix with the chosen candidate outlined on the map and people from its evidence, critic notes,
+  trace), "Priority summary (agents)" for the area. Guard rewrite calls carry `purpose`. Screenshots:
+  `scripts/screenshots.py --agents` (live runs, docs/screenshots/*agents*).
 
 ### Zetaris sources
 

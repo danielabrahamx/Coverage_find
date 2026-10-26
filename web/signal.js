@@ -1,4 +1,5 @@
-/* My signal: evidence for one exact point from POST /api/evidence. No LLM: all computed in code. */
+/* My signal: evidence for one exact point from POST /api/evidence (computed in code), then the agents'
+   diagnosis on request (POST /api/diagnose, polled at GET /api/runs/{id}; rendering in agents.js). */
 "use strict";
 
 const BASEMAP = "https://tiles.openfreemap.org/styles/positron";
@@ -23,7 +24,7 @@ const fmt = (v, d = 1) => (v === null || v === undefined || Number.isNaN(v) ? "�
 const rgb = (hex, a = 255) => [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16), a];
 const speedColor = (v) => SPEED.colors[SPEED.breaks.filter((b) => v >= b).length];
 
-const state = { bundle: null, request: null };
+const state = { bundle: null, request: null, run: null, runId: null, letter: null };
 
 const map = new maplibregl.Map({ container: "map", style: BASEMAP, center: [-3.2, 54.6], zoom: 4.9, attributionControl: { compact: true } });
 map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
@@ -213,8 +214,18 @@ function panelHTML(b) {
       <a class="to-explore" href="/?cell=${esc(b.cell_id)}&lat=${p.lat.toFixed(5)}&lon=${p.lon.toFixed(5)}&zoom=11">See this area in Explore →</a>
     </div>
 
+    <section class="agents" id="agents">
+      <div class="agents-head"><h3>Explanation (agents)</h3>
+        <label class="aud">For <select id="audience" aria-label="Explain for">
+          <option value="resident">a resident</option><option value="council officer">a council officer</option>
+          <option value="operator">an operator</option></select></label></div>
+      <div id="agent-out"><p class="agents-intro">An Investigator, Diagnostician and Critic work through this evidence in
+        rounds (up to 3): the Critic can send them back for more checks. Takes one to three minutes.</p></div>
+      <div class="agent-buttons"><button type="button" class="primary" id="diagnose">Diagnose with agents</button></div>
+    </section>
+
     <section class="best card-inner">
-      <div class="best-head"><h3>Likely best network here</h3><span class="tag">${esc(best.label)}</span></div>
+      <div class="best-head"><h3>Likely best network here (rule-based)</h3><span class="tag">${esc(best.label)}</span></div>
       <p class="best-text">${esc(best.text)}</p>
       <p class="footnote">Rule: ${esc(best.rule)}</p>
     </section>
@@ -236,16 +247,6 @@ function panelHTML(b) {
 
     <section><h3>Right now</h3>${evidenceLine(item("weather"))}${evidenceLine(item("met_office_warnings"))}${evidenceLine(item("flood_warnings"))}</section>
 
-    <section class="placeholder">
-      <h3>Explanation (agents)</h3>
-      <p>The agents will turn this evidence into ranked likely causes with confidence, causes ruled out and what to do,
-      each linked to the evidence items below. Not built yet.</p>
-      <div class="ph-buttons">
-        <button disabled title="Agents not built yet">Diagnose with agents</button>
-        <button disabled title="Agents not built yet">Draft evidence letter</button>
-      </div>
-    </section>
-
     <section><h3>What you can do now</h3>
       <p class="status"><a href="https://www.ofcom.org.uk/mobile-coverage-checker" target="_blank" rel="noopener">Check your address on Ofcom's mobile coverage checker</a>
       for each network's own prediction at your address.</p></section>
@@ -262,10 +263,113 @@ function panelHTML(b) {
     ${b.errors.length ? `<p class="error">Some sources failed: ${esc(b.errors.join("; "))}</p>` : ""}`;
 }
 
+/* ---------- agents ---------- */
+
+function agentResultHTML(run) {
+  const r = run.result || {};
+  const ev = AG.evMap(run);
+  if (r.status === "failed") return `<p class="error">${esc(r.headline)} ${esc((r.notes || []).join(" "))}</p>`;
+  const bn = r.best_network;
+  const actions = (r.actions || []).map((a) => `<li data-ev-host>${AG.linkify(a.text, ev)}</li>`).join("");
+  return `
+    <div class="agent-verdict ${r.status === "partial" ? "partial" : ""}" data-ev-host>
+      <p class="headline">${AG.linkify(r.headline, ev)}</p>
+      ${r.explanation ? `<p class="explain">${AG.linkify(r.explanation, ev)}</p>` : ""}
+      <p class="footnote">${r.rounds} round${r.rounds === 1 ? "" : "s"} · ${(r.critiques || []).filter((c) => c.verdict !== "approve").length} critic objections ·
+        ${AG.fmt(r.elapsed_s, 0)} s · confidence is how well the public evidence supports a cause, not proof.</p>
+    </div>
+    <h4>Likely causes</h4>
+    <p class="footnote">Hover or focus a bar to see how its confidence changed and why. Tap an evidence tag to see the item and its Zetaris query.</p>
+    ${AG.causesHTML(r.hypotheses, ev)}
+    ${(r.ruled_out || []).length ? `<h4>Ruled out</h4><ul class="ruled">${r.ruled_out.map((x) => `<li data-ev-host><strong>${esc(AG.CAUSES[x.cause] || x.cause)}</strong>
+      <span class="sub-note">${AG.linkify(x.reason, ev)} ${AG.tags(x.evidence, ev)}</span></li>`).join("")}</ul>` : ""}
+    ${bn ? `<h4>Best network (reviewed by the agents)</h4><p data-ev-host>${AG.linkify(bn.summary, ev)}</p>
+      <ol class="net-rank">${bn.ranking.map((n) => `<li data-ev-host><span class="op-swatch" style="background:${OP_STYLE[n.operator].color}"></span>
+        <strong>${esc(n.operator)}</strong> <span class="conf-word cw-${esc(n.confidence)}">${esc(n.confidence)} confidence</span>
+        <span class="sub-note">${AG.linkify(n.why, ev)} ${AG.tags(n.evidence, ev)}</span></li>`).join("")}</ol>` : ""}
+    ${actions ? `<h4>What to do</h4><ul class="actions">${actions}</ul>` : ""}
+    ${(r.limitations || []).length ? `<details><summary>Limitations</summary><ul class="limits">${r.limitations.filter(Boolean).map((l) => `<li>${esc(l)}</li>`).join("")}</ul></details>` : ""}
+    <section class="letter" id="letter">
+      <h4>Draft evidence letter</h4>
+      <div class="letter-controls"><label>To <select id="recipient"><option value="operator">the mobile operator</option>
+        <option value="council">the local council</option><option value="mp">the local MP</option></select></label>
+        <button type="button" id="draft-letter">Draft evidence letter</button></div>
+      <div id="letter-out"></div>
+    </section>
+    <details class="trace-wrap"><summary>How the agents worked it out (trace)</summary>${AG.traceHTML(run, "place")}</details>`;
+}
+
+function renderRun(run) {
+  state.run = run;
+  const out = $("agent-out");
+  if (!out) return;
+  const done = !["queued", "running"].includes(run.status);
+  out.innerHTML = AG.progressHTML(run) + (done ? agentResultHTML(run) : "");
+  const btn = $("diagnose");
+  btn.disabled = !done;
+  btn.textContent = done ? "Diagnose again" : "Agents working…";
+  if (done && $("draft-letter")) $("draft-letter").addEventListener("click", draftLetter);
+}
+
+async function attachRun(runId) {
+  state.runId = runId;
+  const p = new URLSearchParams(location.search);
+  p.set("run", runId);
+  history.replaceState(null, "", `/signal?${p}`);
+  try {
+    await AG.poll(runId, renderRun, () => state.runId === runId);
+  } catch (e) {
+    $("agent-out").innerHTML = `<p class="error">Could not follow the run: ${esc(e.message)}</p>`;
+    $("diagnose").disabled = false;
+  }
+}
+
+async function diagnose() {
+  const p = state.bundle.point;
+  $("diagnose").disabled = true;
+  $("agent-out").innerHTML = `<p class="loading">Starting the agents…</p>`;
+  try {
+    const r = await AG.post("/api/diagnose", { lat: p.lat, lon: p.lon, audience: $("audience").value });
+    await attachRun(r.run_id);
+  } catch (e) {
+    $("agent-out").innerHTML = `<p class="error">Could not start the agents: ${esc(e.message)}</p>`;
+    $("diagnose").disabled = false;
+  }
+}
+
+async function draftLetter() {
+  const btn = $("draft-letter"), out = $("letter-out"), recipient = $("recipient").value;
+  btn.disabled = true;
+  out.innerHTML = `<p class="loading">The letter writer is drafting from the reviewed diagnosis…</p>`;
+  try {
+    const l = await AG.post(`/api/runs/${state.runId}/letter`, { recipient });
+    const text = `# ${l.subject}\n\n${l.body_markdown}\n`;
+    out.innerHTML = `<p class="footnote">Edit before sending. Sources are listed from the evidence by code${l.guard.length ? `; the guard made ${l.guard.length} correction${l.guard.length > 1 ? "s" : ""}` : ""}.</p>
+      <textarea id="letter-text" class="letter-text" rows="16" aria-label="Letter (Markdown)">${esc(text)}</textarea>
+      <div class="letter-controls"><button type="button" id="letter-download">Download .md</button>
+        <button type="button" id="letter-preview" class="link-btn">Preview</button></div><div id="letter-view" class="md" hidden></div>`;
+    const place = (state.bundle.point.nearest_postcode || state.bundle.point.label || "location").replace(/\W+/g, "-");
+    $("letter-download").addEventListener("click", () => AG.download(`evidence-letter-${recipient}-${place}.md`, $("letter-text").value));
+    $("letter-preview").addEventListener("click", () => {
+      const v = $("letter-view");
+      v.hidden = !v.hidden;
+      v.innerHTML = AG.markdown($("letter-text").value);
+      $("letter-preview").textContent = v.hidden ? "Preview" : "Hide preview";
+    });
+  } catch (e) {
+    out.innerHTML = `<p class="error">${esc(e.message)}</p>`;
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+AG.bindTags($("panel"), () => AG.evMap(state.run || {}));
+
 /* ---------- loading ---------- */
 
 async function check(request) {
   state.request = request;
+  state.run = state.runId = null;
   const panel = $("panel");
   panel.innerHTML = `<p class="loading">Gathering evidence for this point (Zetaris queries, line of sight, live sources)…</p>`;
   const qs = request.query ? `?q=${encodeURIComponent(request.query)}` : `?lat=${request.lat.toFixed(5)}&lon=${request.lon.toFixed(5)}`;
@@ -278,6 +382,8 @@ async function check(request) {
     state.bundle = body;
     panel.innerHTML = panelHTML(body);
     panel.scrollTop = 0;
+    $("diagnose").addEventListener("click", diagnose);
+    if (request.run) attachRun(request.run);
     $("map-hint").hidden = true;
     renderLegend();
     render();
@@ -302,6 +408,7 @@ $("search").addEventListener("submit", (ev) => {
 map.on("load", () => {
   render();  // deck.gl's onClick receives every map click, with or without a picked object
   const params = new URLSearchParams(location.search);
-  if (params.get("q")) { $("search-input").value = params.get("q"); check({ query: params.get("q") }); }
-  else if (params.get("lat") && params.get("lon")) check({ lat: +params.get("lat"), lon: +params.get("lon") });
+  const run = params.get("run") || undefined;
+  if (params.get("q")) { $("search-input").value = params.get("q"); check({ query: params.get("q"), run }); }
+  else if (params.get("lat") && params.get("lon")) check({ lat: +params.get("lat"), lon: +params.get("lon"), run });
 });
