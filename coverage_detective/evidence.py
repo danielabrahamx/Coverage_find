@@ -9,7 +9,8 @@
      Q2  approximate mast sites within 10 km of the exact point (CD_MASTS_SITES);
      Q3  UK context: median and 90th percentile devices per head and download speed
          (cached for the process, since it only changes when the data is rebuilt);
-     Q4  Ookla tiles (~350-400 m) within 1 km of the exact point, latest quarter.
+     Q4  Ookla tiles (~350-400 m) within 2 km of the exact point, latest quarter (the speed
+         figure uses those within 1 km; the rest are for the map).
 3. Line of sight from the exact point to the nearest site of each operator within 10 km
    (and to the nearest site of any operator), over the Copernicus DEM.
 4. Live: weather, Met Office warnings, EA flood warnings.
@@ -46,6 +47,8 @@ STRONG_TESTS, WEAK_TESTS = 50, 10
 LOS_STRONG_M = 30.0   # blocked by this much: hard to explain away by trees or buildings
 LOS_MARGINAL_M = 10.0
 SPEED_RADIUS_KM = 1.0
+TILE_MAP_RADIUS_KM = 2.0
+MAP_SITES_MAX = 2000  # sites within 10 km sent for the map (nearest first)
 UK_TZ = ZoneInfo("Europe/London")
 COMPASS = ["north", "north-east", "east", "south-east", "south", "south-west", "west", "north-west"]
 
@@ -189,14 +192,17 @@ ORDER BY distance_km"""
 
 # --- evidence from the stored tables (Zetaris) -----------------------------------------------
 
-def nearby_speed_item(b: Bundle, tiles: list[dict], quarter: str, cell_id: str) -> None:
-    """Test-weighted speed over the Ookla tiles within 1 km of the exact point."""
+def nearby_speed_item(b: Bundle, map_tiles: list[dict], quarter: str, cell_id: str) -> None:
+    """Test-weighted speed over the Ookla tiles within 1 km of the exact point (all 2 km tiles go to the map)."""
     meta = _meta("ookla_mobile_tiles")
+    tiles = [t for t in map_tiles if t["distance_km"] <= SPEED_RADIUS_KM]
+    map_value = [{k: t[k] for k in ("lat", "lon", "download_mbps", "tests", "distance_km")} for t in map_tiles]
     tests = sum(t["tests"] for t in tiles)
     if not tests:
         b.add("speed_1km", "Ookla open data tiles (Zetaris CD_OOKLA_MOBILE_TILES)", meta, "zetaris:Q4", [cell_id],
               f"No Ookla speed tests were recorded within {SPEED_RADIUS_KM:.0f} km of this point in {quarter}.",
-              {"tiles": [], "quarter": quarter}, {"tests": 0, "tiles": 0}, "weak", ["insufficient_data"])
+              {"tiles": map_value, "quarter": quarter, "radius_km": SPEED_RADIUS_KM}, {"tests": 0, "tiles": 0}, "weak",
+              ["insufficient_data"])
         return
     mbps = sum(t["download_mbps"] * t["tests"] for t in tiles) / tests
     devices = sum(t["devices"] for t in tiles)
@@ -207,7 +213,7 @@ def nearby_speed_item(b: Bundle, tiles: list[dict], quarter: str, cell_id: str) 
           f"Within {SPEED_RADIUS_KM:.0f} km of this point, mobile download speed averaged {mbps:.1f} Mbps in {quarter} "
           f"({tests} tests from {devices} devices on {len(tiles)} Ookla tiles of about 350-400 m).{few}",
           {"download_mbps": round(mbps, 1), "quarter": quarter, "radius_km": SPEED_RADIUS_KM,
-           "tiles": [{k: t[k] for k in ("lat", "lon", "download_mbps", "tests", "distance_km")} for t in tiles]},
+           "tiles": map_value},
           {"tests": tests, "devices": devices, "tiles": len(tiles)}, strength,
           ["distance_to_mast", "terrain_blocking", "capacity_strain", "insufficient_data"])
 
@@ -456,6 +462,18 @@ def operator_comparison(sites: list[dict], los_by_site: dict[str, dict], lat: fl
     return rows
 
 
+def map_sites(sites: list[dict]) -> list[dict]:
+    """Identified sites within 10 km for the map, marked confirmed / inferred / unknown."""
+    out = []
+    for x in sites[:MAP_SITES_MAX]:
+        ops, conf = _ops(x["operators"]), _ops(x["operators_confirmed"])
+        out.append({"site_id": x["site_id"], "lat": round(x["lat"], 5), "lon": round(x["lon"], 5),
+                    "distance_km": round(x["distance_km"], 2), "operators": ops, "operators_confirmed": conf,
+                    "status": "confirmed" if conf else "inferred" if ops else "unknown",
+                    "sources": [SOURCE_KIND.get(s, s) for s in str(x["sources"]).split(",")]})
+    return out
+
+
 def likely_best(rows: list[dict]) -> dict:
     """Rule-based summary: the operators with the least obstructed line of sight from the point."""
     rank = {"clear": 0, "marginal": 1, "blocked": 2}
@@ -606,7 +624,7 @@ def build_bundle(query_text: str | None = None, lat: float | None = None, lon: f
                 s["has_microwave_backhaul"] = _bool(s["has_microwave_backhaul"])
             ctx_rows = b.zetaris("Q3", UK_CONTEXT_SQL, cached=True)
             ctx = ctx_rows[0] if ctx_rows else None
-            tiles = b.zetaris("Q4", tiles_sql(lat, lon, quarter))
+            tiles = b.zetaris("Q4", tiles_sql(lat, lon, quarter, TILE_MAP_RADIUS_KM))
         except ZetarisError as e:
             b.errors.append(f"Zetaris: {e}")
 
@@ -627,6 +645,7 @@ def build_bundle(query_text: str | None = None, lat: float | None = None, lon: f
         "query": query_text, "point": point, "cell_id": cell_id, "neighbour_cell_ids": ring,
         "generated_at": live.now_iso(), "sample_mode": sample_mode(),
         "items": b.items, "operators": operators, "likely_best": likely_best(operators),
+        "sites": map_sites(sites),
         "zetaris_queries": b.queries, "errors": b.errors, "limitations": LIMITATIONS,
         "resident_check": "Check your address on Ofcom's mobile coverage checker: https://www.ofcom.org.uk/mobile-coverage-checker",
     }

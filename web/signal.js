@@ -12,6 +12,9 @@ const OP_STYLE = {
   Three: { color: "#CA8A04", width: 3 },
 };
 const BLOCKED = "#DC2626";
+const MULTI = "#334155";      // site shared by several operators
+const UNKNOWN = "#9CA3AF";    // site with no known operator
+const siteColor = (s) => (s.operators.length === 1 ? OP_STYLE[s.operators[0]].color : s.operators.length ? MULTI : UNKNOWN);
 const SPEED = { breaks: [2, 5, 10], colors: ["#C2410C", "#F59E0B", "#93C5FD", "#2563EB"] };
 
 const $ = (id) => document.getElementById(id);
@@ -51,12 +54,23 @@ function layers() {
   const obstructions = rows.filter((r) => r.los.class !== "clear" && r.los.obstruction_lat);
   return [
     new deck.PolygonLayer({
-      id: "radius", data: [circle(p.lat, p.lon, 1)], getPolygon: (d) => d, filled: true, getFillColor: [29, 78, 216, 14],
-      stroked: true, getLineColor: [29, 78, 216, 120], lineWidthUnits: "pixels", getLineWidth: 1,
+      id: "hexagon", data: [h3.cellToBoundary(b.cell_id, true)], getPolygon: (d) => d, filled: true,
+      getFillColor: [21, 25, 31, 8], stroked: true, getLineColor: [21, 25, 31, 90], lineWidthUnits: "pixels", getLineWidth: 1.5,
+    }),
+    new deck.PolygonLayer({
+      id: "radius", data: [circle(p.lat, p.lon, 1)], getPolygon: (d) => d, filled: false,
+      stroked: true, getLineColor: [29, 78, 216, 140], lineWidthUnits: "pixels", getLineWidth: 1, getDashArray: [4, 3],
+      extensions: [dashed],
     }),
     new deck.ScatterplotLayer({
-      id: "tiles", data: tiles, getPosition: (t) => [t.lon, t.lat], getFillColor: (t) => rgb(speedColor(t.download_mbps), t.tests < 10 ? 120 : 230),
-      radiusUnits: "meters", getRadius: 120, stroked: true, getLineColor: [255, 255, 255, 220], lineWidthUnits: "pixels", getLineWidth: 1,
+      id: "tiles", data: tiles, getPosition: (t) => [t.lon, t.lat], getFillColor: (t) => rgb(speedColor(t.download_mbps), t.tests < 10 ? 110 : 220),
+      radiusUnits: "meters", getRadius: 110, stroked: true, getLineColor: [255, 255, 255, 220], lineWidthUnits: "pixels", getLineWidth: 1,
+      pickable: true,
+    }),
+    new deck.ScatterplotLayer({
+      id: "all-sites", data: b.sites || [], getPosition: (s) => [s.lon, s.lat], getFillColor: (s) => rgb(siteColor(s)),
+      stroked: true, getLineColor: (s) => (s.status === "confirmed" ? [17, 24, 39, 255] : [255, 255, 255, 255]),
+      lineWidthUnits: "pixels", getLineWidth: (s) => (s.status === "confirmed" ? 2.5 : 1.2), radiusUnits: "pixels", getRadius: 5,
       pickable: true,
     }),
     new deck.PathLayer({
@@ -93,7 +107,11 @@ function tooltip({ object, layer }) {
   if (layer.id === "tiles") return { html: `<strong>Ookla tile</strong><br>${fmt(object.download_mbps, 1)} Mbps · ${object.tests} tests` };
   if (layer.id === "lines") return { html: `<strong>${object.operator}</strong>: ${esc(losWord(object.los))}, ${fmt(object.site.distance_km, 1)} km` };
   if (layer.id === "obstructions") return { html: `<strong>${object.operator}</strong>: ground ${fmt(object.los.obstruction_m, 0)} m above the line here` };
-  if (layer.id === "sites") return { html: `<strong>${esc(object.ops.join(", "))}</strong><br>${esc(object.sources.join(" + "))}` };
+  if (layer.id === "sites") return { html: `<strong>Nearest site for ${esc(object.ops.join(", "))}</strong><br>${esc(object.sources.join(" + "))}` };
+  if (layer.id === "all-sites") {
+    const how = { confirmed: `confirmed: ${object.operators_confirmed.join(", ")} (Ofcom register)`, inferred: "operators inferred (crowd-sourced)", unknown: "operator unknown" }[object.status];
+    return { html: `<strong>${esc(object.operators.join(", ") || "Unknown operator")}</strong> · ${fmt(object.distance_km, 1)} km<br>${esc(how)}<br>${esc(object.sources.join(" + "))}` };
+  }
   return null;
 }
 
@@ -113,12 +131,17 @@ function fitToBundle() {
 function renderLegend() {
   const el = $("op-legend");
   el.hidden = false;
-  el.innerHTML = `<h2>Line of sight from this point</h2><ul>
-    ${OPERATORS.map((o) => `<li><span class="line-swatch" style="background:${OP_STYLE[o].color}"></span>${o}</li>`).join("")}
-    <li><span class="line-swatch dashed" style="--c:${BLOCKED}"></span>Blocked (10 m +)</li>
-    <li><span class="line-swatch dashed" style="--c:#64748B"></span>Marginal (operator colour, dashed)</li>
-    <li><span class="dot" style="background:#fff;border:2px solid ${BLOCKED}"></span>Highest obstruction</li>
-    <li><span class="dot" style="background:${SPEED.colors[3]}"></span>Ookla tile within 1 km</li></ul>`;
+  el.innerHTML = `<h2>From this exact point</h2><ul>
+    ${OPERATORS.map((o) => `<li><span class="line-swatch" style="background:${OP_STYLE[o].color}"></span>${o} line of sight</li>`).join("")}
+    <li><span class="line-swatch dashed" style="--c:${BLOCKED}"></span>Blocked (10 m +); dashed operator colour = marginal</li>
+    <li><span class="dot" style="background:#fff;border:2px solid ${BLOCKED}"></span>Highest obstruction</li></ul>
+    <h2 class="legend-sub">Sites within 10 km</h2><ul>
+    <li><span class="dot" style="background:${MULTI};box-shadow:0 0 0 2px #111827"></span>Confirmed (Ofcom register, dark ring)</li>
+    <li><span class="dot" style="background:${MULTI}"></span>Inferred (crowd-sourced); colour = operator, slate = several</li>
+    <li><span class="dot" style="background:${UNKNOWN}"></span>Operator unknown</li></ul>
+    <h2 class="legend-sub">Ookla tiles within 2 km</h2><ul>
+    ${["< 2", "2 – 5", "5 – 10", "> 10"].map((l, i) => `<li><span class="dot" style="background:${SPEED.colors[i]}"></span>${l} Mbps</li>`).join("")}
+    <li><span class="line-swatch dashed" style="--c:#1D4ED8"></span>1 km (speed figure) · grey outline: this hexagon</li></ul>`;
 }
 
 /* ---------- panel ---------- */
@@ -187,6 +210,7 @@ function panelHTML(b) {
       <h2>${esc(p.kind === "point" ? (p.nearest_postcode ? `Near ${p.nearest_postcode}` : "Selected point") : p.label)}</h2>
       <p class="sub">${esc(place)} · ${fmt(p.lat, 5)}, ${fmt(p.lon, 5)} · <span class="mono">${esc(b.cell_id)}</span>
       ${p.approximate ? ` · <span class="warn-text">approximate match</span>` : ""}</p>
+      <a class="to-explore" href="/?cell=${esc(b.cell_id)}&lat=${p.lat.toFixed(5)}&lon=${p.lon.toFixed(5)}&zoom=11">See this area in Explore →</a>
     </div>
 
     <section class="best card-inner">

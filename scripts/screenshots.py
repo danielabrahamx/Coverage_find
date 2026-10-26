@@ -19,10 +19,8 @@ SHOTS = [
     # name, query string, viewport, what to wait for
     ("uk_speed", "?layer=download_mbps", (1440, 900), None),
     ("lake_district_masts", "?layer=download_mbps&lat=54.46&lon=-3.08&zoom=10.6", (1440, 900), None),
-    ("great_langdale_panel", f"?layer=download_mbps&lat=54.445&lon=-3.105&zoom=11.2&cell={LANGDALE_CELL}", (1440, 900), ".diagnose"),
+    ("explore_lake_district", f"?layer=los_blocked&lat=54.445&lon=-3.105&zoom=10.4&cell={LANGDALE_CELL}", (1440, 900), ".diagnose"),
     ("rhayader_panel", "?layer=microwave_backhaul_sites_within_5km&lat=52.30&lon=-3.51&zoom=11&cell=87195e3aeffffff", (1440, 900), ".diagnose"),
-    ("great_langdale_right_now", f"?layer=download_mbps&lat=54.445&lon=-3.105&zoom=11.2&cell={LANGDALE_CELL}", (1440, 900), "#right-now .live-row"),
-    ("great_langdale_line_of_sight", f"?layer=los_blocked&lat=54.435&lon=-3.085&zoom=12&cell={LANGDALE_CELL}", (1440, 900), "#los .profile"),
     # Other pages: the query string starts with the page path.
     ("signal_great_langdale", "signal?lat=54.445&lon=-3.105", (1440, 900), ".best"),
     ("signal_rhayader", "signal?lat=52.30&lon=-3.51", (1440, 900), ".best"),

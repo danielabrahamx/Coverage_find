@@ -107,13 +107,10 @@ scripts/zetaris/compose.sh up -d                        # Zetaris with our data 
 - Approximate mast sites appear from zoom 10 (coloured by source), Ookla tiles from zoom 12.
 - Click a cell: its details come from **one cross-source Zetaris query** (cells, Ookla and
   history, neighbours, masts, Ofcom area), shown under "Zetaris query used", with data dates.
-- Line of sight in the cell panel is computed from the **exact point** you clicked or
-  searched (not the cell centre) to the nearest approximate site: the line is drawn on the
-  map (red if blocked, with the highest obstruction marked) above an elevation profile of
-  the path. The "Line of sight" map layer is a per-cell summary from each cell's centre.
-- "Right now" in the cell panel: live weather (with severity), Met Office warnings for the
-  region and EA flood warnings within 10 km ("not covered" outside England), each with its
-  source, status (live / cached / sample) and time. If everything is calm it says so.
+- **Explore is area level**: the cell panel shows cell aggregates only (speeds and tests,
+  neighbours, trend, nearest site and operators within 5 km of the cell, the line-of-sight
+  grade from the cell centre, elevation range, Ofcom area figures) and "Data details" with
+  the Zetaris SQL. "Check an exact location here" opens My signal at the clicked point.
 - Search a postcode or place (postcodes.io). Works on phones (the panel slides up).
 
 API: `GET /api/layers`, `/api/layer/{name}`, `/api/masts?bbox=`, `/api/tiles?bbox=`,
@@ -123,9 +120,7 @@ API: `GET /api/layers`, `/api/layer/{name}`, `/api/masts?bbox=`, `/api/tiles?bbo
 `&site_id=`), `/health`
 (OpenAPI docs at `/docs`).
 
-![Line of sight, Great Langdale](docs/screenshots/great_langdale_line_of_sight.png)
-
-![Right now panel, Great Langdale](docs/screenshots/great_langdale_right_now.png)
+![Explore, Lake District, line-of-sight layer with a cell open](docs/screenshots/explore_lake_district.png)
 Screenshots: `pip install playwright`, then `python scripts/screenshots.py` (pass
 `--chrome <path>` to use an installed Chromium) → `docs/screenshots/`.
 
@@ -133,9 +128,12 @@ Screenshots: `pip install playwright`, then `python scripts/screenshots.py` (pas
 
 ## My signal page
 
-`http://localhost:8000/signal` (also `?q=LD6 5AD` or `?lat=52.30&lon=-3.51`): search a
-postcode or place, or click the map at the exact spot. It calls `POST /api/evidence` and
-shows, with no LLM involved:
+`http://localhost:8000/signal` (deep links `?q=LD6 5AD` or `?lat=52.30&lon=-3.51`): point
+level, for one exact location. Search a postcode or place, or click the map at the exact
+spot. It calls `POST /api/evidence` and shows, with no LLM involved, a map without hexagon
+colouring (Ookla tiles within 2 km by speed, identified sites within 10 km by operator and
+marked confirmed / inferred / unknown, the point, a faint outline of its hexagon, each
+operator's line of sight) and a panel with:
 
 - **Networks compared**: for EE, O2, Three and Vodafone, the nearest identified site
   (distance, direction, source: OpenCelliD / OpenStreetMap / Ofcom register), whether the
@@ -151,7 +149,7 @@ shows, with no LLM involved:
   test counts and strength; the 4-quarter trend; Ofcom area figures (area-level wording);
   current weather, Met Office warnings and flood warnings.
 - Placeholders for the agents: "Explanation (agents)", "Diagnose with agents" and "Draft
-  evidence letter" (disabled).
+  evidence letter" (disabled); "See this area in Explore" goes back to the area view.
 
 ![My signal, near Rhayader](docs/screenshots/signal_rhayader.png)
 

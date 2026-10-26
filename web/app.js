@@ -23,8 +23,7 @@ const state = {
   masts: [],
   tiles: [],
   selected: null,
-  point: null,         // the exact point clicked or searched (or the cell centre)
-  los: null,           // line of sight for the selected cell (from /api/los)
+  point: null,         // where the cell was clicked or searched (for "Check an exact location here")
 };
 
 const $ = (id) => document.getElementById(id);
@@ -99,27 +98,6 @@ function selectedLayer() {
   });
 }
 
-function losLayers() {
-  const L = state.los;
-  if (!L) return [];
-  const color = L.blocked ? [194, 65, 12, 255] : [29, 78, 216, 255];
-  const ends = [{ p: [L.lon, L.lat], kind: "point" }, { p: [L.site.lon, L.site.lat], kind: "site" }];
-  return [
-    new deck.LineLayer({
-      id: "los-line", data: [L], getSourcePosition: (d) => [d.lon, d.lat], getTargetPosition: (d) => [d.site.lon, d.site.lat],
-      getColor: color, getWidth: 3, widthUnits: "pixels",
-    }),
-    new deck.ScatterplotLayer({
-      id: "los-points",
-      data: L.blocked ? [...ends, { p: [L.obstruction_lon, L.obstruction_lat], kind: "obstruction" }] : ends,
-      getPosition: (d) => d.p,
-      getFillColor: (d) => (d.kind === "obstruction" ? [255, 255, 255, 255] : color),
-      getLineColor: color, stroked: true, lineWidthUnits: "pixels", getLineWidth: (d) => (d.kind === "obstruction" ? 3 : 1),
-      radiusUnits: "pixels", getRadius: (d) => (d.kind === "obstruction" ? 7 : 5),
-    }),
-  ];
-}
-
 function tileLayer() {
   return new deck.PolygonLayer({
     id: "tiles",
@@ -151,7 +129,7 @@ function mastLayer() {
 
 function render() {
   overlay.setProps({
-    layers: [hexLayer(), tileLayer(), selectedLayer(), mastLayer(), ...losLayers()],
+    layers: [hexLayer(), tileLayer(), selectedLayer(), mastLayer()],
     onClick: onMapClick,
     onHover: onHover,
   });
@@ -325,11 +303,10 @@ function panelHTML(res) {
     <h2>${esc(c.place || c.laua_name || "Selected cell")}</h2>
     <p class="sub">${esc(c.nation)} · ${esc(c.pcon_name || "")} · <span class="mono">${esc(c.cell_id)}</span></p>
     <dl class="kv"><dt>People in this cell</dt><dd>${fmt(c.population, 0)}</dd></dl>
-    <section id="right-now"><h3>Right now</h3><p class="loading small">Checking live sources…</p></section>
     <section><h3>Measured speed</h3>${speed}${weak}${nb}</section>
     <section><h3>Trend</h3>${trend}${sparkline(c.history)}</section>
     <section><h3>Nearest mast site</h3>${mast}</section>
-    <section id="los"><h3>Line of sight to the nearest site</h3><p class="loading small">Checking terrain…</p></section>
+    <section><h3>Line of sight from the cell centre</h3>${losGrade(c)}</section>
     ${c.elevation_mean_m !== undefined && c.elevation_mean_m !== null ? `<section><h3>Terrain in this cell</h3>
       <dl class="kv"><dt>Mean elevation</dt><dd>${fmt(c.elevation_mean_m, 0)} m</dd><dt>Elevation range</dt><dd>${fmt(c.elevation_range_m, 0)} m</dd></dl>
       <p class="footnote">Copernicus DEM GLO-30, a surface model (includes some trees and buildings).</p></section>` : ""}
@@ -343,130 +320,24 @@ function panelHTML(res) {
       <p class="status">${esc(statusSentence(c))}</p></section>
     <section><h3>Ofcom: the wider area</h3>${ofcom}</section>
     <section><h3>Data dates</h3><dl class="kv">${dates}</dl></section>
-    <details><summary>Zetaris query used (${res.zetaris.duration_ms} ms)</summary><pre class="sql">${esc(res.zetaris.sql)}</pre></details>
-    <button class="diagnose" disabled>Diagnose this area</button>
-    <p class="diagnose-note">Agents coming next</p>`;
+    <details><summary>Data details: Zetaris query (${res.zetaris.duration_ms} ms)</summary><pre class="sql">${esc(res.zetaris.sql)}</pre></details>
+    <a class="diagnose go" href="/signal?lat=${state.point.lat.toFixed(5)}&lon=${state.point.lon.toFixed(5)}">Check an exact location here</a>
+    <p class="diagnose-note">Opens My signal at ${state.point.exact ? "the point you clicked" : "the cell centre"}: speeds within 1 km,
+      each network's nearest site and line of sight from that exact spot.</p>`;
 }
 
-/* ---------- line of sight to the nearest site ---------- */
-
-function profileSVG(L) {
-  const P = L.profile, W = 340, H = 120, pad = { l: 34, r: 6, t: 8, b: 20 };
-  const xs = P.distance_m, all = [...P.ground_m, ...P.line_m];
-  const lo = Math.min(...all), hi = Math.max(...all), span = Math.max(hi - lo, 10);
-  const x = (d) => pad.l + (d / xs[xs.length - 1]) * (W - pad.l - pad.r);
-  const y = (e) => pad.t + (1 - (e - lo) / span) * (H - pad.t - pad.b);
-  const ground = `M${x(0)},${H - pad.b} ` + xs.map((d, i) => `L${x(d).toFixed(1)},${y(P.ground_m[i]).toFixed(1)}`).join(" ") + ` L${x(xs[xs.length - 1])},${H - pad.b} Z`;
-  const line = xs.map((d, i) => `${i ? "L" : "M"}${x(d).toFixed(1)},${y(P.line_m[i]).toFixed(1)}`).join(" ");
-  const cls = L.blocked ? "blocked" : "clear";
-  const i = xs.findIndex((d) => d >= L.obstruction_distance_m);
-  const mark = L.blocked && i >= 0 ? `<circle cx="${x(xs[i])}" cy="${y(P.ground_m[i])}" r="4" class="obs"/>` : "";
-  return `<svg class="profile" viewBox="0 0 ${W} ${H}" role="img" aria-label="Elevation profile from this point to the site">
-    <path d="${ground}" class="ground"/><path d="${line}" class="ray ${cls}"/>${mark}
-    <text x="${pad.l - 4}" y="${y(hi) + 4}" text-anchor="end">${fmt(hi, 0)} m</text>
-    <text x="${pad.l - 4}" y="${y(lo)}" text-anchor="end">${fmt(lo, 0)} m</text>
-    <text x="${pad.l}" y="${H - 5}">here</text>
-    <text x="${W - pad.r}" y="${H - 5}" text-anchor="end">site · ${fmt(xs[xs.length - 1] / 1000, 1)} km</text></svg>`;
-}
-
-function losHTML(L) {
-  const km = (m) => `${fmt(m / 1000, 1)} km`;
-  const height = L.mast_height_source === "ofcom_register"
-    ? `antenna ${fmt(L.mast_height_m, 0)} m (Ofcom's licence register)` : `antenna height assumed ${fmt(L.mast_height_m, 0)} m`;
-  const verdict = L.blocked
-    ? `<p class="status"><strong class="bad">Blocked</strong>: the ground rises <strong>${fmt(L.max_obstruction_m, 0)} m</strong> above the direct line,
-       ${km(L.obstruction_distance_m)} along the ${km(L.path_length_m)} path (ground there ${fmt(L.obstruction_ground_m, 0)} m).</p>`
-    : `<p class="status"><strong class="good">Clear</strong>: the line passes at least ${fmt(-L.max_obstruction_m, 0)} m above the ground over ${km(L.path_length_m)}.</p>`;
-  return `<h3>Line of sight to the nearest site</h3>${verdict}${profileSVG(L)}
-    <p class="footnote">From ${state.point?.exact ? (state.point.label ? esc(state.point.label) : "the point you clicked") : "the cell centre"} at 1.5 m
-    to the nearest approximate site (${esc(L.site.operators || "operator unknown")}), ${height}; earth curvature included.
-    Blocked means a weaker signal, not none. Copernicus GLO-30 surface model.</p>`;
-}
-
-async function loadLos(cellId) {
-  state.los = null;
-  // From the exact point clicked or searched; the cell centre only when opened by cell id.
-  const { lat, lon } = state.point;
-  try {
-    const L = await getJSON(`/api/los?lat=${lat.toFixed(5)}&lon=${lon.toFixed(5)}`);
-    if (state.selected !== cellId) return;
-    state.los = L;
-    render();
-    $("los").innerHTML = losHTML(L);
-  } catch (e) {
-    if (state.selected === cellId) $("los").innerHTML = `<h3>Line of sight to the nearest site</h3><p class="error">${esc(e.message)}</p>`;
-  }
-}
-
-/* ---------- "Right now": live weather, Met Office warnings, EA flood warnings ---------- */
-
-const LIVE_SOURCE_NAMES = {
-  open_meteo: "Open-Meteo", met_office_warnings: "Met Office", ea_flood_monitoring: "Environment Agency",
-};
-
-function timeLabel(iso) {
-  if (!iso) return "";
-  const d = new Date(iso);
-  return Number.isNaN(+d) ? iso : d.toLocaleString("en-GB", { weekday: "short", hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" });
-}
-
-function sourceLine(s) {
-  const how = { live: "live", cached: "cached copy (live call failed)", sample: "saved sample (offline mode)",
-    not_covered: "not covered", unavailable: "unavailable" }[s.status] || s.status;
-  const when = s.fetched_at ? ` · ${timeLabel(s.fetched_at)}` : "";
-  return `<p class="footnote">${esc(LIVE_SOURCE_NAMES[s.source] || s.source)} · ${esc(how)}${when}</p>`;
-}
-
-function rightNowHTML(L) {
-  const w = L.weather, m = L.met_office_warnings, f = L.flood_warnings;
-  const parts = [];
-  if (L.all_calm) parts.push(`<p class="calm">All calm: no severe weather expected in the next 24 h, no Met Office warnings and no flood warnings nearby.</p>`);
-
-  if (w.status === "unavailable") parts.push(`<p class="muted">Weather unavailable.</p>`);
-  else {
-    const d = w.data, n = d.now, x = d.next_24h;
-    parts.push(`<div class="live-row"><span class="sev sev-${esc(d.severity)}">${esc(d.severity === "none" ? "calm" : d.severity)}</span>
-      <strong>Weather:</strong> ${esc(n.weather)}, wind ${fmt(n.wind_kmh, 0)} km/h, gusts ${fmt(n.gust_kmh, 0)} km/h, rain ${fmt(n.precipitation_mm_h, 1)} mm/h</div>
-      <p class="status">Next 24 h: gusts up to <strong>${fmt(x.max_gust_kmh, 0)} km/h</strong> (${esc(timeLabel(x.max_gust_at))}),
-      rain up to <strong>${fmt(x.max_precipitation_mm_h, 1)} mm/h</strong>, ${fmt(x.total_precipitation_mm, 1)} mm in total${x.thunderstorm_expected ? ", thunderstorms possible" : ""}.</p>
-      ${d.reasons.length ? `<p class="footnote">${esc(d.severity)}: ${esc(d.reasons.join("; "))}</p>` : ""}${sourceLine(w)}`);
-  }
-
-  if (m.status === "unavailable") parts.push(`<p class="muted">Met Office warnings unavailable: ${esc(m.error || "")}</p>${sourceLine(m)}`);
-  else {
-    const ws = m.data.warnings || [];
-    parts.push(`<div class="live-row"><strong>Met Office warnings</strong> (${esc(m.data.region)}): ${ws.length ? "" : "none in force"}</div>
-      ${ws.map((x) => `<p class="warning warn-${esc(x.level)}"><strong>${esc(x.level[0].toUpperCase() + x.level.slice(1))} · ${esc(x.types.join(", "))}</strong>
-        ${x.in_force ? "in force" : "from " + esc(timeLabel(x.valid_from))} until ${esc(timeLabel(x.valid_to))}
-        <span class="footnote">${x.district_listed ? "Covers this district." : "Elsewhere in the region: " + esc(x.areas.slice(0, 4).join(", ")) + (x.areas.length > 4 ? "…" : "")}</span></p>`).join("")}
-      ${sourceLine(m)}`);
-  }
-
-  if (f.status === "not_covered") parts.push(`<div class="live-row"><strong>Flood warnings:</strong> ${esc(f.data.message)}</div>`);
-  else if (f.status === "unavailable") parts.push(`<p class="muted">Flood warnings unavailable.</p>${sourceLine(f)}`);
-  else {
-    const fs = f.data.warnings || [];
-    parts.push(`<div class="live-row"><strong>Flood warnings</strong> within ${f.data.radius_km} km: ${fs.length ? "" : "none"}</div>
-      ${fs.map((x) => `<p class="warning flood-${x.severity_level}"><strong>${esc(x.severity)}</strong> · ${esc(x.area)}
-        <span class="footnote">Raised ${esc(timeLabel(x.time_raised))}</span></p>`).join("")}${sourceLine(f)}`);
-  }
-  return `<h3>Right now</h3>${parts.join("")}`;
-}
-
-async function loadRightNow(cellId) {
-  const { lat, lon } = state.point;
-  const box = () => (state.selected === cellId ? $("right-now") : null);
-  try {
-    const L = await getJSON(`/api/live?lat=${lat.toFixed(5)}&lon=${lon.toFixed(5)}`);
-    if (box()) box().innerHTML = rightNowHTML(L);
-  } catch (e) {
-    if (box()) box().innerHTML = `<h3>Right now</h3><p class="error">Live sources failed: ${esc(e.message)}</p>`;
-  }
+function losGrade(c) {
+  if (!c.los_class) return `<p class="muted">Not computed for this cell (no people or no site).</p>`;
+  const what = { clear: "Clear", marginal: "Marginal", blocked: "Blocked" }[c.los_class];
+  const detail = c.los_class === "clear" ? `the line clears the ground by ${fmt(-c.los_obstruction_m, 0)} m`
+    : `the ground rises ${fmt(c.los_obstruction_m, 0)} m above the line${c.los_class === "marginal" ? " (may be trees or buildings)" : ""}`;
+  return `<p class="status"><strong class="${c.los_class === "clear" ? "good" : "bad"}">${what}</strong> from the cell centre to its nearest
+    site: ${detail}.</p><p class="footnote">A grade for the whole cell. Blocked means weaker signal, not none. For your exact spot, use
+    "Check an exact location here".</p>`;
 }
 
 async function selectCell(cellId, point = null) {
   state.selected = cellId;
-  state.los = null;
   const [clat, clon] = h3.cellToLatLng(cellId);
   state.point = point ? { ...point, exact: true } : { lat: clat, lon: clon, exact: false };
   render();
@@ -475,7 +346,7 @@ async function selectCell(cellId, point = null) {
   $("panel-body").innerHTML = `<p class="loading">Querying Zetaris…</p>`;
   try {
     const res = await getJSON(`/api/cell/${cellId}`);
-    if (state.selected === cellId) { $("panel-body").innerHTML = panelHTML(res); loadRightNow(cellId); loadLos(cellId); }
+    if (state.selected === cellId) $("panel-body").innerHTML = panelHTML(res);
   } catch (e) {
     $("panel-body").innerHTML = `<p class="error">Could not load this cell: ${esc(e.message)}</p>`;
   }
@@ -484,7 +355,6 @@ async function selectCell(cellId, point = null) {
 $("panel-close").addEventListener("click", () => {
   $("panel").hidden = true;
   state.selected = null;
-  state.los = null;
   render();
 });
 
