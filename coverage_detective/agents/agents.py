@@ -42,12 +42,19 @@ def prompt(name: str, **fmt) -> str:
 def ask(case: Case, agent: str, round: int, messages: list[dict], **kw) -> LLMResult:
     """One LLM call, recorded in Meterless (success or failure)."""
     t0 = time.monotonic()
+    step = case.progress.start(agent, round, "llm", f"{agent} thinking" if kw.get("reasoning") else agent) \
+        if case.progress else None
     try:
         r = llm.chat(messages, **kw)
     except LLMError as e:
         case.memory.add_note(case.run_id, "llm_error", f"{agent}: {str(e)[:200]}", by=agent, round=round,
                              retries=e.retries, duration_ms=round_ms(t0))
+        if step:
+            case.progress.fail(step, str(e)[:160])
         raise
+    if step:
+        case.progress.done(step, f"{r.model.split('/')[-1]}, {r.duration_ms / 1000:.1f}s"
+                           + (f", {len(r.retries)} retries" if r.retries else "") + (", model switched" if r.fallback else ""))
     case.memory.add_note(case.run_id, "llm_call", f"{agent} via {r.model.split('/')[-1]} in {r.duration_ms / 1000:.1f}s"
                          + (f"; {len(r.retries)} retr{'y' if len(r.retries) == 1 else 'ies'}" if r.retries else "")
                          + (f"; {r.fallback}" if r.fallback else ""),
@@ -95,21 +102,23 @@ def _fmt_run(runs: list[tuple[str, str | None]]) -> str:
 
 def make_guard(case: Case, agent: str, round: int) -> Guard:
     def record(iv: Intervention) -> None:
-        case.memory.add_note(case.run_id, "guard", iv.summary, by="guard", round=round, agent=agent, kind=iv.kind,
-                             **iv.details)
+        case.memory.add_note(case.run_id, "guard", iv.summary, by="guard", round=round, agent=agent,
+                             guard_kind=iv.kind, **iv.details)
     return Guard(evidence_map(case), record)
 
 
-def rewriter(case: Case, agent: str, round: int, system: str, reasoning: bool):
-    """The guard's one rewrite request goes back to the same agent (same model and method)."""
+def rewriter(case: Case, agent: str, round: int, system: str, reasoning: bool = False):
+    """The guard's one rewrite request goes back to the same agent (its prompt), on the fast model."""
     def rewrite(sentences: list[str], cited: list[str]) -> dict[str, str]:
         ev = evidence_map(case)
         msg = ("These sentences contain numbers that are not in the evidence they cite. Rewrite each one so it only "
                "uses numbers exactly as written in the evidence below (or no numbers), citing ids in [brackets].\n\n"
                "Sentences:\n" + "\n".join(f"- {s}" for s in sentences) + "\n\nEvidence:\n"
                + evidence_text({i: ev[i] for i in cited if i in ev}))
+        # Same agent and prompt; the fast model without thinking (rewriting one sentence needs no reasoning,
+        # and on Ultra a rewrite took up to 82 s).
         r = ask(case, agent, round, [{"role": "system", "content": system}, {"role": "user", "content": msg}],
-                reasoning=reasoning, schema=S.RewriteSet)
+                schema=S.RewriteSet)
         return {w.original: w.rewritten for w in r.parsed.rewrites}
     return rewrite
 
@@ -189,7 +198,8 @@ def diagnose(case: Case, round: int) -> list[dict]:
     crit = [c for c in case.memory.critiques(case.run_id) if c.get("round") == round - 1]
     system = prompt("diagnostician")
     user = (f"Round {round}. Scope: {case.scope}.\n\nEvidence:\n{evidence_text(ev)}\n\nCurrent beliefs:\n{beliefs_text(beliefs)}\n\n"
-            "Critic's last review:\n" + ("\n".join(f"- {c['hypothesis_id']}: {c['verdict']}: {c['reason']}" for c in crit) or "(none)"))
+            "Critic's last review:\n" + ("\n".join(f"- {c.get('belief_id') or c.get('target')}: {c['verdict']}: {c['reason']}"
+                                                    for c in crit) or "(none)"))
     r = ask(case, "diagnostician", round, [{"role": "system", "content": system}, {"role": "user", "content": user}],
             reasoning=True, schema=S.HypothesisSet)
     guard = make_guard(case, "diagnostician", round)

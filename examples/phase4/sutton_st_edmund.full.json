@@ -1,0 +1,4807 @@
+{
+ "run": {
+  "memory_id": "mem-136",
+  "kind": "run",
+  "ref": "run_20261026210259_q6df",
+  "content": "Diagnosis run (point) for Sutton St Edmund",
+  "confidence": 1,
+  "source": "coordinator",
+  "created_at": "2026-10-26T21:02:59.276Z",
+  "scope": "point",
+  "query": "Sutton St Edmund",
+  "label": "Sutton St Edmund",
+  "location": {
+   "lat": 52.70011670054165,
+   "lon": 0.024084717819457868
+  },
+  "status": "complete",
+  "progress": [
+   {
+    "at": "2026-10-26T21:02:59.425Z",
+    "agent": "coordinator",
+    "round": 1,
+    "kind": "tool",
+    "label": "prior_diagnoses_nearby()",
+    "status": "done",
+    "summary": "prior_diagnoses_nearby() -> prior_diagnoses",
+    "duration_ms": 60
+   },
+   {
+    "at": "2026-10-26T21:02:59.449Z",
+    "agent": "coordinator",
+    "round": 1,
+    "kind": "phase",
+    "label": "round 1",
+    "status": "done",
+    "summary": "round 1",
+    "duration_ms": 0
+   },
+   {
+    "at": "2026-10-26T21:03:01.132Z",
+    "agent": "investigator",
+    "round": 1,
+    "kind": "llm",
+    "label": "investigator",
+    "status": "done",
+    "summary": "nemotron-3.5-super-vl-120b-a12b, 1.6s",
+    "duration_ms": 1563
+   },
+   {
+    "at": "2026-10-26T21:03:02.186Z",
+    "agent": "investigator",
+    "round": 1,
+    "kind": "tool",
+    "label": "speeds_near()",
+    "status": "done",
+    "summary": "speeds_near() -> speed_1km, speed_cell, speed_neighbours",
+    "duration_ms": 1012
+   },
+   {
+    "at": "2026-10-26T21:03:02.565Z",
+    "agent": "investigator",
+    "round": 1,
+    "kind": "tool",
+    "label": "sites_near()",
+    "status": "done",
+    "summary": "sites_near() -> nearest_site, operators_5km",
+    "duration_ms": 353
+   },
+   {
+    "at": "2026-10-26T21:03:02.957Z",
+    "agent": "investigator",
+    "round": 1,
+    "kind": "tool",
+    "label": "line_of_sight(EE)",
+    "status": "done",
+    "summary": "line_of_sight(EE) -> los_ee",
+    "duration_ms": 369
+   },
+   {
+    "at": "2026-10-26T21:03:03.340Z",
+    "agent": "investigator",
+    "round": 1,
+    "kind": "tool",
+    "label": "line_of_sight(O2)",
+    "status": "done",
+    "summary": "line_of_sight(O2) -> los_o2",
+    "duration_ms": 344
+   },
+   {
+    "at": "2026-10-26T21:03:03.424Z",
+    "agent": "investigator",
+    "round": 1,
+    "kind": "tool",
+    "label": "line_of_sight(Three)",
+    "status": "done",
+    "summary": "line_of_sight(Three) -> los_three",
+    "duration_ms": 59
+   },
+   {
+    "at": "2026-10-26T21:03:03.525Z",
+    "agent": "investigator",
+    "round": 1,
+    "kind": "tool",
+    "label": "line_of_sight(Vodafone)",
+    "status": "done",
+    "summary": "line_of_sight(Vodafone) -> los_vodafone",
+    "duration_ms": 66
+   },
+   {
+    "at": "2026-10-26T21:03:03.618Z",
+    "agent": "investigator",
+    "round": 1,
+    "kind": "tool",
+    "label": "ofcom_area()",
+    "status": "done",
+    "summary": "ofcom_area() -> ofcom_area",
+    "duration_ms": 64
+   },
+   {
+    "at": "2026-10-26T21:03:04.763Z",
+    "agent": "investigator",
+    "round": 1,
+    "kind": "tool",
+    "label": "live_conditions()",
+    "status": "done",
+    "summary": "live_conditions() -> weather, met_office_warnings, flood_warnings",
+    "duration_ms": 1116
+   },
+   {
+    "at": "2026-10-26T21:04:37.855Z",
+    "agent": "diagnostician",
+    "round": 1,
+    "kind": "llm",
+    "label": "diagnostician thinking",
+    "status": "done",
+    "summary": "nemotron-3.5-super-vl-120b-a12b, 2.8s, 2 retries, model switched",
+    "duration_ms": 92984
+   },
+   {
+    "at": "2026-10-26T21:06:10.222Z",
+    "agent": "critic",
+    "round": 1,
+    "kind": "llm",
+    "label": "critic thinking",
+    "status": "done",
+    "summary": "nemotron-3.5-super-vl-120b-a12b, 2.0s, 2 retries, model switched",
+    "duration_ms": 92211
+   },
+   {
+    "at": "2026-10-26T21:06:16.976Z",
+    "agent": "advisor",
+    "round": 0,
+    "kind": "llm",
+    "label": "advisor",
+    "status": "done",
+    "summary": "nemotron-3.5-super-vl-120b-a12b, 6.3s",
+    "duration_ms": 6272
+   }
+  ],
+  "created": "2026-10-26T21:02:59.276Z",
+  "by": "coordinator",
+  "run_id": "run_20261026210259_q6df",
+  "result": {
+   "headline": "The nearest confirmed mast is 4.8 km away and only O2 has sites within 5 km, while Vodafone is 9.5 km away with a small clearance margin, so distance and terrain are likely factors but not certain [nearest_site][operators_5km][los_vodafone].",
+   "explanation": "O2 has the closest confirmed mast at 4.8 km west with a clear line of sight [nearest_site][los_o2]. EE and Three also have clear lines of sight to sites 5.6 km east [los_ee][los_three]. Vodafone\u2019s nearest site is 9.5 km south, and terrain rises 5 m above the direct line 90 m from here, so the signal is likely weakened [los_vodafone]. No speed tests exist within 1 km, in this cell, or in neighbouring cells, and there are no earlier diagnoses nearby, so the causes cannot be separated at this point [speed_1km][speed_cell][speed_neighbours][prior_diagnoses]. Ofcom\u2019s area data shows 0.0% of land in South Holland and The Deepings has no outdoor 4G from any operator, but this is a predicted figure for the whole constituency, not this exact location [ofcom_area].",
+   "cited_evidence": [
+    "nearest_site",
+    "operators_5km",
+    "los_o2",
+    "los_ee",
+    "los_three",
+    "los_vodafone",
+    "speed_1km",
+    "speed_cell",
+    "speed_neighbours",
+    "prior_diagnoses",
+    "ofcom_area"
+   ],
+   "hypotheses": [
+    {
+     "id": "distance_to_mast",
+     "cause": "distance_to_mast",
+     "confidence": 0.55,
+     "status": "active",
+     "supporting": [
+      "nearest_site",
+      "operators_5km",
+      "los_vodafone"
+     ],
+     "contradicting": [
+      "los_o2",
+      "los_ee",
+      "los_three"
+     ],
+     "explanation": "The nearest confirmed mast is 4.8 km away and only O2 has sites within 5 km [nearest_site][operators_5km], while Vodafone is 9.5 km away with a small clearance margin [los_vodafone]. O2, EE and Three all have clear lines of sight [los_o2][los_ee][los_three], so distance alone is not certain.",
+     "history": [
+      {
+       "at": "2026-10-26T21:04:37.904Z",
+       "by": "diagnostician",
+       "confidence": 0.55,
+       "previous": null,
+       "reason": "proposed",
+       "round": 1
+      }
+     ]
+    },
+    {
+     "id": "insufficient_data",
+     "cause": "insufficient_data",
+     "confidence": 0.45,
+     "status": "active",
+     "supporting": [
+      "speed_1km",
+      "speed_cell",
+      "speed_neighbours",
+      "prior_diagnoses"
+     ],
+     "contradicting": [],
+     "explanation": "No speed tests exist within 1 km, in this cell, or in neighbouring cells [speed_1km][speed_cell][speed_neighbours], and there are no earlier diagnoses nearby [prior_diagnoses], so the causes cannot be separated at this point.",
+     "history": [
+      {
+       "at": "2026-10-26T21:04:37.922Z",
+       "by": "diagnostician",
+       "confidence": 0.45,
+       "previous": null,
+       "reason": "proposed",
+       "round": 1
+      }
+     ]
+    }
+   ],
+   "ruled_out": [],
+   "actions": [
+    {
+     "text": "Try O2 first as the likely best network.",
+     "audience": "resident"
+    },
+    {
+     "text": "Use Wi-Fi calling indoors if available.",
+     "audience": "resident"
+    },
+    {
+     "text": "Check the address on Ofcom\u2019s mobile coverage checker: https://www.ofcom.org.uk/mobile-coverage-checker",
+     "audience": "resident"
+    },
+    {
+     "text": "Emergency calls work on any available network.",
+     "audience": "resident"
+    }
+   ],
+   "best_network": {
+    "summary": "O2 is likely best, with a clear line of sight to a confirmed site 4.8 km west. EE and Three also have clear lines to sites 5.6 km east. Vodafone\u2019s site is 9.5 km away with a small clearance margin and is inferred rather than confirmed by Ofcom\u2019s licence register.",
+    "ranking": [
+     {
+      "operator": "O2",
+      "rank": 1,
+      "confidence": "high",
+      "why": "Clear line of sight; nearest confirmed site at 4.8 km west; confirmed by Ofcom\u2019s licence register [los_o2][nearest_site][operators_5km][network_comparison].",
+      "evidence": [
+       "los_o2",
+       "nearest_site",
+       "operators_5km",
+       "network_comparison"
+      ]
+     },
+     {
+      "operator": "EE",
+      "rank": 2,
+      "confidence": "high",
+      "why": "Clear line of sight; site 5.6 km east; confirmed by Ofcom\u2019s licence register [los_ee][network_comparison].",
+      "evidence": [
+       "los_ee",
+       "network_comparison"
+      ]
+     },
+     {
+      "operator": "Three",
+      "rank": 3,
+      "confidence": "high",
+      "why": "Clear line of sight; site 5.6 km east; confirmed by Ofcom\u2019s licence register [los_three][network_comparison].",
+      "evidence": [
+       "los_three",
+       "network_comparison"
+      ]
+     },
+     {
+      "operator": "Vodafone",
+      "rank": 4,
+      "confidence": "low",
+      "why": "Site 9.5 km south; terrain rises 5 m above the direct line 90 m from here, so signal is likely weakened; operator inferred from crowd-sourced data, not confirmed by Ofcom\u2019s licence register [los_vodafone][network_comparison].",
+      "evidence": [
+       "los_vodafone",
+       "network_comparison"
+      ]
+     }
+    ],
+    "rule_based": {
+     "reviewed_by_agents": false,
+     "label": "Based on data, not yet reviewed by agents",
+     "rule": "Operators ranked by line of sight from this point to their nearest identified site (clear, then marginal, then blocked); clear lines by distance, obstructed ones by how far the ground rises above the line.",
+     "operators": [
+      "O2",
+      "EE",
+      "Three"
+     ],
+     "line_of_sight": "clear",
+     "text": "Likely best network here: O2, with a clear line of sight to a site 4.8 km west (confirmed by Ofcom's licence register). Also a clear line: EE (5.6 km) and Three (5.6 km)."
+    },
+    "operators": [
+     {
+      "operator": "EE",
+      "site": {
+       "site_id": "S000310",
+       "lat": 52.7038354,
+       "lon": 0.1066527,
+       "distance_km": 5.58,
+       "bearing_deg": 86,
+       "direction": "east",
+       "sources": [
+        "Ofcom register",
+        "OpenStreetMap"
+       ]
+      },
+      "status": "confirmed",
+      "los": {
+       "class": "clear",
+       "blocked": false,
+       "obstruction_m": -1.5,
+       "obstruction_distance_m": 30,
+       "obstruction_lat": 52.700137,
+       "obstruction_lon": 0.024529,
+       "path_length_m": 5579,
+       "mast_height_m": 70,
+       "mast_height": "measured"
+      }
+     },
+     {
+      "operator": "O2",
+      "site": {
+       "site_id": "S091576",
+       "lat": 52.69961733514516,
+       "lon": -0.046631789478758526,
+       "distance_km": 4.77,
+       "bearing_deg": 269,
+       "direction": "west",
+       "sources": [
+        "Ofcom register"
+       ]
+      },
+      "status": "confirmed",
+      "los": {
+       "class": "clear",
+       "blocked": false,
+       "obstruction_m": -1.3,
+       "obstruction_distance_m": 60,
+       "obstruction_lat": 52.70011,
+       "obstruction_lon": 0.023195,
+       "path_length_m": 4765,
+       "mast_height_m": 18.5,
+       "mast_height": "measured"
+      }
+     },
+     {
+      "operator": "Three",
+      "site": {
+       "site_id": "S000310",
+       "lat": 52.7038354,
+       "lon": 0.1066527,
+       "distance_km": 5.58,
+       "bearing_deg": 86,
+       "direction": "east",
+       "sources": [
+        "Ofcom register",
+        "OpenStreetMap"
+       ]
+      },
+      "status": "confirmed",
+      "los": {
+       "class": "clear",
+       "blocked": false,
+       "obstruction_m": -1.5,
+       "obstruction_distance_m": 30,
+       "obstruction_lat": 52.700137,
+       "obstruction_lon": 0.024529,
+       "path_length_m": 5579,
+       "mast_height_m": 70,
+       "mast_height": "measured"
+      }
+     },
+     {
+      "operator": "Vodafone",
+      "site": {
+       "site_id": "S042990",
+       "lat": 52.6183,
+       "lon": -0.0154,
+       "distance_km": 9.48,
+       "bearing_deg": 196,
+       "direction": "south",
+       "sources": [
+        "crowd-sourced (OpenCelliD)"
+       ]
+      },
+      "status": "inferred",
+      "los": {
+       "class": "marginal",
+       "blocked": true,
+       "obstruction_m": 4.6,
+       "obstruction_distance_m": 90,
+       "obstruction_lat": 52.69934,
+       "obstruction_lon": 0.02371,
+       "path_length_m": 9479,
+       "mast_height_m": 25,
+       "mast_height": "assumed"
+      }
+     }
+    ]
+   },
+   "limitations": [
+    "Sites are approximate; antenna heights assumed; Ofcom figures are area-level.",
+    "Causes are inferred from public data, not confirmed: operators' network data is not public.",
+    "Ookla speeds are quarterly aggregates with no time-of-day detail; congestion can only be inferred.",
+    "No address-level Ofcom coverage; Ofcom figures are for the whole constituency and are predictions.",
+    "Mast sites are approximate (crowd-sourced OpenCelliD, OpenStreetMap, Ofcom's licence register) and incomplete, so 'no sites found' is weak evidence.",
+    "Line of sight uses a surface model (trees and buildings included) and mostly assumed antenna heights; blocked means a weaker signal, not no signal."
+   ],
+   "rounds": 1,
+   "status": "complete",
+   "run_id": "run_20261026210259_q6df",
+   "scope": "point",
+   "query": "Sutton St Edmund",
+   "audience": "resident",
+   "location": {
+    "label": "Sutton St Edmund",
+    "lat": 52.70011670054165,
+    "lon": 0.024084717819457868,
+    "postcode": "PE12 0LS",
+    "nearest_postcode": "PE12 0LS",
+    "admin_district": "South Holland",
+    "region": "East Midlands",
+    "country": "England",
+    "cell_id": "871943b9bffffff"
+   },
+   "critiques": [
+    {
+     "round": 1,
+     "target": "distance_to_mast",
+     "verdict": "approve",
+     "reason": "The nearest confirmed mast is 4.8 km away and only O2 has sites within 5 km [nearest_site][operators_5km], while Vodafone is 9.5 km away with a small clearance margin [los_vodafone]. O2, EE and Three all have clear lines of sight [los_o2][los_ee][los_three], so distance alone is not certain.",
+     "requested_checks": [],
+     "issues": null,
+     "suggested_confidence": null
+    },
+    {
+     "round": 1,
+     "target": "insufficient_data",
+     "verdict": "approve",
+     "reason": "No speed tests exist within 1 km, in this cell, or in neighbouring cells [speed_1km][speed_cell][speed_neighbours], and there are no earlier diagnoses nearby [prior_diagnoses], so the causes cannot be separated at this point.",
+     "requested_checks": [],
+     "issues": null,
+     "suggested_confidence": null
+    }
+   ],
+   "elapsed_s": 198
+  },
+  "counts": {
+   "run": 1,
+   "evidence": 15,
+   "note": 14,
+   "belief": 2,
+   "critique": 2,
+   "diagnosis": 1
+  }
+ },
+ "result": {
+  "headline": "The nearest confirmed mast is 4.8 km away and only O2 has sites within 5 km, while Vodafone is 9.5 km away with a small clearance margin, so distance and terrain are likely factors but not certain [nearest_site][operators_5km][los_vodafone].",
+  "explanation": "O2 has the closest confirmed mast at 4.8 km west with a clear line of sight [nearest_site][los_o2]. EE and Three also have clear lines of sight to sites 5.6 km east [los_ee][los_three]. Vodafone\u2019s nearest site is 9.5 km south, and terrain rises 5 m above the direct line 90 m from here, so the signal is likely weakened [los_vodafone]. No speed tests exist within 1 km, in this cell, or in neighbouring cells, and there are no earlier diagnoses nearby, so the causes cannot be separated at this point [speed_1km][speed_cell][speed_neighbours][prior_diagnoses]. Ofcom\u2019s area data shows 0.0% of land in South Holland and The Deepings has no outdoor 4G from any operator, but this is a predicted figure for the whole constituency, not this exact location [ofcom_area].",
+  "cited_evidence": [
+   "nearest_site",
+   "operators_5km",
+   "los_o2",
+   "los_ee",
+   "los_three",
+   "los_vodafone",
+   "speed_1km",
+   "speed_cell",
+   "speed_neighbours",
+   "prior_diagnoses",
+   "ofcom_area"
+  ],
+  "hypotheses": [
+   {
+    "id": "distance_to_mast",
+    "cause": "distance_to_mast",
+    "confidence": 0.55,
+    "status": "active",
+    "supporting": [
+     "nearest_site",
+     "operators_5km",
+     "los_vodafone"
+    ],
+    "contradicting": [
+     "los_o2",
+     "los_ee",
+     "los_three"
+    ],
+    "explanation": "The nearest confirmed mast is 4.8 km away and only O2 has sites within 5 km [nearest_site][operators_5km], while Vodafone is 9.5 km away with a small clearance margin [los_vodafone]. O2, EE and Three all have clear lines of sight [los_o2][los_ee][los_three], so distance alone is not certain.",
+    "history": [
+     {
+      "at": "2026-10-26T21:04:37.904Z",
+      "by": "diagnostician",
+      "confidence": 0.55,
+      "previous": null,
+      "reason": "proposed",
+      "round": 1
+     }
+    ]
+   },
+   {
+    "id": "insufficient_data",
+    "cause": "insufficient_data",
+    "confidence": 0.45,
+    "status": "active",
+    "supporting": [
+     "speed_1km",
+     "speed_cell",
+     "speed_neighbours",
+     "prior_diagnoses"
+    ],
+    "contradicting": [],
+    "explanation": "No speed tests exist within 1 km, in this cell, or in neighbouring cells [speed_1km][speed_cell][speed_neighbours], and there are no earlier diagnoses nearby [prior_diagnoses], so the causes cannot be separated at this point.",
+    "history": [
+     {
+      "at": "2026-10-26T21:04:37.922Z",
+      "by": "diagnostician",
+      "confidence": 0.45,
+      "previous": null,
+      "reason": "proposed",
+      "round": 1
+     }
+    ]
+   }
+  ],
+  "ruled_out": [],
+  "actions": [
+   {
+    "text": "Try O2 first as the likely best network.",
+    "audience": "resident"
+   },
+   {
+    "text": "Use Wi-Fi calling indoors if available.",
+    "audience": "resident"
+   },
+   {
+    "text": "Check the address on Ofcom\u2019s mobile coverage checker: https://www.ofcom.org.uk/mobile-coverage-checker",
+    "audience": "resident"
+   },
+   {
+    "text": "Emergency calls work on any available network.",
+    "audience": "resident"
+   }
+  ],
+  "best_network": {
+   "summary": "O2 is likely best, with a clear line of sight to a confirmed site 4.8 km west. EE and Three also have clear lines to sites 5.6 km east. Vodafone\u2019s site is 9.5 km away with a small clearance margin and is inferred rather than confirmed by Ofcom\u2019s licence register.",
+   "ranking": [
+    {
+     "operator": "O2",
+     "rank": 1,
+     "confidence": "high",
+     "why": "Clear line of sight; nearest confirmed site at 4.8 km west; confirmed by Ofcom\u2019s licence register [los_o2][nearest_site][operators_5km][network_comparison].",
+     "evidence": [
+      "los_o2",
+      "nearest_site",
+      "operators_5km",
+      "network_comparison"
+     ]
+    },
+    {
+     "operator": "EE",
+     "rank": 2,
+     "confidence": "high",
+     "why": "Clear line of sight; site 5.6 km east; confirmed by Ofcom\u2019s licence register [los_ee][network_comparison].",
+     "evidence": [
+      "los_ee",
+      "network_comparison"
+     ]
+    },
+    {
+     "operator": "Three",
+     "rank": 3,
+     "confidence": "high",
+     "why": "Clear line of sight; site 5.6 km east; confirmed by Ofcom\u2019s licence register [los_three][network_comparison].",
+     "evidence": [
+      "los_three",
+      "network_comparison"
+     ]
+    },
+    {
+     "operator": "Vodafone",
+     "rank": 4,
+     "confidence": "low",
+     "why": "Site 9.5 km south; terrain rises 5 m above the direct line 90 m from here, so signal is likely weakened; operator inferred from crowd-sourced data, not confirmed by Ofcom\u2019s licence register [los_vodafone][network_comparison].",
+     "evidence": [
+      "los_vodafone",
+      "network_comparison"
+     ]
+    }
+   ],
+   "rule_based": {
+    "reviewed_by_agents": false,
+    "label": "Based on data, not yet reviewed by agents",
+    "rule": "Operators ranked by line of sight from this point to their nearest identified site (clear, then marginal, then blocked); clear lines by distance, obstructed ones by how far the ground rises above the line.",
+    "operators": [
+     "O2",
+     "EE",
+     "Three"
+    ],
+    "line_of_sight": "clear",
+    "text": "Likely best network here: O2, with a clear line of sight to a site 4.8 km west (confirmed by Ofcom's licence register). Also a clear line: EE (5.6 km) and Three (5.6 km)."
+   },
+   "operators": [
+    {
+     "operator": "EE",
+     "site": {
+      "site_id": "S000310",
+      "lat": 52.7038354,
+      "lon": 0.1066527,
+      "distance_km": 5.58,
+      "bearing_deg": 86,
+      "direction": "east",
+      "sources": [
+       "Ofcom register",
+       "OpenStreetMap"
+      ]
+     },
+     "status": "confirmed",
+     "los": {
+      "class": "clear",
+      "blocked": false,
+      "obstruction_m": -1.5,
+      "obstruction_distance_m": 30,
+      "obstruction_lat": 52.700137,
+      "obstruction_lon": 0.024529,
+      "path_length_m": 5579,
+      "mast_height_m": 70,
+      "mast_height": "measured"
+     }
+    },
+    {
+     "operator": "O2",
+     "site": {
+      "site_id": "S091576",
+      "lat": 52.69961733514516,
+      "lon": -0.046631789478758526,
+      "distance_km": 4.77,
+      "bearing_deg": 269,
+      "direction": "west",
+      "sources": [
+       "Ofcom register"
+      ]
+     },
+     "status": "confirmed",
+     "los": {
+      "class": "clear",
+      "blocked": false,
+      "obstruction_m": -1.3,
+      "obstruction_distance_m": 60,
+      "obstruction_lat": 52.70011,
+      "obstruction_lon": 0.023195,
+      "path_length_m": 4765,
+      "mast_height_m": 18.5,
+      "mast_height": "measured"
+     }
+    },
+    {
+     "operator": "Three",
+     "site": {
+      "site_id": "S000310",
+      "lat": 52.7038354,
+      "lon": 0.1066527,
+      "distance_km": 5.58,
+      "bearing_deg": 86,
+      "direction": "east",
+      "sources": [
+       "Ofcom register",
+       "OpenStreetMap"
+      ]
+     },
+     "status": "confirmed",
+     "los": {
+      "class": "clear",
+      "blocked": false,
+      "obstruction_m": -1.5,
+      "obstruction_distance_m": 30,
+      "obstruction_lat": 52.700137,
+      "obstruction_lon": 0.024529,
+      "path_length_m": 5579,
+      "mast_height_m": 70,
+      "mast_height": "measured"
+     }
+    },
+    {
+     "operator": "Vodafone",
+     "site": {
+      "site_id": "S042990",
+      "lat": 52.6183,
+      "lon": -0.0154,
+      "distance_km": 9.48,
+      "bearing_deg": 196,
+      "direction": "south",
+      "sources": [
+       "crowd-sourced (OpenCelliD)"
+      ]
+     },
+     "status": "inferred",
+     "los": {
+      "class": "marginal",
+      "blocked": true,
+      "obstruction_m": 4.6,
+      "obstruction_distance_m": 90,
+      "obstruction_lat": 52.69934,
+      "obstruction_lon": 0.02371,
+      "path_length_m": 9479,
+      "mast_height_m": 25,
+      "mast_height": "assumed"
+     }
+    }
+   ]
+  },
+  "limitations": [
+   "Sites are approximate; antenna heights assumed; Ofcom figures are area-level.",
+   "Causes are inferred from public data, not confirmed: operators' network data is not public.",
+   "Ookla speeds are quarterly aggregates with no time-of-day detail; congestion can only be inferred.",
+   "No address-level Ofcom coverage; Ofcom figures are for the whole constituency and are predictions.",
+   "Mast sites are approximate (crowd-sourced OpenCelliD, OpenStreetMap, Ofcom's licence register) and incomplete, so 'no sites found' is weak evidence.",
+   "Line of sight uses a surface model (trees and buildings included) and mostly assumed antenna heights; blocked means a weaker signal, not no signal."
+  ],
+  "rounds": 1,
+  "status": "complete",
+  "run_id": "run_20261026210259_q6df",
+  "scope": "point",
+  "query": "Sutton St Edmund",
+  "audience": "resident",
+  "location": {
+   "label": "Sutton St Edmund",
+   "lat": 52.70011670054165,
+   "lon": 0.024084717819457868,
+   "postcode": "PE12 0LS",
+   "nearest_postcode": "PE12 0LS",
+   "admin_district": "South Holland",
+   "region": "East Midlands",
+   "country": "England",
+   "cell_id": "871943b9bffffff"
+  },
+  "critiques": [
+   {
+    "round": 1,
+    "target": "distance_to_mast",
+    "verdict": "approve",
+    "reason": "The nearest confirmed mast is 4.8 km away and only O2 has sites within 5 km [nearest_site][operators_5km], while Vodafone is 9.5 km away with a small clearance margin [los_vodafone]. O2, EE and Three all have clear lines of sight [los_o2][los_ee][los_three], so distance alone is not certain.",
+    "requested_checks": [],
+    "issues": null,
+    "suggested_confidence": null
+   },
+   {
+    "round": 1,
+    "target": "insufficient_data",
+    "verdict": "approve",
+    "reason": "No speed tests exist within 1 km, in this cell, or in neighbouring cells [speed_1km][speed_cell][speed_neighbours], and there are no earlier diagnoses nearby [prior_diagnoses], so the causes cannot be separated at this point.",
+    "requested_checks": [],
+    "issues": null,
+    "suggested_confidence": null
+   }
+  ],
+  "elapsed_s": 198
+ },
+ "audit": [
+  {
+   "seq": 140,
+   "at": "2026-10-26T21:02:59.276Z",
+   "action": "create",
+   "actor": "coordinator",
+   "kind": "run",
+   "ref": "run_20261026210259_q6df",
+   "memory_id": "mem-136",
+   "summary": "Diagnosis run (point) for Sutton St Edmund",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "scope": "point",
+    "query": "Sutton St Edmund",
+    "label": "Sutton St Edmund",
+    "location": {
+     "lat": 52.70011670054165,
+     "lon": 0.024084717819457868
+    },
+    "status": "complete",
+    "progress": [
+     {
+      "at": "2026-10-26T21:02:59.425Z",
+      "agent": "coordinator",
+      "round": 1,
+      "kind": "tool",
+      "label": "prior_diagnoses_nearby()",
+      "status": "done",
+      "summary": "prior_diagnoses_nearby() -> prior_diagnoses",
+      "duration_ms": 60
+     },
+     {
+      "at": "2026-10-26T21:02:59.449Z",
+      "agent": "coordinator",
+      "round": 1,
+      "kind": "phase",
+      "label": "round 1",
+      "status": "done",
+      "summary": "round 1",
+      "duration_ms": 0
+     },
+     {
+      "at": "2026-10-26T21:03:01.132Z",
+      "agent": "investigator",
+      "round": 1,
+      "kind": "llm",
+      "label": "investigator",
+      "status": "done",
+      "summary": "nemotron-3.5-super-vl-120b-a12b, 1.6s",
+      "duration_ms": 1563
+     },
+     {
+      "at": "2026-10-26T21:03:02.186Z",
+      "agent": "investigator",
+      "round": 1,
+      "kind": "tool",
+      "label": "speeds_near()",
+      "status": "done",
+      "summary": "speeds_near() -> speed_1km, speed_cell, speed_neighbours",
+      "duration_ms": 1012
+     },
+     {
+      "at": "2026-10-26T21:03:02.565Z",
+      "agent": "investigator",
+      "round": 1,
+      "kind": "tool",
+      "label": "sites_near()",
+      "status": "done",
+      "summary": "sites_near() -> nearest_site, operators_5km",
+      "duration_ms": 353
+     },
+     {
+      "at": "2026-10-26T21:03:02.957Z",
+      "agent": "investigator",
+      "round": 1,
+      "kind": "tool",
+      "label": "line_of_sight(EE)",
+      "status": "done",
+      "summary": "line_of_sight(EE) -> los_ee",
+      "duration_ms": 369
+     },
+     {
+      "at": "2026-10-26T21:03:03.340Z",
+      "agent": "investigator",
+      "round": 1,
+      "kind": "tool",
+      "label": "line_of_sight(O2)",
+      "status": "done",
+      "summary": "line_of_sight(O2) -> los_o2",
+      "duration_ms": 344
+     },
+     {
+      "at": "2026-10-26T21:03:03.424Z",
+      "agent": "investigator",
+      "round": 1,
+      "kind": "tool",
+      "label": "line_of_sight(Three)",
+      "status": "done",
+      "summary": "line_of_sight(Three) -> los_three",
+      "duration_ms": 59
+     },
+     {
+      "at": "2026-10-26T21:03:03.525Z",
+      "agent": "investigator",
+      "round": 1,
+      "kind": "tool",
+      "label": "line_of_sight(Vodafone)",
+      "status": "done",
+      "summary": "line_of_sight(Vodafone) -> los_vodafone",
+      "duration_ms": 66
+     },
+     {
+      "at": "2026-10-26T21:03:03.618Z",
+      "agent": "investigator",
+      "round": 1,
+      "kind": "tool",
+      "label": "ofcom_area()",
+      "status": "done",
+      "summary": "ofcom_area() -> ofcom_area",
+      "duration_ms": 64
+     },
+     {
+      "at": "2026-10-26T21:03:04.763Z",
+      "agent": "investigator",
+      "round": 1,
+      "kind": "tool",
+      "label": "live_conditions()",
+      "status": "done",
+      "summary": "live_conditions() -> weather, met_office_warnings, flood_warnings",
+      "duration_ms": 1116
+     },
+     {
+      "at": "2026-10-26T21:04:37.855Z",
+      "agent": "diagnostician",
+      "round": 1,
+      "kind": "llm",
+      "label": "diagnostician thinking",
+      "status": "done",
+      "summary": "nemotron-3.5-super-vl-120b-a12b, 2.8s, 2 retries, model switched",
+      "duration_ms": 92984
+     },
+     {
+      "at": "2026-10-26T21:06:10.222Z",
+      "agent": "critic",
+      "round": 1,
+      "kind": "llm",
+      "label": "critic thinking",
+      "status": "done",
+      "summary": "nemotron-3.5-super-vl-120b-a12b, 2.0s, 2 retries, model switched",
+      "duration_ms": 92211
+     },
+     {
+      "at": "2026-10-26T21:06:16.976Z",
+      "agent": "advisor",
+      "round": 0,
+      "kind": "llm",
+      "label": "advisor",
+      "status": "done",
+      "summary": "nemotron-3.5-super-vl-120b-a12b, 6.3s",
+      "duration_ms": 6272
+     }
+    ],
+    "created": "2026-10-26T21:02:59.276Z",
+    "by": "coordinator",
+    "kind": "run",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "run_20261026210259_q6df",
+    "result": {
+     "headline": "The nearest confirmed mast is 4.8 km away and only O2 has sites within 5 km, while Vodafone is 9.5 km away with a small clearance margin, so distance and terrain are likely factors but not certain [nearest_site][operators_5km][los_vodafone].",
+     "explanation": "O2 has the closest confirmed mast at 4.8 km west with a clear line of sight [nearest_site][los_o2]. EE and Three also have clear lines of sight to sites 5.6 km east [los_ee][los_three]. Vodafone\u2019s nearest site is 9.5 km south, and terrain rises 5 m above the direct line 90 m from here, so the signal is likely weakened [los_vodafone]. No speed tests exist within 1 km, in this cell, or in neighbouring cells, and there are no earlier diagnoses nearby, so the causes cannot be separated at this point [speed_1km][speed_cell][speed_neighbours][prior_diagnoses]. Ofcom\u2019s area data shows 0.0% of land in South Holland and The Deepings has no outdoor 4G from any operator, but this is a predicted figure for the whole constituency, not this exact location [ofcom_area].",
+     "cited_evidence": [
+      "nearest_site",
+      "operators_5km",
+      "los_o2",
+      "los_ee",
+      "los_three",
+      "los_vodafone",
+      "speed_1km",
+      "speed_cell",
+      "speed_neighbours",
+      "prior_diagnoses",
+      "ofcom_area"
+     ],
+     "hypotheses": [
+      {
+       "id": "distance_to_mast",
+       "cause": "distance_to_mast",
+       "confidence": 0.55,
+       "status": "active",
+       "supporting": [
+        "nearest_site",
+        "operators_5km",
+        "los_vodafone"
+       ],
+       "contradicting": [
+        "los_o2",
+        "los_ee",
+        "los_three"
+       ],
+       "explanation": "The nearest confirmed mast is 4.8 km away and only O2 has sites within 5 km [nearest_site][operators_5km], while Vodafone is 9.5 km away with a small clearance margin [los_vodafone]. O2, EE and Three all have clear lines of sight [los_o2][los_ee][los_three], so distance alone is not certain.",
+       "history": [
+        {
+         "at": "2026-10-26T21:04:37.904Z",
+         "by": "diagnostician",
+         "confidence": 0.55,
+         "previous": null,
+         "reason": "proposed",
+         "round": 1
+        }
+       ]
+      },
+      {
+       "id": "insufficient_data",
+       "cause": "insufficient_data",
+       "confidence": 0.45,
+       "status": "active",
+       "supporting": [
+        "speed_1km",
+        "speed_cell",
+        "speed_neighbours",
+        "prior_diagnoses"
+       ],
+       "contradicting": [],
+       "explanation": "No speed tests exist within 1 km, in this cell, or in neighbouring cells [speed_1km][speed_cell][speed_neighbours], and there are no earlier diagnoses nearby [prior_diagnoses], so the causes cannot be separated at this point.",
+       "history": [
+        {
+         "at": "2026-10-26T21:04:37.922Z",
+         "by": "diagnostician",
+         "confidence": 0.45,
+         "previous": null,
+         "reason": "proposed",
+         "round": 1
+        }
+       ]
+      }
+     ],
+     "ruled_out": [],
+     "actions": [
+      {
+       "text": "Try O2 first as the likely best network.",
+       "audience": "resident"
+      },
+      {
+       "text": "Use Wi-Fi calling indoors if available.",
+       "audience": "resident"
+      },
+      {
+       "text": "Check the address on Ofcom\u2019s mobile coverage checker: https://www.ofcom.org.uk/mobile-coverage-checker",
+       "audience": "resident"
+      },
+      {
+       "text": "Emergency calls work on any available network.",
+       "audience": "resident"
+      }
+     ],
+     "best_network": {
+      "summary": "O2 is likely best, with a clear line of sight to a confirmed site 4.8 km west. EE and Three also have clear lines to sites 5.6 km east. Vodafone\u2019s site is 9.5 km away with a small clearance margin and is inferred rather than confirmed by Ofcom\u2019s licence register.",
+      "ranking": [
+       {
+        "operator": "O2",
+        "rank": 1,
+        "confidence": "high",
+        "why": "Clear line of sight; nearest confirmed site at 4.8 km west; confirmed by Ofcom\u2019s licence register [los_o2][nearest_site][operators_5km][network_comparison].",
+        "evidence": [
+         "los_o2",
+         "nearest_site",
+         "operators_5km",
+         "network_comparison"
+        ]
+       },
+       {
+        "operator": "EE",
+        "rank": 2,
+        "confidence": "high",
+        "why": "Clear line of sight; site 5.6 km east; confirmed by Ofcom\u2019s licence register [los_ee][network_comparison].",
+        "evidence": [
+         "los_ee",
+         "network_comparison"
+        ]
+       },
+       {
+        "operator": "Three",
+        "rank": 3,
+        "confidence": "high",
+        "why": "Clear line of sight; site 5.6 km east; confirmed by Ofcom\u2019s licence register [los_three][network_comparison].",
+        "evidence": [
+         "los_three",
+         "network_comparison"
+        ]
+       },
+       {
+        "operator": "Vodafone",
+        "rank": 4,
+        "confidence": "low",
+        "why": "Site 9.5 km south; terrain rises 5 m above the direct line 90 m from here, so signal is likely weakened; operator inferred from crowd-sourced data, not confirmed by Ofcom\u2019s licence register [los_vodafone][network_comparison].",
+        "evidence": [
+         "los_vodafone",
+         "network_comparison"
+        ]
+       }
+      ],
+      "rule_based": {
+       "reviewed_by_agents": false,
+       "label": "Based on data, not yet reviewed by agents",
+       "rule": "Operators ranked by line of sight from this point to their nearest identified site (clear, then marginal, then blocked); clear lines by distance, obstructed ones by how far the ground rises above the line.",
+       "operators": [
+        "O2",
+        "EE",
+        "Three"
+       ],
+       "line_of_sight": "clear",
+       "text": "Likely best network here: O2, with a clear line of sight to a site 4.8 km west (confirmed by Ofcom's licence register). Also a clear line: EE (5.6 km) and Three (5.6 km)."
+      },
+      "operators": [
+       {
+        "operator": "EE",
+        "site": {
+         "site_id": "S000310",
+         "lat": 52.7038354,
+         "lon": 0.1066527,
+         "distance_km": 5.58,
+         "bearing_deg": 86,
+         "direction": "east",
+         "sources": [
+          "Ofcom register",
+          "OpenStreetMap"
+         ]
+        },
+        "status": "confirmed",
+        "los": {
+         "class": "clear",
+         "blocked": false,
+         "obstruction_m": -1.5,
+         "obstruction_distance_m": 30,
+         "obstruction_lat": 52.700137,
+         "obstruction_lon": 0.024529,
+         "path_length_m": 5579,
+         "mast_height_m": 70,
+         "mast_height": "measured"
+        }
+       },
+       {
+        "operator": "O2",
+        "site": {
+         "site_id": "S091576",
+         "lat": 52.69961733514516,
+         "lon": -0.046631789478758526,
+         "distance_km": 4.77,
+         "bearing_deg": 269,
+         "direction": "west",
+         "sources": [
+          "Ofcom register"
+         ]
+        },
+        "status": "confirmed",
+        "los": {
+         "class": "clear",
+         "blocked": false,
+         "obstruction_m": -1.3,
+         "obstruction_distance_m": 60,
+         "obstruction_lat": 52.70011,
+         "obstruction_lon": 0.023195,
+         "path_length_m": 4765,
+         "mast_height_m": 18.5,
+         "mast_height": "measured"
+        }
+       },
+       {
+        "operator": "Three",
+        "site": {
+         "site_id": "S000310",
+         "lat": 52.7038354,
+         "lon": 0.1066527,
+         "distance_km": 5.58,
+         "bearing_deg": 86,
+         "direction": "east",
+         "sources": [
+          "Ofcom register",
+          "OpenStreetMap"
+         ]
+        },
+        "status": "confirmed",
+        "los": {
+         "class": "clear",
+         "blocked": false,
+         "obstruction_m": -1.5,
+         "obstruction_distance_m": 30,
+         "obstruction_lat": 52.700137,
+         "obstruction_lon": 0.024529,
+         "path_length_m": 5579,
+         "mast_height_m": 70,
+         "mast_height": "measured"
+        }
+       },
+       {
+        "operator": "Vodafone",
+        "site": {
+         "site_id": "S042990",
+         "lat": 52.6183,
+         "lon": -0.0154,
+         "distance_km": 9.48,
+         "bearing_deg": 196,
+         "direction": "south",
+         "sources": [
+          "crowd-sourced (OpenCelliD)"
+         ]
+        },
+        "status": "inferred",
+        "los": {
+         "class": "marginal",
+         "blocked": true,
+         "obstruction_m": 4.6,
+         "obstruction_distance_m": 90,
+         "obstruction_lat": 52.69934,
+         "obstruction_lon": 0.02371,
+         "path_length_m": 9479,
+         "mast_height_m": 25,
+         "mast_height": "assumed"
+        }
+       }
+      ]
+     },
+     "limitations": [
+      "Sites are approximate; antenna heights assumed; Ofcom figures are area-level.",
+      "Causes are inferred from public data, not confirmed: operators' network data is not public.",
+      "Ookla speeds are quarterly aggregates with no time-of-day detail; congestion can only be inferred.",
+      "No address-level Ofcom coverage; Ofcom figures are for the whole constituency and are predictions.",
+      "Mast sites are approximate (crowd-sourced OpenCelliD, OpenStreetMap, Ofcom's licence register) and incomplete, so 'no sites found' is weak evidence.",
+      "Line of sight uses a surface model (trees and buildings included) and mostly assumed antenna heights; blocked means a weaker signal, not no signal."
+     ],
+     "rounds": 1,
+     "status": "complete",
+     "run_id": "run_20261026210259_q6df",
+     "scope": "point",
+     "query": "Sutton St Edmund",
+     "audience": "resident",
+     "location": {
+      "label": "Sutton St Edmund",
+      "lat": 52.70011670054165,
+      "lon": 0.024084717819457868,
+      "postcode": "PE12 0LS",
+      "nearest_postcode": "PE12 0LS",
+      "admin_district": "South Holland",
+      "region": "East Midlands",
+      "country": "England",
+      "cell_id": "871943b9bffffff"
+     },
+     "critiques": [
+      {
+       "round": 1,
+       "target": "distance_to_mast",
+       "verdict": "approve",
+       "reason": "The nearest confirmed mast is 4.8 km away and only O2 has sites within 5 km [nearest_site][operators_5km], while Vodafone is 9.5 km away with a small clearance margin [los_vodafone]. O2, EE and Three all have clear lines of sight [los_o2][los_ee][los_three], so distance alone is not certain.",
+       "requested_checks": [],
+       "issues": null,
+       "suggested_confidence": null
+      },
+      {
+       "round": 1,
+       "target": "insufficient_data",
+       "verdict": "approve",
+       "reason": "No speed tests exist within 1 km, in this cell, or in neighbouring cells [speed_1km][speed_cell][speed_neighbours], and there are no earlier diagnoses nearby [prior_diagnoses], so the causes cannot be separated at this point.",
+       "requested_checks": [],
+       "issues": null,
+       "suggested_confidence": null
+      }
+     ],
+     "elapsed_s": 198
+    }
+   }
+  },
+  {
+   "seq": 141,
+   "at": "2026-10-26T21:02:59.372Z",
+   "action": "create",
+   "actor": "coordinator",
+   "kind": "evidence",
+   "ref": "prior_diagnoses",
+   "memory_id": "mem-137",
+   "round": 1,
+   "summary": "No earlier diagnoses within 10 km in Meterless.",
+   "old_confidence": null,
+   "new_confidence": 0.4,
+   "reason": null,
+   "payload": {
+    "id": "prior_diagnoses",
+    "source": "Meterless H-MEM (earlier diagnoses)",
+    "data_period": "Meterless H-MEM (earlier runs)",
+    "as_of": "2026-10-26T21:02:59+00:00",
+    "query_or_url": "meterless:/diagnoses/near",
+    "cell_ids": [
+     "871943b9bffffff"
+    ],
+    "finding": "No earlier diagnoses within 10 km in Meterless.",
+    "value": [],
+    "sample_size": {
+     "diagnoses": 0
+    },
+    "strength": "weak",
+    "bears_on": [],
+    "evidence_id": "prior_diagnoses",
+    "tool": "prior_diagnoses_nearby",
+    "round": 1,
+    "zetaris": [],
+    "by": "coordinator",
+    "kind": "evidence",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "prior_diagnoses"
+   }
+  },
+  {
+   "seq": 142,
+   "at": "2026-10-26T21:02:59.398Z",
+   "action": "create",
+   "actor": "coordinator",
+   "kind": "note",
+   "ref": "n1",
+   "memory_id": "mem-138",
+   "round": 1,
+   "summary": "prior_diagnoses_nearby() -> prior_diagnoses",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "tool_call",
+    "summary": "prior_diagnoses_nearby() -> prior_diagnoses",
+    "by": "coordinator",
+    "tool": "prior_diagnoses_nearby",
+    "args": {},
+    "round": 1,
+    "evidence_ids": [
+     "prior_diagnoses"
+    ],
+    "new": [
+     "prior_diagnoses"
+    ],
+    "duration_ms": 33,
+    "zetaris_queries": [],
+    "note_id": "n1",
+    "kind": "note",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "n1"
+   }
+  },
+  {
+   "seq": 143,
+   "at": "2026-10-26T21:02:59.485Z",
+   "action": "create",
+   "actor": "coordinator",
+   "kind": "note",
+   "ref": "n2",
+   "memory_id": "mem-139",
+   "round": 1,
+   "summary": "round 1 starts",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "round",
+    "summary": "round 1 starts",
+    "by": "coordinator",
+    "round": 1,
+    "requested": [],
+    "note_id": "n2",
+    "kind": "note",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "n2"
+   }
+  },
+  {
+   "seq": 144,
+   "at": "2026-10-26T21:03:01.155Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "note",
+   "ref": "n3",
+   "memory_id": "mem-140",
+   "round": 1,
+   "summary": "investigator via nemotron-3.5-super-vl-120b-a12b in 1.6s",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "llm_call",
+    "summary": "investigator via nemotron-3.5-super-vl-120b-a12b in 1.6s",
+    "by": "investigator",
+    "round": 1,
+    "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+    "duration_ms": 1562,
+    "tokens": {
+     "prompt_tokens": 914,
+     "completion_tokens": 163,
+     "total_tokens": 1077,
+     "prompt_tokens_details": {
+      "audio_tokens": null,
+      "cached_tokens": 0
+     },
+     "completion_tokens_details": {
+      "accepted_prediction_tokens": null,
+      "audio_tokens": null,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": null
+     }
+    },
+    "attempts": 1,
+    "retries": [],
+    "fallback": null,
+    "thinking": false,
+    "note_id": "n3",
+    "kind": "note",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "n3"
+   }
+  },
+  {
+   "seq": 145,
+   "at": "2026-10-26T21:03:02.069Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "evidence",
+   "ref": "speed_1km",
+   "memory_id": "mem-141",
+   "round": 1,
+   "summary": "No Ookla speed tests were recorded within 1 km of this point in 2026Q3.",
+   "old_confidence": null,
+   "new_confidence": 0.4,
+   "reason": null,
+   "payload": {
+    "id": "speed_1km",
+    "source": "Ookla open data tiles (Zetaris CD_OOKLA_MOBILE_TILES)",
+    "data_period": "2026Q3",
+    "as_of": "2026-10-23",
+    "query_or_url": "zetaris:Q4",
+    "cell_ids": [
+     "871943b9bffffff"
+    ],
+    "finding": "No Ookla speed tests were recorded within 1 km of this point in 2026Q3.",
+    "value": {
+     "tiles": [],
+     "quarter": "2026Q3",
+     "radius_km": 1
+    },
+    "sample_size": {
+     "tests": 0,
+     "tiles": 0
+    },
+    "strength": "weak",
+    "bears_on": [
+     "insufficient_data"
+    ],
+    "evidence_id": "speed_1km",
+    "tool": "speeds_near",
+    "round": 1,
+    "zetaris": [
+     {
+      "id": "Q4",
+      "sql": "SELECT quadkey, lat, lon, download_mbps, upload_mbps, latency_ms, tests, devices, distance_km FROM ( SELECT t.*, 2 * 6371 * asin(sqrt(pow(sin(radians(t.lat - 52.70011670054165) / 2), 2) + cos(radians(52.70011670054165)) * cos(radians(t.lat)) * pow(sin(radians(t.lon - (0.024084717819457868)) / 2), 2))) AS distance_km FROM CD_OOKLA_MOBILE_TILES.ookla_mobile_tiles t WHERE t.quarter = '2026Q3' AND t.lat BETWEEN 52.68210 AND 52.71813 AND t.lon BETWEEN -0.00556 AND 0.05373 ) x WHERE distance_km <= 2.0 ORDER BY distance_km",
+      "duration_ms": 324,
+      "rows": 0
+     }
+    ],
+    "by": "investigator",
+    "kind": "evidence",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "speed_1km"
+   }
+  },
+  {
+   "seq": 146,
+   "at": "2026-10-26T21:03:02.098Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "evidence",
+   "ref": "speed_cell",
+   "memory_id": "mem-142",
+   "round": 1,
+   "summary": "No Ookla speed tests were recorded in this cell in 2026Q3, so there is no measured speed here.",
+   "old_confidence": null,
+   "new_confidence": 0.4,
+   "reason": null,
+   "payload": {
+    "id": "speed_cell",
+    "source": "Ookla open data (Zetaris CD_OOKLA_MOBILE)",
+    "data_period": "2026Q3",
+    "as_of": "2026-10-23",
+    "query_or_url": "zetaris:Q1",
+    "cell_ids": [
+     "871943b9bffffff"
+    ],
+    "finding": "No Ookla speed tests were recorded in this cell in 2026Q3, so there is no measured speed here.",
+    "value": null,
+    "sample_size": {
+     "tests": 0
+    },
+    "strength": "weak",
+    "bears_on": [
+     "insufficient_data"
+    ],
+    "evidence_id": "speed_cell",
+    "tool": "speeds_near",
+    "round": 1,
+    "zetaris": [
+     {
+      "id": "Q1",
+      "sql": "SELECT c.cell_id, c.lat, c.lon, c.population, c.nation, o.quarter, o.download_mbps, o.upload_mbps, o.latency_ms, o.tests, o.devices, o.tests_per_1k_pop, o.devices_per_1k_pop, o.quarters_with_data, o.download_mbps_oldest, o.download_change_pct, o.download_trend_mbps_per_quarter, hst.history_json, nb.neighbour_download_mbps, nb.neighbour_tests, nb.neighbour_cells_with_data, m.nearest_mast_km, m.nearest_mast_bearing_deg, m.nearest_mast_id, m.nearest_mast_lat, m.nearest_mast_lon, m.nearest_mast_sources, m.nearest_mast_operators, m.nearest_mast_operators_confirmed, m.nearest_mast_antenna_height_m, m.masts_within_5km, m.masts_known_operator_within_5km, m.masts_unknown_operator_within_5km, m.masts_osm_only_within_5km, m.distinct_operators_within_5km, m.operators_within_5km, m.operators_confirmed_within_5km, m.wtr_sites_within_5km, m.microwave_backhaul_sites_within_5km, m.operator_data_status, a.pcon_code, a.pcon_name, a.laua_code, a.laua_name, a.g4_geo_out_0, a.g4_geo_out_1, a.g4_prem_out_0, a.g4_prem_in_0, a.g4_abrd_in_0, a.g5hc_prem_out_at_least_one, a.laua_g4_geo_out_0, a.laua_g4_geo_out_1, a.data_date AS ofcom_data_date, t.elevation_mean_m, t.elevation_range_m, l.blocked AS los_blocked, l.obstruction_m AS los_obstruction_m, l.los_class FROM CD_CELLS.cells_r7 c LEFT JOIN CD_OOKLA_MOBILE.ookla_mobile_r7 o ON o.cell_id = c.cell_id LEFT JOIN ( SELECT cell_id, to_json(collect_list(named_struct('quarter', quarter, 'download_mbps', download_mbps, 'tests', tests))) AS history_json FROM CD_OOKLA_MOBILE_HISTORY.ookla_mobile_history_r7 WHERE cell_id = '871943b9bffffff' GROUP BY cell_id ) hst ON hst.cell_id = c.cell_id CROSS JOIN ( SELECT sum(download_mbps * tests) / sum(tests) AS neighbour_download_mbps, sum(tests) AS neighbour_tests, count(*) AS neighbour_cells_with_data FROM CD_OOKLA_MOBILE.ookla_mobile_r7 WHERE cell_id IN ('871943aa6ffffff', '871943ab4ffffff', '871943ab5ffffff', '871943b98ffffff', '871943b99ffffff', '871943b9affffff') ) nb LEFT JOIN CD_MASTS.masts_r7 m ON m.cell_id = c.cell_id LEFT JOIN CD_OFCOM_AREA.ofcom_area_r7 a ON a.cell_id = c.cell_id LEFT JOIN CD_TERRAIN.terrain_r7 t ON t.cell_id = c.cell_id LEFT JOIN CD_LOS.los_r7 l ON l.cell_id = c.cell_id WHERE c.cell_id = '871943b9bffffff'",
+      "duration_ms": 559,
+      "rows": 1
+     }
+    ],
+    "by": "investigator",
+    "kind": "evidence",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "speed_cell"
+   }
+  },
+  {
+   "seq": 147,
+   "at": "2026-10-26T21:03:02.135Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "evidence",
+   "ref": "speed_neighbours",
+   "memory_id": "mem-143",
+   "round": 1,
+   "summary": "None of the 6 neighbouring cells had Ookla speed tests in 2026Q3.",
+   "old_confidence": null,
+   "new_confidence": 0.4,
+   "reason": null,
+   "payload": {
+    "id": "speed_neighbours",
+    "source": "Ookla open data (Zetaris CD_OOKLA_MOBILE)",
+    "data_period": "2026Q3",
+    "as_of": "2026-10-23",
+    "query_or_url": "zetaris:Q1",
+    "cell_ids": [
+     "871943aa6ffffff",
+     "871943ab4ffffff",
+     "871943ab5ffffff",
+     "871943b98ffffff",
+     "871943b99ffffff",
+     "871943b9affffff"
+    ],
+    "finding": "None of the 6 neighbouring cells had Ookla speed tests in 2026Q3.",
+    "value": null,
+    "sample_size": {
+     "tests": 0
+    },
+    "strength": "weak",
+    "bears_on": [
+     "insufficient_data"
+    ],
+    "evidence_id": "speed_neighbours",
+    "tool": "speeds_near",
+    "round": 1,
+    "zetaris": [
+     {
+      "id": "Q1",
+      "sql": "SELECT c.cell_id, c.lat, c.lon, c.population, c.nation, o.quarter, o.download_mbps, o.upload_mbps, o.latency_ms, o.tests, o.devices, o.tests_per_1k_pop, o.devices_per_1k_pop, o.quarters_with_data, o.download_mbps_oldest, o.download_change_pct, o.download_trend_mbps_per_quarter, hst.history_json, nb.neighbour_download_mbps, nb.neighbour_tests, nb.neighbour_cells_with_data, m.nearest_mast_km, m.nearest_mast_bearing_deg, m.nearest_mast_id, m.nearest_mast_lat, m.nearest_mast_lon, m.nearest_mast_sources, m.nearest_mast_operators, m.nearest_mast_operators_confirmed, m.nearest_mast_antenna_height_m, m.masts_within_5km, m.masts_known_operator_within_5km, m.masts_unknown_operator_within_5km, m.masts_osm_only_within_5km, m.distinct_operators_within_5km, m.operators_within_5km, m.operators_confirmed_within_5km, m.wtr_sites_within_5km, m.microwave_backhaul_sites_within_5km, m.operator_data_status, a.pcon_code, a.pcon_name, a.laua_code, a.laua_name, a.g4_geo_out_0, a.g4_geo_out_1, a.g4_prem_out_0, a.g4_prem_in_0, a.g4_abrd_in_0, a.g5hc_prem_out_at_least_one, a.laua_g4_geo_out_0, a.laua_g4_geo_out_1, a.data_date AS ofcom_data_date, t.elevation_mean_m, t.elevation_range_m, l.blocked AS los_blocked, l.obstruction_m AS los_obstruction_m, l.los_class FROM CD_CELLS.cells_r7 c LEFT JOIN CD_OOKLA_MOBILE.ookla_mobile_r7 o ON o.cell_id = c.cell_id LEFT JOIN ( SELECT cell_id, to_json(collect_list(named_struct('quarter', quarter, 'download_mbps', download_mbps, 'tests', tests))) AS history_json FROM CD_OOKLA_MOBILE_HISTORY.ookla_mobile_history_r7 WHERE cell_id = '871943b9bffffff' GROUP BY cell_id ) hst ON hst.cell_id = c.cell_id CROSS JOIN ( SELECT sum(download_mbps * tests) / sum(tests) AS neighbour_download_mbps, sum(tests) AS neighbour_tests, count(*) AS neighbour_cells_with_data FROM CD_OOKLA_MOBILE.ookla_mobile_r7 WHERE cell_id IN ('871943aa6ffffff', '871943ab4ffffff', '871943ab5ffffff', '871943b98ffffff', '871943b99ffffff', '871943b9affffff') ) nb LEFT JOIN CD_MASTS.masts_r7 m ON m.cell_id = c.cell_id LEFT JOIN CD_OFCOM_AREA.ofcom_area_r7 a ON a.cell_id = c.cell_id LEFT JOIN CD_TERRAIN.terrain_r7 t ON t.cell_id = c.cell_id LEFT JOIN CD_LOS.los_r7 l ON l.cell_id = c.cell_id WHERE c.cell_id = '871943b9bffffff'",
+      "duration_ms": 559,
+      "rows": 1
+     }
+    ],
+    "by": "investigator",
+    "kind": "evidence",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "speed_neighbours"
+   }
+  },
+  {
+   "seq": 148,
+   "at": "2026-10-26T21:03:02.166Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "note",
+   "ref": "n4",
+   "memory_id": "mem-144",
+   "round": 1,
+   "summary": "speeds_near() -> speed_1km, speed_cell, speed_neighbours",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "tool_call",
+    "summary": "speeds_near() -> speed_1km, speed_cell, speed_neighbours",
+    "by": "investigator",
+    "tool": "speeds_near",
+    "args": {},
+    "round": 1,
+    "evidence_ids": [
+     "speed_1km",
+     "speed_cell",
+     "speed_neighbours"
+    ],
+    "new": [
+     "speed_1km",
+     "speed_cell",
+     "speed_neighbours"
+    ],
+    "duration_ms": 981,
+    "zetaris_queries": [
+     {
+      "id": "Q4",
+      "duration_ms": 324,
+      "rows": 0
+     },
+     {
+      "id": "Q1",
+      "duration_ms": 559,
+      "rows": 1
+     },
+     {
+      "id": "Q3",
+      "duration_ms": 131,
+      "rows": 1
+     }
+    ],
+    "note_id": "n4",
+    "kind": "note",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "n4"
+   }
+  },
+  {
+   "seq": 149,
+   "at": "2026-10-26T21:03:02.484Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "evidence",
+   "ref": "nearest_site",
+   "memory_id": "mem-145",
+   "round": 1,
+   "summary": "The nearest approximate mast site is 4.8 km west (Ofcom licence register; operator O2, confirmed by Ofcom's licence register).",
+   "old_confidence": null,
+   "new_confidence": 0.7,
+   "reason": null,
+   "payload": {
+    "id": "nearest_site",
+    "source": "Approximate mast sites (Zetaris CD_MASTS_SITES)",
+    "data_period": "OpenCelliD downloaded 2026-10-25; OpenStreetMap extract downloaded 2026-10-25; Ofcom WTR downloaded 2026-10-25",
+    "as_of": "2026-10-25",
+    "query_or_url": "zetaris:Q2",
+    "cell_ids": [
+     "871943b9bffffff"
+    ],
+    "finding": "The nearest approximate mast site is 4.8 km west (Ofcom licence register; operator O2, confirmed by Ofcom's licence register).",
+    "value": {
+     "site_id": "S091576",
+     "distance_km": 4.77,
+     "bearing_deg": 269,
+     "operators": [
+      "O2"
+     ],
+     "operators_confirmed": [
+      "O2"
+     ],
+     "sources": "ofcom_wtr"
+    },
+    "sample_size": {
+     "sites_within_10km": 30
+    },
+    "strength": "moderate",
+    "bears_on": [
+     "distance_to_mast"
+    ],
+    "evidence_id": "nearest_site",
+    "tool": "sites_near",
+    "round": 1,
+    "zetaris": [
+     {
+      "id": "Q2",
+      "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 52.70011670054165) / 2), 2) + cos(radians(52.70011670054165)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (0.024084717819457868)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 52.61003 AND 52.79021 AND s.lon BETWEEN -0.12415 AND 0.17232 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
+      "duration_ms": 275,
+      "rows": 30
+     }
+    ],
+    "by": "investigator",
+    "kind": "evidence",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "nearest_site"
+   }
+  },
+  {
+   "seq": 150,
+   "at": "2026-10-26T21:03:02.514Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "evidence",
+   "ref": "operators_5km",
+   "memory_id": "mem-146",
+   "round": 1,
+   "summary": "Only 1 operator (O2) has approximate mast sites within 5 km. O2 confirmed by Ofcom's licence register.",
+   "old_confidence": null,
+   "new_confidence": 0.4,
+   "reason": null,
+   "payload": {
+    "id": "operators_5km",
+    "source": "Approximate mast sites (Zetaris CD_MASTS_SITES)",
+    "data_period": "OpenCelliD downloaded 2026-10-25; OpenStreetMap extract downloaded 2026-10-25; Ofcom WTR downloaded 2026-10-25",
+    "as_of": "2026-10-25",
+    "query_or_url": "zetaris:Q2",
+    "cell_ids": [
+     "871943b9bffffff"
+    ],
+    "finding": "Only 1 operator (O2) has approximate mast sites within 5 km. O2 confirmed by Ofcom's licence register.",
+    "value": {
+     "operators": [
+      "O2"
+     ],
+     "operators_confirmed": [
+      "O2"
+     ],
+     "operator_data_status": "confirmed"
+    },
+    "sample_size": {
+     "sites_within_5km": 1,
+     "sites_unknown_operator": 0
+    },
+    "strength": "weak",
+    "bears_on": [
+     "single_operator",
+     "distance_to_mast"
+    ],
+    "evidence_id": "operators_5km",
+    "tool": "sites_near",
+    "round": 1,
+    "zetaris": [
+     {
+      "id": "Q2",
+      "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 52.70011670054165) / 2), 2) + cos(radians(52.70011670054165)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (0.024084717819457868)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 52.61003 AND 52.79021 AND s.lon BETWEEN -0.12415 AND 0.17232 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
+      "duration_ms": 275,
+      "rows": 30
+     }
+    ],
+    "by": "investigator",
+    "kind": "evidence",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "operators_5km"
+   }
+  },
+  {
+   "seq": 151,
+   "at": "2026-10-26T21:03:02.537Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "note",
+   "ref": "n5",
+   "memory_id": "mem-147",
+   "round": 1,
+   "summary": "sites_near() -> nearest_site, operators_5km",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "tool_call",
+    "summary": "sites_near() -> nearest_site, operators_5km",
+    "by": "investigator",
+    "tool": "sites_near",
+    "args": {},
+    "round": 1,
+    "evidence_ids": [
+     "nearest_site",
+     "operators_5km"
+    ],
+    "new": [
+     "nearest_site",
+     "operators_5km"
+    ],
+    "duration_ms": 330,
+    "zetaris_queries": [
+     {
+      "id": "Q2",
+      "duration_ms": 275,
+      "rows": 30
+     }
+    ],
+    "note_id": "n5",
+    "kind": "note",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "n5"
+   }
+  },
+  {
+   "seq": 152,
+   "at": "2026-10-26T21:03:02.899Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "evidence",
+   "ref": "los_ee",
+   "memory_id": "mem-148",
+   "round": 1,
+   "summary": "EE's nearest approximate site is 5.6 km east (EE confirmed by Ofcom's licence register). The direct line clears the ground by at least 2 m (antenna height from Ofcom's licence register).",
+   "old_confidence": null,
+   "new_confidence": 0.7,
+   "reason": null,
+   "payload": {
+    "id": "los_ee",
+    "source": "Line of sight over Copernicus DEM GLO-30 (computed)",
+    "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
+    "as_of": "2026-10-25",
+    "query_or_url": "terrain.line_of_sight from (52.70012, 0.02408) to site S000310 (zetaris:Q2)",
+    "cell_ids": [
+     "871943b88ffffff",
+     "871943b9bffffff"
+    ],
+    "finding": "EE's nearest approximate site is 5.6 km east (EE confirmed by Ofcom's licence register). The direct line clears the ground by at least 2 m (antenna height from Ofcom's licence register).",
+    "value": {
+     "site_id": "S000310",
+     "operators_at_site": [
+      "EE",
+      "O2",
+      "Three"
+     ],
+     "operators_confirmed": [
+      "EE",
+      "O2",
+      "Three"
+     ],
+     "for_operators": [
+      "EE"
+     ],
+     "los_class": "clear",
+     "blocked": false,
+     "max_obstruction_m": -1.5,
+     "obstruction_distance_m": 30,
+     "obstruction_lat": 52.700137,
+     "obstruction_lon": 0.024529,
+     "obstruction_ground_m": 2.1,
+     "path_length_m": 5579,
+     "rx_ground_m": 1.7,
+     "site_ground_m": 1.9,
+     "rx_height_m": 1.5,
+     "mast_height_m": 70,
+     "mast_height_source": "ofcom_register",
+     "samples": 187
+    },
+    "sample_size": {
+     "dem_samples": 187
+    },
+    "strength": "moderate",
+    "bears_on": [
+     "terrain_blocking",
+     "distance_to_mast"
+    ],
+    "evidence_id": "los_ee",
+    "tool": "line_of_sight",
+    "round": 1,
+    "zetaris": [
+     {
+      "id": "Q2",
+      "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 52.70011670054165) / 2), 2) + cos(radians(52.70011670054165)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (0.024084717819457868)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 52.61003 AND 52.79021 AND s.lon BETWEEN -0.12415 AND 0.17232 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
+      "duration_ms": 275,
+      "rows": 30
+     }
+    ],
+    "by": "investigator",
+    "kind": "evidence",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "los_ee"
+   }
+  },
+  {
+   "seq": 153,
+   "at": "2026-10-26T21:03:02.929Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "note",
+   "ref": "n6",
+   "memory_id": "mem-149",
+   "round": 1,
+   "summary": "line_of_sight(operator=EE) -> los_ee",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "tool_call",
+    "summary": "line_of_sight(operator=EE) -> los_ee",
+    "by": "investigator",
+    "tool": "line_of_sight",
+    "args": {
+     "operator": "EE"
+    },
+    "round": 1,
+    "evidence_ids": [
+     "los_ee"
+    ],
+    "new": [
+     "los_ee"
+    ],
+    "duration_ms": 337,
+    "zetaris_queries": [],
+    "note_id": "n6",
+    "kind": "note",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "n6"
+   }
+  },
+  {
+   "seq": 154,
+   "at": "2026-10-26T21:03:03.269Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "evidence",
+   "ref": "los_o2",
+   "memory_id": "mem-150",
+   "round": 1,
+   "summary": "O2's nearest approximate site is 4.8 km west (O2 confirmed by Ofcom's licence register). The direct line clears the ground by at least 1 m (antenna height from Ofcom's licence register).",
+   "old_confidence": null,
+   "new_confidence": 0.7,
+   "reason": null,
+   "payload": {
+    "id": "los_o2",
+    "source": "Line of sight over Copernicus DEM GLO-30 (computed)",
+    "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
+    "as_of": "2026-10-25",
+    "query_or_url": "terrain.line_of_sight from (52.70012, 0.02408) to site S091576 (zetaris:Q2)",
+    "cell_ids": [
+     "871943ab6ffffff",
+     "871943b9bffffff"
+    ],
+    "finding": "O2's nearest approximate site is 4.8 km west (O2 confirmed by Ofcom's licence register). The direct line clears the ground by at least 1 m (antenna height from Ofcom's licence register).",
+    "value": {
+     "site_id": "S091576",
+     "operators_at_site": [
+      "O2"
+     ],
+     "operators_confirmed": [
+      "O2"
+     ],
+     "for_operators": [
+      "O2"
+     ],
+     "los_class": "clear",
+     "blocked": false,
+     "max_obstruction_m": -1.3,
+     "obstruction_distance_m": 60,
+     "obstruction_lat": 52.70011,
+     "obstruction_lon": 0.023195,
+     "obstruction_ground_m": 2.2,
+     "path_length_m": 4765,
+     "rx_ground_m": 1.7,
+     "site_ground_m": 4.5,
+     "rx_height_m": 1.5,
+     "mast_height_m": 18.5,
+     "mast_height_source": "ofcom_register",
+     "samples": 160
+    },
+    "sample_size": {
+     "dem_samples": 160
+    },
+    "strength": "moderate",
+    "bears_on": [
+     "terrain_blocking",
+     "distance_to_mast"
+    ],
+    "evidence_id": "los_o2",
+    "tool": "line_of_sight",
+    "round": 1,
+    "zetaris": [
+     {
+      "id": "Q2",
+      "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 52.70011670054165) / 2), 2) + cos(radians(52.70011670054165)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (0.024084717819457868)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 52.61003 AND 52.79021 AND s.lon BETWEEN -0.12415 AND 0.17232 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
+      "duration_ms": 275,
+      "rows": 30
+     }
+    ],
+    "by": "investigator",
+    "kind": "evidence",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "los_o2"
+   }
+  },
+  {
+   "seq": 155,
+   "at": "2026-10-26T21:03:03.298Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "note",
+   "ref": "n7",
+   "memory_id": "mem-151",
+   "round": 1,
+   "summary": "line_of_sight(operator=O2) -> los_o2",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "tool_call",
+    "summary": "line_of_sight(operator=O2) -> los_o2",
+    "by": "investigator",
+    "tool": "line_of_sight",
+    "args": {
+     "operator": "O2"
+    },
+    "round": 1,
+    "evidence_ids": [
+     "los_o2"
+    ],
+    "new": [
+     "los_o2"
+    ],
+    "duration_ms": 317,
+    "zetaris_queries": [],
+    "note_id": "n7",
+    "kind": "note",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "n7"
+   }
+  },
+  {
+   "seq": 156,
+   "at": "2026-10-26T21:03:03.365Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "evidence",
+   "ref": "los_three",
+   "memory_id": "mem-152",
+   "round": 1,
+   "summary": "Three's nearest approximate site is 5.6 km east (Three confirmed by Ofcom's licence register). The direct line clears the ground by at least 2 m (antenna height from Ofcom's licence register).",
+   "old_confidence": null,
+   "new_confidence": 0.7,
+   "reason": null,
+   "payload": {
+    "id": "los_three",
+    "source": "Line of sight over Copernicus DEM GLO-30 (computed)",
+    "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
+    "as_of": "2026-10-25",
+    "query_or_url": "terrain.line_of_sight from (52.70012, 0.02408) to site S000310 (zetaris:Q2)",
+    "cell_ids": [
+     "871943b88ffffff",
+     "871943b9bffffff"
+    ],
+    "finding": "Three's nearest approximate site is 5.6 km east (Three confirmed by Ofcom's licence register). The direct line clears the ground by at least 2 m (antenna height from Ofcom's licence register).",
+    "value": {
+     "site_id": "S000310",
+     "operators_at_site": [
+      "EE",
+      "O2",
+      "Three"
+     ],
+     "operators_confirmed": [
+      "EE",
+      "O2",
+      "Three"
+     ],
+     "for_operators": [
+      "Three"
+     ],
+     "los_class": "clear",
+     "blocked": false,
+     "max_obstruction_m": -1.5,
+     "obstruction_distance_m": 30,
+     "obstruction_lat": 52.700137,
+     "obstruction_lon": 0.024529,
+     "obstruction_ground_m": 2.1,
+     "path_length_m": 5579,
+     "rx_ground_m": 1.7,
+     "site_ground_m": 1.9,
+     "rx_height_m": 1.5,
+     "mast_height_m": 70,
+     "mast_height_source": "ofcom_register",
+     "samples": 187
+    },
+    "sample_size": {
+     "dem_samples": 187
+    },
+    "strength": "moderate",
+    "bears_on": [
+     "terrain_blocking",
+     "distance_to_mast"
+    ],
+    "evidence_id": "los_three",
+    "tool": "line_of_sight",
+    "round": 1,
+    "zetaris": [
+     {
+      "id": "Q2",
+      "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 52.70011670054165) / 2), 2) + cos(radians(52.70011670054165)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (0.024084717819457868)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 52.61003 AND 52.79021 AND s.lon BETWEEN -0.12415 AND 0.17232 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
+      "duration_ms": 275,
+      "rows": 30
+     }
+    ],
+    "by": "investigator",
+    "kind": "evidence",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "los_three"
+   }
+  },
+  {
+   "seq": 157,
+   "at": "2026-10-26T21:03:03.396Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "note",
+   "ref": "n8",
+   "memory_id": "mem-153",
+   "round": 1,
+   "summary": "line_of_sight(operator=Three) -> los_three",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "tool_call",
+    "summary": "line_of_sight(operator=Three) -> los_three",
+    "by": "investigator",
+    "tool": "line_of_sight",
+    "args": {
+     "operator": "Three"
+    },
+    "round": 1,
+    "evidence_ids": [
+     "los_three"
+    ],
+    "new": [
+     "los_three"
+    ],
+    "duration_ms": 28,
+    "zetaris_queries": [],
+    "note_id": "n8",
+    "kind": "note",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "n8"
+   }
+  },
+  {
+   "seq": 158,
+   "at": "2026-10-26T21:03:03.455Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "evidence",
+   "ref": "los_vodafone",
+   "memory_id": "mem-154",
+   "round": 1,
+   "summary": "Vodafone's nearest approximate site is 9.5 km south (operator inferred from crowd-sourced data). Terrain rises 5 m above the direct line 90 m from here (antenna height assumed 25 m), so the signal is likely weakened, not necessarily lost. The margin is small and may be trees or buildings in the surface model.",
+   "old_confidence": null,
+   "new_confidence": 0.4,
+   "reason": null,
+   "payload": {
+    "id": "los_vodafone",
+    "source": "Line of sight over Copernicus DEM GLO-30 (computed)",
+    "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
+    "as_of": "2026-10-25",
+    "query_or_url": "terrain.line_of_sight from (52.70012, 0.02408) to site S042990 (zetaris:Q2)",
+    "cell_ids": [
+     "871943a82ffffff",
+     "871943b9bffffff"
+    ],
+    "finding": "Vodafone's nearest approximate site is 9.5 km south (operator inferred from crowd-sourced data). Terrain rises 5 m above the direct line 90 m from here (antenna height assumed 25 m), so the signal is likely weakened, not necessarily lost. The margin is small and may be trees or buildings in the surface model.",
+    "value": {
+     "site_id": "S042990",
+     "operators_at_site": [
+      "Vodafone"
+     ],
+     "operators_confirmed": [],
+     "for_operators": [
+      "Vodafone"
+     ],
+     "los_class": "marginal",
+     "blocked": true,
+     "max_obstruction_m": 4.6,
+     "obstruction_distance_m": 90,
+     "obstruction_lat": 52.69934,
+     "obstruction_lon": 0.02371,
+     "obstruction_ground_m": 8,
+     "path_length_m": 9479,
+     "rx_ground_m": 1.7,
+     "site_ground_m": -1.1,
+     "rx_height_m": 1.5,
+     "mast_height_m": 25,
+     "mast_height_source": "assumed_default",
+     "samples": 317
+    },
+    "sample_size": {
+     "dem_samples": 317
+    },
+    "strength": "weak",
+    "bears_on": [
+     "terrain_blocking",
+     "distance_to_mast"
+    ],
+    "evidence_id": "los_vodafone",
+    "tool": "line_of_sight",
+    "round": 1,
+    "zetaris": [
+     {
+      "id": "Q2",
+      "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 52.70011670054165) / 2), 2) + cos(radians(52.70011670054165)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (0.024084717819457868)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 52.61003 AND 52.79021 AND s.lon BETWEEN -0.12415 AND 0.17232 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
+      "duration_ms": 275,
+      "rows": 30
+     }
+    ],
+    "by": "investigator",
+    "kind": "evidence",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "los_vodafone"
+   }
+  },
+  {
+   "seq": 159,
+   "at": "2026-10-26T21:03:03.488Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "note",
+   "ref": "n9",
+   "memory_id": "mem-155",
+   "round": 1,
+   "summary": "line_of_sight(operator=Vodafone) -> los_vodafone",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "tool_call",
+    "summary": "line_of_sight(operator=Vodafone) -> los_vodafone",
+    "by": "investigator",
+    "tool": "line_of_sight",
+    "args": {
+     "operator": "Vodafone"
+    },
+    "round": 1,
+    "evidence_ids": [
+     "los_vodafone"
+    ],
+    "new": [
+     "los_vodafone"
+    ],
+    "duration_ms": 33,
+    "zetaris_queries": [],
+    "note_id": "n9",
+    "kind": "note",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "n9"
+   }
+  },
+  {
+   "seq": 160,
+   "at": "2026-10-26T21:03:03.558Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "evidence",
+   "ref": "ofcom_area",
+   "memory_id": "mem-156",
+   "round": 1,
+   "summary": "In South Holland and The Deepings, 0.0% of land has no outdoor 4G from any operator and 0.0% from only one (Ofcom Connected Nations, July 2025). This is a predicted figure for the whole constituency, not this exact location.",
+   "old_confidence": null,
+   "new_confidence": 0.7,
+   "reason": null,
+   "payload": {
+    "id": "ofcom_area",
+    "source": "Ofcom Connected Nations (Zetaris CD_OFCOM_AREA)",
+    "data_period": "2025-07 (release 202507_mobile_coverage_r01)",
+    "as_of": "2026-10-25",
+    "query_or_url": "zetaris:Q1",
+    "cell_ids": [
+     "871943b9bffffff"
+    ],
+    "finding": "In South Holland and The Deepings, 0.0% of land has no outdoor 4G from any operator and 0.0% from only one (Ofcom Connected Nations, July 2025). This is a predicted figure for the whole constituency, not this exact location.",
+    "value": {
+     "area": "South Holland and The Deepings",
+     "g4_geo_out_0": 0,
+     "g4_geo_out_1": 0,
+     "g4_prem_in_0": 1.61,
+     "local_authority": "South Holland",
+     "laua_g4_geo_out_0": 0
+    },
+    "sample_size": null,
+    "strength": "moderate",
+    "bears_on": [
+     "distance_to_mast",
+     "single_operator"
+    ],
+    "evidence_id": "ofcom_area",
+    "tool": "ofcom_area",
+    "round": 1,
+    "zetaris": [
+     {
+      "id": "Q1",
+      "sql": "SELECT c.cell_id, c.lat, c.lon, c.population, c.nation, o.quarter, o.download_mbps, o.upload_mbps, o.latency_ms, o.tests, o.devices, o.tests_per_1k_pop, o.devices_per_1k_pop, o.quarters_with_data, o.download_mbps_oldest, o.download_change_pct, o.download_trend_mbps_per_quarter, hst.history_json, nb.neighbour_download_mbps, nb.neighbour_tests, nb.neighbour_cells_with_data, m.nearest_mast_km, m.nearest_mast_bearing_deg, m.nearest_mast_id, m.nearest_mast_lat, m.nearest_mast_lon, m.nearest_mast_sources, m.nearest_mast_operators, m.nearest_mast_operators_confirmed, m.nearest_mast_antenna_height_m, m.masts_within_5km, m.masts_known_operator_within_5km, m.masts_unknown_operator_within_5km, m.masts_osm_only_within_5km, m.distinct_operators_within_5km, m.operators_within_5km, m.operators_confirmed_within_5km, m.wtr_sites_within_5km, m.microwave_backhaul_sites_within_5km, m.operator_data_status, a.pcon_code, a.pcon_name, a.laua_code, a.laua_name, a.g4_geo_out_0, a.g4_geo_out_1, a.g4_prem_out_0, a.g4_prem_in_0, a.g4_abrd_in_0, a.g5hc_prem_out_at_least_one, a.laua_g4_geo_out_0, a.laua_g4_geo_out_1, a.data_date AS ofcom_data_date, t.elevation_mean_m, t.elevation_range_m, l.blocked AS los_blocked, l.obstruction_m AS los_obstruction_m, l.los_class FROM CD_CELLS.cells_r7 c LEFT JOIN CD_OOKLA_MOBILE.ookla_mobile_r7 o ON o.cell_id = c.cell_id LEFT JOIN ( SELECT cell_id, to_json(collect_list(named_struct('quarter', quarter, 'download_mbps', download_mbps, 'tests', tests))) AS history_json FROM CD_OOKLA_MOBILE_HISTORY.ookla_mobile_history_r7 WHERE cell_id = '871943b9bffffff' GROUP BY cell_id ) hst ON hst.cell_id = c.cell_id CROSS JOIN ( SELECT sum(download_mbps * tests) / sum(tests) AS neighbour_download_mbps, sum(tests) AS neighbour_tests, count(*) AS neighbour_cells_with_data FROM CD_OOKLA_MOBILE.ookla_mobile_r7 WHERE cell_id IN ('871943aa6ffffff', '871943ab4ffffff', '871943ab5ffffff', '871943b98ffffff', '871943b99ffffff', '871943b9affffff') ) nb LEFT JOIN CD_MASTS.masts_r7 m ON m.cell_id = c.cell_id LEFT JOIN CD_OFCOM_AREA.ofcom_area_r7 a ON a.cell_id = c.cell_id LEFT JOIN CD_TERRAIN.terrain_r7 t ON t.cell_id = c.cell_id LEFT JOIN CD_LOS.los_r7 l ON l.cell_id = c.cell_id WHERE c.cell_id = '871943b9bffffff'",
+      "duration_ms": 559,
+      "rows": 1
+     }
+    ],
+    "by": "investigator",
+    "kind": "evidence",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "ofcom_area"
+   }
+  },
+  {
+   "seq": 161,
+   "at": "2026-10-26T21:03:03.586Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "note",
+   "ref": "n10",
+   "memory_id": "mem-157",
+   "round": 1,
+   "summary": "ofcom_area() -> ofcom_area",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "tool_call",
+    "summary": "ofcom_area() -> ofcom_area",
+    "by": "investigator",
+    "tool": "ofcom_area",
+    "args": {},
+    "round": 1,
+    "evidence_ids": [
+     "ofcom_area"
+    ],
+    "new": [
+     "ofcom_area"
+    ],
+    "duration_ms": 37,
+    "zetaris_queries": [],
+    "note_id": "n10",
+    "kind": "note",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "n10"
+   }
+  },
+  {
+   "seq": 162,
+   "at": "2026-10-26T21:03:04.665Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "evidence",
+   "ref": "weather",
+   "memory_id": "mem-158",
+   "round": 1,
+   "summary": "Weather now: partly cloudy, wind 30 km/h gusting 52 km/h, rain 0.0 mm/h. Next 24 h: gusts up to 65.2 km/h, rain up to 1.4 mm/h: moderate (gusts up to 65.2 km/h).",
+   "old_confidence": null,
+   "new_confidence": 0.7,
+   "reason": null,
+   "payload": {
+    "id": "weather",
+    "source": "Open-Meteo forecast",
+    "data_period": "live",
+    "as_of": "2026-10-26T21:03:03+00:00",
+    "query_or_url": "https://api.open-meteo.com/v1/forecast?latitude=52.7001&longitude=0.0241&current=precipitation%2Crain%2Csnowfall%2Cwind_speed_10m%2Cwind_gusts_10m%2Cweather_code&hourly=precipitation%2Crain%2Csnowfall%2Cwind_speed_10m%2Cwind_gusts_10m%2Cweather_code&forecast_hours=24&timezone=Europe%2FLondon",
+    "cell_ids": [
+     "871943b9bffffff"
+    ],
+    "finding": "Weather now: partly cloudy, wind 30 km/h gusting 52 km/h, rain 0.0 mm/h. Next 24 h: gusts up to 65.2 km/h, rain up to 1.4 mm/h: moderate (gusts up to 65.2 km/h).",
+    "value": {
+     "severity": "moderate",
+     "now": {
+      "time": "2026-10-26T21:00",
+      "precipitation_mm_h": 0,
+      "rain_mm_h": 0,
+      "snowfall_cm_h": 0,
+      "wind_kmh": 29.5,
+      "gust_kmh": 52.2,
+      "weather_code": 2,
+      "weather": "partly cloudy"
+     },
+     "next_24h": {
+      "hours": 24,
+      "max_precipitation_mm_h": 1.4,
+      "max_precipitation_at": "2026-10-27T06:00",
+      "max_gust_kmh": 65.2,
+      "max_gust_at": "2026-10-27T03:00",
+      "max_snowfall_cm_h": 0,
+      "total_precipitation_mm": 2.2,
+      "thunderstorm_expected": false
+     }
+    },
+    "sample_size": {
+     "forecast_hours": 24
+    },
+    "strength": "moderate",
+    "bears_on": [
+     "weather"
+    ],
+    "evidence_id": "weather",
+    "tool": "live_conditions",
+    "round": 1,
+    "zetaris": [],
+    "by": "investigator",
+    "kind": "evidence",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "weather"
+   }
+  },
+  {
+   "seq": 163,
+   "at": "2026-10-26T21:03:04.685Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "evidence",
+   "ref": "met_office_warnings",
+   "memory_id": "mem-159",
+   "round": 1,
+   "summary": "No Met Office weather warnings are in force or due for East Midlands.",
+   "old_confidence": null,
+   "new_confidence": 0.7,
+   "reason": null,
+   "payload": {
+    "id": "met_office_warnings",
+    "source": "Met Office severe weather warnings (RSS)",
+    "data_period": "live",
+    "as_of": "2026-10-26T21:03:03+00:00",
+    "query_or_url": "https://www.metoffice.gov.uk/public/data/PWSCache/WarningsRSS/Region/em",
+    "cell_ids": [
+     "871943b9bffffff"
+    ],
+    "finding": "No Met Office weather warnings are in force or due for East Midlands.",
+    "value": {
+     "region": "East Midlands",
+     "warnings": []
+    },
+    "sample_size": {
+     "warnings": 0
+    },
+    "strength": "moderate",
+    "bears_on": [
+     "weather"
+    ],
+    "evidence_id": "met_office_warnings",
+    "tool": "live_conditions",
+    "round": 1,
+    "zetaris": [],
+    "by": "investigator",
+    "kind": "evidence",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "met_office_warnings"
+   }
+  },
+  {
+   "seq": 164,
+   "at": "2026-10-26T21:03:04.708Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "evidence",
+   "ref": "flood_warnings",
+   "memory_id": "mem-160",
+   "round": 1,
+   "summary": "No flood alerts or warnings within 10 km.",
+   "old_confidence": null,
+   "new_confidence": 0.7,
+   "reason": null,
+   "payload": {
+    "id": "flood_warnings",
+    "source": "Environment Agency flood monitoring",
+    "data_period": "live",
+    "as_of": "2026-10-26T21:03:04+00:00",
+    "query_or_url": "https://environment.data.gov.uk/flood-monitoring/id/floods?lat=52.7001&long=0.0241&dist=10",
+    "cell_ids": [
+     "871943b9bffffff"
+    ],
+    "finding": "No flood alerts or warnings within 10 km.",
+    "value": {
+     "warnings": [],
+     "via": "api"
+    },
+    "sample_size": {
+     "warnings": 0
+    },
+    "strength": "moderate",
+    "bears_on": [
+     "active_incident"
+    ],
+    "evidence_id": "flood_warnings",
+    "tool": "live_conditions",
+    "round": 1,
+    "zetaris": [],
+    "by": "investigator",
+    "kind": "evidence",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "flood_warnings"
+   }
+  },
+  {
+   "seq": 165,
+   "at": "2026-10-26T21:03:04.731Z",
+   "action": "create",
+   "actor": "investigator",
+   "kind": "note",
+   "ref": "n11",
+   "memory_id": "mem-161",
+   "round": 1,
+   "summary": "live_conditions() -> weather, met_office_warnings, flood_warnings",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "tool_call",
+    "summary": "live_conditions() -> weather, met_office_warnings, flood_warnings",
+    "by": "investigator",
+    "tool": "live_conditions",
+    "args": {},
+    "round": 1,
+    "evidence_ids": [
+     "weather",
+     "met_office_warnings",
+     "flood_warnings"
+    ],
+    "new": [
+     "weather",
+     "met_office_warnings",
+     "flood_warnings"
+    ],
+    "duration_ms": 1092,
+    "zetaris_queries": [],
+    "note_id": "n11",
+    "kind": "note",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "n11"
+   }
+  },
+  {
+   "seq": 166,
+   "at": "2026-10-26T21:03:04.788Z",
+   "action": "create",
+   "actor": "coordinator",
+   "kind": "evidence",
+   "ref": "network_comparison",
+   "memory_id": "mem-162",
+   "round": 1,
+   "summary": "Likely best network here: O2, with a clear line of sight to a site 4.8 km west (confirmed by Ofcom's licence register). Also a clear line: EE (5.6 km) and Three (5.6 km).",
+   "old_confidence": null,
+   "new_confidence": 0.7,
+   "reason": null,
+   "payload": {
+    "id": "network_comparison",
+    "source": "Rule-based network comparison (computed from line of sight and sites)",
+    "data_period": "OpenCelliD downloaded 2026-10-25; OpenStreetMap extract downloaded 2026-10-25; Ofcom WTR downloaded 2026-10-25",
+    "as_of": "2026-10-25",
+    "query_or_url": "zetaris:Q2",
+    "cell_ids": [
+     "871943b9bffffff"
+    ],
+    "finding": "Likely best network here: O2, with a clear line of sight to a site 4.8 km west (confirmed by Ofcom's licence register). Also a clear line: EE (5.6 km) and Three (5.6 km).",
+    "value": {
+     "operators": [
+      {
+       "operator": "EE",
+       "site": {
+        "site_id": "S000310",
+        "lat": 52.7038354,
+        "lon": 0.1066527,
+        "distance_km": 5.58,
+        "bearing_deg": 86,
+        "direction": "east",
+        "sources": [
+         "Ofcom register",
+         "OpenStreetMap"
+        ]
+       },
+       "status": "confirmed",
+       "los": {
+        "class": "clear",
+        "blocked": false,
+        "obstruction_m": -1.5,
+        "obstruction_distance_m": 30,
+        "obstruction_lat": 52.700137,
+        "obstruction_lon": 0.024529,
+        "path_length_m": 5579,
+        "mast_height_m": 70,
+        "mast_height": "measured"
+       }
+      },
+      {
+       "operator": "O2",
+       "site": {
+        "site_id": "S091576",
+        "lat": 52.69961733514516,
+        "lon": -0.046631789478758526,
+        "distance_km": 4.77,
+        "bearing_deg": 269,
+        "direction": "west",
+        "sources": [
+         "Ofcom register"
+        ]
+       },
+       "status": "confirmed",
+       "los": {
+        "class": "clear",
+        "blocked": false,
+        "obstruction_m": -1.3,
+        "obstruction_distance_m": 60,
+        "obstruction_lat": 52.70011,
+        "obstruction_lon": 0.023195,
+        "path_length_m": 4765,
+        "mast_height_m": 18.5,
+        "mast_height": "measured"
+       }
+      },
+      {
+       "operator": "Three",
+       "site": {
+        "site_id": "S000310",
+        "lat": 52.7038354,
+        "lon": 0.1066527,
+        "distance_km": 5.58,
+        "bearing_deg": 86,
+        "direction": "east",
+        "sources": [
+         "Ofcom register",
+         "OpenStreetMap"
+        ]
+       },
+       "status": "confirmed",
+       "los": {
+        "class": "clear",
+        "blocked": false,
+        "obstruction_m": -1.5,
+        "obstruction_distance_m": 30,
+        "obstruction_lat": 52.700137,
+        "obstruction_lon": 0.024529,
+        "path_length_m": 5579,
+        "mast_height_m": 70,
+        "mast_height": "measured"
+       }
+      },
+      {
+       "operator": "Vodafone",
+       "site": {
+        "site_id": "S042990",
+        "lat": 52.6183,
+        "lon": -0.0154,
+        "distance_km": 9.48,
+        "bearing_deg": 196,
+        "direction": "south",
+        "sources": [
+         "crowd-sourced (OpenCelliD)"
+        ]
+       },
+       "status": "inferred",
+       "los": {
+        "class": "marginal",
+        "blocked": true,
+        "obstruction_m": 4.6,
+        "obstruction_distance_m": 90,
+        "obstruction_lat": 52.69934,
+        "obstruction_lon": 0.02371,
+        "path_length_m": 9479,
+        "mast_height_m": 25,
+        "mast_height": "assumed"
+       }
+      }
+     ],
+     "likely_best": {
+      "reviewed_by_agents": false,
+      "label": "Based on data, not yet reviewed by agents",
+      "rule": "Operators ranked by line of sight from this point to their nearest identified site (clear, then marginal, then blocked); clear lines by distance, obstructed ones by how far the ground rises above the line.",
+      "operators": [
+       "O2",
+       "EE",
+       "Three"
+      ],
+      "line_of_sight": "clear",
+      "text": "Likely best network here: O2, with a clear line of sight to a site 4.8 km west (confirmed by Ofcom's licence register). Also a clear line: EE (5.6 km) and Three (5.6 km)."
+     }
+    },
+    "sample_size": {
+     "operators_with_site": 4
+    },
+    "strength": "moderate",
+    "bears_on": [
+     "single_operator",
+     "distance_to_mast"
+    ],
+    "evidence_id": "network_comparison",
+    "tool": "network_comparison",
+    "round": 1,
+    "zetaris": [
+     {
+      "id": "Q2",
+      "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 52.70011670054165) / 2), 2) + cos(radians(52.70011670054165)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (0.024084717819457868)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 52.61003 AND 52.79021 AND s.lon BETWEEN -0.12415 AND 0.17232 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
+      "duration_ms": 275,
+      "rows": 30
+     }
+    ],
+    "by": "coordinator",
+    "kind": "evidence",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "network_comparison"
+   }
+  },
+  {
+   "seq": 167,
+   "at": "2026-10-26T21:04:37.867Z",
+   "action": "create",
+   "actor": "diagnostician",
+   "kind": "note",
+   "ref": "n12",
+   "memory_id": "mem-163",
+   "round": 1,
+   "summary": "diagnostician via nemotron-3.5-super-vl-120b-a12b in 2.8s; 2 retries; reasoning model failed (nvidia/nemotron-3-ultra-550b-a55b: no answer within 45 s (twice)); fast model answered",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "llm_call",
+    "summary": "diagnostician via nemotron-3.5-super-vl-120b-a12b in 2.8s; 2 retries; reasoning model failed (nvidia/nemotron-3-ultra-550b-a55b: no answer within 45 s (twice)); fast model answered",
+    "by": "diagnostician",
+    "round": 1,
+    "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+    "duration_ms": 2751,
+    "tokens": {
+     "prompt_tokens": 1776,
+     "completion_tokens": 312,
+     "total_tokens": 2088,
+     "prompt_tokens_details": {
+      "audio_tokens": null,
+      "cached_tokens": 0
+     },
+     "completion_tokens_details": {
+      "accepted_prediction_tokens": null,
+      "audio_tokens": null,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": null
+     }
+    },
+    "attempts": 1,
+    "retries": [
+     {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b",
+      "attempt": 1,
+      "error": "no answer within 45 s",
+      "wait_s": 0
+     },
+     {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b",
+      "error": "nvidia/nemotron-3-ultra-550b-a55b: no answer within 45 s (twice)",
+      "switched_to": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+     }
+    ],
+    "fallback": "reasoning model failed (nvidia/nemotron-3-ultra-550b-a55b: no answer within 45 s (twice)); fast model answered",
+    "thinking": true,
+    "note_id": "n12",
+    "kind": "note",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "n12"
+   }
+  },
+  {
+   "seq": 168,
+   "at": "2026-10-26T21:04:37.904Z",
+   "action": "create",
+   "actor": "diagnostician",
+   "kind": "belief",
+   "ref": "distance_to_mast",
+   "memory_id": "mem-164",
+   "round": 1,
+   "summary": "distance_to_mast: The nearest confirmed mast is 4.8 km away and only O2 has sites within 5 km [nearest_site][operators_5km], while Vodafone is 9.5 km away with a small clearance margin [los_vodafone]. O2, EE and Three all have clear lines of sight [los_o2][los_ee][los_three], so distance alone is not certain.",
+   "old_confidence": null,
+   "new_confidence": 0.55,
+   "reason": null,
+   "payload": {
+    "belief_id": "distance_to_mast",
+    "cause": "distance_to_mast",
+    "explanation": "The nearest confirmed mast is 4.8 km away and only O2 has sites within 5 km [nearest_site][operators_5km], while Vodafone is 9.5 km away with a small clearance margin [los_vodafone]. O2, EE and Three all have clear lines of sight [los_o2][los_ee][los_three], so distance alone is not certain.",
+    "supporting": [
+     "nearest_site",
+     "operators_5km",
+     "los_vodafone"
+    ],
+    "contradicting": [
+     "los_o2",
+     "los_ee",
+     "los_three"
+    ],
+    "round": 1,
+    "by": "diagnostician",
+    "status": "active",
+    "kind": "belief",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "distance_to_mast"
+   }
+  },
+  {
+   "seq": 169,
+   "at": "2026-10-26T21:04:37.922Z",
+   "action": "create",
+   "actor": "diagnostician",
+   "kind": "belief",
+   "ref": "insufficient_data",
+   "memory_id": "mem-165",
+   "round": 1,
+   "summary": "insufficient_data: No speed tests exist within 1 km, in this cell, or in neighbouring cells [speed_1km][speed_cell][speed_neighbours], and there are no earlier diagnoses nearby [prior_diagnoses], so the causes cannot be separated at this point.",
+   "old_confidence": null,
+   "new_confidence": 0.45,
+   "reason": null,
+   "payload": {
+    "belief_id": "insufficient_data",
+    "cause": "insufficient_data",
+    "explanation": "No speed tests exist within 1 km, in this cell, or in neighbouring cells [speed_1km][speed_cell][speed_neighbours], and there are no earlier diagnoses nearby [prior_diagnoses], so the causes cannot be separated at this point.",
+    "supporting": [
+     "speed_1km",
+     "speed_cell",
+     "speed_neighbours",
+     "prior_diagnoses"
+    ],
+    "contradicting": [],
+    "round": 1,
+    "by": "diagnostician",
+    "status": "active",
+    "kind": "belief",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "insufficient_data"
+   }
+  },
+  {
+   "seq": 170,
+   "at": "2026-10-26T21:06:10.237Z",
+   "action": "create",
+   "actor": "critic",
+   "kind": "note",
+   "ref": "n13",
+   "memory_id": "mem-166",
+   "round": 1,
+   "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 2.0s; 2 retries; reasoning model failed (nvidia/nemotron-3-ultra-550b-a55b: no answer within 45 s (twice)); fast model answered",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "llm_call",
+    "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 2.0s; 2 retries; reasoning model failed (nvidia/nemotron-3-ultra-550b-a55b: no answer within 45 s (twice)); fast model answered",
+    "by": "critic",
+    "round": 1,
+    "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+    "duration_ms": 2025,
+    "tokens": {
+     "prompt_tokens": 2208,
+     "completion_tokens": 228,
+     "total_tokens": 2436,
+     "prompt_tokens_details": {
+      "audio_tokens": null,
+      "cached_tokens": 0
+     },
+     "completion_tokens_details": {
+      "accepted_prediction_tokens": null,
+      "audio_tokens": null,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": null
+     }
+    },
+    "attempts": 1,
+    "retries": [
+     {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b",
+      "attempt": 1,
+      "error": "no answer within 45 s",
+      "wait_s": 0
+     },
+     {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b",
+      "error": "nvidia/nemotron-3-ultra-550b-a55b: no answer within 45 s (twice)",
+      "switched_to": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+     }
+    ],
+    "fallback": "reasoning model failed (nvidia/nemotron-3-ultra-550b-a55b: no answer within 45 s (twice)); fast model answered",
+    "thinking": true,
+    "note_id": "n13",
+    "kind": "note",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "n13"
+   }
+  },
+  {
+   "seq": 171,
+   "at": "2026-10-26T21:06:10.271Z",
+   "action": "create",
+   "actor": "critic",
+   "kind": "critique",
+   "ref": "c1",
+   "memory_id": "mem-167",
+   "round": 1,
+   "summary": "approve on distance_to_mast: The nearest confirmed mast is 4.8 km away and only O2 has sites within 5 km [nearest_site][operators_5km], while Vodafone is 9.5 km away with a small clearance margin [los_vodafone]. O2, EE and Three all have clear lines of sight [los_o2][los_ee][los_three], so distance alone is not certain.",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "belief_id": "distance_to_mast",
+    "verdict": "approve",
+    "reason": "The nearest confirmed mast is 4.8 km away and only O2 has sites within 5 km [nearest_site][operators_5km], while Vodafone is 9.5 km away with a small clearance margin [los_vodafone]. O2, EE and Three all have clear lines of sight [los_o2][los_ee][los_three], so distance alone is not certain.",
+    "requested_checks": [],
+    "suggested_confidence": null,
+    "round": 1,
+    "by": "critic",
+    "critique_id": "c1",
+    "kind": "critique",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "c1"
+   }
+  },
+  {
+   "seq": 172,
+   "at": "2026-10-26T21:06:10.287Z",
+   "action": "create",
+   "actor": "critic",
+   "kind": "critique",
+   "ref": "c2",
+   "memory_id": "mem-168",
+   "round": 1,
+   "summary": "approve on insufficient_data: No speed tests exist within 1 km, in this cell, or in neighbouring cells [speed_1km][speed_cell][speed_neighbours], and there are no earlier diagnoses nearby [prior_diagnoses], so the causes cannot be separated at this point.",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "belief_id": "insufficient_data",
+    "verdict": "approve",
+    "reason": "No speed tests exist within 1 km, in this cell, or in neighbouring cells [speed_1km][speed_cell][speed_neighbours], and there are no earlier diagnoses nearby [prior_diagnoses], so the causes cannot be separated at this point.",
+    "requested_checks": [],
+    "suggested_confidence": null,
+    "round": 1,
+    "by": "critic",
+    "critique_id": "c2",
+    "kind": "critique",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "c2"
+   }
+  },
+  {
+   "seq": 173,
+   "at": "2026-10-26T21:06:16.997Z",
+   "action": "create",
+   "actor": "advisor",
+   "kind": "note",
+   "ref": "n14",
+   "memory_id": "mem-169",
+   "round": 0,
+   "summary": "advisor via nemotron-3.5-super-vl-120b-a12b in 6.3s",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "llm_call",
+    "summary": "advisor via nemotron-3.5-super-vl-120b-a12b in 6.3s",
+    "by": "advisor",
+    "round": 0,
+    "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+    "duration_ms": 6270,
+    "tokens": {
+     "prompt_tokens": 1819,
+     "completion_tokens": 902,
+     "total_tokens": 2721,
+     "prompt_tokens_details": {
+      "audio_tokens": null,
+      "cached_tokens": 0
+     },
+     "completion_tokens_details": {
+      "accepted_prediction_tokens": null,
+      "audio_tokens": null,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": null
+     }
+    },
+    "attempts": 1,
+    "retries": [],
+    "fallback": null,
+    "thinking": false,
+    "note_id": "n14",
+    "kind": "note",
+    "run_id": "run_20261026210259_q6df",
+    "ref": "n14"
+   }
+  },
+  {
+   "seq": 174,
+   "at": "2026-10-26T21:06:17.095Z",
+   "action": "create",
+   "actor": "diagnosis",
+   "kind": "diagnosis",
+   "ref": "diagnosis",
+   "memory_id": "mem-170",
+   "summary": "The nearest confirmed mast is 4.8 km away and only O2 has sites within 5 km, while Vodafone is 9.5 km away with a small clearance margin, so distance and terrain are likely factors but not certain [nearest_site][operators_5km][los_vodafone].",
+   "old_confidence": null,
+   "new_confidence": 0.55,
+   "reason": null,
+   "payload": {
+    "run_id": "run_20261026210259_q6df",
+    "lat": 52.70011670054165,
+    "lon": 0.024084717819457868,
+    "cell_id": "871943b9bffffff",
+    "scope": "point",
+    "headline": "The nearest confirmed mast is 4.8 km away and only O2 has sites within 5 km, while Vodafone is 9.5 km away with a small clearance margin, so distance and terrain are likely factors but not certain [nearest_site][operators_5km][los_vodafone].",
+    "causes": [
+     {
+      "cause": "distance_to_mast",
+      "confidence": 0.55
+     },
+     {
+      "cause": "insufficient_data",
+      "confidence": 0.45
+     }
+    ],
+    "confidence": 0.55,
+    "status": "complete",
+    "recorded": "2026-10-26T21:06:17.095Z",
+    "kind": "diagnosis",
+    "ref": "diagnosis"
+   }
+  },
+  {
+   "seq": 175,
+   "at": "2026-10-26T21:06:17.147Z",
+   "action": "update",
+   "actor": "coordinator",
+   "kind": "run",
+   "ref": "run_20261026210259_q6df",
+   "memory_id": "mem-136",
+   "summary": "complete",
+   "old_confidence": null,
+   "new_confidence": null,
+   "reason": null
+  }
+ ],
+ "evidence": [
+  {
+   "memory_id": "mem-137",
+   "kind": "evidence",
+   "ref": "prior_diagnoses",
+   "content": "No earlier diagnoses within 10 km in Meterless.",
+   "confidence": 0.4,
+   "source": "Meterless H-MEM (earlier diagnoses)",
+   "created_at": "2026-10-26T21:02:59.372Z",
+   "id": "prior_diagnoses",
+   "data_period": "Meterless H-MEM (earlier runs)",
+   "as_of": "2026-10-26T21:02:59+00:00",
+   "query_or_url": "meterless:/diagnoses/near",
+   "cell_ids": [
+    "871943b9bffffff"
+   ],
+   "finding": "No earlier diagnoses within 10 km in Meterless.",
+   "value": [],
+   "sample_size": {
+    "diagnoses": 0
+   },
+   "strength": "weak",
+   "bears_on": [],
+   "evidence_id": "prior_diagnoses",
+   "tool": "prior_diagnoses_nearby",
+   "round": 1,
+   "zetaris": [],
+   "by": "coordinator",
+   "run_id": "run_20261026210259_q6df"
+  },
+  {
+   "memory_id": "mem-141",
+   "kind": "evidence",
+   "ref": "speed_1km",
+   "content": "No Ookla speed tests were recorded within 1 km of this point in 2026Q3.",
+   "confidence": 0.4,
+   "source": "Ookla open data tiles (Zetaris CD_OOKLA_MOBILE_TILES)",
+   "created_at": "2026-10-26T21:03:02.068Z",
+   "id": "speed_1km",
+   "data_period": "2026Q3",
+   "as_of": "2026-10-23",
+   "query_or_url": "zetaris:Q4",
+   "cell_ids": [
+    "871943b9bffffff"
+   ],
+   "finding": "No Ookla speed tests were recorded within 1 km of this point in 2026Q3.",
+   "value": {
+    "tiles": [],
+    "quarter": "2026Q3",
+    "radius_km": 1
+   },
+   "sample_size": {
+    "tests": 0,
+    "tiles": 0
+   },
+   "strength": "weak",
+   "bears_on": [
+    "insufficient_data"
+   ],
+   "evidence_id": "speed_1km",
+   "tool": "speeds_near",
+   "round": 1,
+   "zetaris": [
+    {
+     "id": "Q4",
+     "sql": "SELECT quadkey, lat, lon, download_mbps, upload_mbps, latency_ms, tests, devices, distance_km FROM ( SELECT t.*, 2 * 6371 * asin(sqrt(pow(sin(radians(t.lat - 52.70011670054165) / 2), 2) + cos(radians(52.70011670054165)) * cos(radians(t.lat)) * pow(sin(radians(t.lon - (0.024084717819457868)) / 2), 2))) AS distance_km FROM CD_OOKLA_MOBILE_TILES.ookla_mobile_tiles t WHERE t.quarter = '2026Q3' AND t.lat BETWEEN 52.68210 AND 52.71813 AND t.lon BETWEEN -0.00556 AND 0.05373 ) x WHERE distance_km <= 2.0 ORDER BY distance_km",
+     "duration_ms": 324,
+     "rows": 0
+    }
+   ],
+   "by": "investigator",
+   "run_id": "run_20261026210259_q6df"
+  },
+  {
+   "memory_id": "mem-142",
+   "kind": "evidence",
+   "ref": "speed_cell",
+   "content": "No Ookla speed tests were recorded in this cell in 2026Q3, so there is no measured speed here.",
+   "confidence": 0.4,
+   "source": "Ookla open data (Zetaris CD_OOKLA_MOBILE)",
+   "created_at": "2026-10-26T21:03:02.098Z",
+   "id": "speed_cell",
+   "data_period": "2026Q3",
+   "as_of": "2026-10-23",
+   "query_or_url": "zetaris:Q1",
+   "cell_ids": [
+    "871943b9bffffff"
+   ],
+   "finding": "No Ookla speed tests were recorded in this cell in 2026Q3, so there is no measured speed here.",
+   "value": null,
+   "sample_size": {
+    "tests": 0
+   },
+   "strength": "weak",
+   "bears_on": [
+    "insufficient_data"
+   ],
+   "evidence_id": "speed_cell",
+   "tool": "speeds_near",
+   "round": 1,
+   "zetaris": [
+    {
+     "id": "Q1",
+     "sql": "SELECT c.cell_id, c.lat, c.lon, c.population, c.nation, o.quarter, o.download_mbps, o.upload_mbps, o.latency_ms, o.tests, o.devices, o.tests_per_1k_pop, o.devices_per_1k_pop, o.quarters_with_data, o.download_mbps_oldest, o.download_change_pct, o.download_trend_mbps_per_quarter, hst.history_json, nb.neighbour_download_mbps, nb.neighbour_tests, nb.neighbour_cells_with_data, m.nearest_mast_km, m.nearest_mast_bearing_deg, m.nearest_mast_id, m.nearest_mast_lat, m.nearest_mast_lon, m.nearest_mast_sources, m.nearest_mast_operators, m.nearest_mast_operators_confirmed, m.nearest_mast_antenna_height_m, m.masts_within_5km, m.masts_known_operator_within_5km, m.masts_unknown_operator_within_5km, m.masts_osm_only_within_5km, m.distinct_operators_within_5km, m.operators_within_5km, m.operators_confirmed_within_5km, m.wtr_sites_within_5km, m.microwave_backhaul_sites_within_5km, m.operator_data_status, a.pcon_code, a.pcon_name, a.laua_code, a.laua_name, a.g4_geo_out_0, a.g4_geo_out_1, a.g4_prem_out_0, a.g4_prem_in_0, a.g4_abrd_in_0, a.g5hc_prem_out_at_least_one, a.laua_g4_geo_out_0, a.laua_g4_geo_out_1, a.data_date AS ofcom_data_date, t.elevation_mean_m, t.elevation_range_m, l.blocked AS los_blocked, l.obstruction_m AS los_obstruction_m, l.los_class FROM CD_CELLS.cells_r7 c LEFT JOIN CD_OOKLA_MOBILE.ookla_mobile_r7 o ON o.cell_id = c.cell_id LEFT JOIN ( SELECT cell_id, to_json(collect_list(named_struct('quarter', quarter, 'download_mbps', download_mbps, 'tests', tests))) AS history_json FROM CD_OOKLA_MOBILE_HISTORY.ookla_mobile_history_r7 WHERE cell_id = '871943b9bffffff' GROUP BY cell_id ) hst ON hst.cell_id = c.cell_id CROSS JOIN ( SELECT sum(download_mbps * tests) / sum(tests) AS neighbour_download_mbps, sum(tests) AS neighbour_tests, count(*) AS neighbour_cells_with_data FROM CD_OOKLA_MOBILE.ookla_mobile_r7 WHERE cell_id IN ('871943aa6ffffff', '871943ab4ffffff', '871943ab5ffffff', '871943b98ffffff', '871943b99ffffff', '871943b9affffff') ) nb LEFT JOIN CD_MASTS.masts_r7 m ON m.cell_id = c.cell_id LEFT JOIN CD_OFCOM_AREA.ofcom_area_r7 a ON a.cell_id = c.cell_id LEFT JOIN CD_TERRAIN.terrain_r7 t ON t.cell_id = c.cell_id LEFT JOIN CD_LOS.los_r7 l ON l.cell_id = c.cell_id WHERE c.cell_id = '871943b9bffffff'",
+     "duration_ms": 559,
+     "rows": 1
+    }
+   ],
+   "by": "investigator",
+   "run_id": "run_20261026210259_q6df"
+  },
+  {
+   "memory_id": "mem-143",
+   "kind": "evidence",
+   "ref": "speed_neighbours",
+   "content": "None of the 6 neighbouring cells had Ookla speed tests in 2026Q3.",
+   "confidence": 0.4,
+   "source": "Ookla open data (Zetaris CD_OOKLA_MOBILE)",
+   "created_at": "2026-10-26T21:03:02.135Z",
+   "id": "speed_neighbours",
+   "data_period": "2026Q3",
+   "as_of": "2026-10-23",
+   "query_or_url": "zetaris:Q1",
+   "cell_ids": [
+    "871943aa6ffffff",
+    "871943ab4ffffff",
+    "871943ab5ffffff",
+    "871943b98ffffff",
+    "871943b99ffffff",
+    "871943b9affffff"
+   ],
+   "finding": "None of the 6 neighbouring cells had Ookla speed tests in 2026Q3.",
+   "value": null,
+   "sample_size": {
+    "tests": 0
+   },
+   "strength": "weak",
+   "bears_on": [
+    "insufficient_data"
+   ],
+   "evidence_id": "speed_neighbours",
+   "tool": "speeds_near",
+   "round": 1,
+   "zetaris": [
+    {
+     "id": "Q1",
+     "sql": "SELECT c.cell_id, c.lat, c.lon, c.population, c.nation, o.quarter, o.download_mbps, o.upload_mbps, o.latency_ms, o.tests, o.devices, o.tests_per_1k_pop, o.devices_per_1k_pop, o.quarters_with_data, o.download_mbps_oldest, o.download_change_pct, o.download_trend_mbps_per_quarter, hst.history_json, nb.neighbour_download_mbps, nb.neighbour_tests, nb.neighbour_cells_with_data, m.nearest_mast_km, m.nearest_mast_bearing_deg, m.nearest_mast_id, m.nearest_mast_lat, m.nearest_mast_lon, m.nearest_mast_sources, m.nearest_mast_operators, m.nearest_mast_operators_confirmed, m.nearest_mast_antenna_height_m, m.masts_within_5km, m.masts_known_operator_within_5km, m.masts_unknown_operator_within_5km, m.masts_osm_only_within_5km, m.distinct_operators_within_5km, m.operators_within_5km, m.operators_confirmed_within_5km, m.wtr_sites_within_5km, m.microwave_backhaul_sites_within_5km, m.operator_data_status, a.pcon_code, a.pcon_name, a.laua_code, a.laua_name, a.g4_geo_out_0, a.g4_geo_out_1, a.g4_prem_out_0, a.g4_prem_in_0, a.g4_abrd_in_0, a.g5hc_prem_out_at_least_one, a.laua_g4_geo_out_0, a.laua_g4_geo_out_1, a.data_date AS ofcom_data_date, t.elevation_mean_m, t.elevation_range_m, l.blocked AS los_blocked, l.obstruction_m AS los_obstruction_m, l.los_class FROM CD_CELLS.cells_r7 c LEFT JOIN CD_OOKLA_MOBILE.ookla_mobile_r7 o ON o.cell_id = c.cell_id LEFT JOIN ( SELECT cell_id, to_json(collect_list(named_struct('quarter', quarter, 'download_mbps', download_mbps, 'tests', tests))) AS history_json FROM CD_OOKLA_MOBILE_HISTORY.ookla_mobile_history_r7 WHERE cell_id = '871943b9bffffff' GROUP BY cell_id ) hst ON hst.cell_id = c.cell_id CROSS JOIN ( SELECT sum(download_mbps * tests) / sum(tests) AS neighbour_download_mbps, sum(tests) AS neighbour_tests, count(*) AS neighbour_cells_with_data FROM CD_OOKLA_MOBILE.ookla_mobile_r7 WHERE cell_id IN ('871943aa6ffffff', '871943ab4ffffff', '871943ab5ffffff', '871943b98ffffff', '871943b99ffffff', '871943b9affffff') ) nb LEFT JOIN CD_MASTS.masts_r7 m ON m.cell_id = c.cell_id LEFT JOIN CD_OFCOM_AREA.ofcom_area_r7 a ON a.cell_id = c.cell_id LEFT JOIN CD_TERRAIN.terrain_r7 t ON t.cell_id = c.cell_id LEFT JOIN CD_LOS.los_r7 l ON l.cell_id = c.cell_id WHERE c.cell_id = '871943b9bffffff'",
+     "duration_ms": 559,
+     "rows": 1
+    }
+   ],
+   "by": "investigator",
+   "run_id": "run_20261026210259_q6df"
+  },
+  {
+   "memory_id": "mem-145",
+   "kind": "evidence",
+   "ref": "nearest_site",
+   "content": "The nearest approximate mast site is 4.8 km west (Ofcom licence register; operator O2, confirmed by Ofcom's licence register).",
+   "confidence": 0.7,
+   "source": "Approximate mast sites (Zetaris CD_MASTS_SITES)",
+   "created_at": "2026-10-26T21:03:02.484Z",
+   "id": "nearest_site",
+   "data_period": "OpenCelliD downloaded 2026-10-25; OpenStreetMap extract downloaded 2026-10-25; Ofcom WTR downloaded 2026-10-25",
+   "as_of": "2026-10-25",
+   "query_or_url": "zetaris:Q2",
+   "cell_ids": [
+    "871943b9bffffff"
+   ],
+   "finding": "The nearest approximate mast site is 4.8 km west (Ofcom licence register; operator O2, confirmed by Ofcom's licence register).",
+   "value": {
+    "site_id": "S091576",
+    "distance_km": 4.77,
+    "bearing_deg": 269,
+    "operators": [
+     "O2"
+    ],
+    "operators_confirmed": [
+     "O2"
+    ],
+    "sources": "ofcom_wtr"
+   },
+   "sample_size": {
+    "sites_within_10km": 30
+   },
+   "strength": "moderate",
+   "bears_on": [
+    "distance_to_mast"
+   ],
+   "evidence_id": "nearest_site",
+   "tool": "sites_near",
+   "round": 1,
+   "zetaris": [
+    {
+     "id": "Q2",
+     "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 52.70011670054165) / 2), 2) + cos(radians(52.70011670054165)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (0.024084717819457868)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 52.61003 AND 52.79021 AND s.lon BETWEEN -0.12415 AND 0.17232 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
+     "duration_ms": 275,
+     "rows": 30
+    }
+   ],
+   "by": "investigator",
+   "run_id": "run_20261026210259_q6df"
+  },
+  {
+   "memory_id": "mem-146",
+   "kind": "evidence",
+   "ref": "operators_5km",
+   "content": "Only 1 operator (O2) has approximate mast sites within 5 km. O2 confirmed by Ofcom's licence register.",
+   "confidence": 0.4,
+   "source": "Approximate mast sites (Zetaris CD_MASTS_SITES)",
+   "created_at": "2026-10-26T21:03:02.514Z",
+   "id": "operators_5km",
+   "data_period": "OpenCelliD downloaded 2026-10-25; OpenStreetMap extract downloaded 2026-10-25; Ofcom WTR downloaded 2026-10-25",
+   "as_of": "2026-10-25",
+   "query_or_url": "zetaris:Q2",
+   "cell_ids": [
+    "871943b9bffffff"
+   ],
+   "finding": "Only 1 operator (O2) has approximate mast sites within 5 km. O2 confirmed by Ofcom's licence register.",
+   "value": {
+    "operators": [
+     "O2"
+    ],
+    "operators_confirmed": [
+     "O2"
+    ],
+    "operator_data_status": "confirmed"
+   },
+   "sample_size": {
+    "sites_within_5km": 1,
+    "sites_unknown_operator": 0
+   },
+   "strength": "weak",
+   "bears_on": [
+    "single_operator",
+    "distance_to_mast"
+   ],
+   "evidence_id": "operators_5km",
+   "tool": "sites_near",
+   "round": 1,
+   "zetaris": [
+    {
+     "id": "Q2",
+     "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 52.70011670054165) / 2), 2) + cos(radians(52.70011670054165)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (0.024084717819457868)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 52.61003 AND 52.79021 AND s.lon BETWEEN -0.12415 AND 0.17232 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
+     "duration_ms": 275,
+     "rows": 30
+    }
+   ],
+   "by": "investigator",
+   "run_id": "run_20261026210259_q6df"
+  },
+  {
+   "memory_id": "mem-148",
+   "kind": "evidence",
+   "ref": "los_ee",
+   "content": "EE's nearest approximate site is 5.6 km east (EE confirmed by Ofcom's licence register). The direct line clears the ground by at least 2 m (antenna height from Ofcom's licence register).",
+   "confidence": 0.7,
+   "source": "Line of sight over Copernicus DEM GLO-30 (computed)",
+   "created_at": "2026-10-26T21:03:02.899Z",
+   "id": "los_ee",
+   "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
+   "as_of": "2026-10-25",
+   "query_or_url": "terrain.line_of_sight from (52.70012, 0.02408) to site S000310 (zetaris:Q2)",
+   "cell_ids": [
+    "871943b88ffffff",
+    "871943b9bffffff"
+   ],
+   "finding": "EE's nearest approximate site is 5.6 km east (EE confirmed by Ofcom's licence register). The direct line clears the ground by at least 2 m (antenna height from Ofcom's licence register).",
+   "value": {
+    "site_id": "S000310",
+    "operators_at_site": [
+     "EE",
+     "O2",
+     "Three"
+    ],
+    "operators_confirmed": [
+     "EE",
+     "O2",
+     "Three"
+    ],
+    "for_operators": [
+     "EE"
+    ],
+    "los_class": "clear",
+    "blocked": false,
+    "max_obstruction_m": -1.5,
+    "obstruction_distance_m": 30,
+    "obstruction_lat": 52.700137,
+    "obstruction_lon": 0.024529,
+    "obstruction_ground_m": 2.1,
+    "path_length_m": 5579,
+    "rx_ground_m": 1.7,
+    "site_ground_m": 1.9,
+    "rx_height_m": 1.5,
+    "mast_height_m": 70,
+    "mast_height_source": "ofcom_register",
+    "samples": 187
+   },
+   "sample_size": {
+    "dem_samples": 187
+   },
+   "strength": "moderate",
+   "bears_on": [
+    "terrain_blocking",
+    "distance_to_mast"
+   ],
+   "evidence_id": "los_ee",
+   "tool": "line_of_sight",
+   "round": 1,
+   "zetaris": [
+    {
+     "id": "Q2",
+     "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 52.70011670054165) / 2), 2) + cos(radians(52.70011670054165)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (0.024084717819457868)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 52.61003 AND 52.79021 AND s.lon BETWEEN -0.12415 AND 0.17232 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
+     "duration_ms": 275,
+     "rows": 30
+    }
+   ],
+   "by": "investigator",
+   "run_id": "run_20261026210259_q6df"
+  },
+  {
+   "memory_id": "mem-150",
+   "kind": "evidence",
+   "ref": "los_o2",
+   "content": "O2's nearest approximate site is 4.8 km west (O2 confirmed by Ofcom's licence register). The direct line clears the ground by at least 1 m (antenna height from Ofcom's licence register).",
+   "confidence": 0.7,
+   "source": "Line of sight over Copernicus DEM GLO-30 (computed)",
+   "created_at": "2026-10-26T21:03:03.269Z",
+   "id": "los_o2",
+   "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
+   "as_of": "2026-10-25",
+   "query_or_url": "terrain.line_of_sight from (52.70012, 0.02408) to site S091576 (zetaris:Q2)",
+   "cell_ids": [
+    "871943ab6ffffff",
+    "871943b9bffffff"
+   ],
+   "finding": "O2's nearest approximate site is 4.8 km west (O2 confirmed by Ofcom's licence register). The direct line clears the ground by at least 1 m (antenna height from Ofcom's licence register).",
+   "value": {
+    "site_id": "S091576",
+    "operators_at_site": [
+     "O2"
+    ],
+    "operators_confirmed": [
+     "O2"
+    ],
+    "for_operators": [
+     "O2"
+    ],
+    "los_class": "clear",
+    "blocked": false,
+    "max_obstruction_m": -1.3,
+    "obstruction_distance_m": 60,
+    "obstruction_lat": 52.70011,
+    "obstruction_lon": 0.023195,
+    "obstruction_ground_m": 2.2,
+    "path_length_m": 4765,
+    "rx_ground_m": 1.7,
+    "site_ground_m": 4.5,
+    "rx_height_m": 1.5,
+    "mast_height_m": 18.5,
+    "mast_height_source": "ofcom_register",
+    "samples": 160
+   },
+   "sample_size": {
+    "dem_samples": 160
+   },
+   "strength": "moderate",
+   "bears_on": [
+    "terrain_blocking",
+    "distance_to_mast"
+   ],
+   "evidence_id": "los_o2",
+   "tool": "line_of_sight",
+   "round": 1,
+   "zetaris": [
+    {
+     "id": "Q2",
+     "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 52.70011670054165) / 2), 2) + cos(radians(52.70011670054165)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (0.024084717819457868)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 52.61003 AND 52.79021 AND s.lon BETWEEN -0.12415 AND 0.17232 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
+     "duration_ms": 275,
+     "rows": 30
+    }
+   ],
+   "by": "investigator",
+   "run_id": "run_20261026210259_q6df"
+  },
+  {
+   "memory_id": "mem-152",
+   "kind": "evidence",
+   "ref": "los_three",
+   "content": "Three's nearest approximate site is 5.6 km east (Three confirmed by Ofcom's licence register). The direct line clears the ground by at least 2 m (antenna height from Ofcom's licence register).",
+   "confidence": 0.7,
+   "source": "Line of sight over Copernicus DEM GLO-30 (computed)",
+   "created_at": "2026-10-26T21:03:03.365Z",
+   "id": "los_three",
+   "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
+   "as_of": "2026-10-25",
+   "query_or_url": "terrain.line_of_sight from (52.70012, 0.02408) to site S000310 (zetaris:Q2)",
+   "cell_ids": [
+    "871943b88ffffff",
+    "871943b9bffffff"
+   ],
+   "finding": "Three's nearest approximate site is 5.6 km east (Three confirmed by Ofcom's licence register). The direct line clears the ground by at least 2 m (antenna height from Ofcom's licence register).",
+   "value": {
+    "site_id": "S000310",
+    "operators_at_site": [
+     "EE",
+     "O2",
+     "Three"
+    ],
+    "operators_confirmed": [
+     "EE",
+     "O2",
+     "Three"
+    ],
+    "for_operators": [
+     "Three"
+    ],
+    "los_class": "clear",
+    "blocked": false,
+    "max_obstruction_m": -1.5,
+    "obstruction_distance_m": 30,
+    "obstruction_lat": 52.700137,
+    "obstruction_lon": 0.024529,
+    "obstruction_ground_m": 2.1,
+    "path_length_m": 5579,
+    "rx_ground_m": 1.7,
+    "site_ground_m": 1.9,
+    "rx_height_m": 1.5,
+    "mast_height_m": 70,
+    "mast_height_source": "ofcom_register",
+    "samples": 187
+   },
+   "sample_size": {
+    "dem_samples": 187
+   },
+   "strength": "moderate",
+   "bears_on": [
+    "terrain_blocking",
+    "distance_to_mast"
+   ],
+   "evidence_id": "los_three",
+   "tool": "line_of_sight",
+   "round": 1,
+   "zetaris": [
+    {
+     "id": "Q2",
+     "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 52.70011670054165) / 2), 2) + cos(radians(52.70011670054165)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (0.024084717819457868)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 52.61003 AND 52.79021 AND s.lon BETWEEN -0.12415 AND 0.17232 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
+     "duration_ms": 275,
+     "rows": 30
+    }
+   ],
+   "by": "investigator",
+   "run_id": "run_20261026210259_q6df"
+  },
+  {
+   "memory_id": "mem-154",
+   "kind": "evidence",
+   "ref": "los_vodafone",
+   "content": "Vodafone's nearest approximate site is 9.5 km south (operator inferred from crowd-sourced data). Terrain rises 5 m above the direct line 90 m from here (antenna height assumed 25 m), so the signal is likely weakened, not necessarily lost. The margin is small and may be trees or buildings in the surface model.",
+   "confidence": 0.4,
+   "source": "Line of sight over Copernicus DEM GLO-30 (computed)",
+   "created_at": "2026-10-26T21:03:03.455Z",
+   "id": "los_vodafone",
+   "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
+   "as_of": "2026-10-25",
+   "query_or_url": "terrain.line_of_sight from (52.70012, 0.02408) to site S042990 (zetaris:Q2)",
+   "cell_ids": [
+    "871943a82ffffff",
+    "871943b9bffffff"
+   ],
+   "finding": "Vodafone's nearest approximate site is 9.5 km south (operator inferred from crowd-sourced data). Terrain rises 5 m above the direct line 90 m from here (antenna height assumed 25 m), so the signal is likely weakened, not necessarily lost. The margin is small and may be trees or buildings in the surface model.",
+   "value": {
+    "site_id": "S042990",
+    "operators_at_site": [
+     "Vodafone"
+    ],
+    "operators_confirmed": [],
+    "for_operators": [
+     "Vodafone"
+    ],
+    "los_class": "marginal",
+    "blocked": true,
+    "max_obstruction_m": 4.6,
+    "obstruction_distance_m": 90,
+    "obstruction_lat": 52.69934,
+    "obstruction_lon": 0.02371,
+    "obstruction_ground_m": 8,
+    "path_length_m": 9479,
+    "rx_ground_m": 1.7,
+    "site_ground_m": -1.1,
+    "rx_height_m": 1.5,
+    "mast_height_m": 25,
+    "mast_height_source": "assumed_default",
+    "samples": 317
+   },
+   "sample_size": {
+    "dem_samples": 317
+   },
+   "strength": "weak",
+   "bears_on": [
+    "terrain_blocking",
+    "distance_to_mast"
+   ],
+   "evidence_id": "los_vodafone",
+   "tool": "line_of_sight",
+   "round": 1,
+   "zetaris": [
+    {
+     "id": "Q2",
+     "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 52.70011670054165) / 2), 2) + cos(radians(52.70011670054165)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (0.024084717819457868)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 52.61003 AND 52.79021 AND s.lon BETWEEN -0.12415 AND 0.17232 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
+     "duration_ms": 275,
+     "rows": 30
+    }
+   ],
+   "by": "investigator",
+   "run_id": "run_20261026210259_q6df"
+  },
+  {
+   "memory_id": "mem-156",
+   "kind": "evidence",
+   "ref": "ofcom_area",
+   "content": "In South Holland and The Deepings, 0.0% of land has no outdoor 4G from any operator and 0.0% from only one (Ofcom Connected Nations, July 2025). This is a predicted figure for the whole constituency, not this exact location.",
+   "confidence": 0.7,
+   "source": "Ofcom Connected Nations (Zetaris CD_OFCOM_AREA)",
+   "created_at": "2026-10-26T21:03:03.558Z",
+   "id": "ofcom_area",
+   "data_period": "2025-07 (release 202507_mobile_coverage_r01)",
+   "as_of": "2026-10-25",
+   "query_or_url": "zetaris:Q1",
+   "cell_ids": [
+    "871943b9bffffff"
+   ],
+   "finding": "In South Holland and The Deepings, 0.0% of land has no outdoor 4G from any operator and 0.0% from only one (Ofcom Connected Nations, July 2025). This is a predicted figure for the whole constituency, not this exact location.",
+   "value": {
+    "area": "South Holland and The Deepings",
+    "g4_geo_out_0": 0,
+    "g4_geo_out_1": 0,
+    "g4_prem_in_0": 1.61,
+    "local_authority": "South Holland",
+    "laua_g4_geo_out_0": 0
+   },
+   "sample_size": null,
+   "strength": "moderate",
+   "bears_on": [
+    "distance_to_mast",
+    "single_operator"
+   ],
+   "evidence_id": "ofcom_area",
+   "tool": "ofcom_area",
+   "round": 1,
+   "zetaris": [
+    {
+     "id": "Q1",
+     "sql": "SELECT c.cell_id, c.lat, c.lon, c.population, c.nation, o.quarter, o.download_mbps, o.upload_mbps, o.latency_ms, o.tests, o.devices, o.tests_per_1k_pop, o.devices_per_1k_pop, o.quarters_with_data, o.download_mbps_oldest, o.download_change_pct, o.download_trend_mbps_per_quarter, hst.history_json, nb.neighbour_download_mbps, nb.neighbour_tests, nb.neighbour_cells_with_data, m.nearest_mast_km, m.nearest_mast_bearing_deg, m.nearest_mast_id, m.nearest_mast_lat, m.nearest_mast_lon, m.nearest_mast_sources, m.nearest_mast_operators, m.nearest_mast_operators_confirmed, m.nearest_mast_antenna_height_m, m.masts_within_5km, m.masts_known_operator_within_5km, m.masts_unknown_operator_within_5km, m.masts_osm_only_within_5km, m.distinct_operators_within_5km, m.operators_within_5km, m.operators_confirmed_within_5km, m.wtr_sites_within_5km, m.microwave_backhaul_sites_within_5km, m.operator_data_status, a.pcon_code, a.pcon_name, a.laua_code, a.laua_name, a.g4_geo_out_0, a.g4_geo_out_1, a.g4_prem_out_0, a.g4_prem_in_0, a.g4_abrd_in_0, a.g5hc_prem_out_at_least_one, a.laua_g4_geo_out_0, a.laua_g4_geo_out_1, a.data_date AS ofcom_data_date, t.elevation_mean_m, t.elevation_range_m, l.blocked AS los_blocked, l.obstruction_m AS los_obstruction_m, l.los_class FROM CD_CELLS.cells_r7 c LEFT JOIN CD_OOKLA_MOBILE.ookla_mobile_r7 o ON o.cell_id = c.cell_id LEFT JOIN ( SELECT cell_id, to_json(collect_list(named_struct('quarter', quarter, 'download_mbps', download_mbps, 'tests', tests))) AS history_json FROM CD_OOKLA_MOBILE_HISTORY.ookla_mobile_history_r7 WHERE cell_id = '871943b9bffffff' GROUP BY cell_id ) hst ON hst.cell_id = c.cell_id CROSS JOIN ( SELECT sum(download_mbps * tests) / sum(tests) AS neighbour_download_mbps, sum(tests) AS neighbour_tests, count(*) AS neighbour_cells_with_data FROM CD_OOKLA_MOBILE.ookla_mobile_r7 WHERE cell_id IN ('871943aa6ffffff', '871943ab4ffffff', '871943ab5ffffff', '871943b98ffffff', '871943b99ffffff', '871943b9affffff') ) nb LEFT JOIN CD_MASTS.masts_r7 m ON m.cell_id = c.cell_id LEFT JOIN CD_OFCOM_AREA.ofcom_area_r7 a ON a.cell_id = c.cell_id LEFT JOIN CD_TERRAIN.terrain_r7 t ON t.cell_id = c.cell_id LEFT JOIN CD_LOS.los_r7 l ON l.cell_id = c.cell_id WHERE c.cell_id = '871943b9bffffff'",
+     "duration_ms": 559,
+     "rows": 1
+    }
+   ],
+   "by": "investigator",
+   "run_id": "run_20261026210259_q6df"
+  },
+  {
+   "memory_id": "mem-158",
+   "kind": "evidence",
+   "ref": "weather",
+   "content": "Weather now: partly cloudy, wind 30 km/h gusting 52 km/h, rain 0.0 mm/h. Next 24 h: gusts up to 65.2 km/h, rain up to 1.4 mm/h: moderate (gusts up to 65.2 km/h).",
+   "confidence": 0.7,
+   "source": "Open-Meteo forecast",
+   "created_at": "2026-10-26T21:03:04.664Z",
+   "id": "weather",
+   "data_period": "live",
+   "as_of": "2026-10-26T21:03:03+00:00",
+   "query_or_url": "https://api.open-meteo.com/v1/forecast?latitude=52.7001&longitude=0.0241&current=precipitation%2Crain%2Csnowfall%2Cwind_speed_10m%2Cwind_gusts_10m%2Cweather_code&hourly=precipitation%2Crain%2Csnowfall%2Cwind_speed_10m%2Cwind_gusts_10m%2Cweather_code&forecast_hours=24&timezone=Europe%2FLondon",
+   "cell_ids": [
+    "871943b9bffffff"
+   ],
+   "finding": "Weather now: partly cloudy, wind 30 km/h gusting 52 km/h, rain 0.0 mm/h. Next 24 h: gusts up to 65.2 km/h, rain up to 1.4 mm/h: moderate (gusts up to 65.2 km/h).",
+   "value": {
+    "severity": "moderate",
+    "now": {
+     "time": "2026-10-26T21:00",
+     "precipitation_mm_h": 0,
+     "rain_mm_h": 0,
+     "snowfall_cm_h": 0,
+     "wind_kmh": 29.5,
+     "gust_kmh": 52.2,
+     "weather_code": 2,
+     "weather": "partly cloudy"
+    },
+    "next_24h": {
+     "hours": 24,
+     "max_precipitation_mm_h": 1.4,
+     "max_precipitation_at": "2026-10-27T06:00",
+     "max_gust_kmh": 65.2,
+     "max_gust_at": "2026-10-27T03:00",
+     "max_snowfall_cm_h": 0,
+     "total_precipitation_mm": 2.2,
+     "thunderstorm_expected": false
+    }
+   },
+   "sample_size": {
+    "forecast_hours": 24
+   },
+   "strength": "moderate",
+   "bears_on": [
+    "weather"
+   ],
+   "evidence_id": "weather",
+   "tool": "live_conditions",
+   "round": 1,
+   "zetaris": [],
+   "by": "investigator",
+   "run_id": "run_20261026210259_q6df"
+  },
+  {
+   "memory_id": "mem-159",
+   "kind": "evidence",
+   "ref": "met_office_warnings",
+   "content": "No Met Office weather warnings are in force or due for East Midlands.",
+   "confidence": 0.7,
+   "source": "Met Office severe weather warnings (RSS)",
+   "created_at": "2026-10-26T21:03:04.685Z",
+   "id": "met_office_warnings",
+   "data_period": "live",
+   "as_of": "2026-10-26T21:03:03+00:00",
+   "query_or_url": "https://www.metoffice.gov.uk/public/data/PWSCache/WarningsRSS/Region/em",
+   "cell_ids": [
+    "871943b9bffffff"
+   ],
+   "finding": "No Met Office weather warnings are in force or due for East Midlands.",
+   "value": {
+    "region": "East Midlands",
+    "warnings": []
+   },
+   "sample_size": {
+    "warnings": 0
+   },
+   "strength": "moderate",
+   "bears_on": [
+    "weather"
+   ],
+   "evidence_id": "met_office_warnings",
+   "tool": "live_conditions",
+   "round": 1,
+   "zetaris": [],
+   "by": "investigator",
+   "run_id": "run_20261026210259_q6df"
+  },
+  {
+   "memory_id": "mem-160",
+   "kind": "evidence",
+   "ref": "flood_warnings",
+   "content": "No flood alerts or warnings within 10 km.",
+   "confidence": 0.7,
+   "source": "Environment Agency flood monitoring",
+   "created_at": "2026-10-26T21:03:04.707Z",
+   "id": "flood_warnings",
+   "data_period": "live",
+   "as_of": "2026-10-26T21:03:04+00:00",
+   "query_or_url": "https://environment.data.gov.uk/flood-monitoring/id/floods?lat=52.7001&long=0.0241&dist=10",
+   "cell_ids": [
+    "871943b9bffffff"
+   ],
+   "finding": "No flood alerts or warnings within 10 km.",
+   "value": {
+    "warnings": [],
+    "via": "api"
+   },
+   "sample_size": {
+    "warnings": 0
+   },
+   "strength": "moderate",
+   "bears_on": [
+    "active_incident"
+   ],
+   "evidence_id": "flood_warnings",
+   "tool": "live_conditions",
+   "round": 1,
+   "zetaris": [],
+   "by": "investigator",
+   "run_id": "run_20261026210259_q6df"
+  },
+  {
+   "memory_id": "mem-162",
+   "kind": "evidence",
+   "ref": "network_comparison",
+   "content": "Likely best network here: O2, with a clear line of sight to a site 4.8 km west (confirmed by Ofcom's licence register). Also a clear line: EE (5.6 km) and Three (5.6 km).",
+   "confidence": 0.7,
+   "source": "Rule-based network comparison (computed from line of sight and sites)",
+   "created_at": "2026-10-26T21:03:04.788Z",
+   "id": "network_comparison",
+   "data_period": "OpenCelliD downloaded 2026-10-25; OpenStreetMap extract downloaded 2026-10-25; Ofcom WTR downloaded 2026-10-25",
+   "as_of": "2026-10-25",
+   "query_or_url": "zetaris:Q2",
+   "cell_ids": [
+    "871943b9bffffff"
+   ],
+   "finding": "Likely best network here: O2, with a clear line of sight to a site 4.8 km west (confirmed by Ofcom's licence register). Also a clear line: EE (5.6 km) and Three (5.6 km).",
+   "value": {
+    "operators": [
+     {
+      "operator": "EE",
+      "site": {
+       "site_id": "S000310",
+       "lat": 52.7038354,
+       "lon": 0.1066527,
+       "distance_km": 5.58,
+       "bearing_deg": 86,
+       "direction": "east",
+       "sources": [
+        "Ofcom register",
+        "OpenStreetMap"
+       ]
+      },
+      "status": "confirmed",
+      "los": {
+       "class": "clear",
+       "blocked": false,
+       "obstruction_m": -1.5,
+       "obstruction_distance_m": 30,
+       "obstruction_lat": 52.700137,
+       "obstruction_lon": 0.024529,
+       "path_length_m": 5579,
+       "mast_height_m": 70,
+       "mast_height": "measured"
+      }
+     },
+     {
+      "operator": "O2",
+      "site": {
+       "site_id": "S091576",
+       "lat": 52.69961733514516,
+       "lon": -0.046631789478758526,
+       "distance_km": 4.77,
+       "bearing_deg": 269,
+       "direction": "west",
+       "sources": [
+        "Ofcom register"
+       ]
+      },
+      "status": "confirmed",
+      "los": {
+       "class": "clear",
+       "blocked": false,
+       "obstruction_m": -1.3,
+       "obstruction_distance_m": 60,
+       "obstruction_lat": 52.70011,
+       "obstruction_lon": 0.023195,
+       "path_length_m": 4765,
+       "mast_height_m": 18.5,
+       "mast_height": "measured"
+      }
+     },
+     {
+      "operator": "Three",
+      "site": {
+       "site_id": "S000310",
+       "lat": 52.7038354,
+       "lon": 0.1066527,
+       "distance_km": 5.58,
+       "bearing_deg": 86,
+       "direction": "east",
+       "sources": [
+        "Ofcom register",
+        "OpenStreetMap"
+       ]
+      },
+      "status": "confirmed",
+      "los": {
+       "class": "clear",
+       "blocked": false,
+       "obstruction_m": -1.5,
+       "obstruction_distance_m": 30,
+       "obstruction_lat": 52.700137,
+       "obstruction_lon": 0.024529,
+       "path_length_m": 5579,
+       "mast_height_m": 70,
+       "mast_height": "measured"
+      }
+     },
+     {
+      "operator": "Vodafone",
+      "site": {
+       "site_id": "S042990",
+       "lat": 52.6183,
+       "lon": -0.0154,
+       "distance_km": 9.48,
+       "bearing_deg": 196,
+       "direction": "south",
+       "sources": [
+        "crowd-sourced (OpenCelliD)"
+       ]
+      },
+      "status": "inferred",
+      "los": {
+       "class": "marginal",
+       "blocked": true,
+       "obstruction_m": 4.6,
+       "obstruction_distance_m": 90,
+       "obstruction_lat": 52.69934,
+       "obstruction_lon": 0.02371,
+       "path_length_m": 9479,
+       "mast_height_m": 25,
+       "mast_height": "assumed"
+      }
+     }
+    ],
+    "likely_best": {
+     "reviewed_by_agents": false,
+     "label": "Based on data, not yet reviewed by agents",
+     "rule": "Operators ranked by line of sight from this point to their nearest identified site (clear, then marginal, then blocked); clear lines by distance, obstructed ones by how far the ground rises above the line.",
+     "operators": [
+      "O2",
+      "EE",
+      "Three"
+     ],
+     "line_of_sight": "clear",
+     "text": "Likely best network here: O2, with a clear line of sight to a site 4.8 km west (confirmed by Ofcom's licence register). Also a clear line: EE (5.6 km) and Three (5.6 km)."
+    }
+   },
+   "sample_size": {
+    "operators_with_site": 4
+   },
+   "strength": "moderate",
+   "bears_on": [
+    "single_operator",
+    "distance_to_mast"
+   ],
+   "evidence_id": "network_comparison",
+   "tool": "network_comparison",
+   "round": 1,
+   "zetaris": [
+    {
+     "id": "Q2",
+     "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 52.70011670054165) / 2), 2) + cos(radians(52.70011670054165)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (0.024084717819457868)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 52.61003 AND 52.79021 AND s.lon BETWEEN -0.12415 AND 0.17232 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
+     "duration_ms": 275,
+     "rows": 30
+    }
+   ],
+   "by": "coordinator",
+   "run_id": "run_20261026210259_q6df"
+  }
+ ],
+ "beliefs": [
+  {
+   "memory_id": "mem-164",
+   "kind": "belief",
+   "ref": "distance_to_mast",
+   "content": "distance_to_mast: The nearest confirmed mast is 4.8 km away and only O2 has sites within 5 km [nearest_site][operators_5km], while Vodafone is 9.5 km away with a small clearance margin [los_vodafone]. O2, EE and Three all have clear lines of sight [los_o2][los_ee][los_three], so distance alone is not certain.",
+   "confidence": 0.55,
+   "source": "diagnostician",
+   "created_at": "2026-10-26T21:04:37.903Z",
+   "belief_id": "distance_to_mast",
+   "cause": "distance_to_mast",
+   "explanation": "The nearest confirmed mast is 4.8 km away and only O2 has sites within 5 km [nearest_site][operators_5km], while Vodafone is 9.5 km away with a small clearance margin [los_vodafone]. O2, EE and Three all have clear lines of sight [los_o2][los_ee][los_three], so distance alone is not certain.",
+   "supporting": [
+    "nearest_site",
+    "operators_5km",
+    "los_vodafone"
+   ],
+   "contradicting": [
+    "los_o2",
+    "los_ee",
+    "los_three"
+   ],
+   "round": 1,
+   "by": "diagnostician",
+   "status": "active",
+   "run_id": "run_20261026210259_q6df",
+   "history": [
+    {
+     "at": "2026-10-26T21:04:37.904Z",
+     "by": "diagnostician",
+     "confidence": 0.55,
+     "previous": null,
+     "reason": "proposed",
+     "round": 1
+    }
+   ]
+  },
+  {
+   "memory_id": "mem-165",
+   "kind": "belief",
+   "ref": "insufficient_data",
+   "content": "insufficient_data: No speed tests exist within 1 km, in this cell, or in neighbouring cells [speed_1km][speed_cell][speed_neighbours], and there are no earlier diagnoses nearby [prior_diagnoses], so the causes cannot be separated at this point.",
+   "confidence": 0.45,
+   "source": "diagnostician",
+   "created_at": "2026-10-26T21:04:37.922Z",
+   "belief_id": "insufficient_data",
+   "cause": "insufficient_data",
+   "explanation": "No speed tests exist within 1 km, in this cell, or in neighbouring cells [speed_1km][speed_cell][speed_neighbours], and there are no earlier diagnoses nearby [prior_diagnoses], so the causes cannot be separated at this point.",
+   "supporting": [
+    "speed_1km",
+    "speed_cell",
+    "speed_neighbours",
+    "prior_diagnoses"
+   ],
+   "contradicting": [],
+   "round": 1,
+   "by": "diagnostician",
+   "status": "active",
+   "run_id": "run_20261026210259_q6df",
+   "history": [
+    {
+     "at": "2026-10-26T21:04:37.922Z",
+     "by": "diagnostician",
+     "confidence": 0.45,
+     "previous": null,
+     "reason": "proposed",
+     "round": 1
+    }
+   ]
+  }
+ ],
+ "critiques": [
+  {
+   "memory_id": "mem-167",
+   "kind": "critique",
+   "ref": "c1",
+   "content": "approve on distance_to_mast: The nearest confirmed mast is 4.8 km away and only O2 has sites within 5 km [nearest_site][operators_5km], while Vodafone is 9.5 km away with a small clearance margin [los_vodafone]. O2, EE and Three all have clear lines of sight [los_o2][los_ee][los_three], so distance alone is not certain.",
+   "confidence": 1,
+   "source": "critic",
+   "created_at": "2026-10-26T21:06:10.271Z",
+   "belief_id": "distance_to_mast",
+   "verdict": "approve",
+   "reason": "The nearest confirmed mast is 4.8 km away and only O2 has sites within 5 km [nearest_site][operators_5km], while Vodafone is 9.5 km away with a small clearance margin [los_vodafone]. O2, EE and Three all have clear lines of sight [los_o2][los_ee][los_three], so distance alone is not certain.",
+   "requested_checks": [],
+   "suggested_confidence": null,
+   "round": 1,
+   "by": "critic",
+   "critique_id": "c1",
+   "run_id": "run_20261026210259_q6df"
+  },
+  {
+   "memory_id": "mem-168",
+   "kind": "critique",
+   "ref": "c2",
+   "content": "approve on insufficient_data: No speed tests exist within 1 km, in this cell, or in neighbouring cells [speed_1km][speed_cell][speed_neighbours], and there are no earlier diagnoses nearby [prior_diagnoses], so the causes cannot be separated at this point.",
+   "confidence": 1,
+   "source": "critic",
+   "created_at": "2026-10-26T21:06:10.287Z",
+   "belief_id": "insufficient_data",
+   "verdict": "approve",
+   "reason": "No speed tests exist within 1 km, in this cell, or in neighbouring cells [speed_1km][speed_cell][speed_neighbours], and there are no earlier diagnoses nearby [prior_diagnoses], so the causes cannot be separated at this point.",
+   "requested_checks": [],
+   "suggested_confidence": null,
+   "round": 1,
+   "by": "critic",
+   "critique_id": "c2",
+   "run_id": "run_20261026210259_q6df"
+  }
+ ],
+ "notes": [
+  {
+   "memory_id": "mem-138",
+   "kind": "note",
+   "ref": "n1",
+   "content": "prior_diagnoses_nearby() -> prior_diagnoses",
+   "confidence": 1,
+   "source": "coordinator",
+   "created_at": "2026-10-26T21:02:59.398Z",
+   "type": "tool_call",
+   "summary": "prior_diagnoses_nearby() -> prior_diagnoses",
+   "by": "coordinator",
+   "tool": "prior_diagnoses_nearby",
+   "args": {},
+   "round": 1,
+   "evidence_ids": [
+    "prior_diagnoses"
+   ],
+   "new": [
+    "prior_diagnoses"
+   ],
+   "duration_ms": 33,
+   "zetaris_queries": [],
+   "note_id": "n1",
+   "run_id": "run_20261026210259_q6df"
+  },
+  {
+   "memory_id": "mem-139",
+   "kind": "note",
+   "ref": "n2",
+   "content": "round 1 starts",
+   "confidence": 1,
+   "source": "coordinator",
+   "created_at": "2026-10-26T21:02:59.485Z",
+   "type": "round",
+   "summary": "round 1 starts",
+   "by": "coordinator",
+   "round": 1,
+   "requested": [],
+   "note_id": "n2",
+   "run_id": "run_20261026210259_q6df"
+  },
+  {
+   "memory_id": "mem-140",
+   "kind": "note",
+   "ref": "n3",
+   "content": "investigator via nemotron-3.5-super-vl-120b-a12b in 1.6s",
+   "confidence": 1,
+   "source": "investigator",
+   "created_at": "2026-10-26T21:03:01.155Z",
+   "type": "llm_call",
+   "summary": "investigator via nemotron-3.5-super-vl-120b-a12b in 1.6s",
+   "by": "investigator",
+   "round": 1,
+   "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+   "duration_ms": 1562,
+   "tokens": {
+    "prompt_tokens": 914,
+    "completion_tokens": 163,
+    "total_tokens": 1077,
+    "prompt_tokens_details": {
+     "audio_tokens": null,
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "accepted_prediction_tokens": null,
+     "audio_tokens": null,
+     "reasoning_tokens": 0,
+     "rejected_prediction_tokens": null
+    }
+   },
+   "attempts": 1,
+   "retries": [],
+   "fallback": null,
+   "thinking": false,
+   "note_id": "n3",
+   "run_id": "run_20261026210259_q6df"
+  },
+  {
+   "memory_id": "mem-144",
+   "kind": "note",
+   "ref": "n4",
+   "content": "speeds_near() -> speed_1km, speed_cell, speed_neighbours",
+   "confidence": 1,
+   "source": "investigator",
+   "created_at": "2026-10-26T21:03:02.166Z",
+   "type": "tool_call",
+   "summary": "speeds_near() -> speed_1km, speed_cell, speed_neighbours",
+   "by": "investigator",
+   "tool": "speeds_near",
+   "args": {},
+   "round": 1,
+   "evidence_ids": [
+    "speed_1km",
+    "speed_cell",
+    "speed_neighbours"
+   ],
+   "new": [
+    "speed_1km",
+    "speed_cell",
+    "speed_neighbours"
+   ],
+   "duration_ms": 981,
+   "zetaris_queries": [
+    {
+     "id": "Q4",
+     "duration_ms": 324,
+     "rows": 0
+    },
+    {
+     "id": "Q1",
+     "duration_ms": 559,
+     "rows": 1
+    },
+    {
+     "id": "Q3",
+     "duration_ms": 131,
+     "rows": 1
+    }
+   ],
+   "note_id": "n4",
+   "run_id": "run_20261026210259_q6df"
+  },
+  {
+   "memory_id": "mem-147",
+   "kind": "note",
+   "ref": "n5",
+   "content": "sites_near() -> nearest_site, operators_5km",
+   "confidence": 1,
+   "source": "investigator",
+   "created_at": "2026-10-26T21:03:02.537Z",
+   "type": "tool_call",
+   "summary": "sites_near() -> nearest_site, operators_5km",
+   "by": "investigator",
+   "tool": "sites_near",
+   "args": {},
+   "round": 1,
+   "evidence_ids": [
+    "nearest_site",
+    "operators_5km"
+   ],
+   "new": [
+    "nearest_site",
+    "operators_5km"
+   ],
+   "duration_ms": 330,
+   "zetaris_queries": [
+    {
+     "id": "Q2",
+     "duration_ms": 275,
+     "rows": 30
+    }
+   ],
+   "note_id": "n5",
+   "run_id": "run_20261026210259_q6df"
+  },
+  {
+   "memory_id": "mem-149",
+   "kind": "note",
+   "ref": "n6",
+   "content": "line_of_sight(operator=EE) -> los_ee",
+   "confidence": 1,
+   "source": "investigator",
+   "created_at": "2026-10-26T21:03:02.929Z",
+   "type": "tool_call",
+   "summary": "line_of_sight(operator=EE) -> los_ee",
+   "by": "investigator",
+   "tool": "line_of_sight",
+   "args": {
+    "operator": "EE"
+   },
+   "round": 1,
+   "evidence_ids": [
+    "los_ee"
+   ],
+   "new": [
+    "los_ee"
+   ],
+   "duration_ms": 337,
+   "zetaris_queries": [],
+   "note_id": "n6",
+   "run_id": "run_20261026210259_q6df"
+  },
+  {
+   "memory_id": "mem-151",
+   "kind": "note",
+   "ref": "n7",
+   "content": "line_of_sight(operator=O2) -> los_o2",
+   "confidence": 1,
+   "source": "investigator",
+   "created_at": "2026-10-26T21:03:03.298Z",
+   "type": "tool_call",
+   "summary": "line_of_sight(operator=O2) -> los_o2",
+   "by": "investigator",
+   "tool": "line_of_sight",
+   "args": {
+    "operator": "O2"
+   },
+   "round": 1,
+   "evidence_ids": [
+    "los_o2"
+   ],
+   "new": [
+    "los_o2"
+   ],
+   "duration_ms": 317,
+   "zetaris_queries": [],
+   "note_id": "n7",
+   "run_id": "run_20261026210259_q6df"
+  },
+  {
+   "memory_id": "mem-153",
+   "kind": "note",
+   "ref": "n8",
+   "content": "line_of_sight(operator=Three) -> los_three",
+   "confidence": 1,
+   "source": "investigator",
+   "created_at": "2026-10-26T21:03:03.395Z",
+   "type": "tool_call",
+   "summary": "line_of_sight(operator=Three) -> los_three",
+   "by": "investigator",
+   "tool": "line_of_sight",
+   "args": {
+    "operator": "Three"
+   },
+   "round": 1,
+   "evidence_ids": [
+    "los_three"
+   ],
+   "new": [
+    "los_three"
+   ],
+   "duration_ms": 28,
+   "zetaris_queries": [],
+   "note_id": "n8",
+   "run_id": "run_20261026210259_q6df"
+  },
+  {
+   "memory_id": "mem-155",
+   "kind": "note",
+   "ref": "n9",
+   "content": "line_of_sight(operator=Vodafone) -> los_vodafone",
+   "confidence": 1,
+   "source": "investigator",
+   "created_at": "2026-10-26T21:03:03.488Z",
+   "type": "tool_call",
+   "summary": "line_of_sight(operator=Vodafone) -> los_vodafone",
+   "by": "investigator",
+   "tool": "line_of_sight",
+   "args": {
+    "operator": "Vodafone"
+   },
+   "round": 1,
+   "evidence_ids": [
+    "los_vodafone"
+   ],
+   "new": [
+    "los_vodafone"
+   ],
+   "duration_ms": 33,
+   "zetaris_queries": [],
+   "note_id": "n9",
+   "run_id": "run_20261026210259_q6df"
+  },
+  {
+   "memory_id": "mem-157",
+   "kind": "note",
+   "ref": "n10",
+   "content": "ofcom_area() -> ofcom_area",
+   "confidence": 1,
+   "source": "investigator",
+   "created_at": "2026-10-26T21:03:03.585Z",
+   "type": "tool_call",
+   "summary": "ofcom_area() -> ofcom_area",
+   "by": "investigator",
+   "tool": "ofcom_area",
+   "args": {},
+   "round": 1,
+   "evidence_ids": [
+    "ofcom_area"
+   ],
+   "new": [
+    "ofcom_area"
+   ],
+   "duration_ms": 37,
+   "zetaris_queries": [],
+   "note_id": "n10",
+   "run_id": "run_20261026210259_q6df"
+  },
+  {
+   "memory_id": "mem-161",
+   "kind": "note",
+   "ref": "n11",
+   "content": "live_conditions() -> weather, met_office_warnings, flood_warnings",
+   "confidence": 1,
+   "source": "investigator",
+   "created_at": "2026-10-26T21:03:04.731Z",
+   "type": "tool_call",
+   "summary": "live_conditions() -> weather, met_office_warnings, flood_warnings",
+   "by": "investigator",
+   "tool": "live_conditions",
+   "args": {},
+   "round": 1,
+   "evidence_ids": [
+    "weather",
+    "met_office_warnings",
+    "flood_warnings"
+   ],
+   "new": [
+    "weather",
+    "met_office_warnings",
+    "flood_warnings"
+   ],
+   "duration_ms": 1092,
+   "zetaris_queries": [],
+   "note_id": "n11",
+   "run_id": "run_20261026210259_q6df"
+  },
+  {
+   "memory_id": "mem-163",
+   "kind": "note",
+   "ref": "n12",
+   "content": "diagnostician via nemotron-3.5-super-vl-120b-a12b in 2.8s; 2 retries; reasoning model failed (nvidia/nemotron-3-ultra-550b-a55b: no answer within 45 s (twice)); fast model answered",
+   "confidence": 1,
+   "source": "diagnostician",
+   "created_at": "2026-10-26T21:04:37.867Z",
+   "type": "llm_call",
+   "summary": "diagnostician via nemotron-3.5-super-vl-120b-a12b in 2.8s; 2 retries; reasoning model failed (nvidia/nemotron-3-ultra-550b-a55b: no answer within 45 s (twice)); fast model answered",
+   "by": "diagnostician",
+   "round": 1,
+   "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+   "duration_ms": 2751,
+   "tokens": {
+    "prompt_tokens": 1776,
+    "completion_tokens": 312,
+    "total_tokens": 2088,
+    "prompt_tokens_details": {
+     "audio_tokens": null,
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "accepted_prediction_tokens": null,
+     "audio_tokens": null,
+     "reasoning_tokens": 0,
+     "rejected_prediction_tokens": null
+    }
+   },
+   "attempts": 1,
+   "retries": [
+    {
+     "model": "nvidia/nemotron-3-ultra-550b-a55b",
+     "attempt": 1,
+     "error": "no answer within 45 s",
+     "wait_s": 0
+    },
+    {
+     "model": "nvidia/nemotron-3-ultra-550b-a55b",
+     "error": "nvidia/nemotron-3-ultra-550b-a55b: no answer within 45 s (twice)",
+     "switched_to": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+    }
+   ],
+   "fallback": "reasoning model failed (nvidia/nemotron-3-ultra-550b-a55b: no answer within 45 s (twice)); fast model answered",
+   "thinking": true,
+   "note_id": "n12",
+   "run_id": "run_20261026210259_q6df"
+  },
+  {
+   "memory_id": "mem-166",
+   "kind": "note",
+   "ref": "n13",
+   "content": "critic via nemotron-3.5-super-vl-120b-a12b in 2.0s; 2 retries; reasoning model failed (nvidia/nemotron-3-ultra-550b-a55b: no answer within 45 s (twice)); fast model answered",
+   "confidence": 1,
+   "source": "critic",
+   "created_at": "2026-10-26T21:06:10.237Z",
+   "type": "llm_call",
+   "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 2.0s; 2 retries; reasoning model failed (nvidia/nemotron-3-ultra-550b-a55b: no answer within 45 s (twice)); fast model answered",
+   "by": "critic",
+   "round": 1,
+   "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+   "duration_ms": 2025,
+   "tokens": {
+    "prompt_tokens": 2208,
+    "completion_tokens": 228,
+    "total_tokens": 2436,
+    "prompt_tokens_details": {
+     "audio_tokens": null,
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "accepted_prediction_tokens": null,
+     "audio_tokens": null,
+     "reasoning_tokens": 0,
+     "rejected_prediction_tokens": null
+    }
+   },
+   "attempts": 1,
+   "retries": [
+    {
+     "model": "nvidia/nemotron-3-ultra-550b-a55b",
+     "attempt": 1,
+     "error": "no answer within 45 s",
+     "wait_s": 0
+    },
+    {
+     "model": "nvidia/nemotron-3-ultra-550b-a55b",
+     "error": "nvidia/nemotron-3-ultra-550b-a55b: no answer within 45 s (twice)",
+     "switched_to": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+    }
+   ],
+   "fallback": "reasoning model failed (nvidia/nemotron-3-ultra-550b-a55b: no answer within 45 s (twice)); fast model answered",
+   "thinking": true,
+   "note_id": "n13",
+   "run_id": "run_20261026210259_q6df"
+  },
+  {
+   "memory_id": "mem-169",
+   "kind": "note",
+   "ref": "n14",
+   "content": "advisor via nemotron-3.5-super-vl-120b-a12b in 6.3s",
+   "confidence": 1,
+   "source": "advisor",
+   "created_at": "2026-10-26T21:06:16.997Z",
+   "type": "llm_call",
+   "summary": "advisor via nemotron-3.5-super-vl-120b-a12b in 6.3s",
+   "by": "advisor",
+   "round": 0,
+   "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+   "duration_ms": 6270,
+   "tokens": {
+    "prompt_tokens": 1819,
+    "completion_tokens": 902,
+    "total_tokens": 2721,
+    "prompt_tokens_details": {
+     "audio_tokens": null,
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "accepted_prediction_tokens": null,
+     "audio_tokens": null,
+     "reasoning_tokens": 0,
+     "rejected_prediction_tokens": null
+    }
+   },
+   "attempts": 1,
+   "retries": [],
+   "fallback": null,
+   "thinking": false,
+   "note_id": "n14",
+   "run_id": "run_20261026210259_q6df"
+  }
+ ],
+ "world": {
+  "entities": [
+   {
+    "type": "place",
+    "id": "place:cd:52.70012,0.02408",
+    "attrs": {
+     "lat": 52.70011670054165,
+     "lon": 0.024084717819457868,
+     "cell_id": "871943b9bffffff",
+     "postcode": "PE12 0LS",
+     "district": "South Holland",
+     "country": "England"
+    },
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T21:02:59.298Z",
+     "runId": "run_20261026210259_q6df"
+    },
+    "createdAt": "2026-10-26T21:02:59.298Z",
+    "updatedAt": "2026-10-26T21:02:59.298Z",
+    "name": "Sutton St Edmund",
+    "aliases": [
+     "Sutton St Edmund"
+    ],
+    "state": "active"
+   },
+   {
+    "type": "area",
+    "id": "area:cd:South Holland",
+    "attrs": {
+     "kind": "local authority"
+    },
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T21:02:59.321Z",
+     "runId": "run_20261026210259_q6df"
+    },
+    "createdAt": "2026-10-26T21:02:59.321Z",
+    "updatedAt": "2026-10-26T21:02:59.321Z",
+    "name": "South Holland",
+    "aliases": [
+     "South Holland"
+    ],
+    "state": "active"
+   },
+   {
+    "type": "site",
+    "id": "site:cd:S000310",
+    "attrs": {
+     "operators": [
+      "EE",
+      "O2",
+      "Three"
+     ],
+     "operators_confirmed": [
+      "EE",
+      "O2",
+      "Three"
+     ]
+    },
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T21:06:10.492Z",
+     "runId": "run_20261026210259_q6df"
+    },
+    "createdAt": "2026-10-26T21:06:10.323Z",
+    "updatedAt": "2026-10-26T21:06:10.492Z",
+    "aliases": [],
+    "state": "active"
+   },
+   {
+    "type": "operator",
+    "id": "operator:cd:EE",
+    "attrs": {},
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T21:06:10.343Z",
+     "runId": "run_20261026210259_q6df"
+    },
+    "createdAt": "2026-10-26T20:58:06.949Z",
+    "updatedAt": "2026-10-26T21:06:10.343Z",
+    "name": "EE",
+    "aliases": [
+     "EE"
+    ],
+    "state": "active"
+   },
+   {
+    "type": "site",
+    "id": "site:cd:S091576",
+    "attrs": {
+     "operators": [
+      "O2"
+     ],
+     "operators_confirmed": [
+      "O2"
+     ]
+    },
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T21:06:10.404Z",
+     "runId": "run_20261026210259_q6df"
+    },
+    "createdAt": "2026-10-26T21:06:10.404Z",
+    "updatedAt": "2026-10-26T21:06:10.404Z",
+    "aliases": [],
+    "state": "active"
+   },
+   {
+    "type": "operator",
+    "id": "operator:cd:O2",
+    "attrs": {},
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T21:06:10.426Z",
+     "runId": "run_20261026210259_q6df"
+    },
+    "createdAt": "2026-10-26T20:58:07.020Z",
+    "updatedAt": "2026-10-26T21:06:10.426Z",
+    "name": "O2",
+    "aliases": [
+     "O2"
+    ],
+    "state": "active"
+   },
+   {
+    "type": "operator",
+    "id": "operator:cd:Three",
+    "attrs": {},
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T21:06:10.512Z",
+     "runId": "run_20261026210259_q6df"
+    },
+    "createdAt": "2026-10-26T20:58:07.095Z",
+    "updatedAt": "2026-10-26T21:06:10.512Z",
+    "name": "Three",
+    "aliases": [
+     "Three"
+    ],
+    "state": "active"
+   },
+   {
+    "type": "site",
+    "id": "site:cd:S042990",
+    "attrs": {
+     "operators": [
+      "Vodafone"
+     ],
+     "operators_confirmed": []
+    },
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T21:06:10.593Z",
+     "runId": "run_20261026210259_q6df"
+    },
+    "createdAt": "2026-10-26T21:06:10.593Z",
+    "updatedAt": "2026-10-26T21:06:10.593Z",
+    "aliases": [],
+    "state": "active"
+   },
+   {
+    "type": "operator",
+    "id": "operator:cd:Vodafone",
+    "attrs": {},
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T21:06:10.611Z",
+     "runId": "run_20261026210259_q6df"
+    },
+    "createdAt": "2026-10-26T20:58:07.161Z",
+    "updatedAt": "2026-10-26T21:06:10.611Z",
+    "name": "Vodafone",
+    "aliases": [
+     "Vodafone"
+    ],
+    "state": "active"
+   },
+   {
+    "type": "event",
+    "id": "event:cd:diagnosis_completed:run_20261026210259_q6df:place:cd:52.70012,0.02408:1793048777124",
+    "attrs": {
+     "kind": "diagnosis_completed",
+     "headline": "The nearest confirmed mast is 4.8 km away and only O2 has sites within 5 km, while Vodafone is 9.5 km away with a small clearance margin, so distance and terrain are likely factors but not certain [nearest_site][operators_5km][los_vodafone].",
+     "status": "complete",
+     "top_cause": "distance_to_mast",
+     "run_id": "run_20261026210259_q6df",
+     "at": "2026-10-26T21:06:17.124Z"
+    },
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T21:06:17.124Z",
+     "runId": "run_20261026210259_q6df"
+    },
+    "createdAt": "2026-10-26T21:06:17.124Z",
+    "updatedAt": "2026-10-26T21:06:17.124Z",
+    "name": "diagnosis_completed",
+    "aliases": [
+     "diagnosis_completed"
+    ],
+    "state": "active"
+   }
+  ],
+  "relationships": [
+   {
+    "id": "rel_1720508d83e05931",
+    "from": "place:cd:52.70012,0.02408",
+    "type": "in_area",
+    "to": "area:cd:South Holland",
+    "attrs": null,
+    "validFrom": "2026-10-26T21:02:59.339Z",
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T21:02:59.339Z",
+     "runId": "run_20261026210259_q6df"
+    },
+    "createdAt": "2026-10-26T21:02:59.339Z"
+   },
+   {
+    "id": "rel_b1822b8a79043b7c",
+    "from": "place:cd:52.70012,0.02408",
+    "type": "nearest_site",
+    "to": "site:cd:S000310",
+    "context": "operator:cd:EE",
+    "attrs": {
+     "operator": "EE",
+     "line_of_sight": "clear",
+     "obstruction_m": -1.5,
+     "distance_m": 5579,
+     "evidence": "los_ee"
+    },
+    "validFrom": "2026-10-26T21:06:10.367Z",
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T21:06:10.367Z",
+     "runId": "run_20261026210259_q6df"
+    },
+    "createdAt": "2026-10-26T21:06:10.367Z"
+   },
+   {
+    "id": "rel_19c7890cb406759c",
+    "from": "site:cd:S000310",
+    "type": "operated_by",
+    "to": "operator:cd:EE",
+    "context": "operator:cd:EE",
+    "attrs": null,
+    "validFrom": "2026-10-26T21:06:10.386Z",
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T21:06:10.386Z",
+     "runId": "run_20261026210259_q6df"
+    },
+    "createdAt": "2026-10-26T21:06:10.386Z"
+   },
+   {
+    "id": "rel_a5ac4a1bf90283df",
+    "from": "place:cd:52.70012,0.02408",
+    "type": "nearest_site",
+    "to": "site:cd:S091576",
+    "context": "operator:cd:O2",
+    "attrs": {
+     "operator": "O2",
+     "line_of_sight": "clear",
+     "obstruction_m": -1.3,
+     "distance_m": 4765,
+     "evidence": "los_o2"
+    },
+    "validFrom": "2026-10-26T21:06:10.447Z",
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T21:06:10.447Z",
+     "runId": "run_20261026210259_q6df"
+    },
+    "createdAt": "2026-10-26T21:06:10.447Z"
+   },
+   {
+    "id": "rel_46d72f8b5fb383ef",
+    "from": "site:cd:S091576",
+    "type": "operated_by",
+    "to": "operator:cd:O2",
+    "context": "operator:cd:O2",
+    "attrs": null,
+    "validFrom": "2026-10-26T21:06:10.466Z",
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T21:06:10.466Z",
+     "runId": "run_20261026210259_q6df"
+    },
+    "createdAt": "2026-10-26T21:06:10.466Z"
+   },
+   {
+    "id": "rel_7b17750ed56cd87b",
+    "from": "place:cd:52.70012,0.02408",
+    "type": "nearest_site",
+    "to": "site:cd:S000310",
+    "context": "operator:cd:Three",
+    "attrs": {
+     "operator": "Three",
+     "line_of_sight": "clear",
+     "obstruction_m": -1.5,
+     "distance_m": 5579,
+     "evidence": "los_three"
+    },
+    "validFrom": "2026-10-26T21:06:10.537Z",
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T21:06:10.537Z",
+     "runId": "run_20261026210259_q6df"
+    },
+    "createdAt": "2026-10-26T21:06:10.537Z"
+   },
+   {
+    "id": "rel_88df7f2116b63781",
+    "from": "site:cd:S000310",
+    "type": "operated_by",
+    "to": "operator:cd:Three",
+    "context": "operator:cd:Three",
+    "attrs": null,
+    "validFrom": "2026-10-26T21:06:10.560Z",
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T21:06:10.560Z",
+     "runId": "run_20261026210259_q6df"
+    },
+    "createdAt": "2026-10-26T21:06:10.560Z"
+   },
+   {
+    "id": "rel_bc62b57b1b42850f",
+    "from": "place:cd:52.70012,0.02408",
+    "type": "nearest_site",
+    "to": "site:cd:S042990",
+    "context": "operator:cd:Vodafone",
+    "attrs": {
+     "operator": "Vodafone",
+     "line_of_sight": "marginal",
+     "obstruction_m": 4.6,
+     "distance_m": 9479,
+     "evidence": "los_vodafone"
+    },
+    "validFrom": "2026-10-26T21:06:10.634Z",
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T21:06:10.634Z",
+     "runId": "run_20261026210259_q6df"
+    },
+    "createdAt": "2026-10-26T21:06:10.634Z"
+   },
+   {
+    "id": "rel_2520e8b927194e78",
+    "from": "site:cd:S042990",
+    "type": "inferred_operator",
+    "to": "operator:cd:Vodafone",
+    "context": "operator:cd:Vodafone",
+    "attrs": null,
+    "validFrom": "2026-10-26T21:06:10.653Z",
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T21:06:10.653Z",
+     "runId": "run_20261026210259_q6df"
+    },
+    "createdAt": "2026-10-26T21:06:10.653Z"
+   },
+   {
+    "id": "rel_c3809b7f62141636",
+    "from": "event:cd:diagnosis_completed:run_20261026210259_q6df:place:cd:52.70012,0.02408:1793048777124",
+    "type": "concerns",
+    "to": "place:cd:52.70012,0.02408",
+    "validFrom": "2026-10-26T21:06:17.126Z",
+    "schemaVersion": 1,
+    "source": {
+     "kind": "agent",
+     "by": "coordinator",
+     "at": "2026-10-26T21:06:17.126Z",
+     "runId": "run_20261026210259_q6df"
+    },
+    "createdAt": "2026-10-26T21:06:17.126Z"
+   }
+  ]
+ },
+ "memory_mode": "service"
+}

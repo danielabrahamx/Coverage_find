@@ -46,6 +46,14 @@ test("run, evidence, belief revision and ordered audit trail", async () => {
   assert.equal(trail[3].new_confidence, 0.6);
 });
 
+test("a payload cannot overwrite the record kind", async () => {
+  const { body: run } = await call("POST", "/runs", { scope: "point" });
+  await call("POST", `/runs/${run.run_id}/notes`, { type: "guard", summary: "s", kind: "number_rewritten" });
+  const notes = (await call("GET", `/runs/${run.run_id}/notes`)).body;
+  assert.equal(notes.length, 1);
+  assert.equal(notes[0].kind, "note");
+});
+
 test("prior diagnoses near a point", async () => {
   const { body: run } = await call("POST", "/runs", { scope: "point", query: "x" });
   await call("POST", "/diagnoses", { run_id: run.run_id, lat: 54.445, lon: -3.105, headline: "Terrain blocks the nearest sites" });

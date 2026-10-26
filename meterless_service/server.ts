@@ -82,7 +82,8 @@ function addRecord(kind: Kind, runId: string | undefined, content: string, opts:
     missionId: kind,
     derivedFrom: opts.derivedFrom,
   });
-  payloads[record.id] = { kind, run_id: runId, ref: opts.ref, ...opts.payload };
+  // The record's own fields go last so a payload can never overwrite them.
+  payloads[record.id] = { ...opts.payload, kind, run_id: runId, ref: opts.ref };
   savePayloads();
   index(record);
   return { record, created: true };
@@ -318,7 +319,9 @@ function worldForRun(runId: string) {
     const p = ev.payload as any;
     if (ev.kind === "upsertEntity" && p.source?.runId === runId) entities.set(p.id, world.view("graph").entity(p.id) ?? p);
   }
-  const rels = allRelationships().filter((r) => r.source?.runId === runId);
+  // Edges written in this run, plus existing edges of the run's entities (relationships are
+  // content-addressed, so an identical edge from an earlier run is not written again).
+  const rels = allRelationships().filter((r) => r.source?.runId === runId || ((entities.has(r.from) || entities.has(r.to)) && !r.validTo));
   for (const r of rels) for (const id of [r.from, r.to]) if (!entities.has(id)) {
     const e = world.view("graph").entity(id);
     if (e) entities.set(id, e);

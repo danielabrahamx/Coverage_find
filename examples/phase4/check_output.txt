@@ -1,0 +1,285 @@
+============================================================================================================================================
+langdale: 54.44500, -3.10500  run run_20261026205600_c6qi  status complete  rounds 2  wall clock 146s  (10 LLM calls, 10 tool calls)
+  HEADLINE: Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison].
+    The ground rises well above the direct line from your address to the nearest mast sites for all four operators, so signals are likely
+      weakened [los_ee][los_o2][los_three][los_vodafone]. No operator has a clear line of sight [network_comparison]. The nearest identified
+      site is 3.8 km away [nearest_site]. Dense drizzle and strong winds may also reduce signal quality right now
+      [weather][met_office_warnings].
+  BELIEFS (confidence history, reasons):
+    terrain_blocking   0.50                   active   for ['los_ee', 'los_o2', 'los_three', 'los_vodafone', 'network_comparison']
+    distance_to_mast   0.35                   active   for ['nearest_site', 'operators_5km']
+    weather            0.40 -> 0.30 -> 0.20   active   for ['weather', 'met_office_warnings']
+        round 1 critic: critic: Current conditions (dense drizzle, gusts to 76 km/h, yellow wind warning) can degrade signals, but weather
+          is short-lived. The speed evidence shows no Ookla tests in the cell or 1 km in 2026Q3 [speed_cell], suggesting chronic poor
+          performance. A live weather event cannot explain long-standing poor service across quarters; at most it explains a drop in the
+          latest period. Confidence should be lowered to reflect this.
+        round 2 critic: critic: A transient weather event cannot explain persistent low speeds across quarters.
+  CRITIC: 6 reviews, 2 objections
+    round 1 terrain_blocking: APPROVE: Four independent line-of-sight checks (EE, O2, Three, Vodafone) show terrain rising 129–288 m above
+      the direct line to the nearest crowd-sourced sites, assuming 25 m antenna heights. The network comparison confirms no operator has a
+      clear line of sight. The obstruction magnitude is large enough that even with somewhat higher antennas the terrain would still block,
+      making this a robust, permanent cause.
+    round 1 weather: DOWNGRADE -> 0.3: Current conditions (dense drizzle, gusts to 76 km/h, yellow wind warning) can degrade signals, but
+      weather is short-lived. The speed evidence shows no Ookla tests in the cell or 1 km in 2026Q3 [speed_cell], suggesting chronic poor
+      performance. A live weather event cannot explain long-standing poor service across quarters; at most it explains a drop in the latest
+      period. Confidence should be lowered to reflect this. | requested: speed_trend()
+    round 1 distance_to_mast: APPROVE: The nearest identified site is 3.8 km away and only three operators have sites within 5 km, all
+      inferred from crowd-sourced data (less reliable than Ofcom's register). While 3.8 km is not inherently prohibitive, combined with the
+      confirmed terrain blocking it contributes to poor coverage. The low confidence appropriately reflects the uncertainty of crowd-sourced
+      site locations [nearest_site][operators_5km].
+    round 2 terrain_blocking: APPROVE: Four independent line-of-sight analyses show terrain rising 129-288 m above direct lines to nearest
+      sites (assumed 25 m antenna heights), and network comparison confirms no operator has clear line of sight. Evidence is strong
+      (computed LOS) though antenna heights assumed and operators inferred from crowd-sourced data.
+    round 2 weather: DOWNGRADE -> 0.2: A transient weather event cannot explain persistent low speeds across quarters.
+    round 2 distance_to_mast: APPROVE: Nearest identified site is 3.8 km away (OpenCelliD, crowd-sourced), only three operators have sites
+      within 5 km (all inferred from crowd-sourced data). Distance is a permanent factor consistent with long-standing poor service, though
+      crowd-sourced positions are less reliable than Ofcom register.
+  PRIOR: No earlier diagnoses within 10 km in Meterless.
+  BEST NETWORK: O2 is likely the best option because its site is least obstructed, though it is farther away [network_comparison][los_o2].
+    EE and Three have closer sites but more terrain blocking [los_ee][los_three]. Vodafone has the nearest site but the most blocking
+    [los_vodafone][network_comparison]. All operator sites are inferred from crowd-sourced data, not confirmed by Ofcom's licence register
+    [nearest_site][operators_5km]. No nearby measured speeds are available to confirm performance [speed_1km][speed_cell][speed_neighbours].
+    1. O2 (low): Least obstructed line of sight (terrain 129 m above the line) [los_o2][network_comparison]; site 5.7 km south-east
+      [los_o2]; operator inferred from crowd-sourced data [los_o2].
+    2. EE (low): Site 4.5 km east [los_ee]; terrain rises 260 m above the line [los_ee]; operator inferred from crowd-sourced data [los_ee].
+    3. Three (low): Site 4.5 km east [los_three]; terrain rises 260 m above the line [los_three]; operator inferred from crowd-sourced data
+      [los_three].
+    4. Vodafone (low): Nearest site at 3.8 km south-east [los_vodafone][nearest_site], but terrain rises 288 m above the line, the most
+      blocking [los_vodafone][network_comparison]; operator inferred from crowd-sourced data [los_vodafone].
+  ACTIONS: Try O2 first as the likely best network [network_comparison][los_o2]. | Use Wi-Fi calling indoors if your phone and network support it. | Check your address on Ofcom's mobile coverage checker: https://www.ofcom.org.uk/ | Emergency calls work on any available network.
+  GUARD: critique of weather: rewrote a sentence with an unsupported number
+  GUARD: critique of distance_to_mast: rewrote a sentence with an unsupported number
+  GUARD: critique of weather: removed a sentence with numbers not in the cited evidence (7.9)
+  TIME: investigator 12s/2, diagnostician 49s/2, critic 61s/5, advisor 20s/1; retries 2; model switches 0
+  (146s)
+============================================================================================================================================
+london: WC2N 5DU  run run_20261026205827_zsti  status complete  rounds 1  wall clock 130s  (4 LLM calls, 9 tool calls)
+  HEADLINE: Terrain blocking is the most likely cause, mainly for Three's signal [los_three].
+    Your area has strong mobile speeds overall, averaging 133.6 Mbps locally and 137.1 Mbps within 1 km [speed_cell][speed_1km], so coverage
+      is generally good. The nearest mast site is about 0.1 km east and serves EE, O2 and Vodafone, confirmed by Ofcom's licence register
+      [nearest_site]. EE, O2 and Vodafone have clear lines of sight to their nearby sites [los_ee][los_o2][los_vodafone]. Three's nearest
+      site is about 0.19 km south, but its line of sight clears the ground by less than 1 m, so trees or buildings could still block it
+      [los_three]. Earlier diagnoses found no similar issues nearby [prior_diagnoses], and high test numbers suggest busy use rather than a
+      current capacity problem because speeds remain well above the UK median [usage_per_head][speed_cell].
+  BELIEFS (confidence history, reasons):
+    terrain_blocking   0.30                   active   for ['los_three']
+    insufficient_data  0.25                   active   for ['prior_diagnoses']
+    capacity_strain    0.20                   active   for ['usage_per_head']
+  CRITIC: 3 reviews, 0 objections
+    round 1 terrain_blocking: APPROVE: The belief correctly captures the nuance: Three's line of sight is marginal (<1 m clearance, assumed
+      antenna height, crowd-sourced site) so local clutter could block it [los_three], while EE, O2 and Vodafone have clear lines (8 m+
+      clearance, Ofcom antenna heights) [los_ee, los_o2, los_vodafone] and all speed measures are well above the UK median [speed_cell,
+      speed_1km, speed_neighbours]. Confidence 0.30 is appropriate given the weak evidence for Three's LOS.
+    round 1 insufficient_data: APPROVE: No earlier diagnoses exist within 10 km [prior_diagnoses], while current speed tests are abundant
+      and show strong performance [speed_cell, speed_1km, speed_neighbours]. The belief rightly notes speed tests do not directly measure
+      signal strength. Confidence 0.25 fits the limited diagnostic history.reasoning model failed (nvidia/nemotron-3-ultra-550b-a55b: no answer within 45 s (twice)); falling back to the fast model
+reasoning model failed (nvidia/nemotron-3-ultra-550b-a55b: no answer within 45 s (twice)); falling back to the fast model
+reasoning model failed (nvidia/nemotron-3-ultra-550b-a55b: no answer within 45 s (twice)); falling back to the fast model
+
+    round 1 capacity_strain: APPROVE: Usage per head is unusually high (38.6 vs UK median 3.6) [usage_per_head], yet download speeds in the
+      cell, 1 km radius and neighbouring cells are all far above the UK median [speed_cell, speed_1km, speed_neighbours]. The belief
+      acknowledges the high usage but correctly concludes capacity is not currently strained. Confidence 0.20 is appropriate.
+  PRIOR: No earlier diagnoses within 10 km in Meterless.
+  BEST NETWORK: Vodafone is likely best: clear line of sight to a site 0.1 km east, confirmed by Ofcom's licence register
+    [network_comparison][los_vodafone]. EE and O2 also have clear lines to sites 0.1 km east, though their operators are inferred rather
+    than confirmed by Ofcom's register [network_comparison][los_ee][los_o2]. Three has a clear line to a site 0.2 km south, but clearance is
+    under 1 m and its operator is inferred [network_comparison][los_three].
+    1. Vodafone (high): Clear line of sight to a site 0.1 km east; confirmed by Ofcom's licence register [network_comparison][los_vodafone].
+    2. EE (medium): Clear line of sight to a site 0.1 km east; operator inferred from crowd-sourced data [network_comparison][los_ee].
+    3. O2 (medium): Clear line of sight to a site 0.1 km east; operator inferred from crowd-sourced data [network_comparison][los_o2].
+    4. Three (low): Clear line of sight to a site 0.2 km south, but clearance is under 1 m so trees or buildings could block it; operator
+      inferred [network_comparison][los_three].
+  RULED OUT: capacity_strain (Heavy test activity suggests busy use, but speeds remain well above the UK media); weather (No severe weather warnings are in force for London & South East England [met_off); insufficient_data (No earlier diagnoses nearby, but current speed tests show good performance [prio)
+  ACTIONS: Try Vodafone first as the likely best network [network_comparison][los_vodafone] | Use Wi-Fi calling indoors if signal is weak. | Check your exact address on Ofcom's mobile coverage checker: https://www.ofcom.o | Emergency calls work on any available network.
+  GUARD: dropped belief distance_to_mast: none of its supporting evidence is in Meterless
+  TIME: investigator 2s/1, diagnostician 83s/1, critic 25s/1, advisor 12s/1; retries 1; model switches 0
+  (130s)
+============================================================================================================================================
+rhayader: 52.30000, -3.51000  run run_20261026210037_y2hh  status complete  rounds 1  wall clock 141s  (6 LLM calls, 9 tool calls)
+  HEADLINE: Vodafone is the likely best network because its site 1.4 km north has a clear line of sight, while EE and Three signals are
+    likely weakened by hills [los_vodafone][los_ee][los_three].
+    Vodafone’s nearest confirmed site is 1.4 km north and the direct line clears the ground by at least 2 m, so terrain does not block it
+      [los_vodafone]. EE and Three sites are 6.5 km south-east, and terrain rises 137 m above the direct line 2.0 km away, likely weakening
+      their signals [los_ee][los_three]. The nearest mast overall is only 0.5 km west, but its operator is unknown [nearest_site]. Measured
+      speeds nearby are low (about 14 Mbps) compared with the UK median of 103 Mbps [speed_cell], which is consistent with a weak signal at
+      this location. Only Vodafone has confirmed sites within 5 km, and no O2 site was found within 10 km, though crowd-sourced site data is
+      incomplete so this is not certain [operators_5km][no_site_o2].
+  BELIEFS (confidence history, reasons):
+    distance_to_mast   0.65                   active   for ['los_ee', 'los_three', 'los_vodafone', 'nearest_site']
+    terrain_blocking   0.60                   active   for ['los_ee', 'los_three']
+    single_operator    0.50                   active   for ['operators_5km', 'no_site_o2']
+    insufficient_data  0.30                   active   for ['prior_diagnoses', 'operators_5km']
+  CRITIC: 4 reviews, 0 objections
+    round 1 distance_to_mast: APPROVE: The belief is well supported: EE and Three sites are 6.5 km away with terrain weakening (strong LOS
+      evidence), Vodafone has a clear line at 1.4 km (moderate LOS), and the nearest mast is 0.5 km west but operator unknown (moderate site
+      data). All citations exist and agree. No unchecked alternatives could change the ranking.
+    round 1 terrain_blocking: APPROVE: Terrain rises 137 m above the direct line to EE and Three (strong LOS), while Vodafone clears the
+      ground by at least 2 m (moderate LOS). The belief correctly notes terrain does not block all operators. Citations are consistent and
+      no further checks are needed.
+    round 1 single_operator: APPROVE: Only Vodafone has confirmed sites within 5 km (weak crowd-sourced data) and no O2 site within 10 km
+      (weak). The belief appropriately assigns low confidence due to incomplete data [no_site_o2][operators_5km]. All available tools
+      (sites_near) have been run; no further checks would improve certainty.
+    round 1 insufficient_data: APPROVE: No prior diagnoses within 10 km (weak) and operator identities for two nearby sites unknown (weak).
+      The low confidence matches the evidence strength [operators_5km][prior_diagnoses]. All relevant tools (prior_diagnoses_nearby,
+      sites_near) have been run.
+  PRIOR: No earlier diagnoses within 10 km in Meterless.
+  BEST NETWORK: Vodafone is ranked first: clear line of sight to a confirmed site 1.4 km north [los_vodafone][network_comparison]. EE and
+    Three are next but have sites 6.5 km away with terrain likely weakening signals [los_ee][los_three]. O2 has no site identified in our
+    data within 10 km [no_site_o2][network_comparison].
+    1. Vodafone (high): Clear line of sight to a site 1.4 km north, confirmed by Ofcom’s licence register
+      [los_vodafone][network_comparison].
+    2. EE (low): Site 6.5 km south-east with terrain likely weakening the signal [los_ee][network_comparison].
+    3. Three (low): Site 6.5 km south-east with terrain likely weakening the signal [los_three][network_comparison].
+    4. O2 (low): No site identified in our data within 10 km [no_site_o2][network_comparison].
+  ACTIONS: Try Vodafone first, as it is the likely best network here [network_comparison]. | Use Wi-Fi calling indoors if your phone and plan support it. | Check this address on Ofcom’s mobile coverage checker: https://www.ofcom.org.uk/ | Emergency calls work on any available network.
+  GUARD: critique of single_operator: rewrote a sentence with an unsupported number
+  GUARD: critique of insufficient_data: rewrote a sentence with an unsupported number
+  TIME: investigator 1s/1, diagnostician 4s/1, critic 35s/3, advisor 5s/1; retries 2; model switches 1
+  (142s)
+============================================================================================================================================
+sutton: Sutton St Edmund  run run_20261026210259_q6df  status complete  rounds 1  wall clock 198s  (4 LLM calls, 9 tool calls)
+  HEADLINE: The nearest confirmed mast is 4.8 km away and only O2 has sites within 5 km, while Vodafone is 9.5 km away with a small
+    clearance margin, so distance and terrain are likely factors but not certain [nearest_site][operators_5km][los_vodafone].
+    O2 has the closest confirmed mast at 4.8 km west with a clear line of sight [nearest_site][los_o2]. EE and Three also have clear lines
+      of sight to sites 5.6 km east [los_ee][los_three]. Vodafone’s nearest site is 9.5 km south, and terrain rises 5 m above the direct
+      line 90 m from here, so the signal is likely weakened [los_vodafone]. No speed tests exist within 1 km, in this cell, or in
+      neighbouring cells, and there are no earlier diagnoses nearby, so the causes cannot be separated at this point
+      [speed_1km][speed_cell][speed_neighbours][prior_diagnoses]. Ofcom’s area data shows 0.0% of land in South Holland and The Deepings has
+      no outdoor 4G from any operator, but this is a predicted figure for the whole constituency, not this exact location [ofcom_area].
+  BELIEFS (confidence history, reasons):
+    distance_to_mast   0.55                   active   for ['nearest_site', 'operators_5km', 'los_vodafone']reasoning model failed (nvidia/nemotron-3-ultra-550b-a55b: no answer within 45 s (twice)); falling back to the fast model
+fast model failed (nvidia/nemotron-3.5-super-vl-120b-a12b: no answer within 45 s (twice)); falling back to the reasoning model
+
+    insufficient_data  0.45                   active   for ['speed_1km', 'speed_cell', 'speed_neighbours', 'prior_diagnoses']
+  CRITIC: 2 reviews, 0 objections
+    round 1 distance_to_mast: APPROVE: The nearest confirmed mast is 4.8 km away and only O2 has sites within 5 km
+      [nearest_site][operators_5km], while Vodafone is 9.5 km away with a small clearance margin [los_vodafone]. O2, EE and Three all have
+      clear lines of sight [los_o2][los_ee][los_three], so distance alone is not certain.
+    round 1 insufficient_data: APPROVE: No speed tests exist within 1 km, in this cell, or in neighbouring cells
+      [speed_1km][speed_cell][speed_neighbours], and there are no earlier diagnoses nearby [prior_diagnoses], so the causes cannot be
+      separated at this point.
+  PRIOR: No earlier diagnoses within 10 km in Meterless.
+  BEST NETWORK: O2 is likely best, with a clear line of sight to a confirmed site 4.8 km west. EE and Three also have clear lines to sites
+    5.6 km east. Vodafone’s site is 9.5 km away with a small clearance margin and is inferred rather than confirmed by Ofcom’s licence
+    register.
+    1. O2 (high): Clear line of sight; nearest confirmed site at 4.8 km west; confirmed by Ofcom’s licence register
+      [los_o2][nearest_site][operators_5km][network_comparison].
+    2. EE (high): Clear line of sight; site 5.6 km east; confirmed by Ofcom’s licence register [los_ee][network_comparison].
+    3. Three (high): Clear line of sight; site 5.6 km east; confirmed by Ofcom’s licence register [los_three][network_comparison].
+    4. Vodafone (low): Site 9.5 km south; terrain rises 5 m above the direct line 90 m from here, so signal is likely weakened; operator
+      inferred from crowd-sourced data, not confirmed by Ofcom’s licence register [los_vodafone][network_comparison].
+  ACTIONS: Try O2 first as the likely best network. | Use Wi-Fi calling indoors if available. | Check the address on Ofcom’s mobile coverage checker: https://www.ofcom.org.uk/m | Emergency calls work on any available network.
+  TIME: investigator 2s/1, diagnostician 3s/1, critic 2s/1, advisor 6s/1; retries 4; model switches 2
+  (198s)
+============================================================================================================================================
+zone: Ousby  run run_20261026210619_ymly  status complete  rounds 1  wall clock 211s  (8 LLM calls, 3 tool calls)
+  HEADLINE: Most residents have no identified mobile site within 5 km, which is the likely cause of poor coverage [zone_overview][fix_rule].
+    Most people in Zone Z00072 have no identified site within 5 km [zone_overview][fix_rule]. Existing EE, Three, and Vodafone sites are
+      within about 6 km and reach many residents with clear lines [existing_1][existing_2][existing_3], so distance alone is not certain.
+      Terrain blocks the line to every site within 5 km for 37 people, making terrain a partial rather than zone-wide cause
+      [zone_overview][fix_rule]. There are no Ookla tests in the latest quarter and data confidence is low, so the evidence cannot separate
+      distance from terrain at the point [zone_overview][fix_rule].
+  BELIEFS (confidence history, reasons):
+    distance_to_mast   0.60                   active   for ['zone_overview', 'fix_rule']
+    terrain_blocking   0.55                   active   for ['zone_overview', 'fix_rule']
+    insufficient_data  0.50                   active   for ['zone_overview', 'fix_rule']
+  CRITIC: 5 reviews, 1 objections
+    round 1 distance_to_mast: APPROVE: The belief correctly captures the tension: zone_overview and fix_rule state 836 people have no
+      identified site within 5 km, yet existing_1 (4.2 km) reaches 730 people with clear line of sight, and existing_2/3 (5.9 km) reach
+      hundreds more. The belief's qualification that 'distance alone is not certain' is well supported.
+    round 1 terrain_blocking: APPROVE: Evidence shows terrain blocks lines to every site within 5 km for only 37 of 873 people (4%), while
+      existing sites at 4.2–5.9 km provide clear lines to many residents. The belief's 'partial rather than zone-wide' assessment matches
+      the data.
+    round 1 insufficient_data: APPROVE: Zero Ookla tests in the zone and low data confidence are explicitly stated in zone_overview and
+      fix_rule. Without measured speeds, the evidence cannot empirically separate distance from terrain effects at the user level, though
+      propagation modelling exists.
+    round 1 fix_plan: REVISE: The plan correctly uses the zone's people gaining (873) and poorly served people gaining (896) rather than
+      total people reached, and the fix type matches the zone's cause (new site with measurements first). However, it does not explicitly
+      flag the weak data confidence noted in [zone_overview] (no Ookla tests in latest quarter, data confidence low).
+    round 1 fix_plan: APPROVE: The plan correctly uses the zone's people gaining (873) from poorly served cells [zone_overview][cand_1],
+      states assumptions, matches the fix type (new_site) to the zone's cause (no site within 5 km or terrain blocking) per [fix_rule], and
+      flags thin data (no Ookla tests, low confidence) per [zone_overview][fix_rule].
+  PRIOR: No earlier diagnoses within 10 km in Meterless.
+  FIX PLAN: new_site at cand_1: The zone's poorly served cells are 836 people with no identified site within 5 km and 37 where terrain
+    blocks every site within 5 km [zone_overview][fix_rule]. [cand_1] gives 873 of the zone's people a clear line of sight, drawn from those
+    poorly served cells [cand_1]. Data is thin: no Ookla tests in the latest quarter and low data confidence [zone_overview], so
+    measurements should be gathered first [fix_rule].
+    people (from evidence): {'lat': 54.6949456697035, 'lon': -2.6577482641677275, 'ground_m': 132.2, 'zone_people_gaining': 873, 'poor_people_gaining': 896, 'people_reached': 4294}
+    assumptions: ['25 m mast', 'line of sight to cell centres, not a radio model', 'no planning or land checks', 'thin data: no Ookla tests in latest quarter, low data confidence']; revisions 1; critic: approve: The plan correctly uses the zone's people gaining (873) from poorly served cells [zone_overview][cand_1], states assumptions, matches the fix type (new_site) to
+  COORDINATOR: added required checks the investigator skipped: zone_summary(), candidate_sites()
+  TIME: investigator 3s/1, diagnostician 4s/1, critic 95s/3, fix_planner 13s/2, advisor 3s/1; retries 4; model switches 1
+  (212s)
+============================================================================================================================================
+langdale_again: 54.44500, -3.10500  run run_20261026210948_68wd  status complete  rounds 2  wall clock 272s  (10 LLM calls, 10 tool calls)
+  HEADLINE: Hills between you and the nearest masts are the likely cause
+    [los_ee][los_o2][los_three][los_vodafone][network_comparison][prior_diagnoses].
+    The ground rises well above the direct line from your address to the nearest mast sites for all four operators, so the signal is likely
+      weakened rather than lost [los_ee][los_o2][los_three][los_vodafone][network_comparison]. A previous diagnosis nearby also found hills
+      were the likely cause [prior_diagnoses]. The nearest identified mast is 3.8 km away, but terrain blocking is the dominant issue rather
+      than distance alone [nearest_site][los_ee][los_o2][los_three][los_vodafone][network_comparison]. Severe weather with gusts up to 76.3
+      km/h could temporarily reduce signal quality [weather][met_office_warnings], though the persistent cause is likely the hills
+      [prior_diagnoses].
+  BELIEFS (confidence history, reasons):
+    terrain_blocking   0.85                   active   for ['los_ee', 'los_o2', 'los_three', 'los_vodafone', 'network_comparison', 'prior_diagnoses']
+    distance_to_mast   0.40                   active   for ['nearest_site', 'operators_5km']
+    weather            0.40 -> 0.30           active   for ['weather', 'met_office_warnings']
+        round 1 critic: critic: The weather evidence (dense drizzle, gusts up to 76 km/h, yellow wind warning)
+          [weather][met_office_warnings] is short-lived, while the prior diagnosis from 2026-10-26 points to a persistent terrain cause
+          [prior_diagnoses]. A live forecast cannot explain long-standing poor service; at most it explains a temporary drop. Confidence
+          should be reduced to ≤0.3.
+  CRITIC: 6 reviews, 1 objections
+    round 1 terrain_blocking: APPROVE: Four independent line-of-sight analyses show terrain rising 129–288 m above the direct line to each
+      operator's nearest site (with assumed 25 m antenna heights) [los_ee][los_o2][los_three][los_vodafone]. The network comparison confirms
+      no operator has a clear line of sight [network_comparison], and a prior diagnosis within 10 km also identified hills as the likely
+      cause [prior_diagnoses]. The assumed antenna height is a minor weakness, but the magnitude of obstruction makes blocking highly
+      likely.
+    round 1 distance_to_mast: APPROVE: The nearest identified mast is 3.8 km away and only three operators have sites within 5 km
+      [nearest_site][operators_5km], but the evidence consistently shows terrain blocking is the dominant obstruction
+      [los_ee][los_o2][los_three][los_vodafone][network_comparison]. The confidence appropriately reflects that distance is a contributing
+      factor but not the primary cause [los_ee][los_o2][los_three][los_vodafone][nearest_site][network_comparison][operators_5km]. Crowd-
+      sourced site locations are a moderate weakness.
+    round 1 weather: DOWNGRADE -> 0.3: The weather evidence (dense drizzle, gusts up to 76 km/h, yellow wind warning)
+      [weather][met_office_warnings] is short-lived, while the prior diagnosis from 2026-10-26 points to a persistent terrain cause
+      [prior_diagnoses]. A live forecast cannot explain long-standing poor service; at most it explains a temporary drop. Confidence should
+      be reduced to ≤0.3. | requested: speed_trend()
+    round 2 terrain_blocking: APPROVE: All four operators show terrain rising 129–288 m above the direct line to their nearest sites
+      (assumed 25 m antenna height) [los_ee][los_o2][los_three][los_vodafone]. The network comparison confirms no operator has a clear line
+      of sight [network_comparison], and a prior diagnosis within 10 km also identified hills as the likely cause [prior_diagnoses]. The
+      evidence is consistent, strong, and the cause is permanent, matching a long-standing service issue.
+    round 2 distance_to_mast: APPROVE: The nearest identified mast is 3.8 km away and only three operators have sites within 5 km
+      [nearest_site][operators_5km]. The belief correctly acknowledges that terrain blocking is the dominant obstruction rather than
+      distance alone, which is supported by the LOS evidence [los_ee][los_o2][los_three][los_vodafone][network_comparison]. Confidence
+      appropriately reflects a secondary factor.
+    round 2 weather: APPROVE: A severe weather forecast with gusts up to 76 km/h and a Met Office yellow wind warning
+      [weather][met_office_warnings] could temporarily degrade signals. However, the prior diagnosis points to a persistent terrain cause
+      [prior_diagnoses], and the short-lived nature of weather versus long-standing poor service is correctly reflected in the low
+      confidence [prior_diagnoses]. No further evidence would change this ranking.
+  PRIOR: 1 earlier diagnosis within 10 km: Hills between you and the nearest masts are the likely cause
+    [los_ee][los_o2][los_three][los_vodafone][network_comparison]. (0.0 km away, run run_20261026205600_c6qi, 2026-10-26).
+  BEST NETWORK: Rank by line of sight (clearest first), then distance, then Ofcom licence confirmation, then nearby speeds.
+    1. O2 (low): Least obstructed line of sight: terrain rises 129 m above the direct line to a site 5.7 km south-east
+      [network_comparison][los_o2]. Operator is inferred from crowd-sourced data, not confirmed by Ofcom's licence register
+      [los_o2][network_comparison]. No nearby measured speeds for this cell [speed_cell][speed_neighbours].
+    2. EE (low): Terrain rises 260 m above the direct line to a site 4.5 km east [los_ee][network_comparison]. Operator is inferred from
+      crowd-sourced data, not confirmed by Ofcom's licence register [los_ee][network_comparison]. No nearby measured speeds for this cell
+      [speed_cell][speed_neighbours].
+    3. Three (low): Terrain rises 260 m above the direct line to a site 4.5 km east [los_three][network_comparison]. Operator is inferred
+      from crowd-sourced data, not confirmed by Ofcom's licence register [los_three][network_comparison]. No nearby measured speeds for this
+      cell [speed_cell][speed_neighbours].
+    4. Vodafone (low): Nearest identified site at 3.8 km south-east, but terrain rises 288 m above the direct line, the most obstructed of
+      the four [nearest_site][los_vodafone][network_comparison]. Operator is inferred from crowd-sourced data, not confirmed by Ofcom's
+      licence register [los_vodafone][network_comparison]. No nearby measured speeds for this cell [speed_cell][speed_neighbours].
+  ACTIONS: Try O2 first, as it has the least obstructed line of sight to an identified site | Use Wi-Fi calling indoors if your phone and network support it. | Check your exact address on Ofcom's mobile coverage checker: https://www.ofcom.o | Emergency calls work on any available network.
+  GUARD: critique of distance_to_mast: rewrote a sentence with an unsupported number
+  GUARD: critique of distance_to_mast: rewrote a sentence with an unsupported number
+  GUARD: critique of weather: rewrote a sentence with an unsupported number
+  TIME: investigator 2s/2, diagnostician 100s/2, critic 99s/5, advisor 12s/1; retries 5; model switches 1
+  (272s)
+
+SUMMARY
+  langdale        complete rounds 2    146s  objections 2  confidence changes 2  LLM calls 10  retries 2  switches 0  guard 3
+  london          complete rounds 1    130s  objections 0  confidence changes 0  LLM calls 4  retries 1  switches 0  guard 1
+  rhayader        complete rounds 1    141s  objections 0  confidence changes 0  LLM calls 6  retries 2  switches 1  guard 2
+  sutton          complete rounds 1    198s  objections 0  confidence changes 0  LLM calls 4  retries 4  switches 2  guard 0
+  zone            complete rounds 1    211s  objections 1  confidence changes 0  LLM calls 8  retries 4  switches 1  guard 0
+  langdale_again  complete rounds 2    272s  objections 1  confidence changes 1  LLM calls 10  retries 5  switches 1  guard 3

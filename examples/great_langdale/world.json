@@ -1,0 +1,455 @@
+{
+ "entities": [
+  {
+   "type": "place",
+   "id": "place:cd:54.44500,-3.10500",
+   "attrs": {
+    "lat": 54.445,
+    "lon": -3.105,
+    "cell_id": "871955454ffffff",
+    "postcode": "LA22 9JY",
+    "district": "Westmorland and Furness",
+    "country": "England"
+   },
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T20:56:00.683Z",
+    "runId": "run_20261026205600_c6qi"
+   },
+   "createdAt": "2026-10-26T20:56:00.683Z",
+   "updatedAt": "2026-10-26T20:56:00.683Z",
+   "name": "54.44500, -3.10500",
+   "aliases": [
+    "54.44500, -3.10500"
+   ],
+   "state": "active"
+  },
+  {
+   "type": "area",
+   "id": "area:cd:Westmorland and Furness",
+   "attrs": {
+    "kind": "local authority"
+   },
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T20:56:00.708Z",
+    "runId": "run_20261026205600_c6qi"
+   },
+   "createdAt": "2026-10-26T20:56:00.708Z",
+   "updatedAt": "2026-10-26T20:56:00.708Z",
+   "name": "Westmorland and Furness",
+   "aliases": [
+    "Westmorland and Furness"
+   ],
+   "state": "active"
+  },
+  {
+   "type": "site",
+   "id": "site:cd:S065491",
+   "attrs": {
+    "operators": [
+     "EE",
+     "Three"
+    ],
+    "operators_confirmed": []
+   },
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T20:58:07.068Z",
+    "runId": "run_20261026205600_c6qi"
+   },
+   "createdAt": "2026-10-26T20:58:06.924Z",
+   "updatedAt": "2026-10-26T20:58:07.068Z",
+   "aliases": [],
+   "state": "active"
+  },
+  {
+   "type": "operator",
+   "id": "operator:cd:EE",
+   "attrs": {},
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T20:58:06.949Z",
+    "runId": "run_20261026205600_c6qi"
+   },
+   "createdAt": "2026-10-26T20:58:06.949Z",
+   "updatedAt": "2026-10-26T20:58:06.949Z",
+   "name": "EE",
+   "aliases": [
+    "EE"
+   ],
+   "state": "active"
+  },
+  {
+   "type": "site",
+   "id": "site:cd:S077170",
+   "attrs": {
+    "operators": [
+     "O2"
+    ],
+    "operators_confirmed": []
+   },
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T20:58:07.005Z",
+    "runId": "run_20261026205600_c6qi"
+   },
+   "createdAt": "2026-10-26T20:58:07.005Z",
+   "updatedAt": "2026-10-26T20:58:07.005Z",
+   "aliases": [],
+   "state": "active"
+  },
+  {
+   "type": "operator",
+   "id": "operator:cd:O2",
+   "attrs": {},
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T20:58:07.020Z",
+    "runId": "run_20261026205600_c6qi"
+   },
+   "createdAt": "2026-10-26T20:58:07.020Z",
+   "updatedAt": "2026-10-26T20:58:07.020Z",
+   "name": "O2",
+   "aliases": [
+    "O2"
+   ],
+   "state": "active"
+  },
+  {
+   "type": "operator",
+   "id": "operator:cd:Three",
+   "attrs": {},
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T20:58:07.095Z",
+    "runId": "run_20261026205600_c6qi"
+   },
+   "createdAt": "2026-10-26T20:58:07.095Z",
+   "updatedAt": "2026-10-26T20:58:07.095Z",
+   "name": "Three",
+   "aliases": [
+    "Three"
+   ],
+   "state": "active"
+  },
+  {
+   "type": "site",
+   "id": "site:cd:S075142",
+   "attrs": {
+    "operators": [
+     "Vodafone"
+    ],
+    "operators_confirmed": []
+   },
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T20:58:07.144Z",
+    "runId": "run_20261026205600_c6qi"
+   },
+   "createdAt": "2026-10-26T20:58:07.144Z",
+   "updatedAt": "2026-10-26T20:58:07.144Z",
+   "aliases": [],
+   "state": "active"
+  },
+  {
+   "type": "operator",
+   "id": "operator:cd:Vodafone",
+   "attrs": {},
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T20:58:07.161Z",
+    "runId": "run_20261026205600_c6qi"
+   },
+   "createdAt": "2026-10-26T20:58:07.161Z",
+   "updatedAt": "2026-10-26T20:58:07.161Z",
+   "name": "Vodafone",
+   "aliases": [
+    "Vodafone"
+   ],
+   "state": "active"
+  },
+  {
+   "type": "warning",
+   "id": "warning:cd:metoffice:yellow:wind:2026-10-27T03:00:00+00:00",
+   "attrs": {
+    "level": "yellow",
+    "types": [
+     "wind"
+    ],
+    "valid_from": "2026-10-26T18:00:00+00:00",
+    "valid_to": "2026-10-27T03:00:00+00:00",
+    "district_listed": true
+   },
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T20:58:07.215Z",
+    "runId": "run_20261026205600_c6qi"
+   },
+   "createdAt": "2026-10-26T20:58:07.215Z",
+   "updatedAt": "2026-10-26T20:58:07.215Z",
+   "name": "Yellow warning of wind affecting North West England",
+   "aliases": [
+    "Yellow warning of wind affecting North West England"
+   ],
+   "state": "active"
+  },
+  {
+   "type": "event",
+   "id": "event:cd:diagnosis_completed:run_20261026205600_c6qi:place:cd:54.44500,-3.10500:1793048306904",
+   "attrs": {
+    "kind": "diagnosis_completed",
+    "headline": "Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison].",
+    "status": "complete",
+    "top_cause": "terrain_blocking",
+    "run_id": "run_20261026205600_c6qi",
+    "at": "2026-10-26T20:58:26.904Z"
+   },
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T20:58:26.904Z",
+    "runId": "run_20261026205600_c6qi"
+   },
+   "createdAt": "2026-10-26T20:58:26.904Z",
+   "updatedAt": "2026-10-26T20:58:26.904Z",
+   "name": "diagnosis_completed",
+   "aliases": [
+    "diagnosis_completed"
+   ],
+   "state": "active"
+  }
+ ],
+ "relationships": [
+  {
+   "id": "rel_e01101443aa5d785",
+   "from": "place:cd:54.44500,-3.10500",
+   "type": "in_area",
+   "to": "area:cd:Westmorland and Furness",
+   "attrs": null,
+   "validFrom": "2026-10-26T20:56:00.731Z",
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T20:56:00.731Z",
+    "runId": "run_20261026205600_c6qi"
+   },
+   "createdAt": "2026-10-26T20:56:00.731Z"
+  },
+  {
+   "id": "rel_b04f49200f7ac4d8",
+   "from": "place:cd:54.44500,-3.10500",
+   "type": "nearest_site",
+   "to": "site:cd:S065491",
+   "context": "operator:cd:EE",
+   "attrs": {
+    "operator": "EE",
+    "line_of_sight": "blocked",
+    "obstruction_m": 260.3,
+    "distance_m": 4504,
+    "evidence": "los_ee"
+   },
+   "validFrom": "2026-10-26T20:58:06.970Z",
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T20:58:06.970Z",
+    "runId": "run_20261026205600_c6qi"
+   },
+   "createdAt": "2026-10-26T20:58:06.970Z"
+  },
+  {
+   "id": "rel_a6cdc7cff4b8964c",
+   "from": "site:cd:S065491",
+   "type": "inferred_operator",
+   "to": "operator:cd:EE",
+   "context": "operator:cd:EE",
+   "attrs": null,
+   "validFrom": "2026-10-26T20:58:06.986Z",
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T20:58:06.986Z",
+    "runId": "run_20261026205600_c6qi"
+   },
+   "createdAt": "2026-10-26T20:58:06.986Z"
+  },
+  {
+   "id": "rel_7abfce0d0b69572d",
+   "from": "place:cd:54.44500,-3.10500",
+   "type": "nearest_site",
+   "to": "site:cd:S077170",
+   "context": "operator:cd:O2",
+   "attrs": {
+    "operator": "O2",
+    "line_of_sight": "blocked",
+    "obstruction_m": 128.9,
+    "distance_m": 5730,
+    "evidence": "los_o2"
+   },
+   "validFrom": "2026-10-26T20:58:07.037Z",
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T20:58:07.037Z",
+    "runId": "run_20261026205600_c6qi"
+   },
+   "createdAt": "2026-10-26T20:58:07.037Z"
+  },
+  {
+   "id": "rel_71b73057a50b8398",
+   "from": "site:cd:S077170",
+   "type": "inferred_operator",
+   "to": "operator:cd:O2",
+   "context": "operator:cd:O2",
+   "attrs": null,
+   "validFrom": "2026-10-26T20:58:07.053Z",
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T20:58:07.053Z",
+    "runId": "run_20261026205600_c6qi"
+   },
+   "createdAt": "2026-10-26T20:58:07.053Z"
+  },
+  {
+   "id": "rel_e418a7f3954af40b",
+   "from": "place:cd:54.44500,-3.10500",
+   "type": "nearest_site",
+   "to": "site:cd:S065491",
+   "context": "operator:cd:Three",
+   "attrs": {
+    "operator": "Three",
+    "line_of_sight": "blocked",
+    "obstruction_m": 260.3,
+    "distance_m": 4504,
+    "evidence": "los_three"
+   },
+   "validFrom": "2026-10-26T20:58:07.113Z",
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T20:58:07.113Z",
+    "runId": "run_20261026205600_c6qi"
+   },
+   "createdAt": "2026-10-26T20:58:07.113Z"
+  },
+  {
+   "id": "rel_cfe24c2e283a1396",
+   "from": "site:cd:S065491",
+   "type": "inferred_operator",
+   "to": "operator:cd:Three",
+   "context": "operator:cd:Three",
+   "attrs": null,
+   "validFrom": "2026-10-26T20:58:07.128Z",
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T20:58:07.128Z",
+    "runId": "run_20261026205600_c6qi"
+   },
+   "createdAt": "2026-10-26T20:58:07.128Z"
+  },
+  {
+   "id": "rel_242d4869d5a19a48",
+   "from": "place:cd:54.44500,-3.10500",
+   "type": "nearest_site",
+   "to": "site:cd:S075142",
+   "context": "operator:cd:Vodafone",
+   "attrs": {
+    "operator": "Vodafone",
+    "line_of_sight": "blocked",
+    "obstruction_m": 288.4,
+    "distance_m": 3838,
+    "evidence": "los_vodafone"
+   },
+   "validFrom": "2026-10-26T20:58:07.182Z",
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T20:58:07.182Z",
+    "runId": "run_20261026205600_c6qi"
+   },
+   "createdAt": "2026-10-26T20:58:07.182Z"
+  },
+  {
+   "id": "rel_188d428bfff4cee0",
+   "from": "site:cd:S075142",
+   "type": "inferred_operator",
+   "to": "operator:cd:Vodafone",
+   "context": "operator:cd:Vodafone",
+   "attrs": null,
+   "validFrom": "2026-10-26T20:58:07.201Z",
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T20:58:07.201Z",
+    "runId": "run_20261026205600_c6qi"
+   },
+   "createdAt": "2026-10-26T20:58:07.201Z"
+  },
+  {
+   "id": "rel_9bd63f58c7d2e001",
+   "from": "place:cd:54.44500,-3.10500",
+   "type": "under_warning",
+   "to": "warning:cd:metoffice:yellow:wind:2026-10-27T03:00:00+00:00",
+   "attrs": {
+    "district_listed": true
+   },
+   "validFrom": "2026-10-26T20:58:07.231Z",
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T20:58:07.231Z",
+    "runId": "run_20261026205600_c6qi"
+   },
+   "createdAt": "2026-10-26T20:58:07.231Z"
+  },
+  {
+   "id": "rel_0c993670c6986929",
+   "from": "event:cd:diagnosis_completed:run_20261026205600_c6qi:place:cd:54.44500,-3.10500:1793048306904",
+   "type": "concerns",
+   "to": "place:cd:54.44500,-3.10500",
+   "validFrom": "2026-10-26T20:58:26.906Z",
+   "schemaVersion": 1,
+   "source": {
+    "kind": "agent",
+    "by": "coordinator",
+    "at": "2026-10-26T20:58:26.906Z",
+    "runId": "run_20261026205600_c6qi"
+   },
+   "createdAt": "2026-10-26T20:58:26.906Z"
+  }
+ ]
+}

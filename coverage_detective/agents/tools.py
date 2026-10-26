@@ -36,6 +36,7 @@ class Case:
     zone_id: str | None = None
     bundle: ev.Bundle = field(default_factory=ev.Bundle)
     cache: dict = field(default_factory=dict)
+    progress: object | None = None  # coordinator.Progress: fine-grained steps for the UI
 
     @property
     def lat(self) -> float:
@@ -286,7 +287,7 @@ def tool_specs(names: list[str]) -> list[dict]:
         if name == "line_of_sight":
             params = {"type": "object", "properties": {"operator": {"type": "string", "enum": OPERATORS}},
                       "required": ["operator"]}
-        out.append({"type": "function", "function": {"name": name, "description": TOOLS[name].__doc__.strip(),
+        out.append({"type": "function", "function": {"name": name, "description": (TOOLS[name].__doc__ or name).strip(),
                                                      "parameters": params}})
     return out
 
@@ -296,11 +297,15 @@ def run_tool(case: Case, name: str, args: dict | None = None, round: int = 1, by
     args = {k: v for k, v in (args or {}).items() if v is not None}
     t0 = time.monotonic()
     n_queries = len(case.bundle.queries)
+    label = f"{name}({', '.join(str(v) for v in args.values())})"
+    step = case.progress.start(by, round, "tool", label) if case.progress else None
     try:
         items = TOOLS[name](case, **args)
     except Exception as e:  # noqa: BLE001 - recorded, then raised for the caller's fallback
         case.memory.add_note(case.run_id, "tool_error", f"{name}({args}) failed: {type(e).__name__}: {str(e)[:200]}",
                              by=by, tool=name, args=args, round=round)
+        if step:
+            case.progress.fail(step, f"{type(e).__name__}: {str(e)[:120]}")
         raise
     written = []
     for item in items:
@@ -312,6 +317,8 @@ def run_tool(case: Case, name: str, args: dict | None = None, round: int = 1, by
                          f"{', '.join(i['id'] for i in written) or 'no items'}", by=by, tool=name, args=args, round=round,
                          evidence_ids=[i["id"] for i in written], new=[i["id"] for i in written if i["created"]],
                          duration_ms=round_ms(t0), zetaris_queries=queries)
+    if step:
+        case.progress.done(step, f"{label} -> {', '.join(i['id'] for i in written) or 'no items'}")
     return written
 
 

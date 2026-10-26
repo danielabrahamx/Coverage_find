@@ -8,7 +8,12 @@ Check each belief for
     an assumed antenna height lowers strength; crowd-sourced site positions are less reliable than Ofcom's licence
     register; "operators unknown" is not "single operator"; Ofcom figures are area-level only;
 (c) unchecked alternatives that a listed tool could test;
-(d) contradictions between items.
+(d) contradictions between items;
+(e) time fit: the cause must explain the evidence's time pattern. A live weather forecast or warning cannot explain
+    speeds that have been poor across several quarters [speed_trend / history]; at most it explains a drop in the
+    latest period. Likewise active_incident. When a belief's cause is short-lived but the poor service is
+    long-standing, downgrade it (suggested_confidence <= 0.3) and say why. The reverse also holds: a permanent cause
+    (terrain, distance) is not contradicted by one bad day.
 
 Rules
 - needs_evidence must name specific checks: tool (and operator for line_of_sight) and why. Never request a check

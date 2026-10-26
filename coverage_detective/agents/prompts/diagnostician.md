@@ -11,6 +11,8 @@ Rules
 - Ofcom figures are area-level context, never proof at the point.
 - capacity_strain needs low or falling speeds with sites nearby and clear lines. weather needs a severe forecast or
   a Met Office warning covering the district. active_incident needs a live warning or incident affecting service.
+  weather and active_incident explain current or recent degradation only; if measured speeds have been poor across
+  several quarters, these causes sit alongside a persistent cause, not instead of it, and stay at or below 0.4.
 - If the evidence cannot separate causes, use insufficient_data. It is a valid answer.
 - Explanations: one or two sentences citing ids in [brackets]. Use numbers only as written in the cited evidence.
 - Later rounds: keep the same ids for existing beliefs, change confidence only with a reason in revision_reasons,

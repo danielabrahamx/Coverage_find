@@ -102,7 +102,8 @@ coverage_detective/     package
   planning/             zones.py (gap zones), scoring.py (priority score), siting.py (fixes, candidates)
   memory/meterless.py   Meterless client (H-MEM + World Model over HTTP; in-memory fallback)
   agents/               llm.py (Nemotron client), schemas.py (pydantic), tools.py (tools -> Meterless),
-                        agents.py (the agents), guard.py (code guard), prompts/*.md
+                        agents.py (the agents), guard.py (code guard), prompts/*.md,
+                        coordinator.py (the loop: diagnose_point, diagnose_zone; progress; export)
 meterless_service/      Node HTTP service on :8100 over vendor/meterless (H-MEM, World Model); data/meterless/
 vendor/meterless/       Meterless reference engines, vendored unchanged (Apache 2.0)
   data/
@@ -317,6 +318,18 @@ G (power cuts) dropped as future work; H (visitor load) only if time. Then the a
   round-3 needs_evidence -> downgrade, mandatory resident actions, one ranking entry per operator,
   letter sources listed from evidence. Timings (26 Oct): investigator ~3 s, diagnostician ~19 s,
   critic ~40 s (Ultra), advisor / letter ~5 s, fix planner ~2 s. Check: scripts/check_agents.py.
+- **Agents, phase 4: coordinator** (26 Oct): coordinator.py. Point: create run, World Model place
+  (+ area), prior_diagnoses_nearby, loop (investigate -> diagnose -> critique; next round only if the
+  critic requested new checks; max 3), World Model sites per operator (nearest_site{op} with the
+  line-of-sight result), warnings, advisor, record_diagnosis + diagnosis_completed event. Zone: same
+  loop on zone tools, then fix planner + critic review (max one revision), fix_plan_proposed event,
+  candidate sites in the World Model. An agent failing twice -> status "partial" built from the
+  evidence. Progress: one step per LLM call and tool call in data/runs/<run_id>.json (and Meterless
+  run progress); full output in data/runs/<run_id>.full.json. Prompts: critic has a time-fit check
+  (short-lived causes cannot explain long-standing poor service; downgrade to <= 0.3), diagnostician
+  caps weather / active_incident at 0.4 when poor service is long-standing. Guard rewrites use the
+  same agent prompt on the fast model. Meterless payloads can no longer overwrite record fields.
+  Check: scripts/check_coordinator.py (summary in data/runs/phase4_summary.json).
 
 ### Zetaris sources
 
