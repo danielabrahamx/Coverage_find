@@ -108,6 +108,24 @@
         "2026Q3"
       ]
     },
+    "places": {
+      "title": "OpenStreetMap named places (city, town, village, hamlet)",
+      "data_period": "OSM extracts downloaded 2026-10-25",
+      "downloaded": {
+        "great-britain-latest.osm.pbf": "2026-10-25",
+        "ireland-and-northern-ireland-latest.osm.pbf": "2026-10-25"
+      },
+      "built_at": "2026-10-26T18:34:53+00:00",
+      "refresh": "with the OSM extracts (monthly)",
+      "licence": "ODbL 1.0, (c) OpenStreetMap contributors",
+      "outputs": {
+        "places.parquet": {
+          "sha256": "dc85236e7358f8e8258183dbe01e987adc244dc32025f85e0674207e80a3f1f5",
+          "bytes": 1425886,
+          "rows": 38970
+        }
+      }
+    },
     "terrain": {
       "title": "Copernicus DEM GLO-30: terrain per cell and line of sight to the nearest site",
       "data_period": "Copernicus DEM GLO-30 (2021 release; source data 2011-2015)",
@@ -168,7 +186,35 @@
           "last_modified": "Sun, 25 Oct 2026 08:45:01 GMT"
         }
       }
+    },
+    "zones": {
+      "title": "Gap zones: clusters of poorly served populated cells",
+      "data_period": "built from Ookla 2026Q3 and mast sites 2026-10-25",
+      "downloaded": {},
+      "built_at": "2026-10-26T18:47:35+00:00",
+      "refresh": "after Ookla or mast refreshes",
+      "licence": "derived from the sources above (see their licences)",
+      "outputs": {
+        "gap_zones.parquet": {
+          "sha256": "701373179b82cc3ed1cd98da40b48fb66edd15b3a3193778c7165698106c6f72",
+          "bytes": 93683,
+          "rows": 677
+        },
+        "gap_zone_cells.parquet": {
+          "sha256": "0b558a8edc234436d85d2967e493fc1fbf2f15aab56aaba59bfb8ef5e1d49610",
+          "bytes": 134050,
+          "rows": 2921
+        }
+      },
+      "rules": {
+        "min_cell_population": 10,
+        "min_zone_population": 50,
+        "slow_mbps": 5.0,
+        "min_tests": 10,
+        "blocked_m": 10.0,
+        "sites_checked": 8
+      }
     }
   },
-  "updated_at": "2026-10-25T20:55:31+00:00"
+  "updated_at": "2026-10-26T18:47:35+00:00"
 }

@@ -139,6 +139,23 @@ def register_los() -> None:
     )
 
 
+def register_gap_zones() -> None:
+    _register(
+        "CD_GAP_ZONES", "gap_zones", "gap_zones.parquet",
+        "Gap zones, connected clusters of poorly served H3 r7 cells with at least 50 people. Per zone, name from the "
+        "largest OSM place, nation, local authorities, people, severity, persistence, trend, operators nearby and test "
+        "counts. Scored per request. Derived from Ookla, mast sites, Copernicus DEM and Ofcom areas.",
+    )
+
+
+def register_gap_zone_cells() -> None:
+    _register(
+        "CD_GAP_ZONE_CELLS", "gap_zone_cells", "gap_zone_cells.parquet",
+        "Poorly served H3 r7 cells in gap zones, with zone_id, population, why each is poor (slow, no_site, blocked), "
+        "severity, neighbour-ring speed and tests, local authority.",
+    )
+
+
 def _rest_table(database: str, table: str, endpoint: str) -> None:
     """A Lightning REST table: each query calls the endpoint live (Zetaris infers the JSON schema
     from one call at creation). Endpoints must work as written: a ${param} placeholder for the
@@ -178,6 +195,8 @@ SOURCES = {
     "ofcom_nations": register_ofcom_nations,
     "terrain": register_terrain,
     "los": register_los,
+    "gap_zones": register_gap_zones,
+    "gap_zone_cells": register_gap_zone_cells,
     "ea_floods": register_ea_floods,
 }
 

@@ -16,6 +16,7 @@ Routes:
   POST /api/evidence           evidence bundle for {"query": postcode or place} or {"lat", "lon"}
   /                            the data explorer (web/index.html)
   /signal                      My signal: evidence for one exact point (web/signal.html)
+  /council                     Council view: ranked gap zones (web/council.html; API in api/council.py)
 """
 
 from __future__ import annotations
@@ -35,6 +36,7 @@ from fastapi.staticfiles import StaticFiles
 
 from coverage_detective.config import H3_RES, PROCESSED, ROOT
 from coverage_detective import evidence as evidence_bundle
+from coverage_detective.api.council import router as council_router
 from coverage_detective.config import UK_BBOX
 from coverage_detective.data import manifest, terrain
 from coverage_detective.data.queries import cell_sql
@@ -49,6 +51,7 @@ MAX_MASTS = 5000
 MAX_TILE_BBOX_DEG2 = 0.6  # tiles only when zoomed in
 
 app = FastAPI(title="Coverage Detective data explorer")
+app.include_router(council_router)
 
 
 # --- static data held in memory ------------------------------------------------------------
@@ -254,6 +257,11 @@ def live(lat: float = Query(..., ge=49, le=61.5), lon: float = Query(..., ge=-9,
 @app.get("/signal", include_in_schema=False)
 def signal_page() -> FileResponse:
     return FileResponse(WEB_DIR / "signal.html")
+
+
+@app.get("/council", include_in_schema=False)
+def council_page() -> FileResponse:
+    return FileResponse(WEB_DIR / "council.html")
 
 
 if WEB_DIR.exists():

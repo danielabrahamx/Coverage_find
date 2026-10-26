@@ -41,3 +41,26 @@ SAMPLE_LOCATIONS = [
     ("Central London (WC2N 5DU)", 51.507211, -0.128269),
     ("Near Rhayader, Powys", 52.30, -3.51),
 ]
+
+# Gap zones (Council view). A cell with >= GAP_MIN_CELL_POPULATION people is "poorly served"
+# when (a) the test-weighted
+# download over the cell and its neighbour ring is below GAP_SLOW_MBPS from at least
+# GAP_MIN_TESTS tests, or (b) no approximate site lies within 5 km (unless >= GAP_MIN_TESTS
+# tests measure >= GAP_SLOW_MBPS: a gap in our site data, not coverage), or (c) the line of sight
+# from the cell centre is blocked by >= GAP_BLOCKED_M to every site within 5 km and the
+# cell + ring has fewer than GAP_MIN_TESTS tests. Zones (connected poorly served cells) are kept
+# when they hold >= GAP_MIN_ZONE_POPULATION people: a per-cell threshold would drop sparse
+# valleys whose people are spread over several cells (Great Langdale: 48 + 17 people).
+# See coverage_detective/planning/zones.py.
+GAP_MIN_CELL_POPULATION = 10
+GAP_MIN_ZONE_POPULATION = 50
+GAP_SLOW_MBPS = 5.0
+GAP_MIN_TESTS = 10
+GAP_BLOCKED_M = 10.0
+GAP_SITES_CHECKED = 8      # nearest sites within 5 km checked for criterion (c)
+
+# Default priority weights (the API accepts others). "need" applies only when the
+# rural-urban / deprivation data is built; missing factors are left out and the
+# remaining weights rescaled.
+PRIORITY_WEIGHTS = {"people": 0.35, "severity": 0.25, "persistence": 0.15, "trend": 0.10, "operator_choice": 0.15,
+                    "need": 0.0}
