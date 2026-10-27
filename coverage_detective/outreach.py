@@ -350,6 +350,15 @@ def fill_placeholders(md: str, sent_by: str, where: str) -> str:
 # ------------------------------------------------------------------ the message
 
 
+def tidy_subject(subject: str, place: dict) -> str:
+    """A subject names the place a reader knows: swap a bare coordinate pair for the postcode."""
+    lat, lon, postcode = place.get("lat"), place.get("lon"), place.get("postcode")
+    if postcode and isinstance(lat, (int, float)) and isinstance(lon, (int, float)):
+        for coords in (f"{lat:.5f}, {lon:.5f}", f"{lat}, {lon}", f"{lat:.5f},{lon:.5f}"):
+            subject = subject.replace(coords, postcode)
+    return subject
+
+
 def slug(s: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", (s or "").lower()).strip("-") or "location"
 
@@ -422,7 +431,7 @@ def compose(result: dict, letter: dict, contact: Contact, sent_by: str = "",
     letter_md = fill_placeholders(letter.get("body_markdown") or "", sent_by, where).rstrip()
     sign_md = signature(result, contact, sent_by, at)
     letter_text, sign_text = to_text(letter_md, ids), to_text(sign_md, ids)
-    subject = fill_placeholders((letter.get("subject") or "").strip(), sent_by, where) \
+    subject = tidy_subject(fill_placeholders((letter.get("subject") or "").strip(), sent_by, where), place) \
         or f"Poor mobile signal at {where}: evidence from public data"
     to = contact.email or ""
     mailto, truncated = mailto_uri(to, subject, letter_text, tail=sign_text)
