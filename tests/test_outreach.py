@@ -7,8 +7,7 @@ from urllib.parse import parse_qs, unquote, urlparse
 from coverage_detective import outreach as O
 from coverage_detective.config import ROOT
 
-RUN = json.loads((ROOT / "examples" / "compare" / "great_langdale_3.full.json").read_text())
-RESULT = RUN["result"]
+RESULT = json.loads((ROOT / "examples" / "great_langdale" / "diagnosis.json").read_text())
 LETTER = {
     "subject": "Poor mobile signal at Great Langdale (LA22 9JY)",
     "body_markdown": (
@@ -77,7 +76,7 @@ def test_compose_fills_in_the_recipient_and_produces_a_sendable_message():
     assert "I live at LA22 9JY" in email.body_text                    # [Your address] filled from the run
     assert "[los_ee]" not in email.body_text                          # evidence ids stay in the app
     assert "EE's nearest approximate site is 3.8 km away" in email.body_text
-    assert "Diagnosis reference run_20261026213702_fgoz" in email.body_text
+    assert "Diagnosis reference run_20261027002210_kkcc" in email.body_text
     assert "26 October 2026" in email.body_text
     assert "not a complaint about the council's own service" in email.body_text
     assert "<p>I live at LA22 9JY" in email.body_html and "<li>No Ookla tests" in email.body_html
@@ -129,7 +128,7 @@ def test_a_body_too_long_for_a_mailto_link_is_cut_at_a_line_and_keeps_the_signat
     assert "Paragraph with detail." in body                      # not an empty draft
     assert "use Copy to send the full text" in body
     assert "Reported by a local resident of LA22 9JY" in body    # the signature is never cut
-    assert "Diagnosis reference run_20261026213702_fgoz" in body
+    assert "Diagnosis reference run_20261027002210_kkcc" in body
     assert email.body_text.count("Paragraph with detail.") == 400  # Copy stays complete
 
 

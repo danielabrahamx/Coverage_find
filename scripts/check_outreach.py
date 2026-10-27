@@ -22,7 +22,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from coverage_detective import outreach as O  # noqa: E402
 from coverage_detective.config import ROOT  # noqa: E402
 
-DEFAULT_RUN = ROOT / "examples" / "compare" / "great_langdale_3.full.json"
+DEFAULT_RUN = ROOT / "examples" / "great_langdale" / "diagnosis.json"
 
 
 def check_table() -> int:
@@ -84,11 +84,12 @@ def check_email(result: dict, evidence: list[dict], to: str, sent_by: str) -> in
     return 0
 
 
-def _evidence(export: Path) -> list[dict]:
-    """The evidence items of the run export (examples/*/great_langdale_3.full.json)."""
-    if not export.exists():
+def _evidence(path: Path) -> list[dict]:
+    """The evidence items next to the run (examples/<id>/evidence.json: a list, or an export with one)."""
+    if not path.exists():
         return []
-    return json.loads(export.read_text()).get("evidence") or []
+    data = json.loads(path.read_text())
+    return data if isinstance(data, list) else (data.get("evidence") or [])
 
 
 def _annex(evidence: list[dict]) -> str:
@@ -101,15 +102,15 @@ def _annex(evidence: list[dict]) -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--run", type=Path, default=DEFAULT_RUN, help="a run export or its .json")
+    parser.add_argument("--run", type=Path, default=DEFAULT_RUN, help="a run result (examples/<id>/diagnosis.json)")
     parser.add_argument("--to", default="council", help="council, EE, O2, Three or Vodafone")
     parser.add_argument("--sent-by", default="", help="the resident's name for the signature")
     args = parser.parse_args()
 
     problems = check_table()
-    result = json.loads(args.run.read_text()).get("result")
-    evidence = _evidence(args.run.with_name(args.run.name.replace(".json", ".full.json"))) if not \
-        args.run.name.endswith(".full.json") else _evidence(args.run)
+    result = json.loads(args.run.read_text())
+    result = result.get("result", result)          # a bare result, or a run file that wraps one
+    evidence = _evidence(args.run.with_name("evidence.json"))
     if result:
         for to in ("council", "EE", "O2", "Three", "Vodafone") if args.to == "all" else (args.to,):
             try:

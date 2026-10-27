@@ -11,8 +11,7 @@ from coverage_detective.api import agents as API
 from coverage_detective.api.app import app
 from coverage_detective.config import ROOT
 
-RUN = json.loads((ROOT / "examples" / "compare" / "great_langdale_3.full.json").read_text())
-RESULT = RUN["result"]
+RESULT = json.loads((ROOT / "examples" / "great_langdale" / "diagnosis.json").read_text())
 LETTER = {
     "subject": "Poor mobile signal at Great Langdale (LA22 9JY)",
     "body_markdown": ("# Mobile signal in Great Langdale\n\n"

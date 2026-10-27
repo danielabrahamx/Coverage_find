@@ -296,9 +296,15 @@ def email(run_id: str, req: EmailRequest) -> dict:
         _need_llm()
         before = len(memory.notes(run_id))
         case = Case(run_id=run_id, scope=result.get("scope", "point"), point=result.get("location") or {}, memory=memory)
+        if sample_mode() and result.get("example_id"):  # sample mode: the recorded letter for this recipient kind
+            sess = R.Session("record" if R.recording() else "replay", result["example_id"])
+            sess.variant = "council" if contact.kind == "council" else "operator"
+            case.cache["replay"] = sess
         try:
             wire = A.write_letter(case, "council" if contact.kind == "council" else "operator", result,
                                   addressee=contact.name)
+        except R.ReplayMissing as e:
+            raise HTTPException(404, f"{e} (sample mode records letters for some examples only)") from e
         except LLMError as e:
             raise HTTPException(502, f"The letter writer is unavailable: {str(e)[:160]}") from e
         drafted = {"subject": wire.subject, "body_markdown": wire.body_markdown}
