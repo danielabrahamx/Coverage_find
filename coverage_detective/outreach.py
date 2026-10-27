@@ -422,7 +422,8 @@ def compose(result: dict, letter: dict, contact: Contact, sent_by: str = "",
     letter_md = fill_placeholders(letter.get("body_markdown") or "", sent_by, where).rstrip()
     sign_md = signature(result, contact, sent_by, at)
     letter_text, sign_text = to_text(letter_md, ids), to_text(sign_md, ids)
-    subject = (letter.get("subject") or "").strip() or f"Poor mobile signal at {where}: evidence from public data"
+    subject = fill_placeholders((letter.get("subject") or "").strip(), sent_by, where) \
+        or f"Poor mobile signal at {where}: evidence from public data"
     to = contact.email or ""
     mailto, truncated = mailto_uri(to, subject, letter_text, tail=sign_text)
     return Email(to=to, subject=subject, body_text=f"{letter_text}\n\n{sign_text}".strip(),

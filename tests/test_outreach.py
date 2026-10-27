@@ -82,6 +82,12 @@ def test_compose_fills_in_the_recipient_and_produces_a_sendable_message():
     assert "<p>I live at LA22 9JY" in email.body_html and "<li>No Ookla tests" in email.body_html
 
 
+def test_a_placeholder_in_the_subject_is_filled_too():
+    letter = {"subject": "Poor mobile signal at [Your address]", "body_markdown": "Body [los_ee]."}
+    assert O.compose(RESULT, letter, O.council_contact("Powys"), sent_by="D. Abraham", at=AT).subject == \
+        "Poor mobile signal at LA22 9JY"
+
+
 def test_compose_signs_the_message_with_the_residents_name_when_given():
     email = O.compose(RESULT, LETTER, O.council_contact("Powys"), sent_by="D. Abraham", at=AT)
     assert "Reported by D. Abraham of LA22 9JY" in email.body_text
