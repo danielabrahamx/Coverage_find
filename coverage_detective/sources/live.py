@@ -5,7 +5,7 @@ from:
   live      fetched just now (or from the disk cache within the source's TTL)
   cached    the call failed; an older cached response is used
   sample    SAMPLE_MODE=true, or the call failed with nothing cached: a saved response for
-            the nearest sample place, from data/samples/<source>/<place>.json
+            the nearest sample place, from sample_data/<source>/<place>.json
   unavailable  the call failed and there is no cache or sample
 
 The disk cache (data/cache/live/, gitignored) stores raw response bodies. Samples are real

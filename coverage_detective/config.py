@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "data" / "raw"
 PROCESSED = ROOT / "data" / "processed"
-SAMPLES = ROOT / "data" / "samples"
+SAMPLES = ROOT / "sample_data"
 
 H3_RES = 7
 

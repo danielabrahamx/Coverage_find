@@ -1,4 +1,4 @@
-"""Live source clients, run offline against the saved samples in data/samples/."""
+"""Live source clients, run offline against the saved samples in sample_data/."""
 
 from datetime import datetime, timezone
 

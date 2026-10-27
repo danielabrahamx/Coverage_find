@@ -88,7 +88,7 @@ class DEM:
 
 class SampleDEM:
     """Sample mode: the same bilinear sampling over small int16 crops around the example places
-    (data/samples/dem/*.tif, written by scripts/build_samples.py). Points outside every crop read 0."""
+    (sample_data/dem/*.tif, written by scripts/build_samples.py). Points outside every crop read 0."""
 
     def __init__(self, directory=None):
         from coverage_detective.config import SAMPLES

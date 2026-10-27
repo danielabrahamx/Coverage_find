@@ -1,4 +1,4 @@
-"""Sample mode's stand-in for Zetaris: DuckDB over the committed extracts in data/samples/zetaris/.
+"""Sample mode's stand-in for Zetaris: DuckDB over the committed extracts in sample_data/zetaris/.
 
 Each Zetaris source (CD_CELLS.cells_r7, ...) is a DuckDB schema + view over its extract, so the
 same SQL runs unchanged apart from three Spark functions, translated here:

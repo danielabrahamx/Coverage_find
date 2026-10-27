@@ -4,8 +4,8 @@ around the example places and zones, so the agents run with no Zetaris, no live 
     python scripts/build_samples.py
 
 Reads data/processed/*.parquet (the files Zetaris serves) and data/raw/dem/; writes
-data/samples/zetaris/<table>.parquet + extract.json (tables, boxes, row counts), uk_context.json (the
-UK-wide medians, from the full data) and data/samples/dem/<box>.tif (int16, deflate, native 30 m).
+sample_data/zetaris/<table>.parquet + extract.json (tables, boxes, row counts), uk_context.json (the
+UK-wide medians, from the full data) and sample_data/dem/<box>.tif (int16, deflate, native 30 m).
 Boxes: 12 km around each sample place (sites within 10 km and line of sight to them), and the zone's
 cells + 16 km for each example zone (candidate high points within 6.5 km, reach 8 km). Zone tables
 keep the example zones and the zones that contain a sample place. Re-run after a data rebuild.

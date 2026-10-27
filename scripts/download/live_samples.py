@@ -2,7 +2,7 @@
 
     python scripts/download/live_samples.py
 
-Writes data/samples/<source>/<slug>.json (url, fetched_at, http_status, body). Re-run to
+Writes sample_data/<source>/<slug>.json (url, fetched_at, http_status, body). Re-run to
 refresh them; each file is a few KB. The Met Office samples are whole regional feeds, so
 they hold whatever warnings were active when saved.
 """

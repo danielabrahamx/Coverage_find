@@ -1,472 +1,211 @@
 # Coverage Detective
 
-**Why is my mobile signal bad here, and where should a council act?** Coverage Detective answers both from
-real public data (measured speeds, mast sites, terrain, Ofcom coverage, live weather and warnings). A small
-team of AI agents investigates, argues with each other and writes a plain-English explanation in which every
-claim points to an evidence item and the SQL behind it. Built for the Open Agent Hackathon ("The Agent That
-Can Explain Why").
+**AI agents that explain why your mobile signal is bad, and show councils where to act, from real public data,
+with every claim traced to its evidence and SQL.**
 
-- **My signal** (`/signal`): pick an exact spot; the agents rank the likely causes with confidence, say what
-  was ruled out, which network is likely best, what to do, and draft an evidence letter.
-- **Council view** (`/council`): ranked **gap zones** (poorly served people) and **improvement opportunities**
-  (not poorly served, but a measurable weakness), a fix view with candidate mast sites and the people each
-  would reach, agent diagnoses on demand and a priority summary for any area.
-- **Explore** (`/`): the data itself, cell by cell.
+Open Agent Hackathon, **Track 2: The Agent That Can Explain Why**.
 
-## Try it in two minutes (sample mode: no Zetaris, no network, no API key)
+![My signal: the agents' diagnosis for Great Langdale](docs/screenshots/hero_my_signal.png)
+
+## Try it in 30 seconds
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
-(cd meterless_service && npm install)        # Node 18+, for the Meterless memory service
-.venv/bin/python run.py --sample             # http://localhost:8000
+(cd meterless_service && npm install)     # Node 18+ (the agents' memory service)
+.venv/bin/python run.py --sample          # then open http://localhost:8000/signal
 ```
 
-Sample mode answers every database query with DuckDB over small committed extracts of the Zetaris sources
-(`data/samples/zetaris/`, DEM crops in `data/samples/dem/`), uses saved live responses (`data/samples/`) and
-replays the recorded agent replies of the examples (`examples/`); Meterless still runs locally. Only the
-example places and zones can be diagnosed there; anything else is refused with a clear message, and replayed
-results are labelled "recorded". Open `/signal?lat=54.445&lon=-3.105` and press "Diagnose with agents", or
-`/council?zone=Z00072`.
+No keys, no Docker, no network: sample mode replays recorded agent runs over small committed data extracts.
+Then click:
 
-## Architecture
+1. **Great Langdale**: `/signal?lat=54.445&lon=-3.105` → **Diagnose with agents**. Hills block every network;
+   open **Evidence** to see each item and the SQL behind it, and draft an evidence letter.
+2. **Near Rhayader**: `/signal?lat=52.30&lon=-3.51` → Diagnose → **How the agents decided**: the critic
+   challenges a belief, asks for a check, and a second round runs.
+3. **Council view** → `/council?zone=Z00072` (**Ousby**) → Diagnose zone: the recommended new site, the
+   people it would reach, and **Today / With candidate 1** on the map.
 
-```
-                 pages (/signal, /council, /)  ──  FastAPI  ──  coordinator (the loop)
-                                                                   │
-        ┌──────────────── evidence layer ───────┐    ┌──── shared case file ────┐    ┌── model layer ──┐
-        │ Zetaris: one Lightning source per     │    │ Meterless H-MEM: evidence, │    │ NVIDIA Nemotron │
-        │ dataset (CD_CELLS, CD_OOKLA_*, CD_MASTS│◄──►│ beliefs + revisions, critiques,│◄──►│ 3.5 Super: tools,│
-        │ _*, CD_OFCOM_*, CD_TERRAIN, CD_LOS,    │    │ notes, trust-ledger audit │    │ diagnosis, advice│
-        │ CD_GAP_ZONES, CD_OPP_ZONES, ... and the│    │ Meterless World Model:    │    │ 3 Ultra (thinking│
-        │ live REST source CD_LIVE_EA_FLOODS)    │    │ places, zones, sites,     │    │ on): the critic  │
-        │ + DEM line of sight, live APIs         │    │ operators, warnings, events│    └─────────────────┘
-        └────────────────────────────────────────┘    └───────────────────────────┘
-                       code guard after every agent: citations, weak evidence, numbers, wording
-```
+## The problem
 
-- **Zetaris is the evidence layer.** Every dataset is its own Lightning database and every query is logged
-  with the evidence item it produced, so the UI can show the exact SQL behind each claim
-  ([data report](docs/data_report.md): row counts, freshness and query times through Zetaris).
-- **Meterless is the shared case file.** Agents never message each other: each reads the run's evidence,
-  beliefs and critiques from Meterless H-MEM and writes its own back. Belief revisions are trust-ledger
-  updates (who, old → new confidence, reason), so the audit trail is the trace you see. The World Model holds
-  the place or zone, its sites per operator (with the line-of-sight result), warnings and events, and earlier
-  diagnoses nearby are looked up as context.
-- **Nemotron is the model layer** (`agents/llm.py`, OpenAI-compatible API): 3.5 Super for the investigator
-  (tool calling), diagnostician, advisor, letter writer and fix planner (strict JSON schema); 3 Ultra with
-  thinking for the critic. 5xx bursts are retried after 2 s and 6 s, then the other model answers; retries and
-  switches are in the trace.
+Many people in the UK still have poor mobile signal where they live (our data finds 677 poorly served zones,
+265,000 people), but nobody tells them **why**: is it the
+hills, the distance to the mast, a single network, a busy cell, or today's storm? Operators' network data is
+private, Ofcom's checker predicts coverage but does not explain it, and councils deciding where to push for
+new masts have spreadsheets, not reasons.
 
-## The agent loop
+- **Residents**: "why is my signal bad here, which network is likely best, what can I do?", plus a letter to
+  send with the evidence attached.
+- **Councils**: "which places are worst served, why, what fix would help most people, and where are the
+  cheaper upgrade opportunities?"
 
-```
-investigate ──► diagnose ──► critique ──► critic asked for checks and round < 3? ──yes──► investigate again
-                                                │no
-                                                ▼
-                         act: advisor (point)  /  fix planner ⇄ critic review (zone)
-```
+## What it does
 
-1. **Investigator** chooses tools (speeds, trend, sites, line of sight per operator, terrain, Ofcom area,
-   live conditions, earlier diagnoses; for zones: zone summary, candidate sites). Each tool writes evidence
-   items with stable ids, their Zetaris SQL and a strength (strong / moderate / weak).
-2. **Diagnostician** ranks causes from a fixed set (distance_to_mast, terrain_blocking, single_operator,
-   capacity_strain, weather, active_incident, insufficient_data) with confidence, citing evidence ids.
-   "Insufficient data" is a valid answer.
-3. **Critic** approves, asks for specific checks (which send the loop round again), downgrades or rejects,
-   with reasons. Checks it applies: citations, evidence strength, unchecked alternatives, contradictions and
-   time fit (a storm cannot explain years of poor speeds).
-4. **Advisor** explains the reviewed beliefs for a resident, council officer or operator; for zones the
-   **fix planner** proposes a fix from the candidate sites and the critic reviews it (one revision at most).
-
-**The code guard** runs after every agent and records every intervention in Meterless: citations to evidence
-that does not exist are removed (a belief left with none is dropped); a belief resting only on weak evidence
-(under 30 tests, crowd-sourced sites only, unknown operators, a region-wide weather warning) is capped at
-0.5; earlier diagnoses are context, never support; a confidence change needs a reason; every number must
-match the cited evidence (else one rewrite, then the sentence is removed); improvement opportunities must be
-called opportunities, never gaps or "no coverage". If an agent fails twice the run returns a partial result
-built from the evidence.
-
-## Pages
-
-| My signal: the agents' result | How the agents decided | Council view: fix with a candidate |
+| My signal (`/signal`) | Council view (`/council`) | Explore (`/`) |
 |---|---|---|
-| ![](docs/screenshots/ui_cleanup/after_great_langdale_result.png) | ![](docs/screenshots/ui_cleanup/after_ousby_agents_decided_round_open.png) | ![](docs/screenshots/council/06_ousby_fix_with_candidate.png) |
+| ![](docs/screenshots/hero_my_signal.png) | ![](docs/screenshots/council/03_lake_district_gaps_and_opportunities.png) | ![](docs/screenshots/explore.png) |
+| One exact spot: likely causes ranked with confidence, what was ruled out, the likely best network, what to do, an editable evidence letter. | **Gap zones** (poorly served people) and **improvement opportunities** (not poorly served, but a measurable weakness), ranked by a transparent score with adjustable weights; a fix view with candidate mast sites; agent diagnoses and a priority summary for any area. | The data itself, cell by cell: speeds, mast sites, operators, terrain and line of sight, Ofcom figures. |
 
-- Result tab: headline, recommended fix or best network, "why we think this" (confidence bars; hover shows
-  old → new with the reason), ruled out, actions, an editable evidence letter (Markdown download).
-- How the agents decided: one card per round from the Meterless audit trail; technical details (models,
-  timings, tools, guard codes) on demand.
-- Evidence: every item with its Zetaris SQL, and the run's World Model.
-- Council view: "Analyse area" picker, Gaps | Opportunities | Both, zoom-based lists that always match the
-  map, a Diagnose button per zone, "Diagnose the top 3 in view", Today / With candidate N.
+| How the agents decided | The fix view | Every claim has its evidence |
+|---|---|---|
+| ![](docs/screenshots/my_signal_how_agents_decided.png) | ![](docs/screenshots/council/06_ousby_fix_with_candidate.png) | ![](docs/screenshots/my_signal_evidence.png) |
 
-## Examples
+## How it works
 
-| Example | What it shows | Agents' headline | Rounds | Recorded in |
+```
+ public data ──► Zetaris ──► evidence API ──► agents ◄──► Meterless ──► pages
+ (Ookla, masts,   (one        (findings with   (investigate,   (shared case     (My signal,
+  Ofcom, DEM,      source per   strength, data   diagnose,       file + World     Council view,
+  live APIs)       dataset)     period and SQL)  critique, act)  Model)           Explore)
+                                      ▲                │
+                                      └── code guard ──┘   checks every agent's output
+```
+
+**The agent loop** (`coverage_detective/agents/coordinator.py`), up to 3 rounds:
+
+```
+investigate ─► diagnose ─► critique ─► the critic asked for checks and round < 3? ─ yes ─► investigate again
+                                            │ no
+                                            ▼
+                     act: advisor (a place)  /  fix planner ⇄ critic review (a zone)
+```
+
+- **Investigator** picks tools (speeds, trend, sites, line of sight per operator, terrain, Ofcom area, live
+  conditions, earlier diagnoses); each writes evidence items with stable ids, a strength and their SQL.
+- **Diagnostician** ranks causes from a fixed set (distance to mast, terrain, single operator, capacity strain,
+  weather, active incident, insufficient data) with confidence, citing evidence ids.
+- **Critic** approves, asks for specific checks (another round), downgrades or rejects, with reasons: are the
+  citations real, is the evidence strong enough, was an alternative left unchecked, does the cause fit the
+  time pattern (a storm cannot explain a year of slow speeds).
+- **Advisor** writes the answer for a resident, council officer or operator; for zones the **fix planner**
+  proposes a fix from the candidate sites and the critic reviews it.
+- Agents never message each other: each reads and writes the run's case file in Meterless.
+
+**The code guard** runs after every agent and records every intervention: citations to evidence that does not
+exist are removed (a belief left with none is dropped); a belief resting only on weak evidence (under 30 tests,
+crowd-sourced sites, unknown operators, a region-wide warning) is capped at 0.5; every number must match the
+cited evidence (one rewrite, then the sentence is removed); earlier diagnoses are context, never support; a
+confidence change needs a reason; opportunities are never called gaps. An agent failing twice gives a partial
+result built from the evidence.
+
+**"Insufficient data" is a valid answer.** Where nothing is measured and no site is known, the answer says so
+(`remote_powys`: "Not enough data to say why ...") instead of guessing, and "no site in our data" is never
+presented as "no coverage".
+
+## Sponsor tech
+
+**Zetaris: the evidence layer.** Every dataset is its own Zetaris Lightning source (15 Parquet sources such as
+`CD_CELLS`, `CD_OOKLA_MOBILE`, `CD_MASTS_SITES`, `CD_OFCOM_AREA`, `CD_LOS`, `CD_GAP_ZONES`, plus the live REST
+source `CD_LIVE_EA_FLOODS`), and the agents' tools query them with federated SQL: one query per place joins
+cells, Ookla speeds and history, masts, Ofcom, terrain and line of sight. Every query is logged with the
+evidence it produced, so each claim on screen opens to its SQL. Row counts, freshness and query times
+(70-520 ms): [docs/data_report.md](docs/data_report.md).
+
+**Meterless: the shared case file.** We integrate the open-source Meterless **H-MEM** and **World Model**
+reference engines (Apache 2.0, vendored unchanged in `vendor/meterless/`, served by our `meterless_service/`).
+Our agents write evidence, beliefs, critiques and notes to H-MEM; every belief revision is a trust-ledger
+update (who, old → new confidence, why), and that ledger *is* the "How the agents decided" trace. The World
+Model holds each place or zone, its sites per operator with the line-of-sight result, warnings, candidate
+sites and events; earlier diagnoses nearby are recalled as context for new runs.
+
+**NVIDIA Nemotron: the model layer** (OpenAI-compatible API). **Nemotron 3.5 Super** runs the investigator
+(tool calling, median 1 s a call), diagnostician (strict JSON schema, median 2 s), advisor (6 s), letter writer
+and fix planner (1 s): fast and reliable with constrained output. **Nemotron 3 Ultra** with thinking runs the
+critic (median 39 s), where careful reasoning matters most. Bursts of server errors are retried (2 s, 6 s),
+then the other model answers; both are shown in the trace. A whole run takes 49-180 s live; replay takes 2 s.
+
+**Cursor:** _[how we used Cursor: to be filled in]_
+
+## Example runs
+
+| Example | What it shows | Agents' headline | Rounds | Live run |
 |---|---|---|---:|---:|
-| [`central_london`](examples/central_london/) | fast measured service: "no strong cause" (good data, no cause above 0.3) | No strong cause was found; the service measures well here. | 1 | 49 s |
-| [`great_langdale`](examples/great_langdale/) | hills block every operator (terrain 0.70, critic approves citing the margins); 3 evidence letters | Hills between you and the nearest masts are the likely cause. | 1 | 81 s |
-| [`near_rhayader`](examples/near_rhayader/) | the loop at work: the critic asks for more checks (round 2) and downgrades a weak single-operator belief | Terrain blocking EE and Three signals is the likely cause. | 2 | 180 s |
-| [`opportunity_windermere`](examples/opportunity_windermere/) | improvement opportunity: capacity upgrade, critic downgrades a weak belief, opportunity wording checked | Busy-network capacity strain is the likely cause. | 1 | 92 s |
-| [`remote_powys`](examples/remote_powys/) | insufficient data: no tests, no site within 10 km | Not enough data to say why: there are no measured speeds at this point or within 1 km and no mast sites in our data within 10 km, so operators could not be identified. | 1 | 54 s |
-| [`summary_uk`](examples/summary_uk/) | priority summary, gap and opportunity sections |  |  |  |
-| [`summary_westmorland`](examples/summary_westmorland/) | priority summary for one council |  |  |  |
+| [`great_langdale`](examples/great_langdale/) | hills block every operator (terrain 0.70); evidence letters to the operator, council and MP | Hills between you and the nearest masts are the likely cause. | 1 | 81 s |
+| [`near_rhayader`](examples/near_rhayader/) | **the critic loop**: it asks for a check, a second round runs, a weak belief is downgraded | Terrain blocking EE and Three signals is the likely cause. | 2 | 180 s |
+| [`central_london`](examples/central_london/) | fast measured service: "no strong cause" (good data, nothing above 0.3) | No strong cause was found; the service measures well here. | 1 | 49 s |
 | [`sutton_st_edmund`](examples/sutton_st_edmund/) | flat Fens: distance, not terrain | Distance to the nearest mast is the likely cause. | 1 | 72 s |
+| [`remote_powys`](examples/remote_powys/) | **insufficient data**: no tests and no site within 10 km | Not enough data to say why: there are no measured speeds at this point or within 1 km and no mast sites in our data within 10 km, so operators could not be identified. | 1 | 54 s |
 | [`zone_ousby`](examples/zone_ousby/) | gap zone with no measurements: candidate sites, fix plan reviewed by the critic | No strong cause was found because there are no recent measurements. | 1 | 96 s |
+| [`opportunity_windermere`](examples/opportunity_windermere/) | improvement opportunity: capacity upgrade, opportunity wording checked | Busy-network capacity strain is the likely cause. | 1 | 92 s |
+| [`summary_uk`](examples/summary_uk/) | priority summary of the sample area (gap and opportunity sections) |  |  |  |
+| [`summary_westmorland`](examples/summary_westmorland/) | priority summary for one council |  |  |  |
 
-Each example folder holds the result (`diagnosis.json`), the Meterless trace, evidence and World Model, the
-progress steps and the recorded agent replies (keyed by example + agent + round + call). They were recorded
-with `scripts/record_examples.py` (sample data, live model); `examples/index.json` records the prompts' hash,
-and a test fails if a prompt changes after recording. `examples/phase4/` and `examples/compare/` keep earlier
-runs made during development.
+Each folder has the result, the Meterless trace, the evidence with SQL, the World Model and the recorded
+replies. They were recorded live on sample data, so `run.py --sample` replays them exactly.
 
-## Run it with the full data
+## Running it with the full data
 
-
-```bash
-python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt
-cp .env.example .env   # fill in Zetaris, OpenCelliD and (optionally) Ofcom settings
-```
-
-Put the two input files in place:
-
-- `data/raw/boundary/uk_countries.geojson`: ONS *Countries Boundaries UK* (all four nations)
-- `data/raw/population/population.tif`: WorldPop UK population raster
-
-## Zetaris
-
-All data is queried through [Zetaris](https://www.zetaris.com) running locally in Docker
-(the `zetaris-platform` bundle, default `~/zetaris-platform`; start it with its own
-README and check with its `./verify.sh`).
-
-1. **Settings** in `.env`: `ZETARIS_URL=http://localhost:3000` (the Zetaris web app; the
-   client signs in there and sends SQL through its API proxy), `ZETARIS_USER`,
-   `ZETARIS_PASSWORD`.
-2. **Mount our data into Zetaris.** Zetaris only reads local files under
-   `/home/zetaris/customer-data/shared/` inside its query engine; any other path fails
-   with `Invalid file path to access`. `zetaris/docker-compose.coverage.yml` mounts
-   `data/processed` there read-only, as `coverage_detective/`. Apply it with the wrapper,
-   which passes that file after Zetaris's own `docker-compose.yml` (nothing in the
-   zetaris-platform folder is changed):
-
-   ```bash
-   scripts/zetaris/compose.sh up -d driver
-   ```
-
-   Use `scripts/zetaris/compose.sh` instead of a plain `docker compose` from then on: a
-   plain `docker compose up -d` in zetaris-platform recreates the driver without the mount.
-   Set `ZETARIS_PLATFORM_DIR` if the bundle is elsewhere.
-3. **Register the sources** (after building the data; re-runnable):
-
-   ```bash
-   .venv/bin/python scripts/zetaris/register_sources.py
-   .venv/bin/python scripts/check_data.py      # cross-source checks through Zetaris
-   ```
-
-Each dataset is its own Zetaris source (Lightning database), e.g. `CD_CELLS.cells_r7`,
-`CD_OOKLA_MOBILE.ookla_mobile_r7`. Code queries them with
-`coverage_detective.data.zetaris.query(sql)`; every query is logged to
-`logs/zetaris_queries.jsonl` (time, SQL, duration, rows, error) for the evidence trail.
-
-## Pre-existing components
-
-Not written for this project, used unchanged:
-
-| Component | From | Licence | Used for |
-|---|---|---|---|
-| Meterless H-MEM reference engine (`vendor/meterless/hmem/`) | [Meterless/Meterless](https://github.com/Meterless/Meterless) `engines/hmem/reference` | Apache 2.0 | agents' shared memory: evidence, beliefs, critiques, trust ledger (audit trail) |
-| Meterless World Model reference engine (`vendor/meterless/world-model/`) | same repo, `engines/world-model/reference` | Apache 2.0 | places, zones, sites, operators, warnings, relationships, events |
-| Zetaris Lightning (local Docker stack) | Zetaris | sponsor licence | federated SQL over every dataset |
-| Map and UI libraries: MapLibre GL, deck.gl, h3-js, OpenFreeMap tiles | npm / CDN | BSD-3 / MIT / Apache 2.0 / ODbL | the web pages |
-
-The vendored engines' own tests: `cd vendor/meterless/hmem && npm install && npm test` (and
-`world-model`). The upstream commit is recorded in `vendor/meterless/README.md`.
-
-## Meterless service (agent memory)
-
-`meterless_service/server.ts` (Node 18+, `cd meterless_service && npm install`) is a small
-HTTP service on port 8100 over the two vendored engines; `python run.py` starts it next to
-the web app and waits for its health check. It persists to `data/meterless/` (gitignored).
-
-- H-MEM: runs, evidence items (stable ids per run, idempotent), beliefs (cause + confidence),
-  belief revisions as trust-ledger updates (who, old → new confidence, reason), critiques,
-  notes (guard interventions, tool calls), the ordered audit trail of a run, and past
-  diagnoses near a point (within ~10 km).
-- World Model: entities (place, zone, site, operator, warning), relationships (scoped by an
-  operator context, e.g. place → nearest_site{EE} → site), events (diagnosis_completed,
-  fix_plan_proposed).
-- Python client: `coverage_detective/memory/meterless.py` (5 s timeout, one retry). If the
-  service is down it logs loudly and uses an in-memory store with the same interface.
-
-Check: `python scripts/check_memory.py`. Tests: `cd meterless_service && npm test`, and
-`tests/test_memory.py` for the fallback.
-
-## Data sources
-
-| Source | What it tells us | Type | Licence | Date / version |
-|---|---|---|---|---|
-| WorldPop + ONS boundaries | People per cell; nation | file | CC BY 4.0; OGL v3.0 | 2020; ONS Dec 2023 |
-| Ookla open data (mobile) | Measured mobile download/upload/latency, tests, devices, trend | file | CC BY-NC-SA 4.0 | 2026Q3 + 3 previous quarters |
-| OpenCelliD | Crowd-sourced radio cells → approximate mast sites, operators *inferred* from network codes | file | CC BY-SA 4.0 | downloaded 25 Oct 2026 |
-| OpenStreetMap (Geofabrik) | Mapped communication masts and towers | file | ODbL 1.0 | downloaded 25 Oct 2026 |
-| Ofcom Wireless Telegraphy Register | Operators' licensed microwave links: operators *confirmed* at sites, antenna heights | file | Ofcom copyright, free re-use | downloaded 25 Oct 2026 |
-| Ofcom Connected Nations | Predicted coverage by number of operators, per constituency / local authority; per operator by nation | file | OGL | July 2025 |
-| ONS constituencies, local authorities | Which area a cell is in | file | OGL v3.0 | July 2024; Dec 2024 |
-| OpenStreetMap places | Names for gap zones (city, town, village, hamlet) | file (from the OSM extracts) | ODbL 1.0 | downloaded 25 Oct 2026 |
-| Copernicus DEM GLO-30 | Elevation per cell; line of sight to mast sites | file (93 tiles) | Copernicus DEM licence (free, attribution) | 2021 release (data 2011–2015) |
-| postcodes.io | Postcode / place → location, district, region; nearest postcode to a point | REST, live (Python client) | OGL v3 data (ONS, OS, Royal Mail) | at question time |
-| Open-Meteo forecast | Weather now and next 24 h (rain, snow, wind, gusts) → severity | REST, live (Python client) | CC BY 4.0, non-commercial, attribution | at question time |
-| Met Office severe weather warnings (RSS) | Yellow / amber / red warnings for the point's region | RSS, live (Python client) | Crown copyright, OGL v3 | at question time |
-| Environment Agency flood monitoring | Flood alerts / warnings within 10 km (England only) | REST, live: Python client + Zetaris REST source `CD_LIVE_EA_FLOODS` | OGL v3 | at question time |
-
-Details, processing steps and exact licences: `data/README.md`.
-
-## Build the data
+Prerequisites: Python 3.12, Node 18+, Docker with the **Zetaris** platform bundle (sponsor-provided, default
+`~/zetaris-platform`), an **NVIDIA API key**, and (only to rebuild the data from scratch) an OpenCelliD token.
 
 ```bash
-.venv/bin/python scripts/process/build_cells.py   # H3 r7 grid with population and nation
-.venv/bin/python scripts/download/ookla.py        # Ookla mobile tiles, UK only, last 4 quarters
-.venv/bin/python scripts/process/build_ookla.py   # Ookla speeds per cell + trend
-.venv/bin/python scripts/download/opencellid.py   # OpenCelliD UK cells (needs OPENCELLID_TOKEN)
-.venv/bin/python scripts/download/osm.py           # OpenStreetMap GB + Ireland extracts (~2.6 GB)
-.venv/bin/python scripts/process/build_masts.py   # mast sites + nearest mast / operators per cell
-.venv/bin/python scripts/download/ofcom_wtr.py     # Ofcom Wireless Telegraphy Register (~54 MB)
-.venv/bin/python scripts/process/build_wtr.py      # register points, merged into the mast sites
-.venv/bin/python scripts/download/dem.py           # Copernicus DEM GLO-30 tiles (~1.4 GB)
-.venv/bin/python scripts/download/ons_boundaries.py # ONS constituency + local authority boundaries
-.venv/bin/python scripts/process/build_ofcom.py    # Ofcom July 2025 area coverage per cell (zip in data/raw/ofcom/)
-.venv/bin/python scripts/process/build_terrain.py  # elevation and line of sight per cell
-.venv/bin/python scripts/process/build_places.py   # OSM place names (zone names)
-.venv/bin/python scripts/process/build_zones.py    # gap zones and improvement opportunities
-.venv/bin/python scripts/zetaris/register_sources.py  # every source into Zetaris
-.venv/bin/python scripts/check_data.py             # the data report (docs/data_report.md)
-.venv/bin/python scripts/build_samples.py          # extracts for sample mode (data/samples/zetaris, dem)
-.venv/bin/python scripts/record_examples.py        # re-record the examples (needs LLM_API_KEY)
+cp .env.example .env     # set ZETARIS_URL / USER / PASSWORD, LLM_API_KEY, LLM_MODEL, LLM_MODEL_REASONING
+scripts/zetaris/compose.sh up -d          # Zetaris with our read-only data mount
+.venv/bin/python run.py                   # http://localhost:8000 (starts Meterless too)
 ```
 
-Every script can be re-run safely; pass `--force` to rebuild an existing output.
+The data itself (about 5 GB of downloads, a few hours to build) and registering it in Zetaris are described in
+[docs/technical.md](docs/technical.md).
 
-## Data explorer
+## Repository layout
 
-A map of every layer.
+| Folder | What it holds |
+|---|---|
+| `coverage_detective/` | the Python package: evidence API, agents (prompts, guard, loop), Zetaris and sample-mode clients, planning (zones, scores, siting), FastAPI app |
+| `web/` | the three pages (plain HTML/JS, MapLibre + deck.gl) |
+| `meterless_service/` | our small Node HTTP service over the Meterless engines (the agents' memory) |
+| `vendor/meterless/` | the Meterless H-MEM and World Model reference engines, vendored unchanged (Apache 2.0) |
+| `scripts/` | data downloads and builds, Zetaris registration, the data report, sample extracts, recording examples, screenshots |
+| `examples/` | the 7 recorded runs and 2 summaries replayed by sample mode |
+| `sample_data/` | small committed extracts of every Zetaris source, DEM crops and saved live responses |
+| `data/` | the data manifest, reference tables and data notes (built data, runs and memory stores are gitignored) |
+| `docs/` | technical reference, data report, screenshots |
+| `tests/` | offline tests (no Zetaris, network or key) |
+| `zetaris/` | the Docker Compose overlay that mounts our data into Zetaris |
 
-```bash
-.venv/bin/python scripts/process/build_web_layers.py   # precompute map layers -> data/web/layers/
-scripts/zetaris/compose.sh up -d                        # Zetaris with our data mount (cell details use it)
-.venv/bin/python run.py                                 # http://localhost:8000
-```
+## Data sources and licences
 
-- Hexagons (H3 r7) coloured by the chosen layer: download speed (< 2, 2–5, 5–10, > 10
-  Mbps), tests, speed trend, population, nearest mast site, operators within 5 km,
-  operator data status, Ofcom land with no / one 4G operator, elevation range, line of
-  sight to the nearest site (clear / marginal / blocked). Cells with fewer than 10
-  tests are faded (weak evidence); grey means no data.
-- Approximate mast sites appear from zoom 10 (coloured by source), Ookla tiles from zoom 12.
-- Click a cell: its details come from **one cross-source Zetaris query** (cells, Ookla and
-  history, neighbours, masts, Ofcom area), shown under "Zetaris query used", with data dates.
-- **Explore is area level**: the cell panel shows cell aggregates only (speeds and tests,
-  neighbours, trend, nearest site and operators within 5 km of the cell, the line-of-sight
-  grade from the cell centre, elevation range, Ofcom area figures) and "Data details" with
-  the Zetaris SQL. "Check an exact location here" opens My signal at the clicked point.
-- Search a postcode or place (postcodes.io). Works on phones (the panel slides up).
+Ookla open data (CC BY-NC-SA 4.0), OpenCelliD (CC BY-SA 4.0), OpenStreetMap (ODbL), Ofcom Wireless Telegraphy
+Register and Connected Nations, ONS boundaries (OGL), WorldPop (CC BY 4.0), Copernicus DEM GLO-30, and live
+postcodes.io, Open-Meteo, Met Office warnings and Environment Agency floods. Because Ookla's licence is
+non-commercial, the data and everything derived from it are **for non-commercial use**; the attribution footer
+on every page must be kept. Details: [THIRD_PARTY.md](THIRD_PARTY.md). Our code: [MIT](LICENSE).
 
-API: `GET /api/layers`, `/api/layer/{name}`, `/api/masts?bbox=`, `/api/tiles?bbox=`,
-`/api/cell/{cell_id}`, `/api/geocode?q=`, `/api/geocode/reverse?lat=&lon=`,
-`/api/live?lat=&lon=` (add `&flood_via=zetaris` for the Zetaris path),
-`/api/los?lat=&lon=` (line of sight from the exact point to the nearest site, or
-`&site_id=`), `/health`
-(OpenAPI docs at `/docs`).
+## Limitations and honesty
 
-![Explore, Lake District, line-of-sight layer with a cell open](docs/screenshots/explore_lake_district.png)
-Screenshots: `pip install playwright`, then `python scripts/screenshots.py` (pass
-`--chrome <path>` to use an installed Chromium) → `docs/screenshots/`.
-
-![UK download speeds](docs/screenshots/uk_speed.png)
-
-## My signal page
-
-`http://localhost:8000/signal` (deep links `?q=LD6 5AD` or `?lat=52.30&lon=-3.51`): point
-level, for one exact location. Search a postcode or place, or click the map at the exact
-spot. It calls `POST /api/evidence` and shows, with no LLM involved, a map without hexagon
-colouring (Ookla tiles within 2 km by speed, identified sites within 10 km by operator and
-marked confirmed / inferred / unknown, the point, a faint outline of its hexagon, each
-operator's line of sight) and a panel with:
-
-- **Networks compared**: for EE, O2, Three and Vodafone, the nearest identified site
-  (distance, direction, source: OpenCelliD / OpenStreetMap / Ofcom register), whether the
-  operator is confirmed by Ofcom's licence register or inferred from crowd-sourced data,
-  and the line of sight from the exact point (clear / marginal / blocked, obstruction
-  height, mast height measured or assumed). Each operator's line is drawn on the map in its
-  own colour, red and dashed where blocked, with the highest obstruction marked. "No site
-  identified in our data" is never presented as "no coverage".
-- **Likely best network here**: a rule (clear lines first, nearest first, confirmed
-  operators first on ties; otherwise the least obstructed line), labelled "Based on data,
-  not yet reviewed by agents".
-- Measured speeds within 1 km (Ookla tiles), in the cell and the neighbouring cells, with
-  test counts and strength; the 4-quarter trend; Ofcom area figures (area-level wording);
-  current weather, Met Office warnings and flood warnings.
-- **Why: the agents' diagnosis** (`POST /api/diagnose`, polled at `GET /api/runs/{id}`): the tabbed run view
-  (Result / How the agents decided / Evidence), the evidence letter (`POST /api/runs/{id}/letter`), and a
-  `?run=` deep link to reopen a run. "See this area in Explore" goes back to the area view.
-
-![My signal, near Rhayader](docs/screenshots/signal_rhayader.png)
-
-## Council view
-
-`http://localhost:8000/council` (deep links `?scope=la:E06000064&zone=Z00603`): where are
-the gaps? Pick an area (UK, a nation or a council), adjust the priority weights, and read a
-ranked table of **gap zones** with a map coloured by score. Opening a zone shows its cells,
-an evidence summary, a rule-based fix and the top candidate sites with lines to the cells
-they would reach. Each zone links to Explore (its cells outlined) and My signal (its
-centre). CSV export of the ranking. Two zone types: gap zones (below) and **improvement opportunities**
-(cells that are not poorly served but have a measurable weakness: speed well below the area or UK median,
-falling speeds, only 1-2 operators identified, or a busy-network signal; reasons computed in code,
-`planning/opportunities.py`; 1,816 zones, teal on the map, "limited data" under 10 tests). The list always
-matches the map (`GET /api/council/view`; zoom caps in `config.COUNCIL_VIEW`: below zoom 10 the top 40 gap
-zones in view, from zoom 10 up to 100 gap zones and 60 opportunities). Any zone can be diagnosed by the
-agents (`POST /api/council/zones/{id}/diagnose`); "Priority summary (agents)" summarises what is listed
-(`POST /api/council/summary`).
-
-How zones are built (`scripts/process/build_zones.py`, rules in `planning/zones.py`,
-thresholds in `config.py`):
-
-- A cell with at least 10 people is **poorly served** if (a) its test-weighted download over
-  the cell and neighbour ring is below 5 Mbps from at least 10 tests, or (b) no approximate
-  site lies within 5 km, unless at least 10 tests measure at least 5 Mbps (then it is a gap
-  in our site data, not in coverage: 227 cells, e.g. Penzance), or (c) it has fewer than 10
-  tests and terrain blocks the line (by 10 m or more) to every site within 5 km (the 8
-  nearest are checked).
-- **Zones** are H3-connected clusters of poorly served cells holding at least 50 people in
-  total (a per-cell threshold missed sparse valleys such as Great Langdale). 677 zones,
-  264,561 people (25 Oct data). Named after their largest OSM place.
-- **Priority score** (`planning/scoring.py`), computed per request: people, severity,
-  persistence (share of the last 4 quarters below 5 Mbps), worsening trend and few
-  operators, each normalised 0–1 by rank within the chosen area and weighted (defaults
-  35 / 25 / 15 / 10 / 15). The API returns each factor's contribution. Data confidence
-  (tests) is shown separately. "Need" (deprivation, rural–urban) is left out until built.
-- **Fixes** (`planning/siting.py`): a rule picks new site / add operators / capacity
-  upgrade / gather measurements; up to 30 DEM high points within 5 km of the zone and the
-  existing sites within 10 km are checked by line of sight (25 m mast, 1.5 m receiver) to
-  every populated cell within 8 km, ranked by the zone's people gaining a clear line.
-  Limits: simplified line of sight, no planning, land, power or backhaul checks.
-
-API: `GET /api/council/scopes`, `/api/council/zones?scope=&weights=people:0.4,...`,
-`/api/council/zones.csv`, `/api/council/zones/{zone_id}`, `/api/council/zones/{zone_id}/cells`.
-Check: `python scripts/check_council.py`.
-
-![Council view, Westmorland and Furness, Great Langdale zone open](docs/screenshots/council_westmorland_great_langdale.png)
-
-## Evidence API
-
-`POST /api/evidence` with `{"query": "WC2N 5DU"}` (postcode or place) or `{"lat": 54.445,
-"lon": -3.105}` returns the evidence bundle the agents will work from
-(`coverage_detective/evidence.py`):
-
-- the point, its H3 r7 cell and the six neighbours;
-- three Zetaris queries, each logged in the bundle (`zetaris_queries`: SQL, time, rows):
-  Q1 the cross-source cell query (cells, Ookla with history and neighbours, masts, Ofcom
-  area, terrain, line of sight), Q2 approximate mast sites within 10 km of the exact point,
-  Q3 UK context (median devices per head and speed; cached per process), Q4 Ookla tiles
-  within 1 km of the point (latest quarter);
-- line of sight from the exact point to the nearest site of each operator within 10 km,
-  and to the nearest site of any operator;
-- live weather, Met Office warnings and EA flood warnings.
-
-The bundle also has `operators` (the per-operator comparison used by the My signal page)
-and `likely_best` (the rule-based summary, `reviewed_by_agents: false`). Each item has `id`, `source`, `data_period`, `as_of`, `query_or_url`, `cell_ids`,
-`finding` (one plain-English sentence built in code, following the wording rules in
-CLAUDE.md), `value`, `sample_size`, `strength` (strong / moderate / weak) and `bears_on`
-(the causes it is relevant to). The bundle also carries `errors`, `limitations` and the
-Ofcom coverage checker link for residents.
-
-Strength, in short: Ookla speed is strong from 50 tests, weak under 10; line of sight is
-strong when blocked by 30 m or more, weak when the margin is under 10 m (trees or buildings
-in the surface model) or under 1 m of clearance; "no sites found" and operator gaps are weak
-(crowd-sourced data is incomplete); unknown-operator sites weaken the operator item unless
-all four operators are present; live items are weak when served from a sample.
-
-```bash
-.venv/bin/python scripts/check_evidence.py     # readable bundles for the 3 sample places
-curl -s -X POST localhost:8000/api/evidence -H 'content-type: application/json' -d '{"query": "LD6 5AD"}'
-```
-
-Saved bundles for the sample places are in `data/samples/evidence/` (for agent tests).
-
-## Data freshness
-
-Two kinds of data:
-
-- **Live, fetched when a question is asked:** postcode lookup (postcodes.io), weather
-  (Open-Meteo), Met Office weather warnings and Environment Agency flood warnings. Their
-  evidence is stamped with the fetch time. Clients (`coverage_detective/sources/`) use a
-  5 s timeout, one retry and a disk cache (`data/cache/live/`, gitignored; postcodes 30
-  days, weather 30 min, warnings and floods 15 min). If a call fails they use the cached
-  copy, else a saved sample (`data/samples/`), and say which. `SAMPLE_MODE=true` answers
-  from the samples only (offline, reproducible); refresh them with
-  `python scripts/download/live_samples.py`. Check: `python scripts/check_live.py`.
-- **Stored, refreshed periodically** and queried through Zetaris:
-
-  | Source | Refreshed | How |
-  |---|---|---|
-  | Ookla mobile speeds | quarterly | when a newer quarter appears in the public bucket |
-  | OpenCelliD radio cells | weekly | re-download |
-  | OpenStreetMap masts | monthly | re-download the Geofabrik extracts |
-  | Ofcom Wireless Telegraphy Register | monthly | re-download the CSV |
-  | Ofcom Connected Nations | each release (about twice a year) | download the new zip by hand into `data/raw/ofcom/` (no API) |
-  | WorldPop population, ONS boundaries, Copernicus DEM | manual | rarely change |
-
-`data/manifest.json` (committed) records for every stored source its data period (e.g.
-Ookla `2026Q3`), download dates, build time, refresh cadence and each output's row count
-and SHA-256; every build script updates it. Evidence items carry `data_period` and
-`as_of` from the manifest (`coverage_detective.data.manifest.evidence_meta`), or the fetch
-time for live sources.
-
-```bash
-.venv/bin/python scripts/refresh.py --check-only          # what is due
-.venv/bin/python scripts/refresh.py                       # refresh what is due
-.venv/bin/python scripts/refresh.py --source ookla --force
-```
-
-A refresh downloads the new data (keeping the old file until the new one is in), rebuilds
-the affected tables, re-registers them in Zetaris and updates the manifest.
-
-## Tests
-
-```bash
-.venv/bin/python -m pytest -q        # offline: no Zetaris, network or LLM key needed
-```
-
-They cover the Meterless client and fallback, the guard (unknown ids dropped, weak caps, numbers, belief
-citations, context-only evidence), the loop (a critic request triggers a second round; three rounds at
-most; an agent failing twice gives a partial result), the Nemotron client (schemas, retries, model switch,
-no secrets or reasoning kept), the Council view (opportunity reasons, zoom caps, the viewport list,
-picker counts), the API, and sample mode end to end (every example replayed through the API with any LLM
-call failing the test, a missing recorded reply failing clearly, and the prompts frozen with the examples).
-
-Data sources and licences: see `data/README.md`.
-
-## Limitations
-
-- Causes are inferred from public data, not confirmed: operators' network data isn't public.
-- Ookla speeds are quarterly aggregates with no time-of-day detail, so congestion can only
-  be inferred indirectly (as "capacity strain").
-- No address-level Ofcom coverage: the Ofcom API isn't available to us. Residents are
-  pointed to Ofcom's [mobile coverage checker](https://www.ofcom.org.uk/mobile-coverage-checker).
-- OpenCelliD mast data is crowd-sourced and incomplete, with approximate positions, so
-  "no masts found" is weak evidence. Operator labels come from network codes and follow
-  the reference table; networks have merged in recent years.
-- Line of sight (terrain): "blocked" means the ground rises above the straight line to the
-  site, so the signal is likely weaker (it bends over the ridge), not absent. Most antenna
-  heights are assumed (25 m): Ofcom's register gives heights only for sites with licensed
-  microwave links (40% of cells' nearest sites). Copernicus GLO-30 is a surface model: it
-  includes some trees and buildings, so it is most reliable for hills and valleys; small
-  obstructions (< 10 m, "marginal") may be woodland or buildings. Fresnel-zone clearance
-  and indoor loss are not modelled.
+- **Causes are inferred, not confirmed.** Operators' network data is not public.
+- **No building-level data.** Everything is at an exact point or a ~5 km² hexagon; indoor signal, walls and
+  local clutter are not modelled.
+- **Ookla has no time-of-day data**: quarterly aggregates only, so congestion can only be inferred ("capacity
+  strain"), and many places have few or no tests.
+- **Crowd-sourced mast sites are incomplete and approximate**, so "no site found" is weak evidence; operators
+  are often inferred, not confirmed.
+- **Ofcom figures are area-level** (constituency / council) predictions, not coverage at your address; use
+  Ofcom's own [checker](https://www.ofcom.org.uk/mobile-coverage-checker) for that.
+- **Line of sight is an estimate**: a surface model (trees and buildings partly included), antenna heights
+  mostly assumed (25 m), no radio propagation model. "Blocked" means weaker, not none.
+- **Sample-mode rankings are within the sample only** (e.g. "#4 of 4"), and only the example places and zones
+  can be diagnosed there.
 - Mobile networks only; home broadband is out of scope.
 
-## Future work
+**What we would do next:** deprivation and rural-urban "need" in the council score; power cuts as an
+incident cause; flood warnings for Scotland, Wales and Northern Ireland; operator-confirmed site data or Ofcom's
+postcode API if access is granted; a radio propagation model for candidate sites; validation against
+measured drive tests.
 
-- Power cuts as a cause (`active_incident`): the distribution network operators publish
-  outages in different formats; dropped for the hackathon.
-- Flood warnings for Scotland (SEPA), Wales (NRW) and Northern Ireland (DfI Rivers).
+## Validation: comparison with the Ofcom checker
+
+_[To be filled in.]_
+
+## Development
+
+```bash
+.venv/bin/python -m pytest -q                       # 123 offline tests, including sample mode end to end
+.venv/bin/python scripts/record_examples.py         # re-record the examples (live model, needs LLM_API_KEY)
+.venv/bin/python scripts/build_samples.py           # rebuild the sample extracts from the full data
+.venv/bin/python scripts/check_data.py              # the data report through Zetaris
+```
+
+**The prompts are frozen.** `examples/index.json` stores a hash of `coverage_detective/agents/prompts/`, and a
+test fails if a prompt changes after the examples were recorded. Recorded replies are keyed by example + agent
++ round + call; a missing one fails clearly and never falls back to a live call.
+More: [docs/technical.md](docs/technical.md), project notes in `CLAUDE.md`.

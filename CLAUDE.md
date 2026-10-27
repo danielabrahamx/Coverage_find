@@ -102,7 +102,7 @@ coverage_detective/     package
   planning/             zones.py (gap zones), opportunities.py (improvement opportunities), scoring.py
                         (priority / opportunity score), siting.py (fixes, candidates)
   memory/meterless.py   Meterless client (H-MEM + World Model over HTTP; in-memory fallback)
-  data/sample_db.py     sample mode: DuckDB over data/samples/zetaris/ in place of Zetaris
+  data/sample_db.py     sample mode: DuckDB over sample_data/zetaris/ in place of Zetaris
   agents/               llm.py (Nemotron client), schemas.py (pydantic), tools.py (tools -> Meterless),
                         agents.py (the agents), guard.py (code guard), prompts/*.md,
                         coordinator.py (the loop: diagnose_point, diagnose_zone; progress; export),
@@ -127,9 +127,9 @@ vendor/meterless/       Meterless reference engines, vendored unchanged (Apache 
 scripts/download/       fetch raw data into data/raw/<source>/ (skip files that exist)
 scripts/process/        build data/processed/*.parquet (+ build_web_layers.py for the map)
 scripts/zetaris/        compose.sh (data mount), register_sources.py (one function per source)
-scripts/check_*.py      check_data (A, B, E), check_live (D), check_terrain (C), check_evidence
+scripts/check_data.py   the data report through Zetaris (docs/data_report.md); --phases for the old A/B/E checks
 scripts/refresh.py      refresh stored sources on their cadence
-scripts/screenshots.py  Playwright screenshots -> docs/screenshots/
+scripts/screenshots.py, council_screenshots.py  README screenshots -> docs/screenshots/
 tests/                  pytest (124 tests; offline: samples, mocked Zetaris / DEM)
 web/                    pages, no build step (MapLibre 5.24 + deck.gl 9.4 + h3-js 4.5):
                         index.html + app.js (Explore), signal.html + signal.js (My signal),
@@ -138,7 +138,7 @@ run.py                  start the explorer on :8000 (checks Zetaris)
 data/raw/               raw inputs and downloads (gitignored)
 data/processed/         built Parquet files (gitignored)
 data/web/, data/cache/  generated map layers, live-call cache (gitignored)
-data/samples/           live responses + evidence bundles for the sample places (committed)
+sample_data/           live responses + evidence bundles for the sample places (committed)
 data/reference/         small reference tables (committed): mcc_mnc_uk.csv,
                         operator_groups.csv, wtr_operator_licensees.csv
 data/manifest.json      data versions (committed)
@@ -195,14 +195,10 @@ scripts/zetaris/compose.sh up -d driver               # Zetaris with our read-on
 .venv/bin/python scripts/process/build_places.py      # OSM place names (for zone names)
 .venv/bin/python scripts/process/build_zones.py       # gap_zones, gap_zone_cells (~30 s)
 .venv/bin/python scripts/zetaris/register_sources.py  # all CD_* sources (or name some)
-.venv/bin/python scripts/download/live_samples.py     # refresh the live samples in data/samples/
+.venv/bin/python scripts/download/live_samples.py     # refresh the live samples in sample_data/
 
 # Checks
 .venv/bin/python scripts/check_data.py                # A, B, E through Zetaris
-.venv/bin/python scripts/check_live.py                # /api/live live, then SAMPLE_MODE
-.venv/bin/python scripts/check_terrain.py             # line of sight at 4 places
-.venv/bin/python scripts/check_evidence.py            # evidence bundles for the sample places
-.venv/bin/python scripts/check_council.py             # top zones UK / Westmorland and Furness, Great Langdale fixes
 .venv/bin/python scripts/refresh.py --check-only      # which stored sources are due
 .venv/bin/python -m pytest -q
 
@@ -271,7 +267,7 @@ G (power cuts) dropped as future work; H (visitor load) only if time. Then the a
   (cached), all logged in the bundle; line of sight to the nearest site of each operator
   within 10 km (+ nearest of any operator); live items. Items: id, source, data_period,
   as_of, query_or_url, cell_ids, finding, value, sample_size, strength (strong / moderate /
-  weak), bears_on. Bundles for the sample places saved in `data/samples/evidence/`.
+  weak), bears_on. Bundles for the sample places saved in `sample_data/evidence/`.
 
 - **Pages, phase 1: My signal** (26 Oct): `/signal`. Evidence bundle gained Q4 (Ookla tiles
   within 1 km), `operators` (per operator: nearest site, confirmed / inferred, line of sight
@@ -396,10 +392,18 @@ G (power cuts) dropped as future work; H (visitor load) only if time. Then the a
   existing site, ground height), Today / With candidate N with people counts, fit with room for the panel,
   Reset view. Opportunity run (Windermere O00332, examples/opportunity_windermere/): 196 s, 1 round.
   Screenshots: `scripts/council_screenshots.py` -> docs/screenshots/council/.
+- **Repo cleanup and final README** (27 Oct): removed development-only files (examples/phase4/ and
+  compare/, the phase check scripts check_agents / check_agent_tools / check_coordinator / check_memory /
+  check_evidence / check_live / check_terrain / check_council, ui_screenshots.py, the saved evidence bundles,
+  old screenshots, data/check_data_report.json); data/samples/ moved to sample_data/; LICENSE (MIT, our code),
+  THIRD_PARTY.md (data licences, vendored Meterless engines), full .env.example (every variable, empty);
+  README rewritten for judges; setup and pipeline details moved to docs/technical.md; screenshots regenerated
+  (scripts/screenshots.py reopens the recorded runs with ?run=). The phase entries below mention scripts
+  that no longer exist; they are in the git history.
 - **Agents, phase 6: sample mode, examples, data report** (27 Oct): `python run.py --sample` runs with no
   Zetaris, no live calls and no LLM key: `data/sample_db.py` (DuckDB views named like the Zetaris sources over
-  `data/samples/zetaris/*.parquet`; percentile_approx / collect_list / named_struct translated; UK medians
-  from uk_context.json), `terrain.SampleDEM` (crops in data/samples/dem/), saved live responses (5 sample
+  `sample_data/zetaris/*.parquet`; percentile_approx / collect_list / named_struct translated; UK medians
+  from uk_context.json), `terrain.SampleDEM` (crops in sample_data/dem/), saved live responses (5 sample
   places), recorded agent replies (`agents/replay.py`: keyed example + agent + round + call index, letters per
   recipient; missing key -> ReplayMissing "no recorded reply for this step", never a live call; results
   `replayed`, labelled "Recorded" in the UI, sample-mode banner); its own Meterless (8101,
@@ -466,7 +470,7 @@ data/README.md.
 ## Rules
 
 - Never commit secrets: `.env` is gitignored, `.env.example` has placeholders only.
-- Raw downloads go in `data/raw/` (gitignored). Committed sample data stays small (`data/samples/`).
+- Raw downloads go in `data/raw/` (gitignored). Committed sample data stays small (`sample_data/`).
 - Record every source's licence and processing steps in data/README.md.
 - Always carry sample sizes (tests, devices) with Ookla figures; many cells have 1–2 tests.
 - Scripts are re-runnable: skip downloads that already exist; `--force` rebuilds.

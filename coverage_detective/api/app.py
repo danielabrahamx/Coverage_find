@@ -62,7 +62,7 @@ app.include_router(agents_router)
 
 
 def _data_file(name: str):
-    """data/processed/<name>, or in sample mode the committed extract (data/samples/zetaris/<name>)."""
+    """data/processed/<name>, or in sample mode the committed extract (sample_data/zetaris/<name>)."""
     return SAMPLES / "zetaris" / name if sample_mode() else PROCESSED / name
 
 

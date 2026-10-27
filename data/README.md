@@ -373,14 +373,14 @@ the gap zones (derived data).
 
 ## Sample-mode extracts (committed)
 
-`scripts/build_samples.py` → `data/samples/zetaris/` (one Parquet per Zetaris source, cut to 12 km around each
+`scripts/build_samples.py` → `sample_data/zetaris/` (one Parquet per Zetaris source, cut to 12 km around each
 sample place and the example zones' cells + 16 km; `extract.json` lists tables, boxes and row counts;
-`uk_context.json` holds the UK-wide medians from the full data) and `data/samples/dem/` (Copernicus GLO-30
+`uk_context.json` holds the UK-wide medians from the full data) and `sample_data/dem/` (Copernicus GLO-30
 crops for the same boxes, int16 metres, native 30 m, deflate). 27 Oct 2026: 2,245 cells, 6,869 mast sites,
 20,891 Ookla tiles, 2 gap zones and 4 opportunities; 9.6 MB in all, 8.2 MB of it DEM. Same sources and
 licences as the full tables above (derived extracts; the DEM crops carry the Copernicus attribution). Used
 only by sample mode (`python run.py --sample`, DuckDB in place of Zetaris) and the tests. Live samples for
-the five sample places (`data/samples/<source>/`) were refreshed on 27 Oct 2026.
+the five sample places (`sample_data/<source>/`) were refreshed on 27 Oct 2026.
 
 ## Live sources (phase D)
 
@@ -389,7 +389,7 @@ Fetched when a question is asked, not stored. Clients in `coverage_detective/sou
 `data/cache/live/`). Every result carries `source`, `url`, `fetched_at`, `status`
 (`live` / `cached` / `sample` / `not_covered` / `unavailable`), `data_period` and `as_of`.
 Samples for the three sample places (real responses, 25 Oct 2026, 47 KB in all) are in
-`data/samples/<source>/`, saved by `scripts/download/live_samples.py`; SAMPLE_MODE and the
+`sample_data/<source>/`, saved by `scripts/download/live_samples.py`; SAMPLE_MODE and the
 tests use them. A storm (Bolelo) was passing at the time, so the samples hold active
 warnings, which makes them useful test cases.
 

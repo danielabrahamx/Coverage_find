@@ -75,7 +75,7 @@ def main() -> None:
     from coverage_detective.data.zetaris import status as zetaris_status
 
     if args.sample:
-        print("SAMPLE MODE: DuckDB over data/samples/zetaris/, saved live responses, recorded agent replies "
+        print("SAMPLE MODE: DuckDB over sample_data/zetaris/, saved live responses, recorded agent replies "
               "(examples/). Only the example places and zones can be diagnosed.")
     elif (state := zetaris_status()) == "ok":  # also catches a driver restarted without our data mount
         print("Zetaris: reachable, data sources readable")
