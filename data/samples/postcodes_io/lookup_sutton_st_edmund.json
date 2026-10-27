@@ -1,0 +1,33 @@
+{
+ "url": "https://api.postcodes.io/places?q=Sutton+St+Edmund&limit=6",
+ "fetched_at": "2026-10-26T23:58:36+00:00",
+ "http_status": 200,
+ "body": {
+  "status": 200,
+  "result": [
+   {
+    "code": "osgb4000000074549153",
+    "name_1": "Sutton St Edmund",
+    "name_1_lang": null,
+    "name_2": null,
+    "name_2_lang": null,
+    "local_type": "Village",
+    "outcode": "PE12",
+    "county_unitary": "Lincolnshire",
+    "county_unitary_type": "County",
+    "district_borough": "South Holland",
+    "district_borough_type": "District",
+    "region": "East Midlands",
+    "country": "England",
+    "longitude": 0.024084717819457868,
+    "latitude": 52.70011670054165,
+    "eastings": 536870,
+    "northings": 313304,
+    "min_eastings": 536584,
+    "min_northings": 312184,
+    "max_eastings": 537249,
+    "max_northings": 314292
+   }
+  ]
+ }
+}

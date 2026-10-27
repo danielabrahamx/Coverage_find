@@ -32,7 +32,7 @@ RETRY_BACKOFF_S = 0.5
 USER_AGENT = "CoverageDetective/0.1 (hackathon; github.com/temilash/Coverage_find)"
 
 # Slugs for the sample places, in SAMPLE_LOCATIONS order.
-SAMPLE_SLUGS = ["great_langdale", "london_wc2n_5du", "rhayader"]
+SAMPLE_SLUGS = ["great_langdale", "london_wc2n_5du", "rhayader", "sutton_st_edmund", "remote_powys"]
 
 # Set by scripts/download/live_samples.py: skip the cache and save every live response as
 # the sample named by the call's `sample` slug.

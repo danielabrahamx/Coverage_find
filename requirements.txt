@@ -13,3 +13,4 @@ python-dotenv
 pytest
 scipy
 osmium
+duckdb==1.1.3

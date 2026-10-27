@@ -267,6 +267,12 @@ function panelHTML(b) {
 function bestNetworkHTML(run) {
   const bn = run.result?.best_network;
   if (!bn || !bn.ranking?.length) return "";
+  const comp = (run.evidence || []).find((e) => e.evidence_id === "network_comparison");
+  if (comp && (comp.sample_size?.operators_with_site ?? 1) === 0) {  // nothing to rank: say so, do not name a network
+    return `<div class="rp-card"><p class="rp-label">Best network here</p><p class="fix-title">None can be ranked</p>
+      <p>No operator has a site identified in our data within 10 km, so we cannot say which network is best here.
+      Check the address on Ofcom's mobile coverage checker for each network's own prediction.</p></div>`;
+  }
   const first = bn.ranking[0];
   return `<div class="rp-card"><p class="rp-label">Best network here</p>
     <p class="fix-title"><span class="op-swatch" style="background:${OP_STYLE[first.operator].color}"></span>${esc(first.operator)}

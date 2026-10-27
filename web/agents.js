@@ -150,6 +150,8 @@ const AG = (() => {
     const seen = new Set();
     const ruled = out.filter((x) => !seen.has(x.cause) && seen.add(x.cause));
     return `
+      ${r.replayed ? `<p class="recorded-badge" title="Sample mode: no LLM calls were made">Recorded: these agent replies are replayed from
+        examples/${esc(r.example_id)} (sample mode)</p>` : ""}
       <p class="rp-headline">${esc(plain(r.headline))}</p>
       ${r.status === "partial" ? `<p class="warn-text">Partial result: an agent failed twice, so this is built from the evidence alone.</p>` : ""}
       ${r.explanation ? `<details class="more-block"><summary>Full explanation</summary><p>${cite(r.explanation, run)}</p></details>` : ""}
@@ -236,7 +238,8 @@ const AG = (() => {
     const calls = rounds.reduce((n, c) => n + c.llm_calls.length, 0);
     const audit = run.trace?.audit || [];
     const rn = run.result?.rounds;
-    return `${running(run) ? progressHTML(run) : `<p class="rp-meta">Took ${fmt(run.elapsed_s, 0)} s · ${rn ?? "–"} round${rn === 1 ? "" : "s"} · ${calls} agent calls</p>`}
+    const rec = run.result?.replayed ? " · recorded replies (sample mode)" : "";
+    return `${running(run) ? progressHTML(run) : `<p class="rp-meta">Took ${fmt(run.elapsed_s, 0)} s · ${rn ?? "–"} round${rn === 1 ? "" : "s"} · ${calls} agent calls${rec}</p>`}
       <label class="tech-toggle"><input type="checkbox" id="tech-toggle" ${tech ? "checked" : ""}> Technical details</label>
       ${rounds.length ? `<ol class="timeline">${rounds.map((c) => roundCard(c, run, tech, open)).join("")}</ol>` : `<p class="muted">Waiting for the first round.</p>`}
       <p class="muted rp-foot">From the Meterless audit trail${audit.length ? ` (${audit.length} entries)` : ""}. The agents never message each other:
@@ -384,6 +387,16 @@ const AG = (() => {
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   }
+
+  /* Sample mode: a banner on every page (data from committed extracts, recorded agent replies). */
+  fetch("/health").then((r) => r.json()).then((h) => {
+    if (!h.sample_mode) return;
+    const b = document.createElement("div");
+    b.className = "sample-banner";
+    b.textContent = "Sample mode: data from small committed extracts (DuckDB in place of Zetaris), saved live responses and "
+      + "recorded agent replies. Only the example places and zones can be diagnosed.";
+    document.body.prepend(b);
+  }).catch(() => {});
 
   return { esc, fmt, CAUSES, causeName, word, pct, post, poll, running, cite, plain, firstSentence, progressHTML, runView,
     markdown, download, evMap };

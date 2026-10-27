@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import h3
 
-from coverage_detective.config import PROCESSED
+from coverage_detective.config import PROCESSED, sample_mode
 from coverage_detective.data import manifest
 
 
@@ -16,7 +16,7 @@ def _optional_joins() -> tuple[list[str], list[str], list[str]]:
         cols += ["t.elevation_mean_m", "t.elevation_range_m"]
         joins.append("LEFT JOIN CD_TERRAIN.terrain_r7 t ON t.cell_id = c.cell_id")
         tables.append("terrain_r7")
-    if "terrain" in sources and (PROCESSED / "los_r7.parquet").exists():
+    if "terrain" in sources and ((PROCESSED / "los_r7.parquet").exists() or sample_mode()):
         cols += ["l.blocked AS los_blocked", "l.obstruction_m AS los_obstruction_m", "l.los_class"]
         joins.append("LEFT JOIN CD_LOS.los_r7 l ON l.cell_id = c.cell_id")
         tables.append("los_r7")

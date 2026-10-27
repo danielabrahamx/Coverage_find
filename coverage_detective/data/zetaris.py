@@ -14,6 +14,8 @@ Zetaris returns every value as a string; query() turns numeric strings back into
 Ookla quadkeys) and "null"/None into None. Every call is appended to logs/zetaris_queries.jsonl (time, SQL,
 duration, row count, error) for the evidence trail, and the latest entries are kept in
 QUERY_LOG.
+In SAMPLE_MODE, query() runs the same SQL on DuckDB over the committed extracts instead
+(data/sample_db.py), and the query log records it the same way.
 """
 
 from __future__ import annotations
@@ -28,7 +30,7 @@ from datetime import datetime, timezone
 
 import httpx
 
-from coverage_detective.config import ROOT, env
+from coverage_detective.config import ROOT, env, sample_mode
 
 LOG_PATH = ROOT / "logs" / "zetaris_queries.jsonl"
 PAGE_LIMIT = 50_000
@@ -141,6 +143,15 @@ def query(sql: str, timeout: float | None = None) -> list[dict]:
     """Run a SELECT through Zetaris and return every row as a dict."""
     timeout = timeout or float(env("ZETARIS_TIMEOUT", "120"))
     started = time.perf_counter()
+    if sample_mode():  # the same SQL over DuckDB and the committed extracts (data/sample_db.py)
+        from coverage_detective.data import sample_db
+        try:
+            rows = sample_db.query(sql)
+        except Exception as e:  # noqa: BLE001 - reported like a Zetaris failure
+            _log(sql, started, None, f"sample mode: {e}")
+            raise ZetarisError(f"sample mode (DuckDB): {e}") from None
+        _log(sql, started, len(rows), None)
+        return rows
     try:
         body = _session.call("POST", "/query/sql/start", timeout, json={"select": sql, "pageLimit": PAGE_LIMIT}).json()
         records = list(body.get("records", []))
@@ -183,6 +194,8 @@ def explain(error: Exception) -> str:
 
 def status() -> str:
     """'ok', or what is wrong: Zetaris unreachable, or up without the data mount."""
+    if sample_mode():
+        return "ok"
     try:
         query("SELECT 1 AS ok", timeout=10)
     except ZetarisError as e:

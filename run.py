@@ -1,6 +1,8 @@
 """Start Coverage Detective: the Meterless service (port 8100), then the web app on :8000.
 
     python run.py [--port 8000] [--reload] [--no-memory]
+    python run.py --sample      # no Zetaris, no live calls, no LLM key: DuckDB over the committed extracts,
+                                # saved live responses and the recorded agent replies (examples/)
 
 Checks Zetaris first. The Meterless service (meterless_service/, needs Node 18+ and
 `npm install` there) is started as a child process and stopped with the app; if it is
@@ -11,23 +13,29 @@ from __future__ import annotations
 
 import argparse
 import atexit
+import os
 import shutil
 import subprocess
 import sys
 import time
 from pathlib import Path
 
-import uvicorn
-
-from coverage_detective.data.zetaris import status as zetaris_status
-from coverage_detective.memory.meterless import Meterless
-
 ROOT = Path(__file__).resolve().parent
 SERVICE_DIR = ROOT / "meterless_service"
 LOG = ROOT / "logs" / "meterless.log"
+SAMPLE_MEMORY = {"MEMORY_PORT": "8101", "MEMORY_URL": "http://127.0.0.1:8101",
+                 "MEMORY_DIR": str(ROOT / "data" / "meterless_sample")}
+
+
+def sample_env() -> None:
+    """Sample mode, with its own Meterless store (so it never mixes with the full app's runs)."""
+    os.environ["SAMPLE_MODE"] = "1"
+    os.environ.update(SAMPLE_MEMORY)
 
 
 def start_memory() -> subprocess.Popen | None:
+    from coverage_detective.memory.meterless import Meterless
+
     client = Meterless()
     if client.health().get("status") == "ok":
         print(f"Meterless: already running at {client.base_url}")
@@ -58,9 +66,18 @@ def main() -> None:
     parser.add_argument("--port", type=int, default=8000)
     parser.add_argument("--reload", action="store_true")
     parser.add_argument("--no-memory", action="store_true", help="do not start the Meterless service")
+    parser.add_argument("--sample", action="store_true", help="sample mode: no Zetaris, live calls or LLM key")
     args = parser.parse_args()
-    state = zetaris_status()  # also catches a driver restarted without our data mount
-    if state == "ok":
+    if args.sample:
+        sample_env()  # before anything reads the environment
+    import uvicorn
+
+    from coverage_detective.data.zetaris import status as zetaris_status
+
+    if args.sample:
+        print("SAMPLE MODE: DuckDB over data/samples/zetaris/, saved live responses, recorded agent replies "
+              "(examples/). Only the example places and zones can be diagnosed.")
+    elif (state := zetaris_status()) == "ok":  # also catches a driver restarted without our data mount
         print("Zetaris: reachable, data sources readable")
     else:
         print(f"Zetaris problem: {state}", file=sys.stderr)

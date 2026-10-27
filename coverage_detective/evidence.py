@@ -414,7 +414,9 @@ def los_item(b: Bundle, s: dict, for_ops: list[str], lat: float, lon: float, cel
           f"terrain.line_of_sight from ({lat:.5f}, {lon:.5f}) to site {s['site_id']} (zetaris:Q2)",
           sorted({cell_id, h3.latlng_to_cell(s["lat"], s["lon"], H3_RES)}), sentence,
           {"site_id": s["site_id"], "operators_at_site": ops_here, "operators_confirmed": confirmed,
-           "for_operators": for_ops, "los_class": los_class(los), **{k: v for k, v in los.items() if k != "profile"}},
+           "for_operators": for_ops, "los_class": los_class(los),
+           # metres the ground rises above the direct line (negative: clearance), for the critic to cite
+           "obstruction_margin_m": round(los["max_obstruction_m"]), **{k: v for k, v in los.items() if k != "profile"}},
           {"dem_samples": los["samples"]}, strength, ["terrain_blocking", "distance_to_mast"])
     return los
 

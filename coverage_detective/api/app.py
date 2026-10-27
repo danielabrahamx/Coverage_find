@@ -36,7 +36,7 @@ from pydantic import BaseModel, Field, model_validator
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from coverage_detective.config import H3_RES, PROCESSED, ROOT
+from coverage_detective.config import H3_RES, PROCESSED, ROOT, SAMPLES, sample_mode
 from coverage_detective import evidence as evidence_bundle
 from coverage_detective.api.agents import router as agents_router
 from coverage_detective.api.council import router as council_router
@@ -61,12 +61,17 @@ app.include_router(agents_router)
 # --- static data held in memory ------------------------------------------------------------
 
 
+def _data_file(name: str):
+    """data/processed/<name>, or in sample mode the committed extract (data/samples/zetaris/<name>)."""
+    return SAMPLES / "zetaris" / name if sample_mode() else PROCESSED / name
+
+
 @lru_cache(maxsize=1)
 def mast_sites() -> pd.DataFrame:
     cols = ["site_id", "lat", "lon", "sources", "operators", "operators_inferred", "operators_confirmed",
             "operator_labels", "radio_types", "cell_count", "osm_operator", "mobile_tagged",
             "has_microwave_backhaul", "antenna_height_m", "wtr_links"]
-    return pd.read_parquet(PROCESSED / "masts_sites.parquet", columns=cols)
+    return pd.read_parquet(_data_file("masts_sites.parquet"), columns=cols)
 
 
 def _quadkey_bounds(qk: str) -> tuple[float, float, float, float]:
@@ -81,7 +86,7 @@ def _quadkey_bounds(qk: str) -> tuple[float, float, float, float]:
 
 @lru_cache(maxsize=1)
 def latest_tiles() -> pd.DataFrame:
-    tiles = pd.read_parquet(PROCESSED / "ookla_mobile_tiles.parquet")
+    tiles = pd.read_parquet(_data_file("ookla_mobile_tiles.parquet"))
     latest = tiles[tiles.quarter == tiles.quarter.max()].reset_index(drop=True)
     bounds = [_quadkey_bounds(q) for q in latest.quadkey]
     latest[["min_lon", "min_lat", "max_lon", "max_lat"]] = pd.DataFrame(bounds)
@@ -103,7 +108,7 @@ def _bbox(bbox: str) -> tuple[float, float, float, float]:
 def health() -> dict:
     zetaris = zetaris_status()
     layers = len(json.loads((LAYERS_DIR / "index.json").read_text())) if (LAYERS_DIR / "index.json").exists() else 0
-    return {"status": "ok", "layers": layers, "zetaris": zetaris}
+    return {"status": "ok", "layers": layers, "zetaris": zetaris, "sample_mode": sample_mode()}
 
 
 @app.get("/api/layers")
@@ -228,7 +233,7 @@ def evidence(req: EvidenceRequest) -> dict:
     try:
         return evidence_bundle.build_bundle(req.query, req.lat, req.lon)
     except LookupError as e:
-        raise HTTPException(404, str(e)) from e
+        raise HTTPException(404, str(e) + " (sample mode: search works for the example places only, e.g. Great Langdale, WC2N 5DU, Rhayader, Sutton St Edmund)" if sample_mode() else "") from e
 
 
 def live_context(lat: float, lon: float, flood_via: str = "api") -> dict:

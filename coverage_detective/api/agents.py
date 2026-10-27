@@ -6,6 +6,9 @@
     POST /api/runs/{run_id}/letter {recipient}             -> evidence letter (Markdown)
     POST /api/council/summary {scope, weights}             -> priority summary for the scope (Markdown)
 
+In sample mode (python run.py --sample) every agent reply comes from the example recorded for that place,
+zone or area (agents/replay.py); a request with no recorded example is refused with a clear message.
+
 Runs take minutes, so they run in a thread (at most MAX_RUNNING at once; later ones wait as
 "queued") and the page polls GET /api/runs/{id}: the progress file has one step per agent call
 and tool call. A finished run is read from its export (data/runs/<id>.full.json).
@@ -25,7 +28,8 @@ from coverage_detective.agents import agents as A
 from coverage_detective.agents import coordinator as C
 from coverage_detective.agents.llm import LLMError, llm
 from coverage_detective.agents.tools import Case
-from coverage_detective.config import UK_BBOX
+from coverage_detective.agents import replay as R
+from coverage_detective.config import UK_BBOX, sample_mode
 from coverage_detective.memory.meterless import memory
 
 router = APIRouter(prefix="/api", tags=["agents"])
@@ -60,6 +64,7 @@ class SummaryRequest(BaseModel):
     top: int = Field(10, ge=3, le=40)
     gap_ids: list[str] | None = Field(None, max_length=40)
     opportunity_ids: list[str] | None = Field(None, max_length=60)
+    record_as: str | None = Field(None, pattern=r"^[a-z0-9_]+$", description="recording only: save replies as this example")
 
 
 class ZoneDiagnoseRequest(BaseModel):
@@ -67,6 +72,8 @@ class ZoneDiagnoseRequest(BaseModel):
 
 
 def _need_llm() -> None:
+    if R.replaying():  # recorded replies, no key needed
+        return
     if not llm.configured:
         raise HTTPException(503, "The agents need LLM_API_KEY and LLM_MODEL in .env (or run with --sample).")
 
@@ -77,6 +84,16 @@ def _queued(run_id: str, scope: str, label: str) -> None:
     (C.RUNS_DIR / f"{run_id}.json").write_text(json.dumps(
         {"run_id": run_id, "scope": scope, "label": label, "status": "queued", "round": 0, "current": None,
          "steps": [], "result": None, "elapsed_s": 0}))
+
+
+def _replay(kind: str, **where) -> "R.Session | None":
+    """Sample mode: the recorded example for this request (or a clear 404)."""
+    if not R.replaying():
+        return None
+    try:
+        return R.Session("replay", R.find(kind, **where))
+    except R.ReplayMissing as e:
+        raise HTTPException(404, str(e)) from e
 
 
 def _start(run_id: str, fn, **kw) -> None:
@@ -102,14 +119,15 @@ def diagnose(req: DiagnoseRequest) -> dict:
     try:
         point, _ = ev.resolve(req.query, req.lat, req.lon)
     except LookupError as e:
-        raise HTTPException(404, str(e)) from e
+        raise HTTPException(404, str(e) + " (sample mode: search works for the example places only, e.g. Great Langdale, WC2N 5DU, Rhayader, Sutton St Edmund)" if sample_mode() else "") from e
     label = point.get("label") if point.get("kind") != "point" else (
         point.get("nearest_postcode") and f"near {point['nearest_postcode']}") or req.query or ""
+    sess = _replay("point", lat=point["lat"], lon=point["lon"])
     run_id = memory.create_run("point", query=req.query or f"{point['lat']:.5f},{point['lon']:.5f}", label=label,
                                location={"lat": point["lat"], "lon": point["lon"]})
     _queued(run_id, "point", label)
     _start(run_id, C.diagnose_point, query=req.query, lat=point["lat"] if not req.query else None,
-           lon=point["lon"] if not req.query else None, audience=req.audience)
+           lon=point["lon"] if not req.query else None, audience=req.audience, replay=sess)
     return {"run_id": run_id, "status": "queued", "label": label, "location": {"lat": point["lat"], "lon": point["lon"]}}
 
 
@@ -123,9 +141,10 @@ def diagnose_zone(zone_id: str, req: ZoneDiagnoseRequest | None = None) -> dict:
     if req and req.zone_type and req.zone_type != kind:
         raise HTTPException(400, f"{zone_id} is a {kind} zone, not {req.zone_type}")
     z = zone_detail(zone_id)["zone"]  # 404s for an unknown zone
+    sess = _replay("zone", zone_id=zone_id)
     run_id = memory.create_run("zone", query=zone_id, label=z["name"], location=z["centroid"])
     _queued(run_id, "zone", z["name"])
-    _start(run_id, C.diagnose_zone, zone_id=zone_id)
+    _start(run_id, C.diagnose_zone, zone_id=zone_id, replay=sess)
     return {"run_id": run_id, "status": "queued", "label": z["name"], "zone_id": zone_id, "zone_type": kind}
 
 
@@ -215,8 +234,14 @@ def letter(run_id: str, req: LetterRequest) -> dict:
     if not result or result.get("status") not in ("complete", "partial"):
         raise HTTPException(409, "The run has not finished yet.")
     case = Case(run_id=run_id, scope=result.get("scope", "point"), point=result.get("location") or {}, memory=memory)
+    if sample_mode() and result.get("example_id"):
+        sess = R.Session("record" if R.recording() else "replay", result["example_id"])
+        sess.variant = req.recipient  # one recorded letter per recipient
+        case.cache["replay"] = sess
     try:
         out = A.write_letter(case, req.recipient, result)
+    except R.ReplayMissing as e:
+        raise HTTPException(404, f"{e} (sample mode records letters for some examples only)") from e
     except LLMError as e:
         raise HTTPException(502, f"The letter writer is unavailable: {str(e)[:160]}") from e
     guard = [n.get("summary") for n in memory.notes(run_id) if n.get("type") == "guard" and n.get("agent") == "letter_writer"]
@@ -235,9 +260,11 @@ def priority_summary(req: SummaryRequest) -> dict:
     log: list = []
     lists: dict[str, list[dict]] = {}
     for kind, ids, w in [("gap", req.gap_ids, req.weights), ("opportunity", req.opportunity_ids, req.opp_weights)]:
+        scored, _ = ranked(req.scope, w, log, kind)
+        if sample_mode():  # the recorded summary covers every sample zone in the scope
+            ids = list(scored.zone_id) if len(scored) else []
         if kind == "opportunity" and not ids:
             continue
-        scored, _ = ranked(req.scope, w, log, kind)
         rows = scored[scored.zone_id.isin(ids)] if ids else scored.head(req.top)
         cells = zone_cell_ids(kind, log)
         if len(rows):
@@ -246,6 +273,12 @@ def priority_summary(req: SummaryRequest) -> dict:
         raise HTTPException(404, f"No zones listed in {area}")
     run_id = memory.create_run("summary", query=req.scope, label=f"Priority summary: {area}")
     case = Case(run_id=run_id, scope="summary", point={"label": area}, memory=memory)
+    if sample_mode():
+        try:
+            case.cache["replay"] = (R.Session("record", req.record_as or f"summary_{req.scope.replace(':', '_').lower()}")
+                                    if R.recording() else R.Session("replay", R.find("summary", scope=req.scope)))
+        except R.ReplayMissing as e:
+            raise HTTPException(404, str(e)) from e
     sections = {}
     for kind, zs in lists.items():
         diagnoses: dict[str, dict] = {}
@@ -256,6 +289,8 @@ def priority_summary(req: SummaryRequest) -> dict:
                 diagnoses[z["zone_id"]] = max(near, key=lambda d: d.get("created_at") or "")
         try:
             out = A.write_priority_summary(case, area, zs, diagnoses, kind)
+        except R.ReplayMissing as e:
+            raise HTTPException(404, str(e)) from e
         except LLMError as e:
             raise HTTPException(502, f"The advisor is unavailable: {str(e)[:160]}") from e
         sections[kind] = {**out.model_dump(), "diagnosed": sorted(diagnoses), "zones": [z["zone_id"] for z in zs],

@@ -5,7 +5,8 @@ ranking or a confidence.
 Check each belief for
 (a) citations: every cited id exists and actually supports the claim;
 (b) strength: Ookla figures with fewer than 30 tests are weak; a marginal line of sight (blocked by < 10 m) is weak;
-    an assumed antenna height lowers strength; crowd-sourced site positions are less reliable than Ofcom's licence
+    an assumed antenna height only weakens a blocked line when the obstruction is under about 30 m (cite the margin
+    in metres from the [los_*] item when judging a blocked line); crowd-sourced site positions are less reliable than Ofcom's licence
     register; "operators unknown" is not "single operator"; Ofcom figures are area-level only;
     if a belief above 0.5 rests mainly on evidence these rules call weak, downgrade it; do not approve;
 (c) unchecked alternatives that a listed tool could test;

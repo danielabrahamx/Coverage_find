@@ -224,3 +224,27 @@ def test_opportunity_wording_check():
     r = C.wording_check(bad)
     assert not r["ok"] and {w.lower() for _, w in r["forbidden"]} == {"no coverage", "gap"}
     assert C.wording_check({"zone_type": "gap", "headline": "A gap"}) == {"applies": False}
+
+
+def test_operator_limits_and_point_wording():
+    none_near = {"nearest_site": {"value": None}}
+    assert "Operators could not be identified: no approximate mast sites were found within 10 km" in C.operator_limits(none_near)[0]
+    unknown = {"nearest_site": {"value": {"site_id": "S1"}}, "operators_5km": {"value": {"operators": [], "operator_data_status": "unknown"}}}
+    assert "no known operator" in C.operator_limits(unknown)[0]
+    assert C.operator_limits({"nearest_site": {"value": {}}, "operators_5km": {"value": {"operators": ["EE"]}}}) == []
+    bad = C.wording_check({"scope": "point", "headline": "There is no coverage here.", "hypotheses": [], "actions": []})
+    assert bad["applies"] and not bad["ok"]
+    assert C.wording_check({"scope": "point", "headline": "Not enough data to say why.", "hypotheses": [], "actions": []})["ok"]
+
+
+def test_no_data_headline_only_when_nothing_is_measured():
+    hyps = [{"cause": "insufficient_data", "status": "active", "confidence": 0.5},
+            {"cause": "distance_to_mast", "status": "active", "confidence": 0.45}]
+    evid = {"speed_cell": {"sample_size": {"tests": 0}}, "nearest_site": {"value": None}}
+    h = C.no_data_headline({"hypotheses": hyps}, evid)
+    assert h.startswith("Not enough data to say why") and "operators could not be identified" in h
+    measured = {**evid, "speed_cell": {"sample_size": {"tests": 1425}}}
+    assert C.no_data_headline({"hypotheses": hyps}, measured) is None  # e.g. London: keep the advisor's headline
+    tied = [{**hyps[1], "confidence": 0.5}, hyps[0]]
+    assert C.no_data_headline({"hypotheses": tied}, evid).startswith("Not enough data")  # a tie still says so
+    assert C.no_data_headline({"hypotheses": [{**hyps[1], "confidence": 0.6}, hyps[0]]}, evid) is None

@@ -1,0 +1,59 @@
+{
+ "example_id": "summary_uk",
+ "replies": {
+  "advisor|round 0|call 1": {
+   "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+   "parsed": {
+    "body_markdown": "The ranking covers 2 zones and 938 people.\n\n1. Ousby [Z00072]: 836 of 873 people have no identified site within 5 km; low data confidence (0 tests). Agent diagnosis: No strong cause was found because there are no recent measurements [insufficient_data].\n2. Near Raw Head [Z00603]: 65 of 65 people are affected by terrain blocking every site; low data confidence (1 test).\n\nData confidence: zones with few tests are uncertain; measure first.\n\nSuggested next step: commission drive tests in Ousby and Near Raw Head to verify coverage before any infrastructure decisions.",
+    "cited_evidence": []
+   },
+   "tool_calls": [],
+   "content": null,
+   "duration_ms": 1208
+  },
+  "advisor|round 0|call 2": {
+   "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+   "parsed": {
+    "rewrites": [
+     {
+      "original": "The ranking covers 2 zones and 938 people. 1.",
+      "rewritten": "The ranking covers 2 zones and 938 people. 1. Ousby [Z00072]: 873 people; 836 with no identified site within 5 km; 0 tests (low data confidence). Agent diagnosis: No strong cause was found because there are no recent measurements [insufficient_data]."
+     }
+    ]
+   },
+   "tool_calls": [],
+   "content": null,
+   "duration_ms": 1132
+  },
+  "advisor|round 0|call 3": {
+   "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+   "parsed": {
+    "body_markdown": "The ranking covers 4 zones and 39,157 people.\n\n1. Llandrindod Wells [O00309]: 8,403 of 8,933 people are in cells below half the reference median, with 6,011 also showing falling speeds and busy-network signals; an opportunity for capacity and speed upgrades.\n2. Beguildy [O01498]: All 252 people are in cells below half the reference median; an opportunity for speed improvement; no operators identified nearby.\n3. Ramsey [O00044]: 17,919 of 27,930 people are in cells below half the reference median, with 12,298 in cells with only 1-2 operators identified; an opportunity for speed and operator diversity improvements.\n4. Windermere [O00332]: 4,961 of 8,452 people are in cells with falling speeds and busy-network signals; an opportunity for capacity upgrades. Agent diagnosis: busy-network capacity strain is the likely cause.\n\nData confidence: zones with few tests are uncertain\u2014measure first.\n\nSuggested next step: prioritise Llandrindod Wells and Ramsey for detailed network capacity and speed assessments.",
+    "cited_evidence": [
+     "O00309",
+     "O01498",
+     "O00044",
+     "O00332"
+    ]
+   },
+   "tool_calls": [],
+   "content": null,
+   "duration_ms": 2058
+  },
+  "advisor|round 0|call 4": {
+   "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+   "parsed": {
+    "rewrites": [
+     {
+      "original": "The ranking covers 4 zones and 39,157 people. 1.",
+      "rewritten": "The ranking covers 4 zones and 39,157 people."
+     }
+    ]
+   },
+   "tool_calls": [],
+   "content": null,
+   "duration_ms": 1101
+  }
+ },
+ "prompts_sha": "1a1d151a4ca89c985ff0ea147701646b5733dd5e35f2ee8ac7f688c48f27cc35"
+}

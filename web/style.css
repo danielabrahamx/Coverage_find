@@ -605,3 +605,9 @@ tr.opp-row .rank { color: #0F766E; }
   .combo-list { width: 100%; }
   .map-note { max-width: 80%; }
 }
+
+/* sample mode */
+.sample-banner { background: #FEF3C7; color: #92400E; font-size: 13px; font-weight: 600; padding: 6px 16px; text-align: center;
+  border-bottom: 1px solid #FCD34D; }
+.recorded-badge { display: inline-block; font-size: 13px; font-weight: 600; color: #92400E; background: #FEF3C7; border-radius: 8px;
+  padding: 2px 8px; margin: 0 0 8px !important; }

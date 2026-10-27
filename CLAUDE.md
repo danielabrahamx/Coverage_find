@@ -102,9 +102,11 @@ coverage_detective/     package
   planning/             zones.py (gap zones), opportunities.py (improvement opportunities), scoring.py
                         (priority / opportunity score), siting.py (fixes, candidates)
   memory/meterless.py   Meterless client (H-MEM + World Model over HTTP; in-memory fallback)
+  data/sample_db.py     sample mode: DuckDB over data/samples/zetaris/ in place of Zetaris
   agents/               llm.py (Nemotron client), schemas.py (pydantic), tools.py (tools -> Meterless),
                         agents.py (the agents), guard.py (code guard), prompts/*.md,
-                        coordinator.py (the loop: diagnose_point, diagnose_zone; progress; export)
+                        coordinator.py (the loop: diagnose_point, diagnose_zone; progress; export),
+                        replay.py (recorded replies for sample mode)
 meterless_service/      Node HTTP service on :8100 over vendor/meterless (H-MEM, World Model); data/meterless/
 vendor/meterless/       Meterless reference engines, vendored unchanged (Apache 2.0)
   data/
@@ -128,7 +130,7 @@ scripts/zetaris/        compose.sh (data mount), register_sources.py (one functi
 scripts/check_*.py      check_data (A, B, E), check_live (D), check_terrain (C), check_evidence
 scripts/refresh.py      refresh stored sources on their cadence
 scripts/screenshots.py  Playwright screenshots -> docs/screenshots/
-tests/                  pytest (109 tests; offline: samples, mocked Zetaris / DEM)
+tests/                  pytest (124 tests; offline: samples, mocked Zetaris / DEM)
 web/                    pages, no build step (MapLibre 5.24 + deck.gl 9.4 + h3-js 4.5):
                         index.html + app.js (Explore), signal.html + signal.js (My signal),
                         council.html + council.js (Council view), agents.js (agent UI, shared), style.css
@@ -394,6 +396,25 @@ G (power cuts) dropped as future work; H (visitor load) only if time. Then the a
   existing site, ground height), Today / With candidate N with people counts, fit with room for the panel,
   Reset view. Opportunity run (Windermere O00332, examples/opportunity_windermere/): 196 s, 1 round.
   Screenshots: `scripts/council_screenshots.py` -> docs/screenshots/council/.
+- **Agents, phase 6: sample mode, examples, data report** (27 Oct): `python run.py --sample` runs with no
+  Zetaris, no live calls and no LLM key: `data/sample_db.py` (DuckDB views named like the Zetaris sources over
+  `data/samples/zetaris/*.parquet`; percentile_approx / collect_list / named_struct translated; UK medians
+  from uk_context.json), `terrain.SampleDEM` (crops in data/samples/dem/), saved live responses (5 sample
+  places), recorded agent replies (`agents/replay.py`: keyed example + agent + round + call index, letters per
+  recipient; missing key -> ReplayMissing "no recorded reply for this step", never a live call; results
+  `replayed`, labelled "Recorded" in the UI, sample-mode banner); its own Meterless (8101,
+  data/meterless_sample/). Extracts: `scripts/build_samples.py` (9.6 MB, 8.2 MB DEM). Examples:
+  `scripts/record_examples.py` (sample data + live model, Meterless 8102) -> 7 runs + 2 summaries,
+  `examples/index.json` with the prompts' hash (prompts frozen: a test checks it). Prompt change before the
+  freeze: critic.md (b) an assumed antenna height only weakens a blocked line under ~30 m, cite the margin;
+  line-of-sight evidence carries `obstruction_margin_m`. Great Langdale x3 after it: terrain 0.70 / 0.75 /
+  0.75, the critic still objected once (weather, asked for a speed trend). Guard: region-wide Met Office
+  warnings are weak. Code rules: point headline "Not enough data to say why: ..." when insufficient_data is
+  top (or tied) and nothing is measured; a fixed "Operators could not be identified" limitation; point
+  wording check (never "no coverage"); best-network card says none can be ranked when no operator has a
+  site. `scripts/check_data.py` -> docs/data_report.md (every Zetaris source: rows, query time, period, age,
+  refresh, licence; one cross-source row per sample place; live sources). Council view 500s fixed (empty
+  scopes, all-null factors). README rewritten (architecture, loop, guard, pages, sample mode, examples).
 
 ### Zetaris sources
 

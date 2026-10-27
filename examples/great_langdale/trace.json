@@ -1,13 +1,13 @@
 {
  "audit": [
   {
-   "seq": 456,
-   "at": "2026-10-26T21:37:02.162Z",
+   "seq": 334,
+   "at": "2026-10-27T00:22:10.830Z",
    "action": "create",
    "actor": "coordinator",
    "kind": "run",
-   "ref": "run_20261026213702_fgoz",
-   "memory_id": "mem-439",
+   "ref": "run_20261027002210_kkcc",
+   "memory_id": "mem-320",
    "summary": "Diagnosis run (point) for near LA22 9JY",
    "old_confidence": null,
    "new_confidence": 1,
@@ -23,17 +23,17 @@
     "status": "complete",
     "progress": [
      {
-      "at": "2026-10-26T21:37:02.311Z",
+      "at": "2026-10-27T00:22:10.968Z",
       "agent": "coordinator",
       "round": 1,
       "kind": "tool",
       "label": "prior_diagnoses_nearby()",
       "status": "done",
       "summary": "prior_diagnoses_nearby() -> prior_diagnoses",
-      "duration_ms": 66
+      "duration_ms": 59
      },
      {
-      "at": "2026-10-26T21:37:02.336Z",
+      "at": "2026-10-27T00:22:10.986Z",
       "agent": "coordinator",
       "round": 1,
       "kind": "phase",
@@ -43,235 +43,186 @@
       "duration_ms": 0
      },
      {
-      "at": "2026-10-26T21:37:09.792Z",
+      "at": "2026-10-27T00:22:12.339Z",
       "agent": "investigator",
       "round": 1,
       "kind": "llm",
       "label": "investigator",
       "status": "done",
-      "summary": "nemotron-3.5-super-vl-120b-a12b, 7.4s",
-      "duration_ms": 7359
+      "summary": "nemotron-3.5-super-vl-120b-a12b, 1.3s",
+      "duration_ms": 1268
      },
      {
-      "at": "2026-10-26T21:37:10.892Z",
+      "at": "2026-10-27T00:22:12.551Z",
       "agent": "investigator",
       "round": 1,
       "kind": "tool",
       "label": "speeds_near()",
       "status": "done",
       "summary": "speeds_near() -> speed_1km, speed_cell, speed_neighbours",
-      "duration_ms": 1046
+      "duration_ms": 171
      },
      {
-      "at": "2026-10-26T21:37:11.283Z",
+      "at": "2026-10-27T00:22:12.655Z",
       "agent": "investigator",
       "round": 1,
       "kind": "tool",
       "label": "sites_near()",
       "status": "done",
       "summary": "sites_near() -> nearest_site, operators_5km",
-      "duration_ms": 369
+      "duration_ms": 83
      },
      {
-      "at": "2026-10-26T21:37:11.478Z",
+      "at": "2026-10-27T00:22:12.877Z",
       "agent": "investigator",
       "round": 1,
       "kind": "tool",
       "label": "line_of_sight(EE)",
       "status": "done",
       "summary": "line_of_sight(EE) -> los_ee",
-      "duration_ms": 177
+      "duration_ms": 207
      },
      {
-      "at": "2026-10-26T21:37:11.557Z",
+      "at": "2026-10-27T00:22:12.958Z",
       "agent": "investigator",
       "round": 1,
       "kind": "tool",
       "label": "line_of_sight(O2)",
       "status": "done",
       "summary": "line_of_sight(O2) -> los_o2",
-      "duration_ms": 52
+      "duration_ms": 57
      },
      {
-      "at": "2026-10-26T21:37:11.639Z",
+      "at": "2026-10-27T00:22:13.013Z",
       "agent": "investigator",
       "round": 1,
       "kind": "tool",
       "label": "line_of_sight(Three)",
       "status": "done",
       "summary": "line_of_sight(Three) -> los_three",
-      "duration_ms": 49
+      "duration_ms": 38
      },
      {
-      "at": "2026-10-26T21:37:11.707Z",
+      "at": "2026-10-27T00:22:13.068Z",
       "agent": "investigator",
       "round": 1,
       "kind": "tool",
       "label": "line_of_sight(Vodafone)",
       "status": "done",
       "summary": "line_of_sight(Vodafone) -> los_vodafone",
-      "duration_ms": 47
+      "duration_ms": 38
      },
      {
-      "at": "2026-10-26T21:37:11.777Z",
+      "at": "2026-10-27T00:22:13.123Z",
       "agent": "investigator",
       "round": 1,
       "kind": "tool",
       "label": "ofcom_area()",
       "status": "done",
       "summary": "ofcom_area() -> ofcom_area",
-      "duration_ms": 47
+      "duration_ms": 40
      },
      {
-      "at": "2026-10-26T21:37:11.899Z",
+      "at": "2026-10-27T00:22:13.223Z",
       "agent": "investigator",
       "round": 1,
       "kind": "tool",
       "label": "live_conditions()",
       "status": "done",
       "summary": "live_conditions() -> weather, met_office_warnings, flood_warnings",
-      "duration_ms": 107
+      "duration_ms": 83
      },
      {
-      "at": "2026-10-26T21:37:26.306Z",
+      "at": "2026-10-27T00:22:16.280Z",
       "agent": "diagnostician",
       "round": 1,
       "kind": "llm",
       "label": "diagnostician",
       "status": "done",
-      "summary": "nemotron-3.5-super-vl-120b-a12b, 14.3s",
-      "duration_ms": 14296
+      "summary": "nemotron-3.5-super-vl-120b-a12b, 3.0s",
+      "duration_ms": 2973
      },
      {
-      "at": "2026-10-26T21:37:51.007Z",
+      "at": "2026-10-27T00:22:26.767Z",
+      "agent": "diagnostician",
+      "round": 1,
+      "kind": "llm",
+      "label": "diagnostician guard rewrite",
+      "status": "done",
+      "summary": "nemotron-3.5-super-vl-120b-a12b, 10.4s",
+      "duration_ms": 10406
+     },
+     {
+      "at": "2026-10-27T00:23:20.486Z",
       "agent": "critic",
       "round": 1,
       "kind": "llm",
       "label": "critic thinking",
       "status": "done",
-      "summary": "nemotron-3-ultra-550b-a55b, 24.5s",
-      "duration_ms": 24461
+      "summary": "nemotron-3-ultra-550b-a55b, 53.5s",
+      "duration_ms": 53541
      },
      {
-      "at": "2026-10-26T21:37:52.673Z",
+      "at": "2026-10-27T00:23:22.398Z",
       "agent": "critic",
       "round": 1,
       "kind": "llm",
-      "label": "critic",
+      "label": "critic guard rewrite",
       "status": "done",
-      "summary": "nemotron-3.5-super-vl-120b-a12b, 1.5s",
-      "duration_ms": 1544
+      "summary": "nemotron-3.5-super-vl-120b-a12b, 1.8s",
+      "duration_ms": 1849
      },
      {
-      "at": "2026-10-26T21:37:55.682Z",
+      "at": "2026-10-27T00:23:23.215Z",
       "agent": "critic",
       "round": 1,
       "kind": "llm",
-      "label": "critic",
+      "label": "critic guard rewrite",
       "status": "done",
-      "summary": "nemotron-3.5-super-vl-120b-a12b, 2.9s",
-      "duration_ms": 2894
+      "summary": "nemotron-3.5-super-vl-120b-a12b, 0.7s",
+      "duration_ms": 725
      },
      {
-      "at": "2026-10-26T21:37:55.857Z",
-      "agent": "coordinator",
-      "round": 2,
-      "kind": "phase",
-      "label": "round 2: 1 checks requested by the critic",
-      "status": "done",
-      "summary": "round 2: 1 checks requested by the critic",
-      "duration_ms": 0
-     },
-     {
-      "at": "2026-10-26T21:37:56.765Z",
-      "agent": "investigator",
-      "round": 2,
+      "at": "2026-10-27T00:23:24.132Z",
+      "agent": "critic",
+      "round": 1,
       "kind": "llm",
-      "label": "investigator",
+      "label": "critic guard rewrite",
       "status": "done",
       "summary": "nemotron-3.5-super-vl-120b-a12b, 0.8s",
-      "duration_ms": 810
+      "duration_ms": 844
      },
      {
-      "at": "2026-10-26T21:37:56.856Z",
-      "agent": "investigator",
-      "round": 2,
-      "kind": "tool",
-      "label": "speed_trend()",
-      "status": "done",
-      "summary": "speed_trend() -> speed_trend",
-      "duration_ms": 48
-     },
-     {
-      "at": "2026-10-26T21:38:01.202Z",
-      "agent": "diagnostician",
-      "round": 2,
-      "kind": "llm",
-      "label": "diagnostician",
-      "status": "done",
-      "summary": "nemotron-3.5-super-vl-120b-a12b, 4.3s",
-      "duration_ms": 4264
-     },
-     {
-      "at": "2026-10-26T21:38:40.960Z",
+      "at": "2026-10-27T00:23:24.955Z",
       "agent": "critic",
-      "round": 2,
+      "round": 1,
       "kind": "llm",
-      "label": "critic thinking",
+      "label": "critic guard rewrite",
       "status": "done",
-      "summary": "nemotron-3-ultra-550b-a55b, 39.6s",
-      "duration_ms": 39629
+      "summary": "nemotron-3.5-super-vl-120b-a12b, 0.7s",
+      "duration_ms": 732
      },
      {
-      "at": "2026-10-26T21:39:27.340Z",
-      "agent": "critic",
-      "round": 2,
-      "kind": "llm",
-      "label": "critic",
-      "status": "done",
-      "summary": "nemotron-3.5-super-vl-120b-a12b, 46.3s, 1 retries",
-      "duration_ms": 46270
-     },
-     {
-      "at": "2026-10-26T21:39:36.538Z",
-      "agent": "critic",
-      "round": 2,
-      "kind": "llm",
-      "label": "critic",
-      "status": "done",
-      "summary": "nemotron-3.5-super-vl-120b-a12b, 9.1s",
-      "duration_ms": 9091
-     },
-     {
-      "at": "2026-10-26T21:39:38.114Z",
-      "agent": "critic",
-      "round": 2,
-      "kind": "llm",
-      "label": "critic",
-      "status": "done",
-      "summary": "nemotron-3.5-super-vl-120b-a12b, 1.4s",
-      "duration_ms": 1430
-     },
-     {
-      "at": "2026-10-26T21:39:52.754Z",
+      "at": "2026-10-27T00:23:31.712Z",
       "agent": "advisor",
       "round": 0,
       "kind": "llm",
       "label": "advisor",
       "status": "done",
-      "summary": "nemotron-3.5-super-vl-120b-a12b, 14.1s",
-      "duration_ms": 14138
+      "summary": "nemotron-3.5-super-vl-120b-a12b, 6.3s",
+      "duration_ms": 6335
      }
     ],
-    "created": "2026-10-26T21:37:02.161Z",
+    "created": "2026-10-27T00:22:10.829Z",
     "by": "coordinator",
     "kind": "run",
-    "run_id": "run_20261026213702_fgoz",
-    "ref": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
+    "ref": "run_20261027002210_kkcc",
     "result": {
-     "headline": "Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison].",
-     "explanation": "The ground rises above the direct line to every identified mobile mast site, so your signal is likely weakened rather than completely lost. O2's site is the least obstructed, with terrain 129 m above the line 985 m away [los_o2][network_comparison]. All identified sites are 3.8\u20135.7 km away [nearest_site][los_vodafone][los_ee][los_three][los_o2], which can also weaken signal . There are no speed tests recorded near your address this quarter, so we cannot confirm current speeds from measurements [speed_cell][speed_neighbours]. A Met Office yellow wind warning is in force with gusts up to 74.9 km/h and heavy rain [weather][met_office_warnings], which may cause temporary degradation now but does not explain a persistent problem [weather].",
+     "headline": "Hills between you and the nearest masts are the likely cause [terrain_blocking][los_ee][los_o2][los_three][los_vodafone][network_comparison].",
+     "explanation": "The ground rises above the direct line to the nearest mast for every operator we have identified, so your signal is likely weakened rather than lost [terrain_blocking][los_ee][los_o2][los_three][los_vodafone]. The nearest identified mast is about 3.8 km away [nearest_site][los_vodafone], and O2\u2019s nearest approximate site is about 5.7 km away [los_o2]. No speed tests exist in this cell or within 1 km, so the exact point-level cause cannot be confirmed [speed_cell][speed_1km][insufficient_data]. A yellow wind warning is in force for the district, but that only explains current or recent degradation and is weak evidence [weather][met_office_warnings][weather].",
      "cited_evidence": [
+      "terrain_blocking",
       "los_ee",
       "los_o2",
       "los_three",
@@ -279,7 +230,8 @@
       "network_comparison",
       "nearest_site",
       "speed_cell",
-      "speed_neighbours",
+      "speed_1km",
+      "insufficient_data",
       "weather",
       "met_office_warnings"
      ],
@@ -287,7 +239,7 @@
       {
        "id": "terrain_blocking",
        "cause": "terrain_blocking",
-       "confidence": 0.75,
+       "confidence": 0.7,
        "status": "active",
        "supporting": [
         "los_ee",
@@ -296,13 +248,15 @@
         "los_vodafone",
         "network_comparison"
        ],
-       "contradicting": [],
-       "explanation": "Terrain rises above the direct line to every identified operator site, with O2 least obstructed at 129 m above the line 985 m away [los_o2][network_comparison]; antenna heights are assumed, so the exact margin is uncertain.",
+       "contradicting": [
+        "speed_neighbours"
+       ],
+       "explanation": "Terrain rises above the direct line to every operator's nearest site, with no operator having a clear line of sight [los_ee][los_o2][los_three][los_vodafone][network_comparison]; antenna heights are assumed, so the exact margin is uncertain.",
        "history": [
         {
-         "at": "2026-10-26T21:37:26.368Z",
+         "at": "2026-10-27T00:22:16.322Z",
          "by": "diagnostician",
-         "confidence": 0.75,
+         "confidence": 0.7,
          "previous": null,
          "reason": "proposed",
          "round": 1
@@ -312,22 +266,20 @@
       {
        "id": "distance_to_mast",
        "cause": "distance_to_mast",
-       "confidence": 0.55,
+       "confidence": 0.45,
        "status": "active",
        "supporting": [
         "nearest_site",
         "los_vodafone",
-        "los_ee",
-        "los_three",
         "los_o2"
        ],
        "contradicting": [],
-       "explanation": "The nearest identified site is 3.8 km away and all operator sites are 3.8\u20135.7 km distant [nearest_site][los_vodafone][los_ee][los_three][los_o2]; operators are crowd-sourced inferred, so distances are not certain.",
+       "explanation": "The nearest identified mast is 3.8 km away [nearest_site][los_vodafone]; O2's nearest approximate site is 5.7 km away [los_o2]; operators are inferred from crowd-sourced data [nearest_site][los_vodafone][los_o2].",
        "history": [
         {
-         "at": "2026-10-26T21:37:26.401Z",
+         "at": "2026-10-27T00:22:26.828Z",
          "by": "diagnostician",
-         "confidence": 0.55,
+         "confidence": 0.45,
          "previous": null,
          "reason": "proposed",
          "round": 1
@@ -344,10 +296,10 @@
         "met_office_warnings"
        ],
        "contradicting": [],
-       "explanation": "A Met Office yellow wind warning covers the district with gusts up to 74.9 km/h and heavy rain [weather][met_office_warnings]; this can only explain current or recent degradation, not a persistent problem.",
+       "explanation": "A Met Office yellow wind warning covers the district and gusts may reach 81.4 km/h [weather][met_office_warnings], but this only explains current or recent degradation and is weak sample evidence.",
        "history": [
         {
-         "at": "2026-10-26T21:37:26.453Z",
+         "at": "2026-10-27T00:22:26.845Z",
          "by": "diagnostician",
          "confidence": 0.4,
          "previous": null,
@@ -357,48 +309,33 @@
        ]
       },
       {
-       "id": "single_operator",
-       "cause": "single_operator",
-       "confidence": 0.1,
-       "status": "rejected",
+       "id": "insufficient_data",
+       "cause": "insufficient_data",
+       "confidence": 0.35,
+       "status": "active",
        "supporting": [
+        "speed_cell",
+        "speed_1km",
         "operators_5km"
        ],
        "contradicting": [],
-       "explanation": "Only EE, Three and Vodafone have approximate sites within 5 km, but operators are inferred from crowd-sourced data and O2 is not listed despite a nearby site [operators_5km][los_o2], so a single-operator gap is not proven.",
+       "explanation": "No speed tests exist in this cell or within 1 km [speed_cell][speed_1km], and nearby neighbour data are sparse [speed_neighbours], so the exact point-level cause cannot be confirmed.",
        "history": [
         {
-         "at": "2026-10-26T21:37:26.432Z",
+         "at": "2026-10-27T00:22:26.867Z",
          "by": "diagnostician",
-         "confidence": 0.45,
+         "confidence": 0.35,
          "previous": null,
          "reason": "proposed",
          "round": 1
-        },
-        {
-         "at": "2026-10-26T21:39:36.615Z",
-         "by": "critic",
-         "confidence": 0.1,
-         "previous": 0.45,
-         "reason": "critic rejected: This indicates multi-operator presence, not a single-operator gap.",
-         "round": 2
         }
        ]
       }
      ],
-     "ruled_out": [
-      {
-       "cause": "single_operator",
-       "reason": "Only EE, Three and Vodafone have approximate sites within 5 km, but O2 is not listed despite a nearby site, so a single-operator gap is not proven [operators_5km][los_o2].",
-       "evidence": [
-        "operators_5km",
-        "los_o2"
-       ]
-      }
-     ],
+     "ruled_out": [],
      "actions": [
       {
-       "text": "Try O2 first as the likely best network, then Vodafone, EE, or Three if O2 does not work [network_comparison][los_o2][los_vodafone][los_ee][los_three].",
+       "text": "Try O2 first, as it has the least obstructed line of sight to an identified site [network_comparison][los_o2].",
        "audience": "resident"
       },
       {
@@ -406,7 +343,7 @@
        "audience": "resident"
       },
       {
-       "text": "Check your exact address on Ofcom's mobile coverage checker: https://www.ofcom.org.uk/mobile-coverage-checker",
+       "text": "Check your address on Ofcom\u2019s mobile coverage checker: https://www.ofcom.org.uk/mobile-coverage-checker",
        "audience": "resident"
       },
       {
@@ -415,50 +352,47 @@
       }
      ],
      "best_network": {
-      "summary": "O2 is likely the best option because it has the least obstructed line of sight, though its site is the farthest at 5.7 km and all operators are inferred rather than confirmed by Ofcom's licence register [network_comparison][los_o2][los_vodafone][los_ee][los_three].",
+      "summary": "O2 is ranked first because it has the least obstructed line of sight, though its site is farther away [network_comparison][los_o2]. EE, Three and Vodafone have closer identified sites but steeper terrain blocking [los_ee][los_three][los_vodafone]. All operators are inferred from crowd-sourced data, so confidence is low [los_ee][los_o2][los_three][los_vodafone][nearest_site].",
       "ranking": [
        {
         "operator": "O2",
         "rank": 1,
         "confidence": "low",
-        "why": "Least obstructed line of sight (terrain 129 m above the line 985 m away), but site is 5.7 km south-east and operator is inferred from crowd-sourced data, not confirmed by Ofcom's licence register [network_comparison][los_o2][los_vodafone][los_ee][los_three].",
+        "why": "Least obstructed line of sight: terrain rises 135 m above the direct line, compared with 258\u2013291 m for the others [network_comparison][los_o2][los_ee][los_three][los_vodafone]. Site is about 5.7 km south-east [los_o2]. Operator is inferred from crowd-sourced data [los_o2].",
         "evidence": [
          "network_comparison",
          "los_o2",
-         "los_vodafone",
          "los_ee",
-         "los_three"
+         "los_three",
+         "los_vodafone"
         ]
        },
        {
         "operator": "Vodafone",
         "rank": 2,
         "confidence": "low",
-        "why": "Nearest identified site at 3.8 km south-east, but terrain rises 288 m above the direct line 2.2 km away, and operator is inferred from crowd-sourced data [los_vodafone][nearest_site][network_comparison].",
+        "why": "Nearest identified site at about 3.8 km south-east, but terrain rises 291 m above the direct line [nearest_site][los_vodafone]. Operator is inferred from crowd-sourced data [los_vodafone].",
         "evidence": [
-         "los_vodafone",
          "nearest_site",
-         "network_comparison"
+         "los_vodafone"
         ]
        },
        {
         "operator": "EE",
         "rank": 3,
         "confidence": "low",
-        "why": "Site 4.5 km east with terrain 260 m above the direct line 1.9 km away; operator inferred from crowd-sourced data [los_ee][network_comparison].",
+        "why": "Nearest approximate site about 4.5 km east, but terrain rises 258 m above the direct line [los_ee]. Operator is inferred from crowd-sourced data [los_ee].",
         "evidence": [
-         "los_ee",
-         "network_comparison"
+         "los_ee"
         ]
        },
        {
         "operator": "Three",
         "rank": 4,
         "confidence": "low",
-        "why": "Site 4.5 km east with terrain 260 m above the direct line 1.9 km away; operator inferred from crowd-sourced data [los_three][network_comparison].",
+        "why": "Nearest approximate site about 4.5 km east, but terrain rises 258 m above the direct line [los_three]. Operator is inferred from crowd-sourced data [los_three].",
         "evidence": [
-         "los_three",
-         "network_comparison"
+         "los_three"
         ]
        }
       ],
@@ -470,7 +404,7 @@
         "O2"
        ],
        "line_of_sight": "blocked",
-       "text": "No operator has a clear line of sight to an identified site from here. Least obstructed: O2, a site 5.7 km south-east (inferred from crowd-sourced data), with terrain 129 m above the line."
+       "text": "No operator has a clear line of sight to an identified site from here. Least obstructed: O2, a site 5.7 km south-east (inferred from crowd-sourced data), with terrain 135 m above the line."
       },
       "operators": [
        {
@@ -490,7 +424,7 @@
         "los": {
          "class": "blocked",
          "blocked": true,
-         "obstruction_m": 260.3,
+         "obstruction_m": 257.7,
          "obstruction_distance_m": 1939,
          "obstruction_lat": 54.440243,
          "obstruction_lon": -3.076159,
@@ -516,7 +450,7 @@
         "los": {
          "class": "blocked",
          "blocked": true,
-         "obstruction_m": 128.9,
+         "obstruction_m": 135.1,
          "obstruction_distance_m": 985,
          "obstruction_lat": 54.437575,
          "obstruction_lon": -3.096698,
@@ -542,7 +476,7 @@
         "los": {
          "class": "blocked",
          "blocked": true,
-         "obstruction_m": 260.3,
+         "obstruction_m": 257.7,
          "obstruction_distance_m": 1939,
          "obstruction_lat": 54.440243,
          "obstruction_lon": -3.076159,
@@ -568,7 +502,7 @@
         "los": {
          "class": "blocked",
          "blocked": true,
-         "obstruction_m": 288.4,
+         "obstruction_m": 290.8,
          "obstruction_distance_m": 2249,
          "obstruction_lat": 54.431582,
          "obstruction_lon": -3.078984,
@@ -580,16 +514,16 @@
       ]
      },
      "limitations": [
-      "Sites are approximate and operator names are inferred from crowd-sourced data, so distances and margins are uncertain; antenna heights are assumed; Ofcom figures are area-level predictions, not exact for this address [nearest_site][operators_5km][los_ee][los_o2][los_three][los_vodafone][ofcom_area].",
+      "Sites are approximate and antenna heights are assumed; Ofcom figures are area-level, not exact for this address.",
       "Causes are inferred from public data, not confirmed: operators' network data is not public.",
       "Ookla speeds are quarterly aggregates with no time-of-day detail; congestion can only be inferred.",
       "No address-level Ofcom coverage; Ofcom figures are for the whole constituency and are predictions.",
       "Mast sites are approximate (crowd-sourced OpenCelliD, OpenStreetMap, Ofcom's licence register) and incomplete, so 'no sites found' is weak evidence.",
       "Line of sight uses a surface model (trees and buildings included) and mostly assumed antenna heights; blocked means a weaker signal, not no signal."
      ],
-     "rounds": 2,
+     "rounds": 1,
      "status": "complete",
-     "run_id": "run_20261026213702_fgoz",
+     "run_id": "run_20261027002210_kkcc",
      "scope": "point",
      "query": null,
      "audience": "resident",
@@ -609,7 +543,7 @@
        "round": 1,
        "target": "terrain_blocking",
        "verdict": "approve",
-       "reason": "All four line-of-sight checks show terrain rising 129\u2013288 m above the direct line to the nearest identified sites, with assumed 25 m antenna heights. Even allowing for higher antennas, the obstructions are substantial. The evidence is strong and consistent.",
+       "reason": "Four line-of-sight computations [los_ee][los_o2][los_three][los_vodafone] show terrain rising above the direct line to every operator's nearest site, with assumed antenna heights of 25 m [los_ee][los_o2][los_three][los_vodafone]. Terrain rises 258 m above the line for EE [los_ee], 135 m for O2 [los_o2], 258 m for Three [los_three], and 291 m for Vodafone [los_vodafone]. The network_comparison item confirms no operator has a clear line of sight. The opposing evidence [speed_neighbours] is weak (only 2 tests in neighbouring cells) and shows some signal exists nearby, which is consistent with 'weakened, not necessarily lost'.",
        "requested_checks": [],
        "issues": null,
        "suggested_confidence": null
@@ -618,16 +552,7 @@
        "round": 1,
        "target": "distance_to_mast",
        "verdict": "approve",
-       "reason": "The nearest site is 3.8 km away and all operator sites lie 3.8\u20135.7 km distant. Crowd-sourced positions add uncertainty, which the belief acknowledges, so the confidence is appropriate.",
-       "requested_checks": [],
-       "issues": null,
-       "suggested_confidence": null
-      },
-      {
-       "round": 1,
-       "target": "single_operator",
-       "verdict": "approve",
-       "reason": "Only 3 operators (EE, Three and Vodafone) have approximate mast sites within 5 km [operators_5km]. Operators are inferred from crowd-sourced data [operators_5km]. The belief correctly states a single-operator gap is not proven and assigns a low confidence.",
+       "reason": "The nearest identified mast is 3.8 km away (Vodafone) [nearest_site][los_vodafone] and O2's nearest is 5.7 km [los_o2]; operators are inferred from crowd-sourced data (moderate reliability). Distance is a plausible contributing factor, especially in combination with terrain blocking. Confidence appropriately reflects the moderate evidence.",
        "requested_checks": [],
        "issues": null,
        "suggested_confidence": null
@@ -635,69 +560,43 @@
       {
        "round": 1,
        "target": "weather",
-       "verdict": "needs_evidence",
-       "reason": "The weather evidence is live (forecast and warning) and can only explain a recent drop. Without speed trend data we cannot tell whether poor service is persistent (which would downgrade weather's role) or only recent (which would support it).",
-       "requested_checks": [
-        {
-         "tool": "speed_trend",
-         "operator": null,
-         "why": "determine if low speeds are long-standing or only recent"
-        }
-       ],
-       "issues": null,
-       "suggested_confidence": null
-      },
-      {
-       "round": 2,
-       "target": "terrain_blocking",
        "verdict": "approve",
-       "reason": "Four independent line-of-sight checks (strong evidence) show terrain rising 129\u2013288 m above the direct line to each operator's nearest crowd-sourced site. The network_comparison summary confirms no operator has a clear line of sight. Assumed antenna heights (25 m) are a noted uncertainty, but the obstruction margins are large enough that the conclusion holds.",
+       "reason": "A Met Office yellow wind warning and forecast gusts up to 81.4 km/h [weather][met_office_warnings] could explain current or recent degradation. The evidence is weak (forecast sample) and the belief correctly limits its scope to current/recent effects. No speed_trend or historical speed data exists to determine whether poor service is long-standing, so the time pattern is unknown and no downgrade is warranted. Confidence matches the weak evidence. [met_office_warnings][weather]",
        "requested_checks": [],
        "issues": null,
        "suggested_confidence": null
       },
       {
-       "round": 2,
-       "target": "distance_to_mast",
+       "round": 1,
+       "target": "insufficient_data",
        "verdict": "approve",
-       "reason": "The nearest identified site is 3.8 km away and all four operators' nearest sites lie 3.8\u20135.7 km distant, per moderate-strength crowd-sourced site data and strong line-of-sight computations. The belief correctly notes the crowd-sourced inference uncertainty [los_ee][los_o2][los_three][los_vodafone][nearest_site].",
-       "requested_checks": [],
-       "issues": null,
-       "suggested_confidence": null
-      },
-      {
-       "round": 2,
-       "target": "single_operator",
-       "verdict": "reject",
-       "reason": "This indicates multi-operator presence, not a single-operator gap.",
-       "requested_checks": [],
-       "issues": null,
-       "suggested_confidence": 0.1
-      },
-      {
-       "round": 2,
-       "target": "weather",
-       "verdict": "approve",
-       "reason": "Live weather and Met Office warning (strong) confirm severe conditions (gusts to 74.9 km/h, heavy rain) that can degrade signals. The belief correctly limits the explanation to current/recent degradation.",
+       "reason": "No Ookla speed tests exist in this cell or within 1 km [speed_cell][speed_1km], neighbouring cells provide only 2 tests [speed_neighbours], and only three operators have sites within 5 km [operators_5km]. The evidence supports the conclusion that the exact point-level cause cannot be confirmed. Confidence is appropriate.",
        "requested_checks": [],
        "issues": null,
        "suggested_confidence": null
       }
      ],
-     "elapsed_s": 170.9
+     "wording_check": {
+      "applies": true,
+      "ok": true,
+      "forbidden": []
+     },
+     "elapsed_s": 81,
+     "example_id": "great_langdale",
+     "replayed": false
     }
    }
   },
   {
-   "seq": 457,
-   "at": "2026-10-26T21:37:02.262Z",
+   "seq": 335,
+   "at": "2026-10-27T00:22:10.931Z",
    "action": "create",
    "actor": "coordinator",
    "kind": "evidence",
    "ref": "prior_diagnoses",
-   "memory_id": "mem-440",
+   "memory_id": "mem-321",
    "round": 1,
-   "summary": "4 earlier diagnosises within 10 km: Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison][prior_diagnoses]. (0.0 km away, run run_20261026210948_68wd, 2026-10-26); Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison]. (0.0 km away, run run_20261026205600_c6qi, 2026-10-26); Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison]. (0.0 km away, run run_20261026212637_dlth, 2026-10-26).",
+   "summary": "1 earlier diagnosis within 10 km: Hills between you and the nearest masts are the likely cause [terrain_blocking][los_ee][los_o2][los_three][los_vodafone][network_comparison]. (0.0 km away, run run_20261027000851_ibxu, 2026-10-27).",
    "old_confidence": null,
    "new_confidence": 0.7,
    "reason": null,
@@ -705,100 +604,40 @@
     "id": "prior_diagnoses",
     "source": "Meterless H-MEM (earlier diagnoses)",
     "data_period": "Meterless H-MEM (earlier runs)",
-    "as_of": "2026-10-26T21:37:02+00:00",
+    "as_of": "2026-10-27T00:22:10+00:00",
     "query_or_url": "meterless:/diagnoses/near",
     "cell_ids": [
      "871955454ffffff"
     ],
-    "finding": "4 earlier diagnosises within 10 km: Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison][prior_diagnoses]. (0.0 km away, run run_20261026210948_68wd, 2026-10-26); Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison]. (0.0 km away, run run_20261026205600_c6qi, 2026-10-26); Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison]. (0.0 km away, run run_20261026212637_dlth, 2026-10-26).",
+    "finding": "1 earlier diagnosis within 10 km: Hills between you and the nearest masts are the likely cause [terrain_blocking][los_ee][los_o2][los_three][los_vodafone][network_comparison]. (0.0 km away, run run_20261027000851_ibxu, 2026-10-27).",
     "value": [
      {
-      "run_id": "run_20261026210948_68wd",
-      "headline": "Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison][prior_diagnoses].",
+      "run_id": "run_20261027000851_ibxu",
+      "headline": "Hills between you and the nearest masts are the likely cause [terrain_blocking][los_ee][los_o2][los_three][los_vodafone][network_comparison].",
       "distance_km": 0,
       "causes": [
        {
         "cause": "terrain_blocking",
-        "confidence": 0.85
+        "confidence": 0.7
        },
        {
         "cause": "distance_to_mast",
+        "confidence": 0.55
+       },
+       {
+        "cause": "insufficient_data",
+        "confidence": 0.5
+       },
+       {
+        "cause": "weather",
         "confidence": 0.4
-       },
-       {
-        "cause": "weather",
-        "confidence": 0.3
        }
       ],
-      "recorded": "2026-10-26T21:14:20.976Z"
-     },
-     {
-      "run_id": "run_20261026205600_c6qi",
-      "headline": "Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison].",
-      "distance_km": 0,
-      "causes": [
-       {
-        "cause": "terrain_blocking",
-        "confidence": 0.5
-       },
-       {
-        "cause": "distance_to_mast",
-        "confidence": 0.35
-       },
-       {
-        "cause": "weather",
-        "confidence": 0.2
-       }
-      ],
-      "recorded": "2026-10-26T20:58:26.889Z"
-     },
-     {
-      "run_id": "run_20261026212637_dlth",
-      "headline": "Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison].",
-      "distance_km": 0,
-      "causes": [
-       {
-        "cause": "terrain_blocking",
-        "confidence": 0.75
-       },
-       {
-        "cause": "insufficient_data",
-        "confidence": 0.5
-       },
-       {
-        "cause": "weather",
-        "confidence": 0.2
-       }
-      ],
-      "recorded": "2026-10-26T21:28:46.119Z"
-     },
-     {
-      "run_id": "run_20261026213152_k7ig",
-      "headline": "Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison].",
-      "distance_km": 0,
-      "causes": [
-       {
-        "cause": "terrain_blocking",
-        "confidence": 0.75
-       },
-       {
-        "cause": "distance_to_mast",
-        "confidence": 0.35
-       },
-       {
-        "cause": "insufficient_data",
-        "confidence": 0.3
-       },
-       {
-        "cause": "weather",
-        "confidence": 0.2
-       }
-      ],
-      "recorded": "2026-10-26T21:36:36.260Z"
+      "recorded": "2026-10-27T00:10:43.415Z"
      }
     ],
     "sample_size": {
-     "diagnoses": 4
+     "diagnoses": 1
     },
     "strength": "moderate",
     "bears_on": [],
@@ -808,18 +647,18 @@
     "zetaris": [],
     "by": "coordinator",
     "kind": "evidence",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "prior_diagnoses"
    }
   },
   {
-   "seq": 458,
-   "at": "2026-10-26T21:37:02.285Z",
+   "seq": 336,
+   "at": "2026-10-27T00:22:10.950Z",
    "action": "create",
    "actor": "coordinator",
    "kind": "note",
    "ref": "n1",
-   "memory_id": "mem-441",
+   "memory_id": "mem-322",
    "round": 1,
    "summary": "prior_diagnoses_nearby() -> prior_diagnoses",
    "old_confidence": null,
@@ -838,22 +677,22 @@
     "new": [
      "prior_diagnoses"
     ],
-    "duration_ms": 41,
+    "duration_ms": 42,
     "zetaris_queries": [],
     "note_id": "n1",
     "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "n1"
    }
   },
   {
-   "seq": 459,
-   "at": "2026-10-26T21:37:02.355Z",
+   "seq": 337,
+   "at": "2026-10-27T00:22:11.001Z",
    "action": "create",
    "actor": "coordinator",
    "kind": "note",
    "ref": "n2",
-   "memory_id": "mem-442",
+   "memory_id": "mem-323",
    "round": 1,
    "summary": "round 1 starts",
    "old_confidence": null,
@@ -867,34 +706,34 @@
     "requested": [],
     "note_id": "n2",
     "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "n2"
    }
   },
   {
-   "seq": 460,
-   "at": "2026-10-26T21:37:09.812Z",
+   "seq": 338,
+   "at": "2026-10-27T00:22:12.359Z",
    "action": "create",
    "actor": "investigator",
    "kind": "note",
    "ref": "n3",
-   "memory_id": "mem-443",
+   "memory_id": "mem-324",
    "round": 1,
-   "summary": "investigator via nemotron-3.5-super-vl-120b-a12b in 7.4s",
+   "summary": "investigator via nemotron-3.5-super-vl-120b-a12b in 1.3s",
    "old_confidence": null,
    "new_confidence": 1,
    "reason": null,
    "payload": {
     "type": "llm_call",
-    "summary": "investigator via nemotron-3.5-super-vl-120b-a12b in 7.4s",
+    "summary": "investigator via nemotron-3.5-super-vl-120b-a12b in 1.3s",
     "by": "investigator",
     "round": 1,
     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-    "duration_ms": 7359,
+    "duration_ms": 1267,
     "tokens": {
-     "prompt_tokens": 1164,
+     "prompt_tokens": 1009,
      "completion_tokens": 163,
-     "total_tokens": 1327,
+     "total_tokens": 1172,
      "prompt_tokens_details": {
       "audio_tokens": null,
       "cached_tokens": 0
@@ -910,20 +749,21 @@
     "retries": [],
     "fallback": null,
     "thinking": false,
+    "purpose": null,
     "note_id": "n3",
     "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "n3"
    }
   },
   {
-   "seq": 461,
-   "at": "2026-10-26T21:37:10.778Z",
+   "seq": 339,
+   "at": "2026-10-27T00:22:12.457Z",
    "action": "create",
    "actor": "investigator",
    "kind": "evidence",
    "ref": "speed_1km",
-   "memory_id": "mem-444",
+   "memory_id": "mem-325",
    "round": 1,
    "summary": "No Ookla speed tests were recorded within 1 km of this point in 2026Q3.",
    "old_confidence": null,
@@ -967,24 +807,24 @@
      {
       "id": "Q4",
       "sql": "SELECT quadkey, lat, lon, download_mbps, upload_mbps, latency_ms, tests, devices, distance_km FROM ( SELECT t.*, 2 * 6371 * asin(sqrt(pow(sin(radians(t.lat - 54.445) / 2), 2) + cos(radians(54.445)) * cos(radians(t.lat)) * pow(sin(radians(t.lon - (-3.105)) / 2), 2))) AS distance_km FROM CD_OOKLA_MOBILE_TILES.ookla_mobile_tiles t WHERE t.quarter = '2026Q3' AND t.lat BETWEEN 54.42698 AND 54.46302 AND t.lon BETWEEN -3.13590 AND -3.07410 ) x WHERE distance_km <= 2.0 ORDER BY distance_km",
-      "duration_ms": 391,
+      "duration_ms": 60,
       "rows": 1
      }
     ],
     "by": "investigator",
     "kind": "evidence",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "speed_1km"
    }
   },
   {
-   "seq": 462,
-   "at": "2026-10-26T21:37:10.810Z",
+   "seq": 340,
+   "at": "2026-10-27T00:22:12.479Z",
    "action": "create",
    "actor": "investigator",
    "kind": "evidence",
    "ref": "speed_cell",
-   "memory_id": "mem-445",
+   "memory_id": "mem-326",
    "round": 1,
    "summary": "No Ookla speed tests were recorded in this cell in 2026Q3, so there is no measured speed here.",
    "old_confidence": null,
@@ -1015,24 +855,24 @@
      {
       "id": "Q1",
       "sql": "SELECT c.cell_id, c.lat, c.lon, c.population, c.nation, o.quarter, o.download_mbps, o.upload_mbps, o.latency_ms, o.tests, o.devices, o.tests_per_1k_pop, o.devices_per_1k_pop, o.quarters_with_data, o.download_mbps_oldest, o.download_change_pct, o.download_trend_mbps_per_quarter, hst.history_json, nb.neighbour_download_mbps, nb.neighbour_tests, nb.neighbour_cells_with_data, m.nearest_mast_km, m.nearest_mast_bearing_deg, m.nearest_mast_id, m.nearest_mast_lat, m.nearest_mast_lon, m.nearest_mast_sources, m.nearest_mast_operators, m.nearest_mast_operators_confirmed, m.nearest_mast_antenna_height_m, m.masts_within_5km, m.masts_known_operator_within_5km, m.masts_unknown_operator_within_5km, m.masts_osm_only_within_5km, m.distinct_operators_within_5km, m.operators_within_5km, m.operators_confirmed_within_5km, m.wtr_sites_within_5km, m.microwave_backhaul_sites_within_5km, m.operator_data_status, a.pcon_code, a.pcon_name, a.laua_code, a.laua_name, a.g4_geo_out_0, a.g4_geo_out_1, a.g4_prem_out_0, a.g4_prem_in_0, a.g4_abrd_in_0, a.g5hc_prem_out_at_least_one, a.laua_g4_geo_out_0, a.laua_g4_geo_out_1, a.data_date AS ofcom_data_date, t.elevation_mean_m, t.elevation_range_m, l.blocked AS los_blocked, l.obstruction_m AS los_obstruction_m, l.los_class FROM CD_CELLS.cells_r7 c LEFT JOIN CD_OOKLA_MOBILE.ookla_mobile_r7 o ON o.cell_id = c.cell_id LEFT JOIN ( SELECT cell_id, to_json(collect_list(named_struct('quarter', quarter, 'download_mbps', download_mbps, 'tests', tests))) AS history_json FROM CD_OOKLA_MOBILE_HISTORY.ookla_mobile_history_r7 WHERE cell_id = '871955454ffffff' GROUP BY cell_id ) hst ON hst.cell_id = c.cell_id CROSS JOIN ( SELECT sum(download_mbps * tests) / sum(tests) AS neighbour_download_mbps, sum(tests) AS neighbour_tests, count(*) AS neighbour_cells_with_data FROM CD_OOKLA_MOBILE.ookla_mobile_r7 WHERE cell_id IN ('871955409ffffff', '871955450ffffff', '871955455ffffff', '871955456ffffff', '871955472ffffff', '871955473ffffff') ) nb LEFT JOIN CD_MASTS.masts_r7 m ON m.cell_id = c.cell_id LEFT JOIN CD_OFCOM_AREA.ofcom_area_r7 a ON a.cell_id = c.cell_id LEFT JOIN CD_TERRAIN.terrain_r7 t ON t.cell_id = c.cell_id LEFT JOIN CD_LOS.los_r7 l ON l.cell_id = c.cell_id WHERE c.cell_id = '871955454ffffff'",
-      "duration_ms": 422,
+      "duration_ms": 16,
       "rows": 1
      }
     ],
     "by": "investigator",
     "kind": "evidence",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "speed_cell"
    }
   },
   {
-   "seq": 463,
-   "at": "2026-10-26T21:37:10.835Z",
+   "seq": 341,
+   "at": "2026-10-27T00:22:12.507Z",
    "action": "create",
    "actor": "investigator",
    "kind": "evidence",
    "ref": "speed_neighbours",
-   "memory_id": "mem-446",
+   "memory_id": "mem-327",
    "round": 1,
    "summary": "The 6 neighbouring cells (2 with data) averaged 7.9 Mbps from 2 tests in 2026Q3.",
    "old_confidence": null,
@@ -1072,24 +912,24 @@
      {
       "id": "Q1",
       "sql": "SELECT c.cell_id, c.lat, c.lon, c.population, c.nation, o.quarter, o.download_mbps, o.upload_mbps, o.latency_ms, o.tests, o.devices, o.tests_per_1k_pop, o.devices_per_1k_pop, o.quarters_with_data, o.download_mbps_oldest, o.download_change_pct, o.download_trend_mbps_per_quarter, hst.history_json, nb.neighbour_download_mbps, nb.neighbour_tests, nb.neighbour_cells_with_data, m.nearest_mast_km, m.nearest_mast_bearing_deg, m.nearest_mast_id, m.nearest_mast_lat, m.nearest_mast_lon, m.nearest_mast_sources, m.nearest_mast_operators, m.nearest_mast_operators_confirmed, m.nearest_mast_antenna_height_m, m.masts_within_5km, m.masts_known_operator_within_5km, m.masts_unknown_operator_within_5km, m.masts_osm_only_within_5km, m.distinct_operators_within_5km, m.operators_within_5km, m.operators_confirmed_within_5km, m.wtr_sites_within_5km, m.microwave_backhaul_sites_within_5km, m.operator_data_status, a.pcon_code, a.pcon_name, a.laua_code, a.laua_name, a.g4_geo_out_0, a.g4_geo_out_1, a.g4_prem_out_0, a.g4_prem_in_0, a.g4_abrd_in_0, a.g5hc_prem_out_at_least_one, a.laua_g4_geo_out_0, a.laua_g4_geo_out_1, a.data_date AS ofcom_data_date, t.elevation_mean_m, t.elevation_range_m, l.blocked AS los_blocked, l.obstruction_m AS los_obstruction_m, l.los_class FROM CD_CELLS.cells_r7 c LEFT JOIN CD_OOKLA_MOBILE.ookla_mobile_r7 o ON o.cell_id = c.cell_id LEFT JOIN ( SELECT cell_id, to_json(collect_list(named_struct('quarter', quarter, 'download_mbps', download_mbps, 'tests', tests))) AS history_json FROM CD_OOKLA_MOBILE_HISTORY.ookla_mobile_history_r7 WHERE cell_id = '871955454ffffff' GROUP BY cell_id ) hst ON hst.cell_id = c.cell_id CROSS JOIN ( SELECT sum(download_mbps * tests) / sum(tests) AS neighbour_download_mbps, sum(tests) AS neighbour_tests, count(*) AS neighbour_cells_with_data FROM CD_OOKLA_MOBILE.ookla_mobile_r7 WHERE cell_id IN ('871955409ffffff', '871955450ffffff', '871955455ffffff', '871955456ffffff', '871955472ffffff', '871955473ffffff') ) nb LEFT JOIN CD_MASTS.masts_r7 m ON m.cell_id = c.cell_id LEFT JOIN CD_OFCOM_AREA.ofcom_area_r7 a ON a.cell_id = c.cell_id LEFT JOIN CD_TERRAIN.terrain_r7 t ON t.cell_id = c.cell_id LEFT JOIN CD_LOS.los_r7 l ON l.cell_id = c.cell_id WHERE c.cell_id = '871955454ffffff'",
-      "duration_ms": 422,
+      "duration_ms": 16,
       "rows": 1
      }
     ],
     "by": "investigator",
     "kind": "evidence",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "speed_neighbours"
    }
   },
   {
-   "seq": 464,
-   "at": "2026-10-26T21:37:10.863Z",
+   "seq": 342,
+   "at": "2026-10-27T00:22:12.530Z",
    "action": "create",
    "actor": "investigator",
    "kind": "note",
    "ref": "n4",
-   "memory_id": "mem-447",
+   "memory_id": "mem-328",
    "round": 1,
    "summary": "speeds_near() -> speed_1km, speed_cell, speed_neighbours",
    "old_confidence": null,
@@ -1112,38 +952,38 @@
      "speed_cell",
      "speed_neighbours"
     ],
-    "duration_ms": 1015,
+    "duration_ms": 149,
     "zetaris_queries": [
      {
       "id": "Q4",
-      "duration_ms": 391,
+      "duration_ms": 60,
       "rows": 1
      },
      {
       "id": "Q1",
-      "duration_ms": 422,
+      "duration_ms": 16,
       "rows": 1
      },
      {
       "id": "Q3",
-      "duration_ms": 119,
+      "duration_ms": 0,
       "rows": 1
      }
     ],
     "note_id": "n4",
     "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "n4"
    }
   },
   {
-   "seq": 465,
-   "at": "2026-10-26T21:37:11.202Z",
+   "seq": 343,
+   "at": "2026-10-27T00:22:12.581Z",
    "action": "create",
    "actor": "investigator",
    "kind": "evidence",
    "ref": "nearest_site",
-   "memory_id": "mem-448",
+   "memory_id": "mem-329",
    "round": 1,
    "summary": "The nearest approximate mast site is 3.8 km south-east (OpenCelliD; operator Vodafone, inferred from crowd-sourced data).",
    "old_confidence": null,
@@ -1183,24 +1023,24 @@
      {
       "id": "Q2",
       "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 54.445) / 2), 2) + cos(radians(54.445)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (-3.105)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 54.35491 AND 54.53509 AND s.lon BETWEEN -3.25949 AND -2.95051 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
-      "duration_ms": 284,
+      "duration_ms": 6,
       "rows": 99
      }
     ],
     "by": "investigator",
     "kind": "evidence",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "nearest_site"
    }
   },
   {
-   "seq": 466,
-   "at": "2026-10-26T21:37:11.234Z",
+   "seq": 344,
+   "at": "2026-10-27T00:22:12.608Z",
    "action": "create",
    "actor": "investigator",
    "kind": "evidence",
    "ref": "operators_5km",
-   "memory_id": "mem-449",
+   "memory_id": "mem-330",
    "round": 1,
    "summary": "Only 3 operators (EE, Three and Vodafone) have approximate mast sites within 5 km. Operators are inferred from crowd-sourced data.",
    "old_confidence": null,
@@ -1241,24 +1081,24 @@
      {
       "id": "Q2",
       "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 54.445) / 2), 2) + cos(radians(54.445)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (-3.105)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 54.35491 AND 54.53509 AND s.lon BETWEEN -3.25949 AND -2.95051 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
-      "duration_ms": 284,
+      "duration_ms": 6,
       "rows": 99
      }
     ],
     "by": "investigator",
     "kind": "evidence",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "operators_5km"
    }
   },
   {
-   "seq": 467,
-   "at": "2026-10-26T21:37:11.256Z",
+   "seq": 345,
+   "at": "2026-10-27T00:22:12.630Z",
    "action": "create",
    "actor": "investigator",
    "kind": "note",
    "ref": "n5",
-   "memory_id": "mem-450",
+   "memory_id": "mem-331",
    "round": 1,
    "summary": "sites_near() -> nearest_site, operators_5km",
    "old_confidence": null,
@@ -1279,30 +1119,30 @@
      "nearest_site",
      "operators_5km"
     ],
-    "duration_ms": 348,
+    "duration_ms": 61,
     "zetaris_queries": [
      {
       "id": "Q2",
-      "duration_ms": 284,
+      "duration_ms": 6,
       "rows": 99
      }
     ],
     "note_id": "n5",
     "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "n5"
    }
   },
   {
-   "seq": 468,
-   "at": "2026-10-26T21:37:11.431Z",
+   "seq": 346,
+   "at": "2026-10-27T00:22:12.841Z",
    "action": "create",
    "actor": "investigator",
    "kind": "evidence",
    "ref": "los_ee",
-   "memory_id": "mem-451",
+   "memory_id": "mem-332",
    "round": 1,
-   "summary": "EE's nearest approximate site is 4.5 km east (operator inferred from crowd-sourced data). Terrain rises 260 m above the direct line 1.9 km from here (antenna height assumed 25 m), so the signal is likely weakened, not necessarily lost.",
+   "summary": "EE's nearest approximate site is 4.5 km east (operator inferred from crowd-sourced data). Terrain rises 258 m above the direct line 1.9 km from here (antenna height assumed 25 m), so the signal is likely weakened, not necessarily lost.",
    "old_confidence": null,
    "new_confidence": 0.9,
    "reason": null,
@@ -1316,7 +1156,7 @@
      "871955454ffffff",
      "871955471ffffff"
     ],
-    "finding": "EE's nearest approximate site is 4.5 km east (operator inferred from crowd-sourced data). Terrain rises 260 m above the direct line 1.9 km from here (antenna height assumed 25 m), so the signal is likely weakened, not necessarily lost.",
+    "finding": "EE's nearest approximate site is 4.5 km east (operator inferred from crowd-sourced data). Terrain rises 258 m above the direct line 1.9 km from here (antenna height assumed 25 m), so the signal is likely weakened, not necessarily lost.",
     "value": {
      "site_id": "S065491",
      "operators_at_site": [
@@ -1328,15 +1168,16 @@
       "EE"
      ],
      "los_class": "blocked",
+     "obstruction_margin_m": 258,
      "blocked": true,
-     "max_obstruction_m": 260.3,
+     "max_obstruction_m": 257.7,
      "obstruction_distance_m": 1939,
      "obstruction_lat": 54.440243,
      "obstruction_lon": -3.076159,
-     "obstruction_ground_m": 357.3,
+     "obstruction_ground_m": 355.3,
      "path_length_m": 4504,
-     "rx_ground_m": 102.4,
-     "site_ground_m": 63.6,
+     "rx_ground_m": 102.8,
+     "site_ground_m": 64.4,
      "rx_height_m": 1.5,
      "mast_height_m": 25,
      "mast_height_source": "assumed_default",
@@ -1357,24 +1198,24 @@
      {
       "id": "Q2",
       "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 54.445) / 2), 2) + cos(radians(54.445)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (-3.105)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 54.35491 AND 54.53509 AND s.lon BETWEEN -3.25949 AND -2.95051 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
-      "duration_ms": 284,
+      "duration_ms": 6,
       "rows": 99
      }
     ],
     "by": "investigator",
     "kind": "evidence",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "los_ee"
    }
   },
   {
-   "seq": 469,
-   "at": "2026-10-26T21:37:11.456Z",
+   "seq": 347,
+   "at": "2026-10-27T00:22:12.859Z",
    "action": "create",
    "actor": "investigator",
    "kind": "note",
    "ref": "n6",
-   "memory_id": "mem-452",
+   "memory_id": "mem-333",
    "round": 1,
    "summary": "line_of_sight(operator=EE) -> los_ee",
    "old_confidence": null,
@@ -1395,24 +1236,24 @@
     "new": [
      "los_ee"
     ],
-    "duration_ms": 155,
+    "duration_ms": 189,
     "zetaris_queries": [],
     "note_id": "n6",
     "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "n6"
    }
   },
   {
-   "seq": 470,
-   "at": "2026-10-26T21:37:11.496Z",
+   "seq": 348,
+   "at": "2026-10-27T00:22:12.893Z",
    "action": "create",
    "actor": "investigator",
    "kind": "evidence",
    "ref": "los_o2",
-   "memory_id": "mem-453",
+   "memory_id": "mem-334",
    "round": 1,
-   "summary": "O2's nearest approximate site is 5.7 km south-east (operator inferred from crowd-sourced data). Terrain rises 129 m above the direct line 985 m from here (antenna height assumed 25 m), so the signal is likely weakened, not necessarily lost.",
+   "summary": "O2's nearest approximate site is 5.7 km south-east (operator inferred from crowd-sourced data). Terrain rises 135 m above the direct line 985 m from here (antenna height assumed 25 m), so the signal is likely weakened, not necessarily lost.",
    "old_confidence": null,
    "new_confidence": 0.9,
    "reason": null,
@@ -1426,7 +1267,7 @@
      "871955442ffffff",
      "871955454ffffff"
     ],
-    "finding": "O2's nearest approximate site is 5.7 km south-east (operator inferred from crowd-sourced data). Terrain rises 129 m above the direct line 985 m from here (antenna height assumed 25 m), so the signal is likely weakened, not necessarily lost.",
+    "finding": "O2's nearest approximate site is 5.7 km south-east (operator inferred from crowd-sourced data). Terrain rises 135 m above the direct line 985 m from here (antenna height assumed 25 m), so the signal is likely weakened, not necessarily lost.",
     "value": {
      "site_id": "S077170",
      "operators_at_site": [
@@ -1437,15 +1278,16 @@
       "O2"
      ],
      "los_class": "blocked",
+     "obstruction_margin_m": 135,
      "blocked": true,
-     "max_obstruction_m": 128.9,
+     "max_obstruction_m": 135.1,
      "obstruction_distance_m": 985,
      "obstruction_lat": 54.437575,
      "obstruction_lon": -3.096698,
-     "obstruction_ground_m": 255.8,
+     "obstruction_ground_m": 262.3,
      "path_length_m": 5730,
-     "rx_ground_m": 102.4,
-     "site_ground_m": 214.6,
+     "rx_ground_m": 102.8,
+     "site_ground_m": 214.2,
      "rx_height_m": 1.5,
      "mast_height_m": 25,
      "mast_height_source": "assumed_default",
@@ -1466,24 +1308,24 @@
      {
       "id": "Q2",
       "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 54.445) / 2), 2) + cos(radians(54.445)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (-3.105)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 54.35491 AND 54.53509 AND s.lon BETWEEN -3.25949 AND -2.95051 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
-      "duration_ms": 284,
+      "duration_ms": 6,
       "rows": 99
      }
     ],
     "by": "investigator",
     "kind": "evidence",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "los_o2"
    }
   },
   {
-   "seq": 471,
-   "at": "2026-10-26T21:37:11.524Z",
+   "seq": 349,
+   "at": "2026-10-27T00:22:12.926Z",
    "action": "create",
    "actor": "investigator",
    "kind": "note",
    "ref": "n7",
-   "memory_id": "mem-454",
+   "memory_id": "mem-335",
    "round": 1,
    "summary": "line_of_sight(operator=O2) -> los_o2",
    "old_confidence": null,
@@ -1504,24 +1346,24 @@
     "new": [
      "los_o2"
     ],
-    "duration_ms": 24,
+    "duration_ms": 21,
     "zetaris_queries": [],
     "note_id": "n7",
     "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "n7"
    }
   },
   {
-   "seq": 472,
-   "at": "2026-10-26T21:37:11.579Z",
+   "seq": 350,
+   "at": "2026-10-27T00:22:12.974Z",
    "action": "create",
    "actor": "investigator",
    "kind": "evidence",
    "ref": "los_three",
-   "memory_id": "mem-455",
+   "memory_id": "mem-336",
    "round": 1,
-   "summary": "Three's nearest approximate site is 4.5 km east (operator inferred from crowd-sourced data). Terrain rises 260 m above the direct line 1.9 km from here (antenna height assumed 25 m), so the signal is likely weakened, not necessarily lost.",
+   "summary": "Three's nearest approximate site is 4.5 km east (operator inferred from crowd-sourced data). Terrain rises 258 m above the direct line 1.9 km from here (antenna height assumed 25 m), so the signal is likely weakened, not necessarily lost.",
    "old_confidence": null,
    "new_confidence": 0.9,
    "reason": null,
@@ -1535,7 +1377,7 @@
      "871955454ffffff",
      "871955471ffffff"
     ],
-    "finding": "Three's nearest approximate site is 4.5 km east (operator inferred from crowd-sourced data). Terrain rises 260 m above the direct line 1.9 km from here (antenna height assumed 25 m), so the signal is likely weakened, not necessarily lost.",
+    "finding": "Three's nearest approximate site is 4.5 km east (operator inferred from crowd-sourced data). Terrain rises 258 m above the direct line 1.9 km from here (antenna height assumed 25 m), so the signal is likely weakened, not necessarily lost.",
     "value": {
      "site_id": "S065491",
      "operators_at_site": [
@@ -1547,15 +1389,16 @@
       "Three"
      ],
      "los_class": "blocked",
+     "obstruction_margin_m": 258,
      "blocked": true,
-     "max_obstruction_m": 260.3,
+     "max_obstruction_m": 257.7,
      "obstruction_distance_m": 1939,
      "obstruction_lat": 54.440243,
      "obstruction_lon": -3.076159,
-     "obstruction_ground_m": 357.3,
+     "obstruction_ground_m": 355.3,
      "path_length_m": 4504,
-     "rx_ground_m": 102.4,
-     "site_ground_m": 63.6,
+     "rx_ground_m": 102.8,
+     "site_ground_m": 64.4,
      "rx_height_m": 1.5,
      "mast_height_m": 25,
      "mast_height_source": "assumed_default",
@@ -1576,24 +1419,24 @@
      {
       "id": "Q2",
       "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 54.445) / 2), 2) + cos(radians(54.445)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (-3.105)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 54.35491 AND 54.53509 AND s.lon BETWEEN -3.25949 AND -2.95051 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
-      "duration_ms": 284,
+      "duration_ms": 6,
       "rows": 99
      }
     ],
     "by": "investigator",
     "kind": "evidence",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "los_three"
    }
   },
   {
-   "seq": 473,
-   "at": "2026-10-26T21:37:11.600Z",
+   "seq": 351,
+   "at": "2026-10-27T00:22:12.992Z",
    "action": "create",
    "actor": "investigator",
    "kind": "note",
    "ref": "n8",
-   "memory_id": "mem-456",
+   "memory_id": "mem-337",
    "round": 1,
    "summary": "line_of_sight(operator=Three) -> los_three",
    "old_confidence": null,
@@ -1614,24 +1457,24 @@
     "new": [
      "los_three"
     ],
-    "duration_ms": 27,
+    "duration_ms": 19,
     "zetaris_queries": [],
     "note_id": "n8",
     "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "n8"
    }
   },
   {
-   "seq": 474,
-   "at": "2026-10-26T21:37:11.658Z",
+   "seq": 352,
+   "at": "2026-10-27T00:22:13.030Z",
    "action": "create",
    "actor": "investigator",
    "kind": "evidence",
    "ref": "los_vodafone",
-   "memory_id": "mem-457",
+   "memory_id": "mem-338",
    "round": 1,
-   "summary": "Vodafone's nearest approximate site is 3.8 km south-east (operator inferred from crowd-sourced data). Terrain rises 288 m above the direct line 2.2 km from here (antenna height assumed 25 m), so the signal is likely weakened, not necessarily lost.",
+   "summary": "Vodafone's nearest approximate site is 3.8 km south-east (operator inferred from crowd-sourced data). Terrain rises 291 m above the direct line 2.2 km from here (antenna height assumed 25 m), so the signal is likely weakened, not necessarily lost.",
    "old_confidence": null,
    "new_confidence": 0.9,
    "reason": null,
@@ -1645,7 +1488,7 @@
      "871955446ffffff",
      "871955454ffffff"
     ],
-    "finding": "Vodafone's nearest approximate site is 3.8 km south-east (operator inferred from crowd-sourced data). Terrain rises 288 m above the direct line 2.2 km from here (antenna height assumed 25 m), so the signal is likely weakened, not necessarily lost.",
+    "finding": "Vodafone's nearest approximate site is 3.8 km south-east (operator inferred from crowd-sourced data). Terrain rises 291 m above the direct line 2.2 km from here (antenna height assumed 25 m), so the signal is likely weakened, not necessarily lost.",
     "value": {
      "site_id": "S075142",
      "operators_at_site": [
@@ -1656,15 +1499,16 @@
       "Vodafone"
      ],
      "los_class": "blocked",
+     "obstruction_margin_m": 291,
      "blocked": true,
-     "max_obstruction_m": 288.4,
+     "max_obstruction_m": 290.8,
      "obstruction_distance_m": 2249,
      "obstruction_lat": 54.431582,
      "obstruction_lon": -3.078984,
-     "obstruction_ground_m": 422.6,
+     "obstruction_ground_m": 427.7,
      "path_length_m": 3838,
-     "rx_ground_m": 102.4,
-     "site_ground_m": 131.1,
+     "rx_ground_m": 102.8,
+     "site_ground_m": 135.4,
      "rx_height_m": 1.5,
      "mast_height_m": 25,
      "mast_height_source": "assumed_default",
@@ -1685,24 +1529,24 @@
      {
       "id": "Q2",
       "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 54.445) / 2), 2) + cos(radians(54.445)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (-3.105)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 54.35491 AND 54.53509 AND s.lon BETWEEN -3.25949 AND -2.95051 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
-      "duration_ms": 284,
+      "duration_ms": 6,
       "rows": 99
      }
     ],
     "by": "investigator",
     "kind": "evidence",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "los_vodafone"
    }
   },
   {
-   "seq": 475,
-   "at": "2026-10-26T21:37:11.679Z",
+   "seq": 353,
+   "at": "2026-10-27T00:22:13.048Z",
    "action": "create",
    "actor": "investigator",
    "kind": "note",
    "ref": "n9",
-   "memory_id": "mem-458",
+   "memory_id": "mem-339",
    "round": 1,
    "summary": "line_of_sight(operator=Vodafone) -> los_vodafone",
    "old_confidence": null,
@@ -1723,22 +1567,22 @@
     "new": [
      "los_vodafone"
     ],
-    "duration_ms": 24,
+    "duration_ms": 21,
     "zetaris_queries": [],
     "note_id": "n9",
     "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "n9"
    }
   },
   {
-   "seq": 476,
-   "at": "2026-10-26T21:37:11.724Z",
+   "seq": 354,
+   "at": "2026-10-27T00:22:13.084Z",
    "action": "create",
    "actor": "investigator",
    "kind": "evidence",
    "ref": "ofcom_area",
-   "memory_id": "mem-459",
+   "memory_id": "mem-340",
    "round": 1,
    "summary": "In Westmorland and Lonsdale, 5.6% of land has no outdoor 4G from any operator and 5.3% from only one (Ofcom Connected Nations, July 2025). This is a predicted figure for the whole constituency, not this exact location.",
    "old_confidence": null,
@@ -1775,24 +1619,24 @@
      {
       "id": "Q1",
       "sql": "SELECT c.cell_id, c.lat, c.lon, c.population, c.nation, o.quarter, o.download_mbps, o.upload_mbps, o.latency_ms, o.tests, o.devices, o.tests_per_1k_pop, o.devices_per_1k_pop, o.quarters_with_data, o.download_mbps_oldest, o.download_change_pct, o.download_trend_mbps_per_quarter, hst.history_json, nb.neighbour_download_mbps, nb.neighbour_tests, nb.neighbour_cells_with_data, m.nearest_mast_km, m.nearest_mast_bearing_deg, m.nearest_mast_id, m.nearest_mast_lat, m.nearest_mast_lon, m.nearest_mast_sources, m.nearest_mast_operators, m.nearest_mast_operators_confirmed, m.nearest_mast_antenna_height_m, m.masts_within_5km, m.masts_known_operator_within_5km, m.masts_unknown_operator_within_5km, m.masts_osm_only_within_5km, m.distinct_operators_within_5km, m.operators_within_5km, m.operators_confirmed_within_5km, m.wtr_sites_within_5km, m.microwave_backhaul_sites_within_5km, m.operator_data_status, a.pcon_code, a.pcon_name, a.laua_code, a.laua_name, a.g4_geo_out_0, a.g4_geo_out_1, a.g4_prem_out_0, a.g4_prem_in_0, a.g4_abrd_in_0, a.g5hc_prem_out_at_least_one, a.laua_g4_geo_out_0, a.laua_g4_geo_out_1, a.data_date AS ofcom_data_date, t.elevation_mean_m, t.elevation_range_m, l.blocked AS los_blocked, l.obstruction_m AS los_obstruction_m, l.los_class FROM CD_CELLS.cells_r7 c LEFT JOIN CD_OOKLA_MOBILE.ookla_mobile_r7 o ON o.cell_id = c.cell_id LEFT JOIN ( SELECT cell_id, to_json(collect_list(named_struct('quarter', quarter, 'download_mbps', download_mbps, 'tests', tests))) AS history_json FROM CD_OOKLA_MOBILE_HISTORY.ookla_mobile_history_r7 WHERE cell_id = '871955454ffffff' GROUP BY cell_id ) hst ON hst.cell_id = c.cell_id CROSS JOIN ( SELECT sum(download_mbps * tests) / sum(tests) AS neighbour_download_mbps, sum(tests) AS neighbour_tests, count(*) AS neighbour_cells_with_data FROM CD_OOKLA_MOBILE.ookla_mobile_r7 WHERE cell_id IN ('871955409ffffff', '871955450ffffff', '871955455ffffff', '871955456ffffff', '871955472ffffff', '871955473ffffff') ) nb LEFT JOIN CD_MASTS.masts_r7 m ON m.cell_id = c.cell_id LEFT JOIN CD_OFCOM_AREA.ofcom_area_r7 a ON a.cell_id = c.cell_id LEFT JOIN CD_TERRAIN.terrain_r7 t ON t.cell_id = c.cell_id LEFT JOIN CD_LOS.los_r7 l ON l.cell_id = c.cell_id WHERE c.cell_id = '871955454ffffff'",
-      "duration_ms": 422,
+      "duration_ms": 16,
       "rows": 1
      }
     ],
     "by": "investigator",
     "kind": "evidence",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "ofcom_area"
    }
   },
   {
-   "seq": 477,
-   "at": "2026-10-26T21:37:11.749Z",
+   "seq": 355,
+   "at": "2026-10-27T00:22:13.103Z",
    "action": "create",
    "actor": "investigator",
    "kind": "note",
    "ref": "n10",
-   "memory_id": "mem-460",
+   "memory_id": "mem-341",
    "round": 1,
    "summary": "ofcom_area() -> ofcom_area",
    "old_confidence": null,
@@ -1811,64 +1655,64 @@
     "new": [
      "ofcom_area"
     ],
-    "duration_ms": 22,
+    "duration_ms": 19,
     "zetaris_queries": [],
     "note_id": "n10",
     "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "n10"
    }
   },
   {
-   "seq": 478,
-   "at": "2026-10-26T21:37:11.798Z",
+   "seq": 356,
+   "at": "2026-10-27T00:22:13.141Z",
    "action": "create",
    "actor": "investigator",
    "kind": "evidence",
    "ref": "weather",
-   "memory_id": "mem-461",
+   "memory_id": "mem-342",
    "round": 1,
-   "summary": "Weather now: light rain, wind 27 km/h gusting 62 km/h, rain 2.4 mm/h. Next 24 h: gusts up to 74.9 km/h, rain up to 8.0 mm/h: severe (gusts up to 74.9 km/h; heavy rain up to 8.0 mm/h).",
+   "summary": "Weather now: light rain, wind 31 km/h gusting 71 km/h, rain 2.0 mm/h. Next 24 h: gusts up to 81.4 km/h, rain up to 7.0 mm/h: severe (gusts up to 81.4 km/h). (saved sample, offline mode)",
    "old_confidence": null,
-   "new_confidence": 0.7,
+   "new_confidence": 0.4,
    "reason": null,
    "payload": {
     "id": "weather",
     "source": "Open-Meteo forecast",
-    "data_period": "live",
-    "as_of": "2026-10-26T21:26:42+00:00",
+    "data_period": "sample",
+    "as_of": "2026-10-26T23:58:37+00:00",
     "query_or_url": "https://api.open-meteo.com/v1/forecast?latitude=54.445&longitude=-3.105&current=precipitation%2Crain%2Csnowfall%2Cwind_speed_10m%2Cwind_gusts_10m%2Cweather_code&hourly=precipitation%2Crain%2Csnowfall%2Cwind_speed_10m%2Cwind_gusts_10m%2Cweather_code&forecast_hours=24&timezone=Europe%2FLondon",
     "cell_ids": [
      "871955454ffffff"
     ],
-    "finding": "Weather now: light rain, wind 27 km/h gusting 62 km/h, rain 2.4 mm/h. Next 24 h: gusts up to 74.9 km/h, rain up to 8.0 mm/h: severe (gusts up to 74.9 km/h; heavy rain up to 8.0 mm/h).",
+    "finding": "Weather now: light rain, wind 31 km/h gusting 71 km/h, rain 2.0 mm/h. Next 24 h: gusts up to 81.4 km/h, rain up to 7.0 mm/h: severe (gusts up to 81.4 km/h). (saved sample, offline mode)",
     "value": {
      "severity": "severe",
      "now": {
-      "time": "2026-10-26T21:15",
-      "precipitation_mm_h": 2.4,
-      "rain_mm_h": 2.4,
+      "time": "2026-10-26T23:45",
+      "precipitation_mm_h": 2,
+      "rain_mm_h": 2,
       "snowfall_cm_h": 0,
-      "wind_kmh": 26.6,
-      "gust_kmh": 61.6,
+      "wind_kmh": 31,
+      "gust_kmh": 70.6,
       "weather_code": 61,
       "weather": "light rain"
      },
      "next_24h": {
       "hours": 24,
-      "max_precipitation_mm_h": 8,
+      "max_precipitation_mm_h": 7,
       "max_precipitation_at": "2026-10-26T23:00",
-      "max_gust_kmh": 74.9,
-      "max_gust_at": "2026-10-27T01:00",
+      "max_gust_kmh": 81.4,
+      "max_gust_at": "2026-10-27T02:00",
       "max_snowfall_cm_h": 0,
-      "total_precipitation_mm": 26.7,
+      "total_precipitation_mm": 16.7,
       "thunderstorm_expected": false
      }
     },
     "sample_size": {
      "forecast_hours": 24
     },
-    "strength": "moderate",
+    "strength": "weak",
     "bears_on": [
      "weather"
     ],
@@ -1878,33 +1722,33 @@
     "zetaris": [],
     "by": "investigator",
     "kind": "evidence",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "weather"
    }
   },
   {
-   "seq": 479,
-   "at": "2026-10-26T21:37:11.823Z",
+   "seq": 357,
+   "at": "2026-10-27T00:22:13.159Z",
    "action": "create",
    "actor": "investigator",
    "kind": "evidence",
    "ref": "met_office_warnings",
-   "memory_id": "mem-462",
+   "memory_id": "mem-343",
    "round": 1,
-   "summary": "Met Office warnings for North West England: yellow wind warning (in force until Tue 27 Oct 03:00, covering this district).",
+   "summary": "Met Office warnings for North West England: yellow wind warning (in force until Tue 27 Oct 03:00, covering this district). (saved sample, offline mode)",
    "old_confidence": null,
-   "new_confidence": 0.9,
+   "new_confidence": 0.4,
    "reason": null,
    "payload": {
     "id": "met_office_warnings",
     "source": "Met Office severe weather warnings (RSS)",
-    "data_period": "live",
-    "as_of": "2026-10-26T21:26:42+00:00",
+    "data_period": "sample",
+    "as_of": "2026-10-26T23:58:37+00:00",
     "query_or_url": "https://www.metoffice.gov.uk/public/data/PWSCache/WarningsRSS/Region/nw",
     "cell_ids": [
      "871955454ffffff"
     ],
-    "finding": "Met Office warnings for North West England: yellow wind warning (in force until Tue 27 Oct 03:00, covering this district).",
+    "finding": "Met Office warnings for North West England: yellow wind warning (in force until Tue 27 Oct 03:00, covering this district). (saved sample, offline mode)",
     "value": {
      "region": "North West England",
      "warnings": [
@@ -1929,7 +1773,7 @@
     "sample_size": {
      "warnings": 1
     },
-    "strength": "strong",
+    "strength": "weak",
     "bears_on": [
      "weather"
     ],
@@ -1939,33 +1783,33 @@
     "zetaris": [],
     "by": "investigator",
     "kind": "evidence",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "met_office_warnings"
    }
   },
   {
-   "seq": 480,
-   "at": "2026-10-26T21:37:11.848Z",
+   "seq": 358,
+   "at": "2026-10-27T00:22:13.186Z",
    "action": "create",
    "actor": "investigator",
    "kind": "evidence",
    "ref": "flood_warnings",
-   "memory_id": "mem-463",
+   "memory_id": "mem-344",
    "round": 1,
-   "summary": "2 flood alerts or warnings within 10 km: flood alert for Upper River Derwent, Stonethwaite Beck and Derwent Water (raised Mon 26 Oct 09:21); flood alert for Rivers Brathay, Rothay and Winster (raised Mon 26 Oct 09:21).",
+   "summary": "2 flood alerts or warnings within 10 km: flood alert for Upper River Derwent, Stonethwaite Beck and Derwent Water (raised Mon 26 Oct 09:21); flood alert for Rivers Brathay, Rothay and Winster (raised Mon 26 Oct 09:21). (saved sample, offline mode)",
    "old_confidence": null,
-   "new_confidence": 0.7,
+   "new_confidence": 0.4,
    "reason": null,
    "payload": {
     "id": "flood_warnings",
     "source": "Environment Agency flood monitoring",
-    "data_period": "live",
-    "as_of": "2026-10-26T21:26:46+00:00",
+    "data_period": "sample",
+    "as_of": "2026-10-26T23:58:37+00:00",
     "query_or_url": "https://environment.data.gov.uk/flood-monitoring/id/floods?lat=54.445&long=-3.105&dist=10",
     "cell_ids": [
      "871955454ffffff"
     ],
-    "finding": "2 flood alerts or warnings within 10 km: flood alert for Upper River Derwent, Stonethwaite Beck and Derwent Water (raised Mon 26 Oct 09:21); flood alert for Rivers Brathay, Rothay and Winster (raised Mon 26 Oct 09:21).",
+    "finding": "2 flood alerts or warnings within 10 km: flood alert for Upper River Derwent, Stonethwaite Beck and Derwent Water (raised Mon 26 Oct 09:21); flood alert for Rivers Brathay, Rothay and Winster (raised Mon 26 Oct 09:21). (saved sample, offline mode)",
     "value": {
      "warnings": [
       {
@@ -1996,7 +1840,7 @@
     "sample_size": {
      "warnings": 2
     },
-    "strength": "moderate",
+    "strength": "weak",
     "bears_on": [
      "active_incident"
     ],
@@ -2006,18 +1850,18 @@
     "zetaris": [],
     "by": "investigator",
     "kind": "evidence",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "flood_warnings"
    }
   },
   {
-   "seq": 481,
-   "at": "2026-10-26T21:37:11.875Z",
+   "seq": 359,
+   "at": "2026-10-27T00:22:13.204Z",
    "action": "create",
    "actor": "investigator",
    "kind": "note",
    "ref": "n11",
-   "memory_id": "mem-464",
+   "memory_id": "mem-345",
    "round": 1,
    "summary": "live_conditions() -> weather, met_office_warnings, flood_warnings",
    "old_confidence": null,
@@ -2040,24 +1884,24 @@
      "met_office_warnings",
      "flood_warnings"
     ],
-    "duration_ms": 77,
+    "duration_ms": 66,
     "zetaris_queries": [],
     "note_id": "n11",
     "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "n11"
    }
   },
   {
-   "seq": 482,
-   "at": "2026-10-26T21:37:11.916Z",
+   "seq": 360,
+   "at": "2026-10-27T00:22:13.238Z",
    "action": "create",
    "actor": "coordinator",
    "kind": "evidence",
    "ref": "network_comparison",
-   "memory_id": "mem-465",
+   "memory_id": "mem-346",
    "round": 1,
-   "summary": "No operator has a clear line of sight to an identified site from here. Least obstructed: O2, a site 5.7 km south-east (inferred from crowd-sourced data), with terrain 129 m above the line.",
+   "summary": "No operator has a clear line of sight to an identified site from here. Least obstructed: O2, a site 5.7 km south-east (inferred from crowd-sourced data), with terrain 135 m above the line.",
    "old_confidence": null,
    "new_confidence": 0.7,
    "reason": null,
@@ -2070,7 +1914,7 @@
     "cell_ids": [
      "871955454ffffff"
     ],
-    "finding": "No operator has a clear line of sight to an identified site from here. Least obstructed: O2, a site 5.7 km south-east (inferred from crowd-sourced data), with terrain 129 m above the line.",
+    "finding": "No operator has a clear line of sight to an identified site from here. Least obstructed: O2, a site 5.7 km south-east (inferred from crowd-sourced data), with terrain 135 m above the line.",
     "value": {
      "operators": [
       {
@@ -2090,7 +1934,7 @@
        "los": {
         "class": "blocked",
         "blocked": true,
-        "obstruction_m": 260.3,
+        "obstruction_m": 257.7,
         "obstruction_distance_m": 1939,
         "obstruction_lat": 54.440243,
         "obstruction_lon": -3.076159,
@@ -2116,7 +1960,7 @@
        "los": {
         "class": "blocked",
         "blocked": true,
-        "obstruction_m": 128.9,
+        "obstruction_m": 135.1,
         "obstruction_distance_m": 985,
         "obstruction_lat": 54.437575,
         "obstruction_lon": -3.096698,
@@ -2142,7 +1986,7 @@
        "los": {
         "class": "blocked",
         "blocked": true,
-        "obstruction_m": 260.3,
+        "obstruction_m": 257.7,
         "obstruction_distance_m": 1939,
         "obstruction_lat": 54.440243,
         "obstruction_lon": -3.076159,
@@ -2168,7 +2012,7 @@
        "los": {
         "class": "blocked",
         "blocked": true,
-        "obstruction_m": 288.4,
+        "obstruction_m": 290.8,
         "obstruction_distance_m": 2249,
         "obstruction_lat": 54.431582,
         "obstruction_lon": -3.078984,
@@ -2186,7 +2030,7 @@
        "O2"
       ],
       "line_of_sight": "blocked",
-      "text": "No operator has a clear line of sight to an identified site from here. Least obstructed: O2, a site 5.7 km south-east (inferred from crowd-sourced data), with terrain 129 m above the line."
+      "text": "No operator has a clear line of sight to an identified site from here. Least obstructed: O2, a site 5.7 km south-east (inferred from crowd-sourced data), with terrain 135 m above the line."
      }
     },
     "sample_size": {
@@ -2204,40 +2048,40 @@
      {
       "id": "Q2",
       "sql": "SELECT site_id, lat, lon, sources, operators, operators_inferred, operators_confirmed, antenna_height_m, has_microwave_backhaul, cell_count, distance_km FROM ( SELECT s.*, 2 * 6371 * asin(sqrt(pow(sin(radians(s.lat - 54.445) / 2), 2) + cos(radians(54.445)) * cos(radians(s.lat)) * pow(sin(radians(s.lon - (-3.105)) / 2), 2))) AS distance_km FROM CD_MASTS_SITES.masts_sites s WHERE s.lat BETWEEN 54.35491 AND 54.53509 AND s.lon BETWEEN -3.25949 AND -2.95051 ) x WHERE distance_km <= 10.0 ORDER BY distance_km",
-      "duration_ms": 284,
+      "duration_ms": 6,
       "rows": 99
      }
     ],
     "by": "coordinator",
     "kind": "evidence",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "network_comparison"
    }
   },
   {
-   "seq": 483,
-   "at": "2026-10-26T21:37:26.321Z",
+   "seq": 361,
+   "at": "2026-10-27T00:22:16.293Z",
    "action": "create",
    "actor": "diagnostician",
    "kind": "note",
    "ref": "n12",
-   "memory_id": "mem-466",
+   "memory_id": "mem-347",
    "round": 1,
-   "summary": "diagnostician via nemotron-3.5-super-vl-120b-a12b in 14.3s",
+   "summary": "diagnostician via nemotron-3.5-super-vl-120b-a12b in 3.0s",
    "old_confidence": null,
    "new_confidence": 1,
    "reason": null,
    "payload": {
     "type": "llm_call",
-    "summary": "diagnostician via nemotron-3.5-super-vl-120b-a12b in 14.3s",
+    "summary": "diagnostician via nemotron-3.5-super-vl-120b-a12b in 3.0s",
     "by": "diagnostician",
     "round": 1,
     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-    "duration_ms": 14294,
+    "duration_ms": 2971,
     "tokens": {
-     "prompt_tokens": 2262,
-     "completion_tokens": 504,
-     "total_tokens": 2766,
+     "prompt_tokens": 2115,
+     "completion_tokens": 488,
+     "total_tokens": 2603,
      "prompt_tokens_details": {
       "audio_tokens": null,
       "cached_tokens": 0
@@ -2253,29 +2097,30 @@
     "retries": [],
     "fallback": null,
     "thinking": false,
+    "purpose": null,
     "note_id": "n12",
     "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "n12"
    }
   },
   {
-   "seq": 484,
-   "at": "2026-10-26T21:37:26.368Z",
+   "seq": 362,
+   "at": "2026-10-27T00:22:16.322Z",
    "action": "create",
    "actor": "diagnostician",
    "kind": "belief",
    "ref": "terrain_blocking",
-   "memory_id": "mem-467",
+   "memory_id": "mem-348",
    "round": 1,
-   "summary": "terrain_blocking: Terrain rises above the direct line to every identified operator site, with O2 least obstructed at 129 m above the line 985 m away [los_o2][network_comparison]; antenna heights are assumed, so the exact margin is uncertain.",
+   "summary": "terrain_blocking: Terrain rises above the direct line to every operator's nearest site, with no operator having a clear line of sight [los_ee][los_o2][los_three][los_vodafone][network_comparison]; antenna heights are assumed, so the exact margin is uncertain.",
    "old_confidence": null,
-   "new_confidence": 0.75,
+   "new_confidence": 0.7,
    "reason": null,
    "payload": {
     "belief_id": "terrain_blocking",
     "cause": "terrain_blocking",
-    "explanation": "Terrain rises above the direct line to every identified operator site, with O2 least obstructed at 129 m above the line 985 m away [los_o2][network_comparison]; antenna heights are assumed, so the exact margin is uncertain.",
+    "explanation": "Terrain rises above the direct line to every operator's nearest site, with no operator having a clear line of sight [los_ee][los_o2][los_three][los_vodafone][network_comparison]; antenna heights are assumed, so the exact margin is uncertain.",
     "supporting": [
      "los_ee",
      "los_o2",
@@ -2283,37 +2128,113 @@
      "los_vodafone",
      "network_comparison"
     ],
-    "contradicting": [],
+    "contradicting": [
+     "speed_neighbours"
+    ],
     "round": 1,
     "by": "diagnostician",
     "status": "active",
     "kind": "belief",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "terrain_blocking"
    }
   },
   {
-   "seq": 485,
-   "at": "2026-10-26T21:37:26.401Z",
+   "seq": 363,
+   "at": "2026-10-27T00:22:26.787Z",
+   "action": "create",
+   "actor": "diagnostician",
+   "kind": "note",
+   "ref": "n13",
+   "memory_id": "mem-349",
+   "round": 1,
+   "summary": "diagnostician via nemotron-3.5-super-vl-120b-a12b in 10.4s",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "llm_call",
+    "summary": "diagnostician via nemotron-3.5-super-vl-120b-a12b in 10.4s",
+    "by": "diagnostician",
+    "round": 1,
+    "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+    "duration_ms": 10405,
+    "tokens": {
+     "prompt_tokens": 1053,
+     "completion_tokens": 138,
+     "total_tokens": 1191,
+     "prompt_tokens_details": {
+      "audio_tokens": null,
+      "cached_tokens": 0
+     },
+     "completion_tokens_details": {
+      "accepted_prediction_tokens": null,
+      "audio_tokens": null,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": null
+     }
+    },
+    "attempts": 1,
+    "retries": [],
+    "fallback": null,
+    "thinking": false,
+    "purpose": "guard rewrite",
+    "note_id": "n13",
+    "kind": "note",
+    "run_id": "run_20261027002210_kkcc",
+    "ref": "n13"
+   }
+  },
+  {
+   "seq": 364,
+   "at": "2026-10-27T00:22:26.807Z",
+   "action": "create",
+   "actor": "guard",
+   "kind": "note",
+   "ref": "n14",
+   "memory_id": "mem-350",
+   "round": 1,
+   "summary": "belief distance_to_mast: rewrote a sentence with an unsupported number",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "guard",
+    "summary": "belief distance_to_mast: rewrote a sentence with an unsupported number",
+    "by": "guard",
+    "round": 1,
+    "agent": "diagnostician",
+    "guard_kind": "number_rewritten",
+    "where": "belief distance_to_mast",
+    "field": "explanation",
+    "before": "The nearest identified mast is 3.8 km away and other operator sites are 4.5\u20135.7 km away [nearest_site][los_vodafone][los_o2]; distances alone are moderate and operators are inferred from crowd-sourced data.",
+    "after": "The nearest identified mast is 3.8 km away [nearest_site][los_vodafone]; O2's nearest approximate site is 5.7 km away [los_o2]; operators are inferred from crowd-sourced data [nearest_site][los_vodafone][los_o2].",
+    "note_id": "n14",
+    "kind": "note",
+    "run_id": "run_20261027002210_kkcc",
+    "ref": "n14"
+   }
+  },
+  {
+   "seq": 365,
+   "at": "2026-10-27T00:22:26.828Z",
    "action": "create",
    "actor": "diagnostician",
    "kind": "belief",
    "ref": "distance_to_mast",
-   "memory_id": "mem-468",
+   "memory_id": "mem-351",
    "round": 1,
-   "summary": "distance_to_mast: The nearest identified site is 3.8 km away and all operator sites are 3.8\u20135.7 km distant [nearest_site][los_vodafone][los_ee][los_three][los_o2]; operators are crowd-sourced inferred, so distances are not certain.",
+   "summary": "distance_to_mast: The nearest identified mast is 3.8 km away [nearest_site][los_vodafone]; O2's nearest approximate site is 5.7 km away [los_o2]; operators are inferred from crowd-sourced data [nearest_site][los_vodafone][los_o2].",
    "old_confidence": null,
-   "new_confidence": 0.55,
+   "new_confidence": 0.45,
    "reason": null,
    "payload": {
     "belief_id": "distance_to_mast",
     "cause": "distance_to_mast",
-    "explanation": "The nearest identified site is 3.8 km away and all operator sites are 3.8\u20135.7 km distant [nearest_site][los_vodafone][los_ee][los_three][los_o2]; operators are crowd-sourced inferred, so distances are not certain.",
+    "explanation": "The nearest identified mast is 3.8 km away [nearest_site][los_vodafone]; O2's nearest approximate site is 5.7 km away [los_o2]; operators are inferred from crowd-sourced data [nearest_site][los_vodafone][los_o2].",
     "supporting": [
      "nearest_site",
      "los_vodafone",
-     "los_ee",
-     "los_three",
      "los_o2"
     ],
     "contradicting": [],
@@ -2321,56 +2242,27 @@
     "by": "diagnostician",
     "status": "active",
     "kind": "belief",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "distance_to_mast"
    }
   },
   {
-   "seq": 486,
-   "at": "2026-10-26T21:37:26.432Z",
-   "action": "create",
-   "actor": "diagnostician",
-   "kind": "belief",
-   "ref": "single_operator",
-   "memory_id": "mem-469",
-   "round": 1,
-   "summary": "single_operator: Only EE, Three and Vodafone have approximate sites within 5 km, but operators are inferred from crowd-sourced data and O2 is not listed despite a nearby site [operators_5km][los_o2], so a single-operator gap is not proven.",
-   "old_confidence": null,
-   "new_confidence": 0.45,
-   "reason": null,
-   "payload": {
-    "belief_id": "single_operator",
-    "cause": "single_operator",
-    "explanation": "Only EE, Three and Vodafone have approximate sites within 5 km, but operators are inferred from crowd-sourced data and O2 is not listed despite a nearby site [operators_5km][los_o2], so a single-operator gap is not proven.",
-    "supporting": [
-     "operators_5km"
-    ],
-    "contradicting": [],
-    "round": 1,
-    "by": "diagnostician",
-    "status": "rejected",
-    "kind": "belief",
-    "run_id": "run_20261026213702_fgoz",
-    "ref": "single_operator"
-   }
-  },
-  {
-   "seq": 487,
-   "at": "2026-10-26T21:37:26.453Z",
+   "seq": 366,
+   "at": "2026-10-27T00:22:26.845Z",
    "action": "create",
    "actor": "diagnostician",
    "kind": "belief",
    "ref": "weather",
-   "memory_id": "mem-470",
+   "memory_id": "mem-352",
    "round": 1,
-   "summary": "weather: A Met Office yellow wind warning covers the district with gusts up to 74.9 km/h and heavy rain [weather][met_office_warnings]; this can only explain current or recent degradation, not a persistent problem.",
+   "summary": "weather: A Met Office yellow wind warning covers the district and gusts may reach 81.4 km/h [weather][met_office_warnings], but this only explains current or recent degradation and is weak sample evidence.",
    "old_confidence": null,
    "new_confidence": 0.4,
    "reason": null,
    "payload": {
     "belief_id": "weather",
     "cause": "weather",
-    "explanation": "A Met Office yellow wind warning covers the district with gusts up to 74.9 km/h and heavy rain [weather][met_office_warnings]; this can only explain current or recent degradation, not a persistent problem.",
+    "explanation": "A Met Office yellow wind warning covers the district and gusts may reach 81.4 km/h [weather][met_office_warnings], but this only explains current or recent degradation and is weak sample evidence.",
     "supporting": [
      "weather",
      "met_office_warnings"
@@ -2380,96 +2272,204 @@
     "by": "diagnostician",
     "status": "active",
     "kind": "belief",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "weather"
    }
   },
   {
-   "seq": 488,
-   "at": "2026-10-26T21:37:51.028Z",
+   "seq": 367,
+   "at": "2026-10-27T00:22:26.867Z",
+   "action": "create",
+   "actor": "diagnostician",
+   "kind": "belief",
+   "ref": "insufficient_data",
+   "memory_id": "mem-353",
+   "round": 1,
+   "summary": "insufficient_data: No speed tests exist in this cell or within 1 km [speed_cell][speed_1km], and nearby neighbour data are sparse [speed_neighbours], so the exact point-level cause cannot be confirmed.",
+   "old_confidence": null,
+   "new_confidence": 0.35,
+   "reason": null,
+   "payload": {
+    "belief_id": "insufficient_data",
+    "cause": "insufficient_data",
+    "explanation": "No speed tests exist in this cell or within 1 km [speed_cell][speed_1km], and nearby neighbour data are sparse [speed_neighbours], so the exact point-level cause cannot be confirmed.",
+    "supporting": [
+     "speed_cell",
+     "speed_1km",
+     "operators_5km"
+    ],
+    "contradicting": [],
+    "round": 1,
+    "by": "diagnostician",
+    "status": "active",
+    "kind": "belief",
+    "run_id": "run_20261027002210_kkcc",
+    "ref": "insufficient_data"
+   }
+  },
+  {
+   "seq": 368,
+   "at": "2026-10-27T00:23:20.498Z",
    "action": "create",
    "actor": "critic",
    "kind": "note",
-   "ref": "n13",
-   "memory_id": "mem-471",
+   "ref": "n15",
+   "memory_id": "mem-354",
    "round": 1,
-   "summary": "critic via nemotron-3-ultra-550b-a55b in 24.5s",
+   "summary": "critic via nemotron-3-ultra-550b-a55b in 53.5s",
    "old_confidence": null,
    "new_confidence": 1,
    "reason": null,
    "payload": {
     "type": "llm_call",
-    "summary": "critic via nemotron-3-ultra-550b-a55b in 24.5s",
+    "summary": "critic via nemotron-3-ultra-550b-a55b in 53.5s",
     "by": "critic",
     "round": 1,
     "model": "nvidia/nemotron-3-ultra-550b-a55b",
-    "duration_ms": 24459,
+    "duration_ms": 53540,
     "tokens": {
-     "prompt_tokens": 2909,
-     "completion_tokens": 2508,
-     "total_tokens": 5417
+     "prompt_tokens": 2943,
+     "completion_tokens": 2735,
+     "total_tokens": 5678
     },
     "attempts": 1,
     "retries": [],
     "fallback": null,
     "thinking": true,
-    "note_id": "n13",
+    "purpose": null,
+    "note_id": "n15",
     "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
-    "ref": "n13"
+    "run_id": "run_20261027002210_kkcc",
+    "ref": "n15"
    }
   },
   {
-   "seq": 489,
-   "at": "2026-10-26T21:37:51.083Z",
+   "seq": 369,
+   "at": "2026-10-27T00:23:22.416Z",
+   "action": "create",
+   "actor": "critic",
+   "kind": "note",
+   "ref": "n16",
+   "memory_id": "mem-355",
+   "round": 1,
+   "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 1.8s",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "llm_call",
+    "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 1.8s",
+    "by": "critic",
+    "round": 1,
+    "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+    "duration_ms": 1847,
+    "tokens": {
+     "prompt_tokens": 1498,
+     "completion_tokens": 211,
+     "total_tokens": 1709,
+     "prompt_tokens_details": {
+      "audio_tokens": null,
+      "cached_tokens": 0
+     },
+     "completion_tokens_details": {
+      "accepted_prediction_tokens": null,
+      "audio_tokens": null,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": null
+     }
+    },
+    "attempts": 1,
+    "retries": [],
+    "fallback": null,
+    "thinking": false,
+    "purpose": "guard rewrite",
+    "note_id": "n16",
+    "kind": "note",
+    "run_id": "run_20261027002210_kkcc",
+    "ref": "n16"
+   }
+  },
+  {
+   "seq": 370,
+   "at": "2026-10-27T00:23:22.433Z",
+   "action": "create",
+   "actor": "guard",
+   "kind": "note",
+   "ref": "n17",
+   "memory_id": "mem-356",
+   "round": 1,
+   "summary": "critique of terrain_blocking: rewrote a sentence with an unsupported number",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "guard",
+    "summary": "critique of terrain_blocking: rewrote a sentence with an unsupported number",
+    "by": "guard",
+    "round": 1,
+    "agent": "critic",
+    "guard_kind": "number_rewritten",
+    "where": "critique of terrain_blocking",
+    "field": "reason",
+    "before": "Four independent line-of-sight computations [los_ee][los_o2][los_three][los_vodafone] show terrain rising 135\u2013291 m above the direct line to every operator's nearest site, well above the 30 m threshold where assumed antenna height would weaken the conclusion.",
+    "after": "Four line-of-sight computations [los_ee][los_o2][los_three][los_vodafone] show terrain rising above the direct line to every operator's nearest site, with assumed antenna heights of 25 m [los_ee][los_o2][los_three][los_vodafone]. Terrain rises 258 m above the line for EE [los_ee], 135 m for O2 [los_o2], 258 m for Three [los_three], and 291 m for Vodafone [los_vodafone].",
+    "note_id": "n17",
+    "kind": "note",
+    "run_id": "run_20261027002210_kkcc",
+    "ref": "n17"
+   }
+  },
+  {
+   "seq": 371,
+   "at": "2026-10-27T00:23:22.453Z",
    "action": "create",
    "actor": "critic",
    "kind": "critique",
    "ref": "c1",
-   "memory_id": "mem-472",
+   "memory_id": "mem-357",
    "round": 1,
-   "summary": "approve on terrain_blocking: All four line-of-sight checks show terrain rising 129\u2013288 m above the direct line to the nearest identified sites, with assumed 25 m antenna heights. Even allowing for higher antennas, the obstructions are substantial. The evidence is strong and consistent.",
+   "summary": "approve on terrain_blocking: Four line-of-sight computations [los_ee][los_o2][los_three][los_vodafone] show terrain rising above the direct line to every operator's nearest site, with assumed antenna heights of 25 m [los_ee][los_o2][los_three][los_vodafone]. Terrain rises 258 m above the line for EE [los_ee], 135 m for O2 [los_o2], 258 m for Three [los_three], and 291 m for Vodafone [los_vodafone]. The network_comparison item confirms no operator has a clear line of sight. The opposing evidence [speed_neighbours] is weak (only 2 tests in neighbouring cells) and shows some signal exists nearby, which is consistent with 'weakened, not necessarily lost'.",
    "old_confidence": null,
    "new_confidence": 1,
    "reason": null,
    "payload": {
     "belief_id": "terrain_blocking",
     "verdict": "approve",
-    "reason": "All four line-of-sight checks show terrain rising 129\u2013288 m above the direct line to the nearest identified sites, with assumed 25 m antenna heights. Even allowing for higher antennas, the obstructions are substantial. The evidence is strong and consistent.",
+    "reason": "Four line-of-sight computations [los_ee][los_o2][los_three][los_vodafone] show terrain rising above the direct line to every operator's nearest site, with assumed antenna heights of 25 m [los_ee][los_o2][los_three][los_vodafone]. Terrain rises 258 m above the line for EE [los_ee], 135 m for O2 [los_o2], 258 m for Three [los_three], and 291 m for Vodafone [los_vodafone]. The network_comparison item confirms no operator has a clear line of sight. The opposing evidence [speed_neighbours] is weak (only 2 tests in neighbouring cells) and shows some signal exists nearby, which is consistent with 'weakened, not necessarily lost'.",
     "requested_checks": [],
     "suggested_confidence": null,
     "round": 1,
     "by": "critic",
     "critique_id": "c1",
     "kind": "critique",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "c1"
    }
   },
   {
-   "seq": 490,
-   "at": "2026-10-26T21:37:52.700Z",
+   "seq": 372,
+   "at": "2026-10-27T00:23:23.227Z",
    "action": "create",
    "actor": "critic",
    "kind": "note",
-   "ref": "n14",
-   "memory_id": "mem-473",
+   "ref": "n18",
+   "memory_id": "mem-358",
    "round": 1,
-   "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 1.5s",
+   "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 0.7s",
    "old_confidence": null,
    "new_confidence": 1,
    "reason": null,
    "payload": {
     "type": "llm_call",
-    "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 1.5s",
+    "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 0.7s",
     "by": "critic",
     "round": 1,
     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-    "duration_ms": 1543,
+    "duration_ms": 724,
     "tokens": {
-     "prompt_tokens": 1341,
-     "completion_tokens": 65,
-     "total_tokens": 1406,
+     "prompt_tokens": 1127,
+     "completion_tokens": 38,
+     "total_tokens": 1165,
      "prompt_tokens_details": {
       "audio_tokens": null,
       "cached_tokens": 0
@@ -2485,20 +2485,21 @@
     "retries": [],
     "fallback": null,
     "thinking": false,
-    "note_id": "n14",
+    "purpose": "guard rewrite",
+    "note_id": "n18",
     "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
-    "ref": "n14"
+    "run_id": "run_20261027002210_kkcc",
+    "ref": "n18"
    }
   },
   {
-   "seq": 491,
-   "at": "2026-10-26T21:37:52.722Z",
+   "seq": 373,
+   "at": "2026-10-27T00:23:23.243Z",
    "action": "create",
    "actor": "guard",
    "kind": "note",
-   "ref": "n15",
-   "memory_id": "mem-474",
+   "ref": "n19",
+   "memory_id": "mem-359",
    "round": 1,
    "summary": "critique of distance_to_mast: rewrote a sentence with an unsupported number",
    "old_confidence": null,
@@ -2513,65 +2514,65 @@
     "guard_kind": "number_rewritten",
     "where": "critique of distance_to_mast",
     "field": "reason",
-    "before": "Crowd-sourced positions add uncertainty, which the belief acknowledges, so the 0.55 confidence is appropriate.",
-    "after": "Crowd-sourced positions add uncertainty, which the belief acknowledges, so the confidence is appropriate.",
-    "note_id": "n15",
+    "before": "Confidence 0.45 appropriately reflects the moderate evidence.",
+    "after": "Confidence appropriately reflects the moderate evidence.",
+    "note_id": "n19",
     "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
-    "ref": "n15"
+    "run_id": "run_20261027002210_kkcc",
+    "ref": "n19"
    }
   },
   {
-   "seq": 492,
-   "at": "2026-10-26T21:37:52.743Z",
+   "seq": 374,
+   "at": "2026-10-27T00:23:23.259Z",
    "action": "create",
    "actor": "critic",
    "kind": "critique",
    "ref": "c2",
-   "memory_id": "mem-475",
+   "memory_id": "mem-360",
    "round": 1,
-   "summary": "approve on distance_to_mast: The nearest site is 3.8 km away and all operator sites lie 3.8\u20135.7 km distant. Crowd-sourced positions add uncertainty, which the belief acknowledges, so the confidence is appropriate.",
+   "summary": "approve on distance_to_mast: The nearest identified mast is 3.8 km away (Vodafone) [nearest_site][los_vodafone] and O2's nearest is 5.7 km [los_o2]; operators are inferred from crowd-sourced data (moderate reliability). Distance is a plausible contributing factor, especially in combination with terrain blocking. Confidence appropriately reflects the moderate evidence.",
    "old_confidence": null,
    "new_confidence": 1,
    "reason": null,
    "payload": {
     "belief_id": "distance_to_mast",
     "verdict": "approve",
-    "reason": "The nearest site is 3.8 km away and all operator sites lie 3.8\u20135.7 km distant. Crowd-sourced positions add uncertainty, which the belief acknowledges, so the confidence is appropriate.",
+    "reason": "The nearest identified mast is 3.8 km away (Vodafone) [nearest_site][los_vodafone] and O2's nearest is 5.7 km [los_o2]; operators are inferred from crowd-sourced data (moderate reliability). Distance is a plausible contributing factor, especially in combination with terrain blocking. Confidence appropriately reflects the moderate evidence.",
     "requested_checks": [],
     "suggested_confidence": null,
     "round": 1,
     "by": "critic",
     "critique_id": "c2",
     "kind": "critique",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "c2"
    }
   },
   {
-   "seq": 493,
-   "at": "2026-10-26T21:37:55.706Z",
+   "seq": 375,
+   "at": "2026-10-27T00:23:24.144Z",
    "action": "create",
    "actor": "critic",
    "kind": "note",
-   "ref": "n16",
-   "memory_id": "mem-476",
+   "ref": "n20",
+   "memory_id": "mem-361",
    "round": 1,
-   "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 2.9s",
+   "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 0.8s",
    "old_confidence": null,
    "new_confidence": 1,
    "reason": null,
    "payload": {
     "type": "llm_call",
-    "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 2.9s",
+    "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 0.8s",
     "by": "critic",
     "round": 1,
     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-    "duration_ms": 2893,
+    "duration_ms": 837,
     "tokens": {
-     "prompt_tokens": 897,
-     "completion_tokens": 147,
-     "total_tokens": 1044,
+     "prompt_tokens": 926,
+     "completion_tokens": 45,
+     "total_tokens": 971,
      "prompt_tokens_details": {
       "audio_tokens": null,
       "cached_tokens": 0
@@ -2587,430 +2588,197 @@
     "retries": [],
     "fallback": null,
     "thinking": false,
-    "note_id": "n16",
+    "purpose": "guard rewrite",
+    "note_id": "n20",
     "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
-    "ref": "n16"
+    "run_id": "run_20261027002210_kkcc",
+    "ref": "n20"
    }
   },
   {
-   "seq": 494,
-   "at": "2026-10-26T21:37:55.736Z",
+   "seq": 376,
+   "at": "2026-10-27T00:23:24.163Z",
    "action": "create",
    "actor": "guard",
    "kind": "note",
-   "ref": "n17",
-   "memory_id": "mem-477",
+   "ref": "n21",
+   "memory_id": "mem-362",
    "round": 1,
-   "summary": "critique of single_operator: rewrote a sentence with an unsupported number",
+   "summary": "critique of weather: rewrote a sentence with an unsupported number",
    "old_confidence": null,
    "new_confidence": 1,
    "reason": null,
    "payload": {
     "type": "guard",
-    "summary": "critique of single_operator: rewrote a sentence with an unsupported number",
+    "summary": "critique of weather: rewrote a sentence with an unsupported number",
     "by": "guard",
     "round": 1,
     "agent": "critic",
     "guard_kind": "number_rewritten",
-    "where": "critique of single_operator",
+    "where": "critique of weather",
     "field": "reason",
-    "before": "Only three operators appear within 5 km in the crowd-sourced data, but O2 has a site at 5.7 km (just outside the radius).",
-    "after": "Only 3 operators (EE, Three and Vodafone) have approximate mast sites within 5 km [operators_5km]. Operators are inferred from crowd-sourced data [operators_5km].",
-    "note_id": "n17",
+    "before": "Confidence 0.40 matches the weak evidence.",
+    "after": "Confidence matches the weak evidence. [met_office_warnings][weather]",
+    "note_id": "n21",
     "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
-    "ref": "n17"
+    "run_id": "run_20261027002210_kkcc",
+    "ref": "n21"
    }
   },
   {
-   "seq": 495,
-   "at": "2026-10-26T21:37:55.767Z",
-   "action": "create",
-   "actor": "guard",
-   "kind": "note",
-   "ref": "n18",
-   "memory_id": "mem-478",
-   "round": 1,
-   "summary": "critique of single_operator: rewrote a sentence with an unsupported number",
-   "old_confidence": null,
-   "new_confidence": 1,
-   "reason": null,
-   "payload": {
-    "type": "guard",
-    "summary": "critique of single_operator: rewrote a sentence with an unsupported number",
-    "by": "guard",
-    "round": 1,
-    "agent": "critic",
-    "guard_kind": "number_rewritten",
-    "where": "critique of single_operator",
-    "field": "reason",
-    "before": "The belief correctly states a single-operator gap is not proven and assigns a low confidence (0.45).",
-    "after": "The belief correctly states a single-operator gap is not proven and assigns a low confidence.",
-    "note_id": "n18",
-    "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
-    "ref": "n18"
-   }
-  },
-  {
-   "seq": 496,
-   "at": "2026-10-26T21:37:55.799Z",
+   "seq": 377,
+   "at": "2026-10-27T00:23:24.181Z",
    "action": "create",
    "actor": "critic",
    "kind": "critique",
    "ref": "c3",
-   "memory_id": "mem-479",
+   "memory_id": "mem-363",
    "round": 1,
-   "summary": "approve on single_operator: Only 3 operators (EE, Three and Vodafone) have approximate mast sites within 5 km [operators_5km]. Operators are inferred from crowd-sourced data [operators_5km]. The belief correctly states a single-operator gap is not proven and assigns a low confidence.",
+   "summary": "approve on weather: A Met Office yellow wind warning and forecast gusts up to 81.4 km/h [weather][met_office_warnings] could explain current or recent degradation. The evidence is weak (forecast sample) and the belief correctly limits its scope to current/recent effects. No speed_trend or historical speed data exists to determine whether poor service is long-standing, so the time pattern is unknown and no downgrade is warranted. Confidence matches the weak evidence. [met_office_warnings][weather]",
    "old_confidence": null,
    "new_confidence": 1,
    "reason": null,
    "payload": {
-    "belief_id": "single_operator",
+    "belief_id": "weather",
     "verdict": "approve",
-    "reason": "Only 3 operators (EE, Three and Vodafone) have approximate mast sites within 5 km [operators_5km]. Operators are inferred from crowd-sourced data [operators_5km]. The belief correctly states a single-operator gap is not proven and assigns a low confidence.",
+    "reason": "A Met Office yellow wind warning and forecast gusts up to 81.4 km/h [weather][met_office_warnings] could explain current or recent degradation. The evidence is weak (forecast sample) and the belief correctly limits its scope to current/recent effects. No speed_trend or historical speed data exists to determine whether poor service is long-standing, so the time pattern is unknown and no downgrade is warranted. Confidence matches the weak evidence. [met_office_warnings][weather]",
     "requested_checks": [],
     "suggested_confidence": null,
     "round": 1,
     "by": "critic",
     "critique_id": "c3",
     "kind": "critique",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "c3"
    }
   },
   {
-   "seq": 497,
-   "at": "2026-10-26T21:37:55.827Z",
+   "seq": 378,
+   "at": "2026-10-27T00:23:24.969Z",
    "action": "create",
    "actor": "critic",
-   "kind": "critique",
-   "ref": "c4",
-   "memory_id": "mem-480",
+   "kind": "note",
+   "ref": "n22",
+   "memory_id": "mem-364",
    "round": 1,
-   "summary": "needs_evidence on weather: The weather evidence is live (forecast and warning) and can only explain a recent drop. Without speed trend data we cannot tell whether poor service is persistent (which would downgrade weather's role) or only recent (which would support it).",
+   "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 0.7s",
    "old_confidence": null,
    "new_confidence": 1,
    "reason": null,
    "payload": {
-    "belief_id": "weather",
-    "verdict": "needs_evidence",
-    "reason": "The weather evidence is live (forecast and warning) and can only explain a recent drop. Without speed trend data we cannot tell whether poor service is persistent (which would downgrade weather's role) or only recent (which would support it).",
-    "requested_checks": [
-     {
-      "tool": "speed_trend",
-      "operator": null,
-      "why": "determine if low speeds are long-standing or only recent"
+    "type": "llm_call",
+    "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 0.7s",
+    "by": "critic",
+    "round": 1,
+    "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+    "duration_ms": 731,
+    "tokens": {
+     "prompt_tokens": 1064,
+     "completion_tokens": 32,
+     "total_tokens": 1096,
+     "prompt_tokens_details": {
+      "audio_tokens": null,
+      "cached_tokens": 0
+     },
+     "completion_tokens_details": {
+      "accepted_prediction_tokens": null,
+      "audio_tokens": null,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": null
      }
-    ],
+    },
+    "attempts": 1,
+    "retries": [],
+    "fallback": null,
+    "thinking": false,
+    "purpose": "guard rewrite",
+    "note_id": "n22",
+    "kind": "note",
+    "run_id": "run_20261027002210_kkcc",
+    "ref": "n22"
+   }
+  },
+  {
+   "seq": 379,
+   "at": "2026-10-27T00:23:24.984Z",
+   "action": "create",
+   "actor": "guard",
+   "kind": "note",
+   "ref": "n23",
+   "memory_id": "mem-365",
+   "round": 1,
+   "summary": "critique of insufficient_data: rewrote a sentence with an unsupported number",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "type": "guard",
+    "summary": "critique of insufficient_data: rewrote a sentence with an unsupported number",
+    "by": "guard",
+    "round": 1,
+    "agent": "critic",
+    "guard_kind": "number_rewritten",
+    "where": "critique of insufficient_data",
+    "field": "reason",
+    "before": "Confidence 0.35 is appropriate.",
+    "after": "Confidence is appropriate.",
+    "note_id": "n23",
+    "kind": "note",
+    "run_id": "run_20261027002210_kkcc",
+    "ref": "n23"
+   }
+  },
+  {
+   "seq": 380,
+   "at": "2026-10-27T00:23:25.008Z",
+   "action": "create",
+   "actor": "critic",
+   "kind": "critique",
+   "ref": "c4",
+   "memory_id": "mem-366",
+   "round": 1,
+   "summary": "approve on insufficient_data: No Ookla speed tests exist in this cell or within 1 km [speed_cell][speed_1km], neighbouring cells provide only 2 tests [speed_neighbours], and only three operators have sites within 5 km [operators_5km]. The evidence supports the conclusion that the exact point-level cause cannot be confirmed. Confidence is appropriate.",
+   "old_confidence": null,
+   "new_confidence": 1,
+   "reason": null,
+   "payload": {
+    "belief_id": "insufficient_data",
+    "verdict": "approve",
+    "reason": "No Ookla speed tests exist in this cell or within 1 km [speed_cell][speed_1km], neighbouring cells provide only 2 tests [speed_neighbours], and only three operators have sites within 5 km [operators_5km]. The evidence supports the conclusion that the exact point-level cause cannot be confirmed. Confidence is appropriate.",
+    "requested_checks": [],
     "suggested_confidence": null,
     "round": 1,
     "by": "critic",
     "critique_id": "c4",
     "kind": "critique",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "c4"
    }
   },
   {
-   "seq": 498,
-   "at": "2026-10-26T21:37:55.879Z",
+   "seq": 381,
+   "at": "2026-10-27T00:23:31.723Z",
    "action": "create",
-   "actor": "coordinator",
-   "kind": "note",
-   "ref": "n19",
-   "memory_id": "mem-481",
-   "round": 2,
-   "summary": "round 2 starts",
-   "old_confidence": null,
-   "new_confidence": 1,
-   "reason": null,
-   "payload": {
-    "type": "round",
-    "summary": "round 2 starts",
-    "by": "coordinator",
-    "round": 2,
-    "requested": [
-     {
-      "tool": "speed_trend",
-      "operator": null,
-      "why": "determine if low speeds are long-standing or only recent"
-     }
-    ],
-    "note_id": "n19",
-    "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
-    "ref": "n19"
-   }
-  },
-  {
-   "seq": 499,
-   "at": "2026-10-26T21:37:56.780Z",
-   "action": "create",
-   "actor": "investigator",
-   "kind": "note",
-   "ref": "n20",
-   "memory_id": "mem-482",
-   "round": 2,
-   "summary": "investigator via nemotron-3.5-super-vl-120b-a12b in 0.8s",
-   "old_confidence": null,
-   "new_confidence": 1,
-   "reason": null,
-   "payload": {
-    "type": "llm_call",
-    "summary": "investigator via nemotron-3.5-super-vl-120b-a12b in 0.8s",
-    "by": "investigator",
-    "round": 2,
-    "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-    "duration_ms": 810,
-    "tokens": {
-     "prompt_tokens": 1619,
-     "completion_tokens": 16,
-     "total_tokens": 1635,
-     "prompt_tokens_details": {
-      "audio_tokens": null,
-      "cached_tokens": 0
-     },
-     "completion_tokens_details": {
-      "accepted_prediction_tokens": null,
-      "audio_tokens": null,
-      "reasoning_tokens": 0,
-      "rejected_prediction_tokens": null
-     }
-    },
-    "attempts": 1,
-    "retries": [],
-    "fallback": null,
-    "thinking": false,
-    "note_id": "n20",
-    "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
-    "ref": "n20"
-   }
-  },
-  {
-   "seq": 500,
-   "at": "2026-10-26T21:37:56.809Z",
-   "action": "create",
-   "actor": "investigator",
-   "kind": "evidence",
-   "ref": "speed_trend",
-   "memory_id": "mem-483",
-   "round": 2,
-   "summary": "Not enough quarters with Ookla tests in this cell for a trend.",
-   "old_confidence": null,
-   "new_confidence": 0.4,
-   "reason": null,
-   "payload": {
-    "id": "speed_trend",
-    "source": "Ookla open data (Zetaris CD_OOKLA_MOBILE_HISTORY)",
-    "data_period": "2026Q3",
-    "as_of": "2026-10-23",
-    "query_or_url": "zetaris:Q1",
-    "cell_ids": [
-     "871955454ffffff"
-    ],
-    "finding": "Not enough quarters with Ookla tests in this cell for a trend.",
-    "value": {
-     "history": [
-      {
-       "quarter": "2025Q4",
-       "download_mbps": 2.158,
-       "tests": 1
-      }
-     ]
-    },
-    "sample_size": {
-     "quarters": 0
-    },
-    "strength": "weak",
-    "bears_on": [
-     "capacity_strain",
-     "insufficient_data"
-    ],
-    "evidence_id": "speed_trend",
-    "tool": "speed_trend",
-    "round": 2,
-    "zetaris": [
-     {
-      "id": "Q1",
-      "sql": "SELECT c.cell_id, c.lat, c.lon, c.population, c.nation, o.quarter, o.download_mbps, o.upload_mbps, o.latency_ms, o.tests, o.devices, o.tests_per_1k_pop, o.devices_per_1k_pop, o.quarters_with_data, o.download_mbps_oldest, o.download_change_pct, o.download_trend_mbps_per_quarter, hst.history_json, nb.neighbour_download_mbps, nb.neighbour_tests, nb.neighbour_cells_with_data, m.nearest_mast_km, m.nearest_mast_bearing_deg, m.nearest_mast_id, m.nearest_mast_lat, m.nearest_mast_lon, m.nearest_mast_sources, m.nearest_mast_operators, m.nearest_mast_operators_confirmed, m.nearest_mast_antenna_height_m, m.masts_within_5km, m.masts_known_operator_within_5km, m.masts_unknown_operator_within_5km, m.masts_osm_only_within_5km, m.distinct_operators_within_5km, m.operators_within_5km, m.operators_confirmed_within_5km, m.wtr_sites_within_5km, m.microwave_backhaul_sites_within_5km, m.operator_data_status, a.pcon_code, a.pcon_name, a.laua_code, a.laua_name, a.g4_geo_out_0, a.g4_geo_out_1, a.g4_prem_out_0, a.g4_prem_in_0, a.g4_abrd_in_0, a.g5hc_prem_out_at_least_one, a.laua_g4_geo_out_0, a.laua_g4_geo_out_1, a.data_date AS ofcom_data_date, t.elevation_mean_m, t.elevation_range_m, l.blocked AS los_blocked, l.obstruction_m AS los_obstruction_m, l.los_class FROM CD_CELLS.cells_r7 c LEFT JOIN CD_OOKLA_MOBILE.ookla_mobile_r7 o ON o.cell_id = c.cell_id LEFT JOIN ( SELECT cell_id, to_json(collect_list(named_struct('quarter', quarter, 'download_mbps', download_mbps, 'tests', tests))) AS history_json FROM CD_OOKLA_MOBILE_HISTORY.ookla_mobile_history_r7 WHERE cell_id = '871955454ffffff' GROUP BY cell_id ) hst ON hst.cell_id = c.cell_id CROSS JOIN ( SELECT sum(download_mbps * tests) / sum(tests) AS neighbour_download_mbps, sum(tests) AS neighbour_tests, count(*) AS neighbour_cells_with_data FROM CD_OOKLA_MOBILE.ookla_mobile_r7 WHERE cell_id IN ('871955409ffffff', '871955450ffffff', '871955455ffffff', '871955456ffffff', '871955472ffffff', '871955473ffffff') ) nb LEFT JOIN CD_MASTS.masts_r7 m ON m.cell_id = c.cell_id LEFT JOIN CD_OFCOM_AREA.ofcom_area_r7 a ON a.cell_id = c.cell_id LEFT JOIN CD_TERRAIN.terrain_r7 t ON t.cell_id = c.cell_id LEFT JOIN CD_LOS.los_r7 l ON l.cell_id = c.cell_id WHERE c.cell_id = '871955454ffffff'",
-      "duration_ms": 422,
-      "rows": 1
-     }
-    ],
-    "by": "investigator",
-    "kind": "evidence",
-    "run_id": "run_20261026213702_fgoz",
-    "ref": "speed_trend"
-   }
-  },
-  {
-   "seq": 501,
-   "at": "2026-10-26T21:37:56.829Z",
-   "action": "create",
-   "actor": "investigator",
-   "kind": "note",
-   "ref": "n21",
-   "memory_id": "mem-484",
-   "round": 2,
-   "summary": "speed_trend() -> speed_trend",
-   "old_confidence": null,
-   "new_confidence": 1,
-   "reason": null,
-   "payload": {
-    "type": "tool_call",
-    "summary": "speed_trend() -> speed_trend",
-    "by": "investigator",
-    "tool": "speed_trend",
-    "args": {},
-    "round": 2,
-    "evidence_ids": [
-     "speed_trend"
-    ],
-    "new": [
-     "speed_trend"
-    ],
-    "duration_ms": 28,
-    "zetaris_queries": [],
-    "note_id": "n21",
-    "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
-    "ref": "n21"
-   }
-  },
-  {
-   "seq": 502,
-   "at": "2026-10-26T21:38:01.217Z",
-   "action": "create",
-   "actor": "diagnostician",
-   "kind": "note",
-   "ref": "n22",
-   "memory_id": "mem-485",
-   "round": 2,
-   "summary": "diagnostician via nemotron-3.5-super-vl-120b-a12b in 4.3s",
-   "old_confidence": null,
-   "new_confidence": 1,
-   "reason": null,
-   "payload": {
-    "type": "llm_call",
-    "summary": "diagnostician via nemotron-3.5-super-vl-120b-a12b in 4.3s",
-    "by": "diagnostician",
-    "round": 2,
-    "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-    "duration_ms": 4263,
-    "tokens": {
-     "prompt_tokens": 2930,
-     "completion_tokens": 508,
-     "total_tokens": 3438,
-     "prompt_tokens_details": {
-      "audio_tokens": null,
-      "cached_tokens": 0
-     },
-     "completion_tokens_details": {
-      "accepted_prediction_tokens": null,
-      "audio_tokens": null,
-      "reasoning_tokens": 0,
-      "rejected_prediction_tokens": null
-     }
-    },
-    "attempts": 1,
-    "retries": [],
-    "fallback": null,
-    "thinking": false,
-    "note_id": "n22",
-    "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
-    "ref": "n22"
-   }
-  },
-  {
-   "seq": 503,
-   "at": "2026-10-26T21:38:40.987Z",
-   "action": "create",
-   "actor": "critic",
-   "kind": "note",
-   "ref": "n23",
-   "memory_id": "mem-486",
-   "round": 2,
-   "summary": "critic via nemotron-3-ultra-550b-a55b in 39.6s",
-   "old_confidence": null,
-   "new_confidence": 1,
-   "reason": null,
-   "payload": {
-    "type": "llm_call",
-    "summary": "critic via nemotron-3-ultra-550b-a55b in 39.6s",
-    "by": "critic",
-    "round": 2,
-    "model": "nvidia/nemotron-3-ultra-550b-a55b",
-    "duration_ms": 39627,
-    "tokens": {
-     "prompt_tokens": 2962,
-     "completion_tokens": 2820,
-     "total_tokens": 5782
-    },
-    "attempts": 1,
-    "retries": [],
-    "fallback": null,
-    "thinking": true,
-    "note_id": "n23",
-    "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
-    "ref": "n23"
-   }
-  },
-  {
-   "seq": 504,
-   "at": "2026-10-26T21:38:41.024Z",
-   "action": "create",
-   "actor": "critic",
-   "kind": "critique",
-   "ref": "c5",
-   "memory_id": "mem-487",
-   "round": 2,
-   "summary": "approve on terrain_blocking: Four independent line-of-sight checks (strong evidence) show terrain rising 129\u2013288 m above the direct line to each operator's nearest crowd-sourced site. The network_comparison summary confirms no operator has a clear line of sight. Assumed antenna heights (25 m) are a noted uncertainty, but the obstruction margins are large enough that the conclusion holds.",
-   "old_confidence": null,
-   "new_confidence": 1,
-   "reason": null,
-   "payload": {
-    "belief_id": "terrain_blocking",
-    "verdict": "approve",
-    "reason": "Four independent line-of-sight checks (strong evidence) show terrain rising 129\u2013288 m above the direct line to each operator's nearest crowd-sourced site. The network_comparison summary confirms no operator has a clear line of sight. Assumed antenna heights (25 m) are a noted uncertainty, but the obstruction margins are large enough that the conclusion holds.",
-    "requested_checks": [],
-    "suggested_confidence": null,
-    "round": 2,
-    "by": "critic",
-    "critique_id": "c5",
-    "kind": "critique",
-    "run_id": "run_20261026213702_fgoz",
-    "ref": "c5"
-   }
-  },
-  {
-   "seq": 505,
-   "at": "2026-10-26T21:39:27.355Z",
-   "action": "create",
-   "actor": "critic",
+   "actor": "advisor",
    "kind": "note",
    "ref": "n24",
-   "memory_id": "mem-488",
-   "round": 2,
-   "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 46.3s; 1 retry",
+   "memory_id": "mem-367",
+   "round": 0,
+   "summary": "advisor via nemotron-3.5-super-vl-120b-a12b in 6.3s",
    "old_confidence": null,
    "new_confidence": 1,
    "reason": null,
    "payload": {
     "type": "llm_call",
-    "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 46.3s; 1 retry",
-    "by": "critic",
-    "round": 2,
+    "summary": "advisor via nemotron-3.5-super-vl-120b-a12b in 6.3s",
+    "by": "advisor",
+    "round": 0,
     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-    "duration_ms": 46269,
+    "duration_ms": 6333,
     "tokens": {
-     "prompt_tokens": 1337,
-     "completion_tokens": 73,
-     "total_tokens": 1410,
+     "prompt_tokens": 2247,
+     "completion_tokens": 1116,
+     "total_tokens": 3363,
      "prompt_tokens_details": {
       "audio_tokens": null,
       "cached_tokens": 0
@@ -3022,515 +2790,69 @@
       "rejected_prediction_tokens": null
      }
     },
-    "attempts": 2,
-    "retries": [
-     {
-      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-      "attempt": 1,
-      "error": "no answer within 45 s",
-      "wait_s": 0
-     }
-    ],
+    "attempts": 1,
+    "retries": [],
     "fallback": null,
     "thinking": false,
+    "purpose": null,
     "note_id": "n24",
     "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "ref": "n24"
    }
   },
   {
-   "seq": 506,
-   "at": "2026-10-26T21:39:27.379Z",
-   "action": "create",
-   "actor": "guard",
-   "kind": "note",
-   "ref": "n25",
-   "memory_id": "mem-489",
-   "round": 2,
-   "summary": "critique of distance_to_mast: rewrote a sentence with an unsupported number",
-   "old_confidence": null,
-   "new_confidence": 1,
-   "reason": null,
-   "payload": {
-    "type": "guard",
-    "summary": "critique of distance_to_mast: rewrote a sentence with an unsupported number",
-    "by": "guard",
-    "round": 2,
-    "agent": "critic",
-    "guard_kind": "number_rewritten",
-    "where": "critique of distance_to_mast",
-    "field": "reason",
-    "before": "The belief correctly notes the crowd-sourced inference uncertainty; confidence 0.55 is appropriate.",
-    "after": "The belief correctly notes the crowd-sourced inference uncertainty [los_ee][los_o2][los_three][los_vodafone][nearest_site].",
-    "note_id": "n25",
-    "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
-    "ref": "n25"
-   }
-  },
-  {
-   "seq": 507,
-   "at": "2026-10-26T21:39:27.409Z",
-   "action": "create",
-   "actor": "critic",
-   "kind": "critique",
-   "ref": "c6",
-   "memory_id": "mem-490",
-   "round": 2,
-   "summary": "approve on distance_to_mast: The nearest identified site is 3.8 km away and all four operators' nearest sites lie 3.8\u20135.7 km distant, per moderate-strength crowd-sourced site data and strong line-of-sight computations. The belief correctly notes the crowd-sourced inference uncertainty [los_ee][los_o2][los_three][los_vodafone][nearest_site].",
-   "old_confidence": null,
-   "new_confidence": 1,
-   "reason": null,
-   "payload": {
-    "belief_id": "distance_to_mast",
-    "verdict": "approve",
-    "reason": "The nearest identified site is 3.8 km away and all four operators' nearest sites lie 3.8\u20135.7 km distant, per moderate-strength crowd-sourced site data and strong line-of-sight computations. The belief correctly notes the crowd-sourced inference uncertainty [los_ee][los_o2][los_three][los_vodafone][nearest_site].",
-    "requested_checks": [],
-    "suggested_confidence": null,
-    "round": 2,
-    "by": "critic",
-    "critique_id": "c6",
-    "kind": "critique",
-    "run_id": "run_20261026213702_fgoz",
-    "ref": "c6"
-   }
-  },
-  {
-   "seq": 508,
-   "at": "2026-10-26T21:39:36.553Z",
-   "action": "create",
-   "actor": "critic",
-   "kind": "note",
-   "ref": "n26",
-   "memory_id": "mem-491",
-   "round": 2,
-   "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 9.1s",
-   "old_confidence": null,
-   "new_confidence": 1,
-   "reason": null,
-   "payload": {
-    "type": "llm_call",
-    "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 9.1s",
-    "by": "critic",
-    "round": 2,
-    "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-    "duration_ms": 9090,
-    "tokens": {
-     "prompt_tokens": 889,
-     "completion_tokens": 131,
-     "total_tokens": 1020,
-     "prompt_tokens_details": {
-      "audio_tokens": null,
-      "cached_tokens": 0
-     },
-     "completion_tokens_details": {
-      "accepted_prediction_tokens": null,
-      "audio_tokens": null,
-      "reasoning_tokens": 0,
-      "rejected_prediction_tokens": null
-     }
-    },
-    "attempts": 1,
-    "retries": [],
-    "fallback": null,
-    "thinking": false,
-    "note_id": "n26",
-    "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
-    "ref": "n26"
-   }
-  },
-  {
-   "seq": 509,
-   "at": "2026-10-26T21:39:36.586Z",
-   "action": "create",
-   "actor": "guard",
-   "kind": "note",
-   "ref": "n27",
-   "memory_id": "mem-492",
-   "round": 2,
-   "summary": "critique of single_operator: removed a sentence with numbers not in the cited evidence (5.7)",
-   "old_confidence": null,
-   "new_confidence": 1,
-   "reason": null,
-   "payload": {
-    "type": "guard",
-    "summary": "critique of single_operator: removed a sentence with numbers not in the cited evidence (5.7)",
-    "by": "guard",
-    "round": 2,
-    "agent": "critic",
-    "guard_kind": "sentence_removed",
-    "where": "critique of single_operator",
-    "field": "reason",
-    "removed": "The cited evidence contradicts the belief: operators_5km shows three operators (EE, Three, Vodafone) with sites within 5 km, and los_o2 places an O2 site just outside that radius (5.7 km).",
-    "numbers": [
-     "5.7"
-    ],
-    "note_id": "n27",
-    "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
-    "ref": "n27"
-   }
-  },
-  {
-   "seq": 510,
-   "at": "2026-10-26T21:39:36.615Z",
-   "action": "update",
-   "actor": "critic",
-   "kind": "belief",
-   "ref": "single_operator",
-   "memory_id": "mem-469",
-   "round": 2,
-   "summary": "critic rejected: This indicates multi-operator presence, not a single-operator gap.",
-   "old_confidence": 0.45,
-   "new_confidence": 0.1,
-   "reason": "critic rejected: This indicates multi-operator presence, not a single-operator gap."
-  },
-  {
-   "seq": 511,
-   "at": "2026-10-26T21:39:36.630Z",
-   "action": "create",
-   "actor": "critic",
-   "kind": "critique",
-   "ref": "c7",
-   "memory_id": "mem-493",
-   "round": 2,
-   "summary": "reject on single_operator: This indicates multi-operator presence, not a single-operator gap.",
-   "old_confidence": null,
-   "new_confidence": 1,
-   "reason": null,
-   "payload": {
-    "belief_id": "single_operator",
-    "verdict": "reject",
-    "reason": "This indicates multi-operator presence, not a single-operator gap.",
-    "requested_checks": [],
-    "suggested_confidence": 0.1,
-    "round": 2,
-    "by": "critic",
-    "critique_id": "c7",
-    "kind": "critique",
-    "run_id": "run_20261026213702_fgoz",
-    "ref": "c7"
-   }
-  },
-  {
-   "seq": 512,
-   "at": "2026-10-26T21:39:38.139Z",
-   "action": "create",
-   "actor": "critic",
-   "kind": "note",
-   "ref": "n28",
-   "memory_id": "mem-494",
-   "round": 2,
-   "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 1.4s",
-   "old_confidence": null,
-   "new_confidence": 1,
-   "reason": null,
-   "payload": {
-    "type": "llm_call",
-    "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 1.4s",
-    "by": "critic",
-    "round": 2,
-    "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-    "duration_ms": 1417,
-    "tokens": {
-     "prompt_tokens": 907,
-     "completion_tokens": 75,
-     "total_tokens": 982,
-     "prompt_tokens_details": {
-      "audio_tokens": null,
-      "cached_tokens": 0
-     },
-     "completion_tokens_details": {
-      "accepted_prediction_tokens": null,
-      "audio_tokens": null,
-      "reasoning_tokens": 0,
-      "rejected_prediction_tokens": null
-     }
-    },
-    "attempts": 1,
-    "retries": [],
-    "fallback": null,
-    "thinking": false,
-    "note_id": "n28",
-    "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
-    "ref": "n28"
-   }
-  },
-  {
-   "seq": 513,
-   "at": "2026-10-26T21:39:38.167Z",
-   "action": "create",
-   "actor": "guard",
-   "kind": "note",
-   "ref": "n29",
-   "memory_id": "mem-495",
-   "round": 2,
-   "summary": "critique of weather: removed a sentence with numbers not in the cited evidence (0.40)",
-   "old_confidence": null,
-   "new_confidence": 1,
-   "reason": null,
-   "payload": {
-    "type": "guard",
-    "summary": "critique of weather: removed a sentence with numbers not in the cited evidence (0.40)",
-    "by": "guard",
-    "round": 2,
-    "agent": "critic",
-    "guard_kind": "sentence_removed",
-    "where": "critique of weather",
-    "field": "reason",
-    "removed": "Speed trend data is unavailable (no trend), so the time pattern of any service issue is unknown; confidence 0.40 is fair.",
-    "numbers": [
-     "0.40"
-    ],
-    "note_id": "n29",
-    "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
-    "ref": "n29"
-   }
-  },
-  {
-   "seq": 514,
-   "at": "2026-10-26T21:39:38.189Z",
-   "action": "create",
-   "actor": "critic",
-   "kind": "critique",
-   "ref": "c8",
-   "memory_id": "mem-496",
-   "round": 2,
-   "summary": "approve on weather: Live weather and Met Office warning (strong) confirm severe conditions (gusts to 74.9 km/h, heavy rain) that can degrade signals. The belief correctly limits the explanation to current/recent degradation.",
-   "old_confidence": null,
-   "new_confidence": 1,
-   "reason": null,
-   "payload": {
-    "belief_id": "weather",
-    "verdict": "approve",
-    "reason": "Live weather and Met Office warning (strong) confirm severe conditions (gusts to 74.9 km/h, heavy rain) that can degrade signals. The belief correctly limits the explanation to current/recent degradation.",
-    "requested_checks": [],
-    "suggested_confidence": null,
-    "round": 2,
-    "by": "critic",
-    "critique_id": "c8",
-    "kind": "critique",
-    "run_id": "run_20261026213702_fgoz",
-    "ref": "c8"
-   }
-  },
-  {
-   "seq": 515,
-   "at": "2026-10-26T21:39:52.769Z",
-   "action": "create",
-   "actor": "advisor",
-   "kind": "note",
-   "ref": "n30",
-   "memory_id": "mem-497",
-   "round": 0,
-   "summary": "advisor via nemotron-3.5-super-vl-120b-a12b in 14.1s",
-   "old_confidence": null,
-   "new_confidence": 1,
-   "reason": null,
-   "payload": {
-    "type": "llm_call",
-    "summary": "advisor via nemotron-3.5-super-vl-120b-a12b in 14.1s",
-    "by": "advisor",
-    "round": 0,
-    "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-    "duration_ms": 14129,
-    "tokens": {
-     "prompt_tokens": 2454,
-     "completion_tokens": 1117,
-     "total_tokens": 3571,
-     "prompt_tokens_details": {
-      "audio_tokens": null,
-      "cached_tokens": 0
-     },
-     "completion_tokens_details": {
-      "accepted_prediction_tokens": null,
-      "audio_tokens": null,
-      "reasoning_tokens": 0,
-      "rejected_prediction_tokens": null
-     }
-    },
-    "attempts": 1,
-    "retries": [],
-    "fallback": null,
-    "thinking": false,
-    "note_id": "n30",
-    "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
-    "ref": "n30"
-   }
-  },
-  {
-   "seq": 516,
-   "at": "2026-10-26T21:39:52.806Z",
-   "action": "create",
-   "actor": "guard",
-   "kind": "note",
-   "ref": "n31",
-   "memory_id": "mem-498",
-   "round": 0,
-   "summary": "advisor: removed citations not in Meterless: distance_to_mast",
-   "old_confidence": null,
-   "new_confidence": 1,
-   "reason": null,
-   "payload": {
-    "type": "guard",
-    "summary": "advisor: removed citations not in Meterless: distance_to_mast",
-    "by": "guard",
-    "round": 0,
-    "agent": "advisor",
-    "guard_kind": "unknown_citation",
-    "where": "advisor",
-    "removed": [
-     "distance_to_mast"
-    ],
-    "note_id": "n31",
-    "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
-    "ref": "n31"
-   }
-  },
-  {
-   "seq": 517,
-   "at": "2026-10-26T21:39:52.827Z",
-   "action": "create",
-   "actor": "guard",
-   "kind": "note",
-   "ref": "n32",
-   "memory_id": "mem-499",
-   "round": 0,
-   "summary": "advisor ruled_out single_operator: removed citations not in Meterless: single_operator",
-   "old_confidence": null,
-   "new_confidence": 1,
-   "reason": null,
-   "payload": {
-    "type": "guard",
-    "summary": "advisor ruled_out single_operator: removed citations not in Meterless: single_operator",
-    "by": "guard",
-    "round": 0,
-    "agent": "advisor",
-    "guard_kind": "unknown_citation",
-    "where": "advisor ruled_out single_operator",
-    "removed": [
-     "single_operator"
-    ],
-    "note_id": "n32",
-    "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
-    "ref": "n32"
-   }
-  },
-  {
-   "seq": 518,
-   "at": "2026-10-26T21:39:52.854Z",
-   "action": "create",
-   "actor": "guard",
-   "kind": "note",
-   "ref": "n33",
-   "memory_id": "mem-500",
-   "round": 0,
-   "summary": "advisor explanation: removed [distance_to_mast] from the text",
-   "old_confidence": null,
-   "new_confidence": 1,
-   "reason": null,
-   "payload": {
-    "type": "guard",
-    "summary": "advisor explanation: removed [distance_to_mast] from the text",
-    "by": "guard",
-    "round": 0,
-    "agent": "advisor",
-    "guard_kind": "unknown_citation",
-    "where": "advisor explanation",
-    "removed": [
-     "distance_to_mast"
-    ],
-    "note_id": "n33",
-    "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
-    "ref": "n33"
-   }
-  },
-  {
-   "seq": 519,
-   "at": "2026-10-26T21:39:52.888Z",
-   "action": "create",
-   "actor": "guard",
-   "kind": "note",
-   "ref": "n34",
-   "memory_id": "mem-501",
-   "round": 0,
-   "summary": "advisor ruled_out.0: removed [single_operator] from the text",
-   "old_confidence": null,
-   "new_confidence": 1,
-   "reason": null,
-   "payload": {
-    "type": "guard",
-    "summary": "advisor ruled_out.0: removed [single_operator] from the text",
-    "by": "guard",
-    "round": 0,
-    "agent": "advisor",
-    "guard_kind": "unknown_citation",
-    "where": "advisor ruled_out.0",
-    "removed": [
-     "single_operator"
-    ],
-    "note_id": "n34",
-    "kind": "note",
-    "run_id": "run_20261026213702_fgoz",
-    "ref": "n34"
-   }
-  },
-  {
-   "seq": 520,
-   "at": "2026-10-26T21:39:52.971Z",
+   "seq": 382,
+   "at": "2026-10-27T00:23:31.805Z",
    "action": "create",
    "actor": "diagnosis",
    "kind": "diagnosis",
    "ref": "diagnosis",
-   "memory_id": "mem-502",
-   "summary": "Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison].",
+   "memory_id": "mem-368",
+   "summary": "Hills between you and the nearest masts are the likely cause [terrain_blocking][los_ee][los_o2][los_three][los_vodafone][network_comparison].",
    "old_confidence": null,
-   "new_confidence": 0.75,
+   "new_confidence": 0.7,
    "reason": null,
    "payload": {
-    "run_id": "run_20261026213702_fgoz",
+    "run_id": "run_20261027002210_kkcc",
     "lat": 54.445,
     "lon": -3.105,
     "cell_id": "871955454ffffff",
     "scope": "point",
-    "headline": "Hills between you and the nearest masts are the likely cause [los_ee][los_o2][los_three][los_vodafone][network_comparison].",
+    "headline": "Hills between you and the nearest masts are the likely cause [terrain_blocking][los_ee][los_o2][los_three][los_vodafone][network_comparison].",
     "causes": [
      {
       "cause": "terrain_blocking",
-      "confidence": 0.75
+      "confidence": 0.7
      },
      {
       "cause": "distance_to_mast",
-      "confidence": 0.55
+      "confidence": 0.45
      },
      {
       "cause": "weather",
       "confidence": 0.4
+     },
+     {
+      "cause": "insufficient_data",
+      "confidence": 0.35
      }
     ],
-    "confidence": 0.75,
+    "confidence": 0.7,
     "status": "complete",
-    "recorded": "2026-10-26T21:39:52.970Z",
+    "recorded": "2026-10-27T00:23:31.805Z",
     "kind": "diagnosis",
     "ref": "diagnosis"
    }
   },
   {
-   "seq": 521,
-   "at": "2026-10-26T21:39:53.018Z",
+   "seq": 383,
+   "at": "2026-10-27T00:23:31.842Z",
    "action": "update",
    "actor": "coordinator",
    "kind": "run",
-   "ref": "run_20261026213702_fgoz",
-   "memory_id": "mem-439",
+   "ref": "run_20261027002210_kkcc",
+   "memory_id": "mem-320",
    "summary": "complete",
    "old_confidence": null,
    "new_confidence": null,
@@ -3539,13 +2861,13 @@
  ],
  "notes": [
   {
-   "memory_id": "mem-441",
+   "memory_id": "mem-322",
    "kind": "note",
    "ref": "n1",
    "content": "prior_diagnoses_nearby() -> prior_diagnoses",
    "confidence": 1,
    "source": "coordinator",
-   "created_at": "2026-10-26T21:37:02.285Z",
+   "created_at": "2026-10-27T00:22:10.950Z",
    "type": "tool_call",
    "summary": "prior_diagnoses_nearby() -> prior_diagnoses",
    "by": "coordinator",
@@ -3558,45 +2880,45 @@
    "new": [
     "prior_diagnoses"
    ],
-   "duration_ms": 41,
+   "duration_ms": 42,
    "zetaris_queries": [],
    "note_id": "n1",
-   "run_id": "run_20261026213702_fgoz"
+   "run_id": "run_20261027002210_kkcc"
   },
   {
-   "memory_id": "mem-442",
+   "memory_id": "mem-323",
    "kind": "note",
    "ref": "n2",
    "content": "round 1 starts",
    "confidence": 1,
    "source": "coordinator",
-   "created_at": "2026-10-26T21:37:02.355Z",
+   "created_at": "2026-10-27T00:22:11.000Z",
    "type": "round",
    "summary": "round 1 starts",
    "by": "coordinator",
    "round": 1,
    "requested": [],
    "note_id": "n2",
-   "run_id": "run_20261026213702_fgoz"
+   "run_id": "run_20261027002210_kkcc"
   },
   {
-   "memory_id": "mem-443",
+   "memory_id": "mem-324",
    "kind": "note",
    "ref": "n3",
-   "content": "investigator via nemotron-3.5-super-vl-120b-a12b in 7.4s",
+   "content": "investigator via nemotron-3.5-super-vl-120b-a12b in 1.3s",
    "confidence": 1,
    "source": "investigator",
-   "created_at": "2026-10-26T21:37:09.811Z",
+   "created_at": "2026-10-27T00:22:12.358Z",
    "type": "llm_call",
-   "summary": "investigator via nemotron-3.5-super-vl-120b-a12b in 7.4s",
+   "summary": "investigator via nemotron-3.5-super-vl-120b-a12b in 1.3s",
    "by": "investigator",
    "round": 1,
    "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-   "duration_ms": 7359,
+   "duration_ms": 1267,
    "tokens": {
-    "prompt_tokens": 1164,
+    "prompt_tokens": 1009,
     "completion_tokens": 163,
-    "total_tokens": 1327,
+    "total_tokens": 1172,
     "prompt_tokens_details": {
      "audio_tokens": null,
      "cached_tokens": 0
@@ -3612,17 +2934,18 @@
    "retries": [],
    "fallback": null,
    "thinking": false,
+   "purpose": null,
    "note_id": "n3",
-   "run_id": "run_20261026213702_fgoz"
+   "run_id": "run_20261027002210_kkcc"
   },
   {
-   "memory_id": "mem-447",
+   "memory_id": "mem-328",
    "kind": "note",
    "ref": "n4",
    "content": "speeds_near() -> speed_1km, speed_cell, speed_neighbours",
    "confidence": 1,
    "source": "investigator",
-   "created_at": "2026-10-26T21:37:10.863Z",
+   "created_at": "2026-10-27T00:22:12.529Z",
    "type": "tool_call",
    "summary": "speeds_near() -> speed_1km, speed_cell, speed_neighbours",
    "by": "investigator",
@@ -3639,35 +2962,35 @@
     "speed_cell",
     "speed_neighbours"
    ],
-   "duration_ms": 1015,
+   "duration_ms": 149,
    "zetaris_queries": [
     {
      "id": "Q4",
-     "duration_ms": 391,
+     "duration_ms": 60,
      "rows": 1
     },
     {
      "id": "Q1",
-     "duration_ms": 422,
+     "duration_ms": 16,
      "rows": 1
     },
     {
      "id": "Q3",
-     "duration_ms": 119,
+     "duration_ms": 0,
      "rows": 1
     }
    ],
    "note_id": "n4",
-   "run_id": "run_20261026213702_fgoz"
+   "run_id": "run_20261027002210_kkcc"
   },
   {
-   "memory_id": "mem-450",
+   "memory_id": "mem-331",
    "kind": "note",
    "ref": "n5",
    "content": "sites_near() -> nearest_site, operators_5km",
    "confidence": 1,
    "source": "investigator",
-   "created_at": "2026-10-26T21:37:11.256Z",
+   "created_at": "2026-10-27T00:22:12.629Z",
    "type": "tool_call",
    "summary": "sites_near() -> nearest_site, operators_5km",
    "by": "investigator",
@@ -3682,25 +3005,25 @@
     "nearest_site",
     "operators_5km"
    ],
-   "duration_ms": 348,
+   "duration_ms": 61,
    "zetaris_queries": [
     {
      "id": "Q2",
-     "duration_ms": 284,
+     "duration_ms": 6,
      "rows": 99
     }
    ],
    "note_id": "n5",
-   "run_id": "run_20261026213702_fgoz"
+   "run_id": "run_20261027002210_kkcc"
   },
   {
-   "memory_id": "mem-452",
+   "memory_id": "mem-333",
    "kind": "note",
    "ref": "n6",
    "content": "line_of_sight(operator=EE) -> los_ee",
    "confidence": 1,
    "source": "investigator",
-   "created_at": "2026-10-26T21:37:11.455Z",
+   "created_at": "2026-10-27T00:22:12.859Z",
    "type": "tool_call",
    "summary": "line_of_sight(operator=EE) -> los_ee",
    "by": "investigator",
@@ -3715,19 +3038,19 @@
    "new": [
     "los_ee"
    ],
-   "duration_ms": 155,
+   "duration_ms": 189,
    "zetaris_queries": [],
    "note_id": "n6",
-   "run_id": "run_20261026213702_fgoz"
+   "run_id": "run_20261027002210_kkcc"
   },
   {
-   "memory_id": "mem-454",
+   "memory_id": "mem-335",
    "kind": "note",
    "ref": "n7",
    "content": "line_of_sight(operator=O2) -> los_o2",
    "confidence": 1,
    "source": "investigator",
-   "created_at": "2026-10-26T21:37:11.524Z",
+   "created_at": "2026-10-27T00:22:12.925Z",
    "type": "tool_call",
    "summary": "line_of_sight(operator=O2) -> los_o2",
    "by": "investigator",
@@ -3742,19 +3065,19 @@
    "new": [
     "los_o2"
    ],
-   "duration_ms": 24,
+   "duration_ms": 21,
    "zetaris_queries": [],
    "note_id": "n7",
-   "run_id": "run_20261026213702_fgoz"
+   "run_id": "run_20261027002210_kkcc"
   },
   {
-   "memory_id": "mem-456",
+   "memory_id": "mem-337",
    "kind": "note",
    "ref": "n8",
    "content": "line_of_sight(operator=Three) -> los_three",
    "confidence": 1,
    "source": "investigator",
-   "created_at": "2026-10-26T21:37:11.600Z",
+   "created_at": "2026-10-27T00:22:12.992Z",
    "type": "tool_call",
    "summary": "line_of_sight(operator=Three) -> los_three",
    "by": "investigator",
@@ -3769,19 +3092,19 @@
    "new": [
     "los_three"
    ],
-   "duration_ms": 27,
+   "duration_ms": 19,
    "zetaris_queries": [],
    "note_id": "n8",
-   "run_id": "run_20261026213702_fgoz"
+   "run_id": "run_20261027002210_kkcc"
   },
   {
-   "memory_id": "mem-458",
+   "memory_id": "mem-339",
    "kind": "note",
    "ref": "n9",
    "content": "line_of_sight(operator=Vodafone) -> los_vodafone",
    "confidence": 1,
    "source": "investigator",
-   "created_at": "2026-10-26T21:37:11.679Z",
+   "created_at": "2026-10-27T00:22:13.048Z",
    "type": "tool_call",
    "summary": "line_of_sight(operator=Vodafone) -> los_vodafone",
    "by": "investigator",
@@ -3796,19 +3119,19 @@
    "new": [
     "los_vodafone"
    ],
-   "duration_ms": 24,
+   "duration_ms": 21,
    "zetaris_queries": [],
    "note_id": "n9",
-   "run_id": "run_20261026213702_fgoz"
+   "run_id": "run_20261027002210_kkcc"
   },
   {
-   "memory_id": "mem-460",
+   "memory_id": "mem-341",
    "kind": "note",
    "ref": "n10",
    "content": "ofcom_area() -> ofcom_area",
    "confidence": 1,
    "source": "investigator",
-   "created_at": "2026-10-26T21:37:11.749Z",
+   "created_at": "2026-10-27T00:22:13.103Z",
    "type": "tool_call",
    "summary": "ofcom_area() -> ofcom_area",
    "by": "investigator",
@@ -3821,19 +3144,19 @@
    "new": [
     "ofcom_area"
    ],
-   "duration_ms": 22,
+   "duration_ms": 19,
    "zetaris_queries": [],
    "note_id": "n10",
-   "run_id": "run_20261026213702_fgoz"
+   "run_id": "run_20261027002210_kkcc"
   },
   {
-   "memory_id": "mem-464",
+   "memory_id": "mem-345",
    "kind": "note",
    "ref": "n11",
    "content": "live_conditions() -> weather, met_office_warnings, flood_warnings",
    "confidence": 1,
    "source": "investigator",
-   "created_at": "2026-10-26T21:37:11.874Z",
+   "created_at": "2026-10-27T00:22:13.204Z",
    "type": "tool_call",
    "summary": "live_conditions() -> weather, met_office_warnings, flood_warnings",
    "by": "investigator",
@@ -3850,29 +3173,29 @@
     "met_office_warnings",
     "flood_warnings"
    ],
-   "duration_ms": 77,
+   "duration_ms": 66,
    "zetaris_queries": [],
    "note_id": "n11",
-   "run_id": "run_20261026213702_fgoz"
+   "run_id": "run_20261027002210_kkcc"
   },
   {
-   "memory_id": "mem-466",
+   "memory_id": "mem-347",
    "kind": "note",
    "ref": "n12",
-   "content": "diagnostician via nemotron-3.5-super-vl-120b-a12b in 14.3s",
+   "content": "diagnostician via nemotron-3.5-super-vl-120b-a12b in 3.0s",
    "confidence": 1,
    "source": "diagnostician",
-   "created_at": "2026-10-26T21:37:26.320Z",
+   "created_at": "2026-10-27T00:22:16.293Z",
    "type": "llm_call",
-   "summary": "diagnostician via nemotron-3.5-super-vl-120b-a12b in 14.3s",
+   "summary": "diagnostician via nemotron-3.5-super-vl-120b-a12b in 3.0s",
    "by": "diagnostician",
    "round": 1,
    "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-   "duration_ms": 14294,
+   "duration_ms": 2971,
    "tokens": {
-    "prompt_tokens": 2262,
-    "completion_tokens": 504,
-    "total_tokens": 2766,
+    "prompt_tokens": 2115,
+    "completion_tokens": 488,
+    "total_tokens": 2603,
     "prompt_tokens_details": {
      "audio_tokens": null,
      "cached_tokens": 0
@@ -3888,271 +3211,28 @@
    "retries": [],
    "fallback": null,
    "thinking": false,
+   "purpose": null,
    "note_id": "n12",
-   "run_id": "run_20261026213702_fgoz"
+   "run_id": "run_20261027002210_kkcc"
   },
   {
-   "memory_id": "mem-471",
+   "memory_id": "mem-349",
    "kind": "note",
    "ref": "n13",
-   "content": "critic via nemotron-3-ultra-550b-a55b in 24.5s",
-   "confidence": 1,
-   "source": "critic",
-   "created_at": "2026-10-26T21:37:51.028Z",
-   "type": "llm_call",
-   "summary": "critic via nemotron-3-ultra-550b-a55b in 24.5s",
-   "by": "critic",
-   "round": 1,
-   "model": "nvidia/nemotron-3-ultra-550b-a55b",
-   "duration_ms": 24459,
-   "tokens": {
-    "prompt_tokens": 2909,
-    "completion_tokens": 2508,
-    "total_tokens": 5417
-   },
-   "attempts": 1,
-   "retries": [],
-   "fallback": null,
-   "thinking": true,
-   "note_id": "n13",
-   "run_id": "run_20261026213702_fgoz"
-  },
-  {
-   "memory_id": "mem-473",
-   "kind": "note",
-   "ref": "n14",
-   "content": "critic via nemotron-3.5-super-vl-120b-a12b in 1.5s",
-   "confidence": 1,
-   "source": "critic",
-   "created_at": "2026-10-26T21:37:52.699Z",
-   "type": "llm_call",
-   "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 1.5s",
-   "by": "critic",
-   "round": 1,
-   "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-   "duration_ms": 1543,
-   "tokens": {
-    "prompt_tokens": 1341,
-    "completion_tokens": 65,
-    "total_tokens": 1406,
-    "prompt_tokens_details": {
-     "audio_tokens": null,
-     "cached_tokens": 0
-    },
-    "completion_tokens_details": {
-     "accepted_prediction_tokens": null,
-     "audio_tokens": null,
-     "reasoning_tokens": 0,
-     "rejected_prediction_tokens": null
-    }
-   },
-   "attempts": 1,
-   "retries": [],
-   "fallback": null,
-   "thinking": false,
-   "note_id": "n14",
-   "run_id": "run_20261026213702_fgoz"
-  },
-  {
-   "memory_id": "mem-474",
-   "kind": "note",
-   "ref": "n15",
-   "content": "critique of distance_to_mast: rewrote a sentence with an unsupported number",
-   "confidence": 1,
-   "source": "guard",
-   "created_at": "2026-10-26T21:37:52.722Z",
-   "type": "guard",
-   "summary": "critique of distance_to_mast: rewrote a sentence with an unsupported number",
-   "by": "guard",
-   "round": 1,
-   "agent": "critic",
-   "guard_kind": "number_rewritten",
-   "where": "critique of distance_to_mast",
-   "field": "reason",
-   "before": "Crowd-sourced positions add uncertainty, which the belief acknowledges, so the 0.55 confidence is appropriate.",
-   "after": "Crowd-sourced positions add uncertainty, which the belief acknowledges, so the confidence is appropriate.",
-   "note_id": "n15",
-   "run_id": "run_20261026213702_fgoz"
-  },
-  {
-   "memory_id": "mem-476",
-   "kind": "note",
-   "ref": "n16",
-   "content": "critic via nemotron-3.5-super-vl-120b-a12b in 2.9s",
-   "confidence": 1,
-   "source": "critic",
-   "created_at": "2026-10-26T21:37:55.706Z",
-   "type": "llm_call",
-   "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 2.9s",
-   "by": "critic",
-   "round": 1,
-   "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-   "duration_ms": 2893,
-   "tokens": {
-    "prompt_tokens": 897,
-    "completion_tokens": 147,
-    "total_tokens": 1044,
-    "prompt_tokens_details": {
-     "audio_tokens": null,
-     "cached_tokens": 0
-    },
-    "completion_tokens_details": {
-     "accepted_prediction_tokens": null,
-     "audio_tokens": null,
-     "reasoning_tokens": 0,
-     "rejected_prediction_tokens": null
-    }
-   },
-   "attempts": 1,
-   "retries": [],
-   "fallback": null,
-   "thinking": false,
-   "note_id": "n16",
-   "run_id": "run_20261026213702_fgoz"
-  },
-  {
-   "memory_id": "mem-477",
-   "kind": "note",
-   "ref": "n17",
-   "content": "critique of single_operator: rewrote a sentence with an unsupported number",
-   "confidence": 1,
-   "source": "guard",
-   "created_at": "2026-10-26T21:37:55.735Z",
-   "type": "guard",
-   "summary": "critique of single_operator: rewrote a sentence with an unsupported number",
-   "by": "guard",
-   "round": 1,
-   "agent": "critic",
-   "guard_kind": "number_rewritten",
-   "where": "critique of single_operator",
-   "field": "reason",
-   "before": "Only three operators appear within 5 km in the crowd-sourced data, but O2 has a site at 5.7 km (just outside the radius).",
-   "after": "Only 3 operators (EE, Three and Vodafone) have approximate mast sites within 5 km [operators_5km]. Operators are inferred from crowd-sourced data [operators_5km].",
-   "note_id": "n17",
-   "run_id": "run_20261026213702_fgoz"
-  },
-  {
-   "memory_id": "mem-478",
-   "kind": "note",
-   "ref": "n18",
-   "content": "critique of single_operator: rewrote a sentence with an unsupported number",
-   "confidence": 1,
-   "source": "guard",
-   "created_at": "2026-10-26T21:37:55.767Z",
-   "type": "guard",
-   "summary": "critique of single_operator: rewrote a sentence with an unsupported number",
-   "by": "guard",
-   "round": 1,
-   "agent": "critic",
-   "guard_kind": "number_rewritten",
-   "where": "critique of single_operator",
-   "field": "reason",
-   "before": "The belief correctly states a single-operator gap is not proven and assigns a low confidence (0.45).",
-   "after": "The belief correctly states a single-operator gap is not proven and assigns a low confidence.",
-   "note_id": "n18",
-   "run_id": "run_20261026213702_fgoz"
-  },
-  {
-   "memory_id": "mem-481",
-   "kind": "note",
-   "ref": "n19",
-   "content": "round 2 starts",
-   "confidence": 1,
-   "source": "coordinator",
-   "created_at": "2026-10-26T21:37:55.878Z",
-   "type": "round",
-   "summary": "round 2 starts",
-   "by": "coordinator",
-   "round": 2,
-   "requested": [
-    {
-     "tool": "speed_trend",
-     "operator": null,
-     "why": "determine if low speeds are long-standing or only recent"
-    }
-   ],
-   "note_id": "n19",
-   "run_id": "run_20261026213702_fgoz"
-  },
-  {
-   "memory_id": "mem-482",
-   "kind": "note",
-   "ref": "n20",
-   "content": "investigator via nemotron-3.5-super-vl-120b-a12b in 0.8s",
-   "confidence": 1,
-   "source": "investigator",
-   "created_at": "2026-10-26T21:37:56.780Z",
-   "type": "llm_call",
-   "summary": "investigator via nemotron-3.5-super-vl-120b-a12b in 0.8s",
-   "by": "investigator",
-   "round": 2,
-   "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-   "duration_ms": 810,
-   "tokens": {
-    "prompt_tokens": 1619,
-    "completion_tokens": 16,
-    "total_tokens": 1635,
-    "prompt_tokens_details": {
-     "audio_tokens": null,
-     "cached_tokens": 0
-    },
-    "completion_tokens_details": {
-     "accepted_prediction_tokens": null,
-     "audio_tokens": null,
-     "reasoning_tokens": 0,
-     "rejected_prediction_tokens": null
-    }
-   },
-   "attempts": 1,
-   "retries": [],
-   "fallback": null,
-   "thinking": false,
-   "note_id": "n20",
-   "run_id": "run_20261026213702_fgoz"
-  },
-  {
-   "memory_id": "mem-484",
-   "kind": "note",
-   "ref": "n21",
-   "content": "speed_trend() -> speed_trend",
-   "confidence": 1,
-   "source": "investigator",
-   "created_at": "2026-10-26T21:37:56.829Z",
-   "type": "tool_call",
-   "summary": "speed_trend() -> speed_trend",
-   "by": "investigator",
-   "tool": "speed_trend",
-   "args": {},
-   "round": 2,
-   "evidence_ids": [
-    "speed_trend"
-   ],
-   "new": [
-    "speed_trend"
-   ],
-   "duration_ms": 28,
-   "zetaris_queries": [],
-   "note_id": "n21",
-   "run_id": "run_20261026213702_fgoz"
-  },
-  {
-   "memory_id": "mem-485",
-   "kind": "note",
-   "ref": "n22",
-   "content": "diagnostician via nemotron-3.5-super-vl-120b-a12b in 4.3s",
+   "content": "diagnostician via nemotron-3.5-super-vl-120b-a12b in 10.4s",
    "confidence": 1,
    "source": "diagnostician",
-   "created_at": "2026-10-26T21:38:01.217Z",
+   "created_at": "2026-10-27T00:22:26.786Z",
    "type": "llm_call",
-   "summary": "diagnostician via nemotron-3.5-super-vl-120b-a12b in 4.3s",
+   "summary": "diagnostician via nemotron-3.5-super-vl-120b-a12b in 10.4s",
    "by": "diagnostician",
-   "round": 2,
+   "round": 1,
    "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-   "duration_ms": 4263,
+   "duration_ms": 10405,
    "tokens": {
-    "prompt_tokens": 2930,
-    "completion_tokens": 508,
-    "total_tokens": 3438,
+    "prompt_tokens": 1053,
+    "completion_tokens": 138,
+    "total_tokens": 1191,
     "prompt_tokens_details": {
      "audio_tokens": null,
      "cached_tokens": 0
@@ -4168,53 +3248,76 @@
    "retries": [],
    "fallback": null,
    "thinking": false,
-   "note_id": "n22",
-   "run_id": "run_20261026213702_fgoz"
+   "purpose": "guard rewrite",
+   "note_id": "n13",
+   "run_id": "run_20261027002210_kkcc"
   },
   {
-   "memory_id": "mem-486",
+   "memory_id": "mem-350",
    "kind": "note",
-   "ref": "n23",
-   "content": "critic via nemotron-3-ultra-550b-a55b in 39.6s",
+   "ref": "n14",
+   "content": "belief distance_to_mast: rewrote a sentence with an unsupported number",
+   "confidence": 1,
+   "source": "guard",
+   "created_at": "2026-10-27T00:22:26.807Z",
+   "type": "guard",
+   "summary": "belief distance_to_mast: rewrote a sentence with an unsupported number",
+   "by": "guard",
+   "round": 1,
+   "agent": "diagnostician",
+   "guard_kind": "number_rewritten",
+   "where": "belief distance_to_mast",
+   "field": "explanation",
+   "before": "The nearest identified mast is 3.8 km away and other operator sites are 4.5\u20135.7 km away [nearest_site][los_vodafone][los_o2]; distances alone are moderate and operators are inferred from crowd-sourced data.",
+   "after": "The nearest identified mast is 3.8 km away [nearest_site][los_vodafone]; O2's nearest approximate site is 5.7 km away [los_o2]; operators are inferred from crowd-sourced data [nearest_site][los_vodafone][los_o2].",
+   "note_id": "n14",
+   "run_id": "run_20261027002210_kkcc"
+  },
+  {
+   "memory_id": "mem-354",
+   "kind": "note",
+   "ref": "n15",
+   "content": "critic via nemotron-3-ultra-550b-a55b in 53.5s",
    "confidence": 1,
    "source": "critic",
-   "created_at": "2026-10-26T21:38:40.987Z",
+   "created_at": "2026-10-27T00:23:20.498Z",
    "type": "llm_call",
-   "summary": "critic via nemotron-3-ultra-550b-a55b in 39.6s",
+   "summary": "critic via nemotron-3-ultra-550b-a55b in 53.5s",
    "by": "critic",
-   "round": 2,
+   "round": 1,
    "model": "nvidia/nemotron-3-ultra-550b-a55b",
-   "duration_ms": 39627,
+   "duration_ms": 53540,
    "tokens": {
-    "prompt_tokens": 2962,
-    "completion_tokens": 2820,
-    "total_tokens": 5782
+    "prompt_tokens": 2943,
+    "completion_tokens": 2735,
+    "total_tokens": 5678
    },
    "attempts": 1,
    "retries": [],
    "fallback": null,
    "thinking": true,
-   "note_id": "n23",
-   "run_id": "run_20261026213702_fgoz"
+   "purpose": null,
+   "note_id": "n15",
+   "run_id": "run_20261027002210_kkcc"
   },
   {
-   "memory_id": "mem-488",
+   "memory_id": "mem-355",
    "kind": "note",
-   "ref": "n24",
-   "content": "critic via nemotron-3.5-super-vl-120b-a12b in 46.3s; 1 retry",
+   "ref": "n16",
+   "content": "critic via nemotron-3.5-super-vl-120b-a12b in 1.8s",
    "confidence": 1,
    "source": "critic",
-   "created_at": "2026-10-26T21:39:27.355Z",
+   "created_at": "2026-10-27T00:23:22.416Z",
    "type": "llm_call",
-   "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 46.3s; 1 retry",
+   "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 1.8s",
    "by": "critic",
-   "round": 2,
+   "round": 1,
    "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-   "duration_ms": 46269,
+   "duration_ms": 1847,
    "tokens": {
-    "prompt_tokens": 1337,
-    "completion_tokens": 73,
-    "total_tokens": 1410,
+    "prompt_tokens": 1498,
+    "completion_tokens": 211,
+    "total_tokens": 1709,
     "prompt_tokens_details": {
      "audio_tokens": null,
      "cached_tokens": 0
@@ -4226,59 +3329,111 @@
      "rejected_prediction_tokens": null
     }
    },
-   "attempts": 2,
-   "retries": [
-    {
-     "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-     "attempt": 1,
-     "error": "no answer within 45 s",
-     "wait_s": 0
-    }
-   ],
+   "attempts": 1,
+   "retries": [],
    "fallback": null,
    "thinking": false,
-   "note_id": "n24",
-   "run_id": "run_20261026213702_fgoz"
+   "purpose": "guard rewrite",
+   "note_id": "n16",
+   "run_id": "run_20261027002210_kkcc"
   },
   {
-   "memory_id": "mem-489",
+   "memory_id": "mem-356",
    "kind": "note",
-   "ref": "n25",
+   "ref": "n17",
+   "content": "critique of terrain_blocking: rewrote a sentence with an unsupported number",
+   "confidence": 1,
+   "source": "guard",
+   "created_at": "2026-10-27T00:23:22.433Z",
+   "type": "guard",
+   "summary": "critique of terrain_blocking: rewrote a sentence with an unsupported number",
+   "by": "guard",
+   "round": 1,
+   "agent": "critic",
+   "guard_kind": "number_rewritten",
+   "where": "critique of terrain_blocking",
+   "field": "reason",
+   "before": "Four independent line-of-sight computations [los_ee][los_o2][los_three][los_vodafone] show terrain rising 135\u2013291 m above the direct line to every operator's nearest site, well above the 30 m threshold where assumed antenna height would weaken the conclusion.",
+   "after": "Four line-of-sight computations [los_ee][los_o2][los_three][los_vodafone] show terrain rising above the direct line to every operator's nearest site, with assumed antenna heights of 25 m [los_ee][los_o2][los_three][los_vodafone]. Terrain rises 258 m above the line for EE [los_ee], 135 m for O2 [los_o2], 258 m for Three [los_three], and 291 m for Vodafone [los_vodafone].",
+   "note_id": "n17",
+   "run_id": "run_20261027002210_kkcc"
+  },
+  {
+   "memory_id": "mem-358",
+   "kind": "note",
+   "ref": "n18",
+   "content": "critic via nemotron-3.5-super-vl-120b-a12b in 0.7s",
+   "confidence": 1,
+   "source": "critic",
+   "created_at": "2026-10-27T00:23:23.226Z",
+   "type": "llm_call",
+   "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 0.7s",
+   "by": "critic",
+   "round": 1,
+   "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+   "duration_ms": 724,
+   "tokens": {
+    "prompt_tokens": 1127,
+    "completion_tokens": 38,
+    "total_tokens": 1165,
+    "prompt_tokens_details": {
+     "audio_tokens": null,
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "accepted_prediction_tokens": null,
+     "audio_tokens": null,
+     "reasoning_tokens": 0,
+     "rejected_prediction_tokens": null
+    }
+   },
+   "attempts": 1,
+   "retries": [],
+   "fallback": null,
+   "thinking": false,
+   "purpose": "guard rewrite",
+   "note_id": "n18",
+   "run_id": "run_20261027002210_kkcc"
+  },
+  {
+   "memory_id": "mem-359",
+   "kind": "note",
+   "ref": "n19",
    "content": "critique of distance_to_mast: rewrote a sentence with an unsupported number",
    "confidence": 1,
    "source": "guard",
-   "created_at": "2026-10-26T21:39:27.379Z",
+   "created_at": "2026-10-27T00:23:23.242Z",
    "type": "guard",
    "summary": "critique of distance_to_mast: rewrote a sentence with an unsupported number",
    "by": "guard",
-   "round": 2,
+   "round": 1,
    "agent": "critic",
    "guard_kind": "number_rewritten",
    "where": "critique of distance_to_mast",
    "field": "reason",
-   "before": "The belief correctly notes the crowd-sourced inference uncertainty; confidence 0.55 is appropriate.",
-   "after": "The belief correctly notes the crowd-sourced inference uncertainty [los_ee][los_o2][los_three][los_vodafone][nearest_site].",
-   "note_id": "n25",
-   "run_id": "run_20261026213702_fgoz"
+   "before": "Confidence 0.45 appropriately reflects the moderate evidence.",
+   "after": "Confidence appropriately reflects the moderate evidence.",
+   "note_id": "n19",
+   "run_id": "run_20261027002210_kkcc"
   },
   {
-   "memory_id": "mem-491",
+   "memory_id": "mem-361",
    "kind": "note",
-   "ref": "n26",
-   "content": "critic via nemotron-3.5-super-vl-120b-a12b in 9.1s",
+   "ref": "n20",
+   "content": "critic via nemotron-3.5-super-vl-120b-a12b in 0.8s",
    "confidence": 1,
    "source": "critic",
-   "created_at": "2026-10-26T21:39:36.552Z",
+   "created_at": "2026-10-27T00:23:24.144Z",
    "type": "llm_call",
-   "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 9.1s",
+   "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 0.8s",
    "by": "critic",
-   "round": 2,
+   "round": 1,
    "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-   "duration_ms": 9090,
+   "duration_ms": 837,
    "tokens": {
-    "prompt_tokens": 889,
-    "completion_tokens": 131,
-    "total_tokens": 1020,
+    "prompt_tokens": 926,
+    "completion_tokens": 45,
+    "total_tokens": 971,
     "prompt_tokens_details": {
      "audio_tokens": null,
      "cached_tokens": 0
@@ -4294,109 +3449,107 @@
    "retries": [],
    "fallback": null,
    "thinking": false,
-   "note_id": "n26",
-   "run_id": "run_20261026213702_fgoz"
+   "purpose": "guard rewrite",
+   "note_id": "n20",
+   "run_id": "run_20261027002210_kkcc"
   },
   {
-   "memory_id": "mem-492",
+   "memory_id": "mem-362",
    "kind": "note",
-   "ref": "n27",
-   "content": "critique of single_operator: removed a sentence with numbers not in the cited evidence (5.7)",
+   "ref": "n21",
+   "content": "critique of weather: rewrote a sentence with an unsupported number",
    "confidence": 1,
    "source": "guard",
-   "created_at": "2026-10-26T21:39:36.586Z",
+   "created_at": "2026-10-27T00:23:24.163Z",
    "type": "guard",
-   "summary": "critique of single_operator: removed a sentence with numbers not in the cited evidence (5.7)",
+   "summary": "critique of weather: rewrote a sentence with an unsupported number",
    "by": "guard",
-   "round": 2,
+   "round": 1,
    "agent": "critic",
-   "guard_kind": "sentence_removed",
-   "where": "critique of single_operator",
-   "field": "reason",
-   "removed": "The cited evidence contradicts the belief: operators_5km shows three operators (EE, Three, Vodafone) with sites within 5 km, and los_o2 places an O2 site just outside that radius (5.7 km).",
-   "numbers": [
-    "5.7"
-   ],
-   "note_id": "n27",
-   "run_id": "run_20261026213702_fgoz"
-  },
-  {
-   "memory_id": "mem-494",
-   "kind": "note",
-   "ref": "n28",
-   "content": "critic via nemotron-3.5-super-vl-120b-a12b in 1.4s",
-   "confidence": 1,
-   "source": "critic",
-   "created_at": "2026-10-26T21:39:38.138Z",
-   "type": "llm_call",
-   "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 1.4s",
-   "by": "critic",
-   "round": 2,
-   "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-   "duration_ms": 1417,
-   "tokens": {
-    "prompt_tokens": 907,
-    "completion_tokens": 75,
-    "total_tokens": 982,
-    "prompt_tokens_details": {
-     "audio_tokens": null,
-     "cached_tokens": 0
-    },
-    "completion_tokens_details": {
-     "accepted_prediction_tokens": null,
-     "audio_tokens": null,
-     "reasoning_tokens": 0,
-     "rejected_prediction_tokens": null
-    }
-   },
-   "attempts": 1,
-   "retries": [],
-   "fallback": null,
-   "thinking": false,
-   "note_id": "n28",
-   "run_id": "run_20261026213702_fgoz"
-  },
-  {
-   "memory_id": "mem-495",
-   "kind": "note",
-   "ref": "n29",
-   "content": "critique of weather: removed a sentence with numbers not in the cited evidence (0.40)",
-   "confidence": 1,
-   "source": "guard",
-   "created_at": "2026-10-26T21:39:38.167Z",
-   "type": "guard",
-   "summary": "critique of weather: removed a sentence with numbers not in the cited evidence (0.40)",
-   "by": "guard",
-   "round": 2,
-   "agent": "critic",
-   "guard_kind": "sentence_removed",
+   "guard_kind": "number_rewritten",
    "where": "critique of weather",
    "field": "reason",
-   "removed": "Speed trend data is unavailable (no trend), so the time pattern of any service issue is unknown; confidence 0.40 is fair.",
-   "numbers": [
-    "0.40"
-   ],
-   "note_id": "n29",
-   "run_id": "run_20261026213702_fgoz"
+   "before": "Confidence 0.40 matches the weak evidence.",
+   "after": "Confidence matches the weak evidence. [met_office_warnings][weather]",
+   "note_id": "n21",
+   "run_id": "run_20261027002210_kkcc"
   },
   {
-   "memory_id": "mem-497",
+   "memory_id": "mem-364",
    "kind": "note",
-   "ref": "n30",
-   "content": "advisor via nemotron-3.5-super-vl-120b-a12b in 14.1s",
+   "ref": "n22",
+   "content": "critic via nemotron-3.5-super-vl-120b-a12b in 0.7s",
+   "confidence": 1,
+   "source": "critic",
+   "created_at": "2026-10-27T00:23:24.969Z",
+   "type": "llm_call",
+   "summary": "critic via nemotron-3.5-super-vl-120b-a12b in 0.7s",
+   "by": "critic",
+   "round": 1,
+   "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+   "duration_ms": 731,
+   "tokens": {
+    "prompt_tokens": 1064,
+    "completion_tokens": 32,
+    "total_tokens": 1096,
+    "prompt_tokens_details": {
+     "audio_tokens": null,
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "accepted_prediction_tokens": null,
+     "audio_tokens": null,
+     "reasoning_tokens": 0,
+     "rejected_prediction_tokens": null
+    }
+   },
+   "attempts": 1,
+   "retries": [],
+   "fallback": null,
+   "thinking": false,
+   "purpose": "guard rewrite",
+   "note_id": "n22",
+   "run_id": "run_20261027002210_kkcc"
+  },
+  {
+   "memory_id": "mem-365",
+   "kind": "note",
+   "ref": "n23",
+   "content": "critique of insufficient_data: rewrote a sentence with an unsupported number",
+   "confidence": 1,
+   "source": "guard",
+   "created_at": "2026-10-27T00:23:24.984Z",
+   "type": "guard",
+   "summary": "critique of insufficient_data: rewrote a sentence with an unsupported number",
+   "by": "guard",
+   "round": 1,
+   "agent": "critic",
+   "guard_kind": "number_rewritten",
+   "where": "critique of insufficient_data",
+   "field": "reason",
+   "before": "Confidence 0.35 is appropriate.",
+   "after": "Confidence is appropriate.",
+   "note_id": "n23",
+   "run_id": "run_20261027002210_kkcc"
+  },
+  {
+   "memory_id": "mem-367",
+   "kind": "note",
+   "ref": "n24",
+   "content": "advisor via nemotron-3.5-super-vl-120b-a12b in 6.3s",
    "confidence": 1,
    "source": "advisor",
-   "created_at": "2026-10-26T21:39:52.769Z",
+   "created_at": "2026-10-27T00:23:31.723Z",
    "type": "llm_call",
-   "summary": "advisor via nemotron-3.5-super-vl-120b-a12b in 14.1s",
+   "summary": "advisor via nemotron-3.5-super-vl-120b-a12b in 6.3s",
    "by": "advisor",
    "round": 0,
    "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-   "duration_ms": 14129,
+   "duration_ms": 6333,
    "tokens": {
-    "prompt_tokens": 2454,
-    "completion_tokens": 1117,
-    "total_tokens": 3571,
+    "prompt_tokens": 2247,
+    "completion_tokens": 1116,
+    "total_tokens": 3363,
     "prompt_tokens_details": {
      "audio_tokens": null,
      "cached_tokens": 0
@@ -4412,244 +3565,83 @@
    "retries": [],
    "fallback": null,
    "thinking": false,
-   "note_id": "n30",
-   "run_id": "run_20261026213702_fgoz"
-  },
-  {
-   "memory_id": "mem-498",
-   "kind": "note",
-   "ref": "n31",
-   "content": "advisor: removed citations not in Meterless: distance_to_mast",
-   "confidence": 1,
-   "source": "guard",
-   "created_at": "2026-10-26T21:39:52.806Z",
-   "type": "guard",
-   "summary": "advisor: removed citations not in Meterless: distance_to_mast",
-   "by": "guard",
-   "round": 0,
-   "agent": "advisor",
-   "guard_kind": "unknown_citation",
-   "where": "advisor",
-   "removed": [
-    "distance_to_mast"
-   ],
-   "note_id": "n31",
-   "run_id": "run_20261026213702_fgoz"
-  },
-  {
-   "memory_id": "mem-499",
-   "kind": "note",
-   "ref": "n32",
-   "content": "advisor ruled_out single_operator: removed citations not in Meterless: single_operator",
-   "confidence": 1,
-   "source": "guard",
-   "created_at": "2026-10-26T21:39:52.827Z",
-   "type": "guard",
-   "summary": "advisor ruled_out single_operator: removed citations not in Meterless: single_operator",
-   "by": "guard",
-   "round": 0,
-   "agent": "advisor",
-   "guard_kind": "unknown_citation",
-   "where": "advisor ruled_out single_operator",
-   "removed": [
-    "single_operator"
-   ],
-   "note_id": "n32",
-   "run_id": "run_20261026213702_fgoz"
-  },
-  {
-   "memory_id": "mem-500",
-   "kind": "note",
-   "ref": "n33",
-   "content": "advisor explanation: removed [distance_to_mast] from the text",
-   "confidence": 1,
-   "source": "guard",
-   "created_at": "2026-10-26T21:39:52.854Z",
-   "type": "guard",
-   "summary": "advisor explanation: removed [distance_to_mast] from the text",
-   "by": "guard",
-   "round": 0,
-   "agent": "advisor",
-   "guard_kind": "unknown_citation",
-   "where": "advisor explanation",
-   "removed": [
-    "distance_to_mast"
-   ],
-   "note_id": "n33",
-   "run_id": "run_20261026213702_fgoz"
-  },
-  {
-   "memory_id": "mem-501",
-   "kind": "note",
-   "ref": "n34",
-   "content": "advisor ruled_out.0: removed [single_operator] from the text",
-   "confidence": 1,
-   "source": "guard",
-   "created_at": "2026-10-26T21:39:52.888Z",
-   "type": "guard",
-   "summary": "advisor ruled_out.0: removed [single_operator] from the text",
-   "by": "guard",
-   "round": 0,
-   "agent": "advisor",
-   "guard_kind": "unknown_citation",
-   "where": "advisor ruled_out.0",
-   "removed": [
-    "single_operator"
-   ],
-   "note_id": "n34",
-   "run_id": "run_20261026213702_fgoz"
+   "purpose": null,
+   "note_id": "n24",
+   "run_id": "run_20261027002210_kkcc"
   }
  ],
  "critiques": [
   {
-   "memory_id": "mem-472",
+   "memory_id": "mem-357",
    "kind": "critique",
    "ref": "c1",
-   "content": "approve on terrain_blocking: All four line-of-sight checks show terrain rising 129\u2013288 m above the direct line to the nearest identified sites, with assumed 25 m antenna heights. Even allowing for higher antennas, the obstructions are substantial. The evidence is strong and consistent.",
+   "content": "approve on terrain_blocking: Four line-of-sight computations [los_ee][los_o2][los_three][los_vodafone] show terrain rising above the direct line to every operator's nearest site, with assumed antenna heights of 25 m [los_ee][los_o2][los_three][los_vodafone]. Terrain rises 258 m above the line for EE [los_ee], 135 m for O2 [los_o2], 258 m for Three [los_three], and 291 m for Vodafone [los_vodafone]. The network_comparison item confirms no operator has a clear line of sight. The opposing evidence [speed_neighbours] is weak (only 2 tests in neighbouring cells) and shows some signal exists nearby, which is consistent with 'weakened, not necessarily lost'.",
    "confidence": 1,
    "source": "critic",
-   "created_at": "2026-10-26T21:37:51.083Z",
+   "created_at": "2026-10-27T00:23:22.453Z",
    "belief_id": "terrain_blocking",
    "verdict": "approve",
-   "reason": "All four line-of-sight checks show terrain rising 129\u2013288 m above the direct line to the nearest identified sites, with assumed 25 m antenna heights. Even allowing for higher antennas, the obstructions are substantial. The evidence is strong and consistent.",
+   "reason": "Four line-of-sight computations [los_ee][los_o2][los_three][los_vodafone] show terrain rising above the direct line to every operator's nearest site, with assumed antenna heights of 25 m [los_ee][los_o2][los_three][los_vodafone]. Terrain rises 258 m above the line for EE [los_ee], 135 m for O2 [los_o2], 258 m for Three [los_three], and 291 m for Vodafone [los_vodafone]. The network_comparison item confirms no operator has a clear line of sight. The opposing evidence [speed_neighbours] is weak (only 2 tests in neighbouring cells) and shows some signal exists nearby, which is consistent with 'weakened, not necessarily lost'.",
    "requested_checks": [],
    "suggested_confidence": null,
    "round": 1,
    "by": "critic",
    "critique_id": "c1",
-   "run_id": "run_20261026213702_fgoz"
+   "run_id": "run_20261027002210_kkcc"
   },
   {
-   "memory_id": "mem-475",
+   "memory_id": "mem-360",
    "kind": "critique",
    "ref": "c2",
-   "content": "approve on distance_to_mast: The nearest site is 3.8 km away and all operator sites lie 3.8\u20135.7 km distant. Crowd-sourced positions add uncertainty, which the belief acknowledges, so the confidence is appropriate.",
+   "content": "approve on distance_to_mast: The nearest identified mast is 3.8 km away (Vodafone) [nearest_site][los_vodafone] and O2's nearest is 5.7 km [los_o2]; operators are inferred from crowd-sourced data (moderate reliability). Distance is a plausible contributing factor, especially in combination with terrain blocking. Confidence appropriately reflects the moderate evidence.",
    "confidence": 1,
    "source": "critic",
-   "created_at": "2026-10-26T21:37:52.743Z",
+   "created_at": "2026-10-27T00:23:23.259Z",
    "belief_id": "distance_to_mast",
    "verdict": "approve",
-   "reason": "The nearest site is 3.8 km away and all operator sites lie 3.8\u20135.7 km distant. Crowd-sourced positions add uncertainty, which the belief acknowledges, so the confidence is appropriate.",
+   "reason": "The nearest identified mast is 3.8 km away (Vodafone) [nearest_site][los_vodafone] and O2's nearest is 5.7 km [los_o2]; operators are inferred from crowd-sourced data (moderate reliability). Distance is a plausible contributing factor, especially in combination with terrain blocking. Confidence appropriately reflects the moderate evidence.",
    "requested_checks": [],
    "suggested_confidence": null,
    "round": 1,
    "by": "critic",
    "critique_id": "c2",
-   "run_id": "run_20261026213702_fgoz"
+   "run_id": "run_20261027002210_kkcc"
   },
   {
-   "memory_id": "mem-479",
+   "memory_id": "mem-363",
    "kind": "critique",
    "ref": "c3",
-   "content": "approve on single_operator: Only 3 operators (EE, Three and Vodafone) have approximate mast sites within 5 km [operators_5km]. Operators are inferred from crowd-sourced data [operators_5km]. The belief correctly states a single-operator gap is not proven and assigns a low confidence.",
+   "content": "approve on weather: A Met Office yellow wind warning and forecast gusts up to 81.4 km/h [weather][met_office_warnings] could explain current or recent degradation. The evidence is weak (forecast sample) and the belief correctly limits its scope to current/recent effects. No speed_trend or historical speed data exists to determine whether poor service is long-standing, so the time pattern is unknown and no downgrade is warranted. Confidence matches the weak evidence. [met_office_warnings][weather]",
    "confidence": 1,
    "source": "critic",
-   "created_at": "2026-10-26T21:37:55.799Z",
-   "belief_id": "single_operator",
+   "created_at": "2026-10-27T00:23:24.180Z",
+   "belief_id": "weather",
    "verdict": "approve",
-   "reason": "Only 3 operators (EE, Three and Vodafone) have approximate mast sites within 5 km [operators_5km]. Operators are inferred from crowd-sourced data [operators_5km]. The belief correctly states a single-operator gap is not proven and assigns a low confidence.",
+   "reason": "A Met Office yellow wind warning and forecast gusts up to 81.4 km/h [weather][met_office_warnings] could explain current or recent degradation. The evidence is weak (forecast sample) and the belief correctly limits its scope to current/recent effects. No speed_trend or historical speed data exists to determine whether poor service is long-standing, so the time pattern is unknown and no downgrade is warranted. Confidence matches the weak evidence. [met_office_warnings][weather]",
    "requested_checks": [],
    "suggested_confidence": null,
    "round": 1,
    "by": "critic",
    "critique_id": "c3",
-   "run_id": "run_20261026213702_fgoz"
+   "run_id": "run_20261027002210_kkcc"
   },
   {
-   "memory_id": "mem-480",
+   "memory_id": "mem-366",
    "kind": "critique",
    "ref": "c4",
-   "content": "needs_evidence on weather: The weather evidence is live (forecast and warning) and can only explain a recent drop. Without speed trend data we cannot tell whether poor service is persistent (which would downgrade weather's role) or only recent (which would support it).",
+   "content": "approve on insufficient_data: No Ookla speed tests exist in this cell or within 1 km [speed_cell][speed_1km], neighbouring cells provide only 2 tests [speed_neighbours], and only three operators have sites within 5 km [operators_5km]. The evidence supports the conclusion that the exact point-level cause cannot be confirmed. Confidence is appropriate.",
    "confidence": 1,
    "source": "critic",
-   "created_at": "2026-10-26T21:37:55.826Z",
-   "belief_id": "weather",
-   "verdict": "needs_evidence",
-   "reason": "The weather evidence is live (forecast and warning) and can only explain a recent drop. Without speed trend data we cannot tell whether poor service is persistent (which would downgrade weather's role) or only recent (which would support it).",
-   "requested_checks": [
-    {
-     "tool": "speed_trend",
-     "operator": null,
-     "why": "determine if low speeds are long-standing or only recent"
-    }
-   ],
+   "created_at": "2026-10-27T00:23:25.008Z",
+   "belief_id": "insufficient_data",
+   "verdict": "approve",
+   "reason": "No Ookla speed tests exist in this cell or within 1 km [speed_cell][speed_1km], neighbouring cells provide only 2 tests [speed_neighbours], and only three operators have sites within 5 km [operators_5km]. The evidence supports the conclusion that the exact point-level cause cannot be confirmed. Confidence is appropriate.",
+   "requested_checks": [],
    "suggested_confidence": null,
    "round": 1,
    "by": "critic",
    "critique_id": "c4",
-   "run_id": "run_20261026213702_fgoz"
-  },
-  {
-   "memory_id": "mem-487",
-   "kind": "critique",
-   "ref": "c5",
-   "content": "approve on terrain_blocking: Four independent line-of-sight checks (strong evidence) show terrain rising 129\u2013288 m above the direct line to each operator's nearest crowd-sourced site. The network_comparison summary confirms no operator has a clear line of sight. Assumed antenna heights (25 m) are a noted uncertainty, but the obstruction margins are large enough that the conclusion holds.",
-   "confidence": 1,
-   "source": "critic",
-   "created_at": "2026-10-26T21:38:41.024Z",
-   "belief_id": "terrain_blocking",
-   "verdict": "approve",
-   "reason": "Four independent line-of-sight checks (strong evidence) show terrain rising 129\u2013288 m above the direct line to each operator's nearest crowd-sourced site. The network_comparison summary confirms no operator has a clear line of sight. Assumed antenna heights (25 m) are a noted uncertainty, but the obstruction margins are large enough that the conclusion holds.",
-   "requested_checks": [],
-   "suggested_confidence": null,
-   "round": 2,
-   "by": "critic",
-   "critique_id": "c5",
-   "run_id": "run_20261026213702_fgoz"
-  },
-  {
-   "memory_id": "mem-490",
-   "kind": "critique",
-   "ref": "c6",
-   "content": "approve on distance_to_mast: The nearest identified site is 3.8 km away and all four operators' nearest sites lie 3.8\u20135.7 km distant, per moderate-strength crowd-sourced site data and strong line-of-sight computations. The belief correctly notes the crowd-sourced inference uncertainty [los_ee][los_o2][los_three][los_vodafone][nearest_site].",
-   "confidence": 1,
-   "source": "critic",
-   "created_at": "2026-10-26T21:39:27.409Z",
-   "belief_id": "distance_to_mast",
-   "verdict": "approve",
-   "reason": "The nearest identified site is 3.8 km away and all four operators' nearest sites lie 3.8\u20135.7 km distant, per moderate-strength crowd-sourced site data and strong line-of-sight computations. The belief correctly notes the crowd-sourced inference uncertainty [los_ee][los_o2][los_three][los_vodafone][nearest_site].",
-   "requested_checks": [],
-   "suggested_confidence": null,
-   "round": 2,
-   "by": "critic",
-   "critique_id": "c6",
-   "run_id": "run_20261026213702_fgoz"
-  },
-  {
-   "memory_id": "mem-493",
-   "kind": "critique",
-   "ref": "c7",
-   "content": "reject on single_operator: This indicates multi-operator presence, not a single-operator gap.",
-   "confidence": 1,
-   "source": "critic",
-   "created_at": "2026-10-26T21:39:36.630Z",
-   "belief_id": "single_operator",
-   "verdict": "reject",
-   "reason": "This indicates multi-operator presence, not a single-operator gap.",
-   "requested_checks": [],
-   "suggested_confidence": 0.1,
-   "round": 2,
-   "by": "critic",
-   "critique_id": "c7",
-   "run_id": "run_20261026213702_fgoz"
-  },
-  {
-   "memory_id": "mem-496",
-   "kind": "critique",
-   "ref": "c8",
-   "content": "approve on weather: Live weather and Met Office warning (strong) confirm severe conditions (gusts to 74.9 km/h, heavy rain) that can degrade signals. The belief correctly limits the explanation to current/recent degradation.",
-   "confidence": 1,
-   "source": "critic",
-   "created_at": "2026-10-26T21:39:38.188Z",
-   "belief_id": "weather",
-   "verdict": "approve",
-   "reason": "Live weather and Met Office warning (strong) confirm severe conditions (gusts to 74.9 km/h, heavy rain) that can degrade signals. The belief correctly limits the explanation to current/recent degradation.",
-   "requested_checks": [],
-   "suggested_confidence": null,
-   "round": 2,
-   "by": "critic",
-   "critique_id": "c8",
-   "run_id": "run_20261026213702_fgoz"
+   "run_id": "run_20261027002210_kkcc"
   }
  ]
 }

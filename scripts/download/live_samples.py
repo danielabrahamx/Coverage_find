@@ -19,7 +19,7 @@ from coverage_detective.sources import flood_warnings, geocode, live, met_office
 
 # Search texts saved for the geocoder: the postcode, a place in the list, and one that is
 # not (postcodes.io has no "Great Langdale", so the approximate retry is saved too).
-LOOKUPS = ["WC2N 5DU", "Great Langdale", "Rhayader", "ZZ1 1ZZ"]
+LOOKUPS = ["WC2N 5DU", "Great Langdale", "Rhayader", "Sutton St Edmund", "ZZ1 1ZZ"]
 
 
 def main() -> None:

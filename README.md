@@ -1,10 +1,127 @@
 # Coverage Detective
 
-Explains why mobile signal is poor at a UK location using public data (measured speeds,
-mast locations, terrain, Ofcom coverage, weather), and ranks coverage gaps for operators
-and councils. Data is queried through Zetaris.
+**Why is my mobile signal bad here, and where should a council act?** Coverage Detective answers both from
+real public data (measured speeds, mast sites, terrain, Ofcom coverage, live weather and warnings). A small
+team of AI agents investigates, argues with each other and writes a plain-English explanation in which every
+claim points to an evidence item and the SQL behind it. Built for the Open Agent Hackathon ("The Agent That
+Can Explain Why").
 
-## Setup
+- **My signal** (`/signal`): pick an exact spot; the agents rank the likely causes with confidence, say what
+  was ruled out, which network is likely best, what to do, and draft an evidence letter.
+- **Council view** (`/council`): ranked **gap zones** (poorly served people) and **improvement opportunities**
+  (not poorly served, but a measurable weakness), a fix view with candidate mast sites and the people each
+  would reach, agent diagnoses on demand and a priority summary for any area.
+- **Explore** (`/`): the data itself, cell by cell.
+
+## Try it in two minutes (sample mode: no Zetaris, no network, no API key)
+
+```bash
+python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+(cd meterless_service && npm install)        # Node 18+, for the Meterless memory service
+.venv/bin/python run.py --sample             # http://localhost:8000
+```
+
+Sample mode answers every database query with DuckDB over small committed extracts of the Zetaris sources
+(`data/samples/zetaris/`, DEM crops in `data/samples/dem/`), uses saved live responses (`data/samples/`) and
+replays the recorded agent replies of the examples (`examples/`); Meterless still runs locally. Only the
+example places and zones can be diagnosed there; anything else is refused with a clear message, and replayed
+results are labelled "recorded". Open `/signal?lat=54.445&lon=-3.105` and press "Diagnose with agents", or
+`/council?zone=Z00072`.
+
+## Architecture
+
+```
+                 pages (/signal, /council, /)  ──  FastAPI  ──  coordinator (the loop)
+                                                                   │
+        ┌──────────────── evidence layer ───────┐    ┌──── shared case file ────┐    ┌── model layer ──┐
+        │ Zetaris: one Lightning source per     │    │ Meterless H-MEM: evidence, │    │ NVIDIA Nemotron │
+        │ dataset (CD_CELLS, CD_OOKLA_*, CD_MASTS│◄──►│ beliefs + revisions, critiques,│◄──►│ 3.5 Super: tools,│
+        │ _*, CD_OFCOM_*, CD_TERRAIN, CD_LOS,    │    │ notes, trust-ledger audit │    │ diagnosis, advice│
+        │ CD_GAP_ZONES, CD_OPP_ZONES, ... and the│    │ Meterless World Model:    │    │ 3 Ultra (thinking│
+        │ live REST source CD_LIVE_EA_FLOODS)    │    │ places, zones, sites,     │    │ on): the critic  │
+        │ + DEM line of sight, live APIs         │    │ operators, warnings, events│    └─────────────────┘
+        └────────────────────────────────────────┘    └───────────────────────────┘
+                       code guard after every agent: citations, weak evidence, numbers, wording
+```
+
+- **Zetaris is the evidence layer.** Every dataset is its own Lightning database and every query is logged
+  with the evidence item it produced, so the UI can show the exact SQL behind each claim
+  ([data report](docs/data_report.md): row counts, freshness and query times through Zetaris).
+- **Meterless is the shared case file.** Agents never message each other: each reads the run's evidence,
+  beliefs and critiques from Meterless H-MEM and writes its own back. Belief revisions are trust-ledger
+  updates (who, old → new confidence, reason), so the audit trail is the trace you see. The World Model holds
+  the place or zone, its sites per operator (with the line-of-sight result), warnings and events, and earlier
+  diagnoses nearby are looked up as context.
+- **Nemotron is the model layer** (`agents/llm.py`, OpenAI-compatible API): 3.5 Super for the investigator
+  (tool calling), diagnostician, advisor, letter writer and fix planner (strict JSON schema); 3 Ultra with
+  thinking for the critic. 5xx bursts are retried after 2 s and 6 s, then the other model answers; retries and
+  switches are in the trace.
+
+## The agent loop
+
+```
+investigate ──► diagnose ──► critique ──► critic asked for checks and round < 3? ──yes──► investigate again
+                                                │no
+                                                ▼
+                         act: advisor (point)  /  fix planner ⇄ critic review (zone)
+```
+
+1. **Investigator** chooses tools (speeds, trend, sites, line of sight per operator, terrain, Ofcom area,
+   live conditions, earlier diagnoses; for zones: zone summary, candidate sites). Each tool writes evidence
+   items with stable ids, their Zetaris SQL and a strength (strong / moderate / weak).
+2. **Diagnostician** ranks causes from a fixed set (distance_to_mast, terrain_blocking, single_operator,
+   capacity_strain, weather, active_incident, insufficient_data) with confidence, citing evidence ids.
+   "Insufficient data" is a valid answer.
+3. **Critic** approves, asks for specific checks (which send the loop round again), downgrades or rejects,
+   with reasons. Checks it applies: citations, evidence strength, unchecked alternatives, contradictions and
+   time fit (a storm cannot explain years of poor speeds).
+4. **Advisor** explains the reviewed beliefs for a resident, council officer or operator; for zones the
+   **fix planner** proposes a fix from the candidate sites and the critic reviews it (one revision at most).
+
+**The code guard** runs after every agent and records every intervention in Meterless: citations to evidence
+that does not exist are removed (a belief left with none is dropped); a belief resting only on weak evidence
+(under 30 tests, crowd-sourced sites only, unknown operators, a region-wide weather warning) is capped at
+0.5; earlier diagnoses are context, never support; a confidence change needs a reason; every number must
+match the cited evidence (else one rewrite, then the sentence is removed); improvement opportunities must be
+called opportunities, never gaps or "no coverage". If an agent fails twice the run returns a partial result
+built from the evidence.
+
+## Pages
+
+| My signal: the agents' result | How the agents decided | Council view: fix with a candidate |
+|---|---|---|
+| ![](docs/screenshots/ui_cleanup/after_great_langdale_result.png) | ![](docs/screenshots/ui_cleanup/after_ousby_agents_decided_round_open.png) | ![](docs/screenshots/council/06_ousby_fix_with_candidate.png) |
+
+- Result tab: headline, recommended fix or best network, "why we think this" (confidence bars; hover shows
+  old → new with the reason), ruled out, actions, an editable evidence letter (Markdown download).
+- How the agents decided: one card per round from the Meterless audit trail; technical details (models,
+  timings, tools, guard codes) on demand.
+- Evidence: every item with its Zetaris SQL, and the run's World Model.
+- Council view: "Analyse area" picker, Gaps | Opportunities | Both, zoom-based lists that always match the
+  map, a Diagnose button per zone, "Diagnose the top 3 in view", Today / With candidate N.
+
+## Examples
+
+| Example | What it shows | Agents' headline | Rounds | Recorded in |
+|---|---|---|---:|---:|
+| [`central_london`](examples/central_london/) | fast measured service: "no strong cause" (good data, no cause above 0.3) | No strong cause was found; the service measures well here. | 1 | 49 s |
+| [`great_langdale`](examples/great_langdale/) | hills block every operator (terrain 0.70, critic approves citing the margins); 3 evidence letters | Hills between you and the nearest masts are the likely cause. | 1 | 81 s |
+| [`near_rhayader`](examples/near_rhayader/) | the loop at work: the critic asks for more checks (round 2) and downgrades a weak single-operator belief | Terrain blocking EE and Three signals is the likely cause. | 2 | 180 s |
+| [`opportunity_windermere`](examples/opportunity_windermere/) | improvement opportunity: capacity upgrade, critic downgrades a weak belief, opportunity wording checked | Busy-network capacity strain is the likely cause. | 1 | 92 s |
+| [`remote_powys`](examples/remote_powys/) | insufficient data: no tests, no site within 10 km | Not enough data to say why: there are no measured speeds at this point or within 1 km and no mast sites in our data within 10 km, so operators could not be identified. | 1 | 54 s |
+| [`summary_uk`](examples/summary_uk/) | priority summary, gap and opportunity sections |  |  |  |
+| [`summary_westmorland`](examples/summary_westmorland/) | priority summary for one council |  |  |  |
+| [`sutton_st_edmund`](examples/sutton_st_edmund/) | flat Fens: distance, not terrain | Distance to the nearest mast is the likely cause. | 1 | 72 s |
+| [`zone_ousby`](examples/zone_ousby/) | gap zone with no measurements: candidate sites, fix plan reviewed by the critic | No strong cause was found because there are no recent measurements. | 1 | 96 s |
+
+Each example folder holds the result (`diagnosis.json`), the Meterless trace, evidence and World Model, the
+progress steps and the recorded agent replies (keyed by example + agent + round + call). They were recorded
+with `scripts/record_examples.py` (sample data, live model); `examples/index.json` records the prompts' hash,
+and a test fails if a prompt changes after recording. `examples/phase4/` and `examples/compare/` keep earlier
+runs made during development.
+
+## Run it with the full data
+
 
 ```bash
 python3 -m venv .venv
@@ -119,13 +236,20 @@ Details, processing steps and exact licences: `data/README.md`.
 .venv/bin/python scripts/download/dem.py           # Copernicus DEM GLO-30 tiles (~1.4 GB)
 .venv/bin/python scripts/download/ons_boundaries.py # ONS constituency + local authority boundaries
 .venv/bin/python scripts/process/build_ofcom.py    # Ofcom July 2025 area coverage per cell (zip in data/raw/ofcom/)
+.venv/bin/python scripts/process/build_terrain.py  # elevation and line of sight per cell
+.venv/bin/python scripts/process/build_places.py   # OSM place names (zone names)
+.venv/bin/python scripts/process/build_zones.py    # gap zones and improvement opportunities
+.venv/bin/python scripts/zetaris/register_sources.py  # every source into Zetaris
+.venv/bin/python scripts/check_data.py             # the data report (docs/data_report.md)
+.venv/bin/python scripts/build_samples.py          # extracts for sample mode (data/samples/zetaris, dem)
+.venv/bin/python scripts/record_examples.py        # re-record the examples (needs LLM_API_KEY)
 ```
 
 Every script can be re-run safely; pass `--force` to rebuild an existing output.
 
 ## Data explorer
 
-A map of every layer, for looking at the data before the agents exist.
+A map of every layer.
 
 ```bash
 .venv/bin/python scripts/process/build_web_layers.py   # precompute map layers -> data/web/layers/
@@ -182,8 +306,9 @@ operator's line of sight) and a panel with:
 - Measured speeds within 1 km (Ookla tiles), in the cell and the neighbouring cells, with
   test counts and strength; the 4-quarter trend; Ofcom area figures (area-level wording);
   current weather, Met Office warnings and flood warnings.
-- Placeholders for the agents: "Explanation (agents)", "Diagnose with agents" and "Draft
-  evidence letter" (disabled); "See this area in Explore" goes back to the area view.
+- **Why: the agents' diagnosis** (`POST /api/diagnose`, polled at `GET /api/runs/{id}`): the tabbed run view
+  (Result / How the agents decided / Evidence), the evidence letter (`POST /api/runs/{id}/letter`), and a
+  `?run=` deep link to reopen a run. "See this area in Explore" goes back to the area view.
 
 ![My signal, near Rhayader](docs/screenshots/signal_rhayader.png)
 
@@ -194,8 +319,14 @@ the gaps? Pick an area (UK, a nation or a council), adjust the priority weights,
 ranked table of **gap zones** with a map coloured by score. Opening a zone shows its cells,
 an evidence summary, a rule-based fix and the top candidate sites with lines to the cells
 they would reach. Each zone links to Explore (its cells outlined) and My signal (its
-centre). CSV export of the ranking. Agent placeholders: "Diagnose zone", "Write priority
-summary", "Evidence pack".
+centre). CSV export of the ranking. Two zone types: gap zones (below) and **improvement opportunities**
+(cells that are not poorly served but have a measurable weakness: speed well below the area or UK median,
+falling speeds, only 1-2 operators identified, or a busy-network signal; reasons computed in code,
+`planning/opportunities.py`; 1,816 zones, teal on the map, "limited data" under 10 tests). The list always
+matches the map (`GET /api/council/view`; zoom caps in `config.COUNCIL_VIEW`: below zoom 10 the top 40 gap
+zones in view, from zoom 10 up to 100 gap zones and 60 opportunities). Any zone can be diagnosed by the
+agents (`POST /api/council/zones/{id}/diagnose`); "Priority summary (agents)" summarises what is listed
+(`POST /api/council/summary`).
 
 How zones are built (`scripts/process/build_zones.py`, rules in `planning/zones.py`,
 thresholds in `config.py`):
@@ -303,8 +434,15 @@ the affected tables, re-registers them in Zetaris and updates the manifest.
 ## Tests
 
 ```bash
-.venv/bin/python -m pytest -q
+.venv/bin/python -m pytest -q        # offline: no Zetaris, network or LLM key needed
 ```
+
+They cover the Meterless client and fallback, the guard (unknown ids dropped, weak caps, numbers, belief
+citations, context-only evidence), the loop (a critic request triggers a second round; three rounds at
+most; an agent failing twice gives a partial result), the Nemotron client (schemas, retries, model switch,
+no secrets or reasoning kept), the Council view (opportunity reasons, zoom caps, the viewport list,
+picker counts), the API, and sample mode end to end (every example replayed through the API with any LLM
+call failing the test, a missing recorded reply failing clearly, and the prompts frozen with the examples).
 
 Data sources and licences: see `data/README.md`.
 

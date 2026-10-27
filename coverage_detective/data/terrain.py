@@ -86,13 +86,48 @@ class DEM:
         return out
 
 
-_dem: DEM | None = None
+class SampleDEM:
+    """Sample mode: the same bilinear sampling over small int16 crops around the example places
+    (data/samples/dem/*.tif, written by scripts/build_samples.py). Points outside every crop read 0."""
+
+    def __init__(self, directory=None):
+        from coverage_detective.config import SAMPLES
+
+        self.crops = []
+        for path in sorted((directory or SAMPLES / "dem").glob("*.tif")):
+            with rasterio.open(path) as src:
+                t = src.transform
+                z = src.read(1).astype(np.float32)
+                self.crops.append((z, t.c, t.f, t.a, -t.e))
+
+    def elevation(self, lats, lons) -> np.ndarray:
+        lats, lons = np.asarray(lats, dtype=float), np.asarray(lons, dtype=float)
+        out = np.zeros(lats.shape, dtype=np.float32)
+        done = np.zeros(lats.shape, dtype=bool)
+        for z, west, north, dx, dy in self.crops:
+            inside = (~done & (lons >= west + dx) & (lons <= west + dx * (z.shape[1] - 2))
+                      & (lats <= north - dy) & (lats >= north - dy * (z.shape[0] - 2)))
+            if not inside.any():
+                continue
+            col = (lons[inside] - west) / dx - 0.5
+            row = (north - lats[inside]) / dy - 0.5
+            c0, r0 = np.floor(col).astype(int), np.floor(row).astype(int)
+            fc, fr = col - c0, row - r0
+            out[inside] = ((z[r0, c0] * (1 - fc) + z[r0, c0 + 1] * fc) * (1 - fr)
+                           + (z[r0 + 1, c0] * (1 - fc) + z[r0 + 1, c0 + 1] * fc) * fr)
+            done |= inside
+        return out
 
 
-def dem() -> DEM:
+_dem: DEM | SampleDEM | None = None
+
+
+def dem() -> DEM | SampleDEM:
     global _dem
     if _dem is None:
-        _dem = DEM()
+        from coverage_detective.config import sample_mode
+
+        _dem = SampleDEM() if sample_mode() else DEM()
     return _dem
 
 

@@ -371,6 +371,17 @@ the UK median, and devices per head >= UK 90th percentile or a 20% fall). Zones 
 3,656, capacity 947; 1,816 zones, 9.41 m people, 622 with limited data. Same sources and licences as
 the gap zones (derived data).
 
+## Sample-mode extracts (committed)
+
+`scripts/build_samples.py` → `data/samples/zetaris/` (one Parquet per Zetaris source, cut to 12 km around each
+sample place and the example zones' cells + 16 km; `extract.json` lists tables, boxes and row counts;
+`uk_context.json` holds the UK-wide medians from the full data) and `data/samples/dem/` (Copernicus GLO-30
+crops for the same boxes, int16 metres, native 30 m, deflate). 27 Oct 2026: 2,245 cells, 6,869 mast sites,
+20,891 Ookla tiles, 2 gap zones and 4 opportunities; 9.6 MB in all, 8.2 MB of it DEM. Same sources and
+licences as the full tables above (derived extracts; the DEM crops carry the Copernicus attribution). Used
+only by sample mode (`python run.py --sample`, DuckDB in place of Zetaris) and the tests. Live samples for
+the five sample places (`data/samples/<source>/`) were refreshed on 27 Oct 2026.
+
 ## Live sources (phase D)
 
 Fetched when a question is asked, not stored. Clients in `coverage_detective/sources/`

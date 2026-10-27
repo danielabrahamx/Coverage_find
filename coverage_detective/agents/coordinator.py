@@ -198,7 +198,8 @@ def _partial(case: Case, rounds: int, why: str) -> dict:
 
 
 def diagnose_point(query: str | None = None, lat: float | None = None, lon: float | None = None,
-                   audience: str = "resident", memory: Meterless = default_memory, run_id: str | None = None) -> dict:
+                   audience: str = "resident", memory: Meterless = default_memory, run_id: str | None = None,
+                   replay=None) -> dict:
     t0 = time.monotonic()
     point, _ = ev.resolve(query, lat, lon)
     label = point.get("label") if point.get("kind") != "point" else (point.get("nearest_postcode") and f"near {point['nearest_postcode']}") or query
@@ -207,6 +208,8 @@ def diagnose_point(query: str | None = None, lat: float | None = None, lon: floa
     prog = Progress(run_id, "point", label or "", memory)
     case = Case.for_point(run_id, query, lat, lon, memory=memory)
     case.progress = prog
+    if replay:
+        case.cache["replay"] = replay
     status, notes = "complete", []
     try:
         place_id = _world_point(case)
@@ -228,11 +231,17 @@ def diagnose_point(query: str | None = None, lat: float | None = None, lon: floa
                           "actions": [a.model_dump() for a in adv.actions],
                           "best_network": {**adv.best_network.model_dump(), "rule_based": comp.get("likely_best"),
                                            "operators": comp.get("operators")},
-                          "limitations": [adv.limitations, *LIMITATIONS], "rounds": rounds, "status": "complete"}
+                          "limitations": [*operator_limits(evid), adv.limitations, *LIMITATIONS], "rounds": rounds,
+                          "status": "complete"}
         result.update(run_id=run_id, scope="point", query=query, audience=audience,
                       location={k: point.get(k) for k in ("label", "lat", "lon", "postcode", "nearest_postcode",
                                                           "admin_district", "region", "country")} | {"cell_id": case.cell_id},
                       critiques=_critic_summary(case))
+        if (headline := no_data_headline(result, A.evidence_map(case))) and status == "complete":
+            result["advisor_headline"], result["headline"] = result["headline"], headline
+            memory.add_note(run_id, "coordinator", "headline set from the top belief (insufficient data): " + headline,
+                            by="coordinator")
+        result["wording_check"] = wording_check(result)
         top = next((h for h in result["hypotheses"] if h["status"] == "active"), None)
         memory.record_diagnosis(run_id, case.lat, case.lon, cell_id=case.cell_id, scope="point", headline=result["headline"],
                                 causes=[{"cause": h["cause"], "confidence": h["confidence"]} for h in result["hypotheses"]
@@ -246,13 +255,15 @@ def diagnose_point(query: str | None = None, lat: float | None = None, lon: floa
                   "location": {"lat": case.lat, "lon": case.lon}}
     result["status"] = status
     result["elapsed_s"] = round(time.monotonic() - t0, 1)
+    if replay:
+        result.update(example_id=replay.example_id, replayed=replay.mode == "replay")
     memory.update_run(run_id, status=status, result=result)
+    export(run_id, memory)  # before the progress says "finished", so a poll never reads a half-written export
     prog.finish(status, result)
-    export(run_id, memory)
     return result
 
 
-def diagnose_zone(zone_id: str, memory: Meterless = default_memory, run_id: str | None = None) -> dict:
+def diagnose_zone(zone_id: str, memory: Meterless = default_memory, run_id: str | None = None, replay=None) -> dict:
     from coverage_detective.api.council import zone_detail
 
     t0 = time.monotonic()
@@ -263,6 +274,8 @@ def diagnose_zone(zone_id: str, memory: Meterless = default_memory, run_id: str 
     case = Case(run_id=run_id, scope="zone", point={**z["centroid"], "label": z["name"]}, zone_id=zone_id, memory=memory)
     case.cache["zone"] = detail
     case.progress = prog
+    if replay:
+        case.cache["replay"] = replay
     status = "complete"
     try:
         zone_ent = memory.upsert_entity("zone", zone_id, name=z["name"], attrs={"people": z["people"], "cells": z["cells"],
@@ -325,10 +338,47 @@ def diagnose_zone(zone_id: str, memory: Meterless = default_memory, run_id: str 
                   "location": z["centroid"]}
     result["status"] = status
     result["elapsed_s"] = round(time.monotonic() - t0, 1)
+    if replay:
+        result.update(example_id=replay.example_id, replayed=replay.mode == "replay")
     memory.update_run(run_id, status=status, result=result)
+    export(run_id, memory)  # before the progress says "finished", so a poll never reads a half-written export
     prog.finish(status, result)
-    export(run_id, memory)
     return result
+
+
+def no_data_headline(result: dict, evid: dict) -> str | None:
+    """When the top belief is insufficient_data and nothing is measured here, the headline says so plainly
+    (code, not the advisor's wording): "Not enough data to say why: ..."."""
+    active = [h for h in result.get("hypotheses") or [] if h["status"] == "active"]
+    ins = next((h for h in active if h["cause"] == "insufficient_data"), None)
+    if not ins or ins.get("confidence", 0) < max(h.get("confidence", 0) for h in active):  # top, or tied for top
+        return None
+    tests = lambda i: ((evid.get(i) or {}).get("sample_size") or {}).get("tests") or 0  # noqa: E731
+    if tests("speed_cell") or tests("speed_1km"):
+        return None
+    why = ["there are no measured speeds at this point or within 1 km"]
+    near = evid.get("nearest_site")
+    if near and near.get("value") is None:
+        why.append("no mast sites in our data within 10 km, so operators could not be identified")
+    elif not ((evid.get("operators_5km") or {}).get("value") or {}).get("operators"):
+        why.append("operators could not be identified for the sites nearby")
+    return "Not enough data to say why: " + " and ".join(why) + "."
+
+
+def operator_limits(evid: dict) -> list[str]:
+    """A fixed line when no operator can be identified near the point (code, not the model's wording)."""
+    near = evid.get("nearest_site")
+    v = (evid.get("operators_5km") or {}).get("value") or {}
+    if near and near.get("value") is None:
+        where = "no approximate mast sites were found within 10 km in our data"
+    elif v.get("operator_data_status") in ("no_sites_found", "unknown") and not v.get("operators"):
+        where = "the approximate mast sites nearby have no known operator"
+    else:
+        where = None
+    if where:
+        return [f"Operators could not be identified: {where}. This is not the same as no coverage: crowd-sourced "
+                "site data is incomplete; check the address on Ofcom's mobile coverage checker."]
+    return []
 
 
 FORBIDDEN_FOR_OPPORTUNITIES = [r"\bgaps?\b", r"\bno coverage\b", r"\bno service\b", r"\bno signal\b"]
@@ -337,6 +387,13 @@ FORBIDDEN_FOR_OPPORTUNITIES = [r"\bgaps?\b", r"\bno coverage\b", r"\bno service\
 def wording_check(result: dict) -> dict:
     """For an improvement opportunity: the agents' text says "opportunity" and never "gap", "no coverage" or
     "no service". Reported (and noted in Meterless), not rewritten."""
+    if result.get("scope") == "point":  # points: never "no coverage" / "no service"
+        fields = {"headline": result.get("headline"), "explanation": result.get("explanation"),
+                  **{f"belief.{h['cause']}": h.get("explanation") for h in result.get("hypotheses") or []},
+                  **{f"action.{i}": a.get("text") for i, a in enumerate(result.get("actions") or [])}}
+        forbidden = [(k, m.group(0)) for k, v in fields.items() if v for pat in FORBIDDEN_FOR_OPPORTUNITIES[1:]
+                     for m in re.finditer(pat, v, re.IGNORECASE)]
+        return {"applies": True, "ok": not forbidden, "forbidden": forbidden}
     if result.get("zone_type") != "opportunity":
         return {"applies": False}
     fix = result.get("fix_plan") or {}
@@ -357,5 +414,7 @@ def export(run_id: str, memory: Meterless = default_memory) -> Path:
             "beliefs": memory.beliefs(run_id), "critiques": memory.critiques(run_id), "notes": memory.notes(run_id),
             "world": memory.world_for_run(run_id), "memory_mode": memory.mode}
     path = RUNS_DIR / f"{run_id}.full.json"
-    path.write_text(json.dumps(full, indent=1, default=str))
+    tmp = path.with_suffix(".tmp")
+    tmp.write_text(json.dumps(full, indent=1, default=str))
+    tmp.replace(path)  # atomic: readers see the old file or the whole new one
     return path

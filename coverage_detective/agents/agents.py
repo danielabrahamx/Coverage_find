@@ -23,6 +23,7 @@ from coverage_detective.agents import schemas as S
 from coverage_detective.agents.guard import (CAP_WEAK_ONLY, CONTEXT_ONLY, Guard, Intervention, cited_in_text,
                                              map_cause_citations)
 from coverage_detective.agents.llm import LLMError, LLMResult, llm
+from coverage_detective.agents.replay import ReplayMissing
 from coverage_detective.agents.tools import (OPERATORS, POINT_TOOLS, ZONE_TOOLS, Case, network_comparison, run_tool,
                                              tool_specs)
 
@@ -47,8 +48,19 @@ def ask(case: Case, agent: str, round: int, messages: list[dict], purpose: str |
     t0 = time.monotonic()
     label = f"{agent} {purpose}" if purpose else f"{agent} thinking" if kw.get("reasoning") else agent
     step = case.progress.start(agent, round, "llm", label) if case.progress else None
+    sess = case.cache.get("replay")  # sample mode: replay recorded replies, or record them (agents/replay.py)
     try:
-        r = llm.chat(messages, **kw)
+        if sess and sess.mode == "replay":
+            r = sess.reply(sess.next_key(agent, round), kw.get("schema"))
+        else:
+            r = llm.chat(messages, **kw)
+            if sess:
+                sess.save(sess.next_key(agent, round), r)
+    except ReplayMissing as e:
+        case.memory.add_note(case.run_id, "replay_missing", str(e), by="coordinator", round=round, agent=agent)
+        if step:
+            case.progress.fail(step, str(e)[:160])
+        raise
     except LLMError as e:
         case.memory.add_note(case.run_id, "llm_error", f"{agent}: {str(e)[:200]}", by=agent, round=round,
                              retries=e.retries, duration_ms=round_ms(t0))

@@ -40,6 +40,8 @@ SAMPLE_LOCATIONS = [
     ("Great Langdale, Cumbria", 54.445, -3.105),
     ("Central London (WC2N 5DU)", 51.507211, -0.128269),
     ("Near Rhayader, Powys", 52.30, -3.51),
+    ("Sutton St Edmund, Lincolnshire", 52.700117, 0.024085),
+    ("Remote cell near Bettws, Powys (no tests, no site within 10 km)", 52.399095, -3.186185),
 ]
 
 # Gap zones (Council view). A cell with >= GAP_MIN_CELL_POPULATION people is "poorly served"

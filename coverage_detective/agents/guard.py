@@ -6,8 +6,8 @@
    evidence lists; it may be mentioned, never cited as support.
 3. Weak evidence: a belief whose supporting evidence is all weak is capped at 0.5. Weak is decided
    here, not by the model: an item labelled weak, an Ookla figure from fewer than 30 tests, mast
-   sites from crowd-sourced data only (no operator confirmed by Ofcom's licence register), or sites
-   with unknown operators.
+   sites from crowd-sourced data only (no operator confirmed by Ofcom's licence register), sites
+   with unknown operators, or Met Office warnings that cover the region but not this district.
 4. Numbers: every number in agent text must match a value in the evidence that output cites,
    within rounding and simple unit changes (3.84 -> "3.8 km", 288.4 -> "288 m", 3838 m ->
    "3.8 km", 0.25 -> "25%"). Integers 0-4 (counts of operators, rounds, ranks) are allowed.
@@ -60,6 +60,10 @@ def weak_reason(item: dict) -> str | None:
         return "labelled weak"
     if isinstance(size.get("tests"), (int, float)) and size["tests"] < MIN_TESTS:
         return f"{size['tests']:.0f} tests"
+    if isinstance(value, dict) and "Met Office" in (item.get("source") or ""):
+        ws = value.get("warnings") or []
+        if ws and not any(w.get("district_listed") for w in ws):
+            return "region-wide warning, not this district"
     if isinstance(value, dict) and "Approximate mast sites" in (item.get("source") or ""):
         if size.get("sites_unknown_operator"):
             return "sites with unknown operators"

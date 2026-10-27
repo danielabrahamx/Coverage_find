@@ -56,6 +56,13 @@ def test_weakness_is_decided_by_code_not_the_label():
     assert weak_reason({"strength": "moderate", "source": sites, "value": {"operators_confirmed": ["EE"]}}) is None
 
 
+def test_region_wide_met_office_warning_is_weak():
+    src = "Met Office severe weather warnings (RSS)"
+    elsewhere = {"strength": "moderate", "source": src, "value": {"warnings": [{"district_listed": False}]}}
+    here = {"strength": "strong", "source": src, "value": {"warnings": [{"district_listed": True}]}}
+    assert weak_reason(elsewhere) == "region-wide warning, not this district" and weak_reason(here) is None
+
+
 def test_prior_diagnoses_is_context_not_evidence():
     g, log = guard()
     assert g.context_only(["los_vodafone", "prior_diagnoses"], "belief terrain_blocking") == ["los_vodafone"]
