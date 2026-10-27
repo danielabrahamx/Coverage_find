@@ -183,8 +183,9 @@ on every page must be kept. Details: [THIRD_PARTY.md](THIRD_PARTY.md). Our code:
   Ofcom's own [checker](https://www.ofcom.org.uk/mobile-coverage-checker) for that.
 - **Line of sight is an estimate**: a surface model (trees and buildings partly included), antenna heights
   mostly assumed (25 m), no radio propagation model. "Blocked" means weaker, not none.
-- **Sample-mode rankings are within the sample only** (e.g. "#4 of 4"), and only the example places and zones
-  can be diagnosed there.
+- **Sample mode is a slice**: rankings are within the sample only (e.g. "#4 of 4"), only the example places and
+  zones can be diagnosed, and Explore shows cell details but not the UK-wide map layers (15 MB, built from the
+  full data).
 - Mobile networks only; home broadband is out of scope.
 
 **What we would do next:** deprivation and rural-urban "need" in the council score; power cuts as an
